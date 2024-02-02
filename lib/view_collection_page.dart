@@ -27,8 +27,7 @@ class ViewCollectionPage extends StatefulWidget {
 }
 
 class _ViewCollectionPageState extends State<ViewCollectionPage> {
-  String url =
-      'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollections/null';
+  // String url = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollections/null';
 
   final _orangeColor = HexColor('#e58338');
   final _borderforContainer = BoxDecoration(
@@ -59,7 +58,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   void initState() {
     super.initState();
     getshareddata();
-    initializeData();
+initializeData();
   }
 
   @override
@@ -68,17 +67,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
     viewProvider = Provider.of<ViewCollectionProvider>(context);
   }
 
-  void initializeData() {
-    apiData = getCollection();
-    apiData.then((data) {
-      setState(() {
-        filteredData.addAll(data);
-        viewProvider.storeIntoProvider(data);
-      });
-    }).catchError((error) {
-      // print('Error initializing data: $error');
-    });
-  }
+
 
   void filterRecordsBasedOnPartyName(String input) {
     apiData.then((data) {
@@ -92,8 +81,39 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   }
 
   Future<List<ListResult>> getCollection() async {
-    final response = await http.get(Uri.parse(url));
+    DateTime currentDate = DateTime.now();
+
+    // Get one week back date
+    DateTime oneWeekBackDate = currentDate.subtract(Duration(days: 7));
+
+    // Format dates as 'yyyy-MM-dd'
+    String formattedCurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
+    String formattedOneWeekBackDate = DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
+    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+
+
     try {
+      final url = Uri.parse(
+          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollectionsbyMobileSearch');
+      final requestBodyObj = {
+        "PurposeName": null,
+        "StatusId": null,
+        "PartyCode": null,
+        "FormDate": formattedOneWeekBackDate,
+        "ToDate": formattedCurrentDate,
+        "CompanyId": CompneyId
+      };
+      print(jsonEncode(requestBodyObj));
+
+      final response = await http.post(
+        url,
+        body: json.encode(requestBodyObj),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(response.body);
         List<dynamic> listResult = json['response']['listResult'];
@@ -301,6 +321,19 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
 
     print('Company ID: $CompneyId');
+
+  }
+
+  void initializeData() {
+    apiData = getCollection();
+    apiData.then((data) {
+      setState(() {
+        filteredData.addAll(data);
+        viewProvider.storeIntoProvider(data);
+      });
+    }).catchError((error) {
+      // print('Error initializing data: $error');
+    });
   }
 }
 
@@ -335,13 +368,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   DateTime toDate = DateTime.now();
   DateTime fromDate = DateTime.now();
   String? selectedValue;
-  List dropDownItems = [
-    'item 1',
-    'item 2',
-    'item 3',
-    'item 4',
-    'item 5',
-  ];
+
   List<dynamic> dropdownItems = [];
   PaymentMode? selectedPaymode;
   int? payid;
@@ -956,20 +983,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           const SizedBox(
             height: 10.0,
           ), // From date
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buildDateInput(
-                context,
-                'To Date',
-                todateController,
-                () => _selectDate(context, todateController),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
+
+
           // To Date
           Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -979,6 +994,20 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 'From Date',
                 fromdateController,
                 () => _selectfromDate(context, fromdateController),
+              ),
+            ],
+          ),
+          const SizedBox(
+            height: 10.0,
+          ),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              buildDateInput(
+                context,
+                'To Date',
+                todateController,
+                    () => _selectDate(context, todateController),
               ),
             ],
           ),
@@ -1069,7 +1098,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         "ToDate": selectformattedtodate,
         "CompanyId": savedCompanyId
       };
-
+      print('===========>${jsonEncode(requestBodyObj)}');
       final response = await http.post(
         url,
         body: json.encode(requestBodyObj),

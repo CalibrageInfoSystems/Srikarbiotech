@@ -54,6 +54,7 @@ dependencies:
   collection: ^1.15.0
   device_info: ^2.0.0
   share_extend: ^2.0.0
+  loading_animation_widget: ^1.2.0+4
 
 
 dev_dependencies:
@@ -124,6 +125,8 @@ flutter:
     - assets/srikar-bio.png
     - assets/srikar-home-icon.png
     - assets/seeds-home-icon.png
+    - assets/plus-small.svg
+    - assets/minus-small.svg
 
   #   - images/a_dot_ham.jpeg
 

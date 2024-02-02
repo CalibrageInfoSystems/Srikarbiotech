@@ -3,6 +3,7 @@ import 'package:badges/badges.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_svg/svg.dart';
 import 'package:provider/provider.dart';
 import 'dart:convert';
 
@@ -60,6 +61,7 @@ class Createorderscreen extends StatefulWidget {
 class _ProductListState extends State<Createorderscreen> {
   // DBHelper dbHelper = DBHelper();
   bool isLoading = false;
+  List<bool> isItemAddedToCart = [];
   // List<ProductResponse> products = [];
   List<int> quantities = [];
   List<TextEditingController> textEditingControllers = [];
@@ -85,6 +87,8 @@ class _ProductListState extends State<Createorderscreen> {
   int CompneyId = 0;
   String? userId = "";
   String? slpCode = "";
+  OrderItemXrefType? orderItem; // Initialize orderItem to null
+  late SharedPreferences prefs;
 
 // Function to save cart items to SharedPreferences
   Future<void> saveCartItems(List<OrderItemXrefType> selectedProducts) async {
@@ -120,6 +124,8 @@ class _ProductListState extends State<Createorderscreen> {
     //  fetchProducts();
     selectindex = 0;
     getshareddata();
+    initSharedPreferences();
+  //  restoreAddedItemStates();
 
 
   }
@@ -212,18 +218,18 @@ class _ProductListState extends State<Createorderscreen> {
                 icon: Icon(Icons.shopping_cart),
               ),
               Positioned(
-                right: 8,
-                top: 8,
+                right: 5,
+                top: 1,
                 child: Container(
                   padding: const EdgeInsets.all(5),
                   decoration: BoxDecoration(
                     shape: BoxShape.circle,
-                    color: Colors.red, // Customize the badge color
+                    color: Color(0xFFD6D6D6), // Customize the badge color
                   ),
                   child: Text(
                     '${globalCartLength}',
                     style: TextStyle(
-                      color: Colors.white,
+                      color: Color(0xFFe78337),
                       fontWeight: FontWeight.bold,
                     ),
                   ),
@@ -296,7 +302,7 @@ class _ProductListState extends State<Createorderscreen> {
           Padding(
             padding: const EdgeInsets.all(8.0),
             child: Container(
-              height: 50.0,
+              height: 40.0,
               child: apiResponse == null
                   ? Center(
                 child: CircularProgressIndicator.adaptive(),
@@ -322,7 +328,7 @@ class _ProductListState extends State<Createorderscreen> {
                       ),
                       color: isSelected
                           ? Color(0xFFe78337) // Selected color
-                          : Color(0xFFF8dac2), // Default color for other items
+                          : Color(0xFFffefdf), // Default color for other items
                       child: InkWell(
                         onTap: () {
                           setState(() {
@@ -516,7 +522,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                   child: Text(
                                                     '${productresp.itmsGrpNam.toString()}',
                                                     style: TextStyle(
-                                                      color: Color(0xFF848484),
+                                                      color: Color(0xFF404040),
                                                       fontFamily: "Roboto",
                                                       fontWeight: FontWeight.w600,
                                                       fontSize: 12.0,
@@ -594,7 +600,7 @@ class _ProductListState extends State<Createorderscreen> {
                                               maxLines: 1,
                                               text: TextSpan(
                                                 text:
-                                                '₹${productresp.price.toString()}  ',
+                                                '₹${productresp.price.toString()}',
                                                 style: TextStyle(
                                                   color: Color(0xFFe78337),
                                                   fontFamily: "Roboto",
@@ -605,7 +611,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                   TextSpan(
                                                     text: '/ Item',
                                                     style: TextStyle(
-                                                      color: Color(0xFFa6a6a6),
+                                                      color: Color(0xFF8b8b8b),
                                                       fontWeight: FontWeight.bold,
                                                       fontSize: 13.0,
                                                       // decoration: TextDecoration.lineThrough,
@@ -644,21 +650,23 @@ class _ProductListState extends State<Createorderscreen> {
                                                     children: [
                                                       Container(
                                                         height: 36,
-                                                        width: MediaQuery.of(context)
-                                                            .size
-                                                            .width /
-                                                            2.5,
+                                                        width: MediaQuery.of(context).size.width /2.3,
                                                         decoration: BoxDecoration(
                                                           color: Color(0xFFe78337),
                                                           borderRadius:
                                                           BorderRadius.circular(
-                                                              10.0),
+                                                              8.0),
                                                         ),
                                                         child: Row(
                                                           children: [
                                                             IconButton(
-                                                              icon: Icon(Icons.remove,
-                                                                  color: Colors.white),
+                                                              icon: SvgPicture.asset(
+                                                                'assets/minus-small.svg',  // Replace with the correct path to your SVG icon
+                                                                color: Colors.white,
+                                                                width: 20.0,
+                                                                height: 20.0,
+                                                              ),
+
                                                               onPressed: () {
                                                                 if (quantities[index] >
                                                                     1) {
@@ -669,7 +677,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                                   index].text = quantities[index].toString();
                                                                 }
                                                               },
-                                                              iconSize: 25.0,
+                                                              iconSize: 30.0,
                                                             ),
                                                             Expanded(
                                                               child: Align(
@@ -689,7 +697,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                                           context)
                                                                           .size
                                                                           .width /
-                                                                          5.1,
+                                                                          5,
                                                                       decoration:
                                                                       BoxDecoration(
                                                                         color: Colors
@@ -736,7 +744,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                                           contentPadding:
                                                                           EdgeInsets.only(
                                                                               bottom:
-                                                                              10.0),
+                                                                              15.0),
                                                                         ),
                                                                         textAlign:
                                                                         TextAlign
@@ -750,21 +758,21 @@ class _ProductListState extends State<Createorderscreen> {
                                                               ),
                                                             ),
                                                             IconButton(
-                                                              icon: Icon(Icons.add,
-                                                                  color: Colors.white),
+                                                              icon:  SvgPicture.asset(
+                                                                'assets/plus-small.svg',  // Replace with the correct path to your SVG icon
+                                                                color: Colors.white,
+                                                                width: 20.0,
+                                                                height: 20.0,
+                                                              ),
                                                               onPressed: () {
                                                                 setState(() {
                                                                   quantities[index]++;
                                                                 });
                                                                 textEditingControllers[
-                                                                index]
-                                                                    .text =
-                                                                    quantities[index]
-                                                                        .toString();
+                                                                index].text = quantities[index].toString();
                                                               },
-                                                              alignment:
-                                                              Alignment.centerLeft,
-                                                              iconSize: 25.0,
+                                                              alignment: Alignment.centerLeft,
+                                                              iconSize: 30.0,
                                                             ),
                                                           ],
                                                         ),
@@ -772,247 +780,149 @@ class _ProductListState extends State<Createorderscreen> {
                                                       SizedBox(
                                                         width: 8.0,
                                                       ),
-                                                      // Padding(
-                                                      //   padding:
-                                                      //   const EdgeInsets.symmetric(
-                                                      //       horizontal: 4.0),
-                                                      //   child:
-                                                      //   GestureDetector(
-                                                      //     onTap: () async {
-                                                      //       setState(() {
-                                                      //         isSelectedList[index] = !isSelectedList[index];
-                                                      //
-                                                      //       });
-                                                      //
-                                                      //       if (isSelectedList[index]) {
-                                                      //         print(
-                                                      //             'Adding ${quantities[index]} of ${filteredproducts[index].itemName} to the cart');
-                                                      //
-                                                      //         // Create an OrderItemXrefType object with necessary details
-                                                      //         OrderItemXrefType orderItem = OrderItemXrefType(
-                                                      //           id: 1, // Sample value, adjust as needed
-                                                      //           orderId: 1001, // Sample value, adjust as needed
-                                                      //           itemGrpCod: productresp.itmsGrpCod, // Sample value, adjust as needed
-                                                      //           itemGrpName: productresp.itmsGrpNam, // Sample value, adjust as needed
-                                                      //           itemCode:productresp.itemCode, // Sample value, adjust as needed
-                                                      //           itemName: productresp.itemName,
-                                                      //           noOfPcs: '10', // Sample value, adjust as needed
-                                                      //           orderQty: quantities[index],
-                                                      //           price:productresp.price, // Adjust the price based on your requirement
-                                                      //           igst: productresp.gst, // Sample value, adjust as needed
-                                                      //           cgst:  productresp.gst!/2, // Sample value, adjust as needed
-                                                      //           sgst:  productresp.gst!/2, // Sample value, adjust as needed
-                                                      //         );
-                                                      //
-                                                      //         cartProvider.addToCart(orderItem);
-                                                      //         setState(() {
-                                                      //           isSelectedList[index] = true;
-                                                      //         });
-                                                      //         // Get the added item
-                                                      //         print('Added item: ${orderItem.itemName}');
-                                                      //
-                                                      //         // Get the total number of items in the cart
-                                                      //         List<OrderItemXrefType> cartItems = cartProvider.getCartItems();
-                                                      //         print('Added items length: ${cartItems.length}');
-                                                      //         globalCartLength = cartItems.length;
-                                                      //
-                                                      //       }
-                                                      //
-                                                      //     },
-                                                      //     child: Container(
-                                                      //       height: 36,
-                                                      //       decoration: BoxDecoration(
-                                                      //         color: isSelectedList[
-                                                      //         index]
-                                                      //             ? Color(0xFFe78337)
-                                                      //             : Color(0xFFF8dac2),
-                                                      //         border: Border.all(
-                                                      //           color:
-                                                      //           Color(0xFFe78337),
-                                                      //           width: 1.0,
-                                                      //         ),
-                                                      //         borderRadius:
-                                                      //         BorderRadius.circular(
-                                                      //             8.0),
-                                                      //       ),
-                                                      //       child: Padding(
-                                                      //         padding: const EdgeInsets
-                                                      //             .symmetric(
-                                                      //             horizontal: 4.0),
-                                                      //         child: Row(
-                                                      //           children: [
-                                                      //             Icon(
-                                                      //               Icons
-                                                      //                   .add_shopping_cart,
-                                                      //               size: 18.0,
-                                                      //               color: isSelectedList[
-                                                      //               index]
-                                                      //                   ? Color(
-                                                      //                   0xFFfff6eb)
-                                                      //                   : Color(
-                                                      //                   0xFFe78337),
-                                                      //             ),
-                                                      //             SizedBox(
-                                                      //                 width:
-                                                      //                 4.0), // Adjust the spacing between icon and text
-                                                      //             Text(
-                                                      //               isSelectedList[
-                                                      //               index]
-                                                      //                   ? 'Added'
-                                                      //                   : 'Add',
-                                                      //               style: TextStyle(
-                                                      //                 color: isSelectedList[
-                                                      //                 index]
-                                                      //                     ? Color(
-                                                      //                     0xFFfff6eb)
-                                                      //                     : Color(
-                                                      //                     0xFFe78337),
-                                                      //                 fontSize: 14,
-                                                      //                 fontFamily:
-                                                      //                 "Roboto",
-                                                      //                 fontWeight:
-                                                      //                 FontWeight
-                                                      //                     .w600,
-                                                      //               ),
-                                                      //             ),
-                                                      //             SizedBox(width: 4.0),
-                                                      //           ],
-                                                      //         ),
-                                                      //       ),
-                                                      //     ),
-                                                      //   ),
-                                                      // )
+
 
 
                                                       Padding(
                                                         padding: const EdgeInsets.symmetric(horizontal: 4.0),
                                                         child: GestureDetector(
                                                           onTap: () async {
-                                                            setState(() {
-                                                              isSelectedList[index] =
-                                                              !isSelectedList[index];
-                                                            });
+                                                            if (!isItemAddedToCart[index]) {
+                                                              setState(() {
+                                                                isSelectedList[index] = !isSelectedList[index];
+                                                              });
 
-                                                            if (isSelectedList[index]) {
-                                                              print(
-                                                                  'Adding ${quantities[index]} of ${filteredproducts[index]
-                                                                      .itemName} to the cart');
+                                                              if (isSelectedList[index]) {
+                                                                print('Adding ${quantities[index]} of ${filteredproducts[index].itemName} to the cart');
 
-                                                              String itemGrpCod; // Variable to store the item group code
+                                                                String itemGrpCod;
 
-                                                              // Check if compneyid is 1 and globalCartLength is greater than 1
-                                                              if (CompneyId ==
-                                                                  1 &&
-                                                                  globalCartLength >
-                                                                      1) {
-                                                                // Set a specific value for itemGrpCod when the condition is met
-                                                                itemGrpCod =
-                                                                productresp
-                                                                    .itmsGrpCod!; // Replace with your specific value
-                                                              } else {
-                                                                // Use the original value when the condition is not met
-                                                                itemGrpCod =
-                                                                productresp
-                                                                    .itmsGrpCod!;
-                                                              }
-                                                              if (cartProvider
-                                                                  .isSameItemGroup(
-                                                                  itemGrpCod)) {
-                                                                // Create an OrderItemXrefType object with necessary details
-                                                                OrderItemXrefType orderItem = OrderItemXrefType(
-                                                                  id: 1,
-                                                                  orderId: 1001,
-                                                                  itemGrpCod: itemGrpCod,
-                                                                  // Use the updated itemGrpCod value
-                                                                  itemGrpName: productresp
-                                                                      .itmsGrpNam,
-                                                                  itemCode: productresp
-                                                                      .itemCode,
-                                                                  itemName: productresp
-                                                                      .itemName,
-                                                                  noOfPcs: '10',
-                                                                  orderQty: quantities[index],
-                                                                  price: productresp
-                                                                      .price,
-                                                                  igst: productresp
-                                                                      .gst,
-                                                                  cgst: productresp
-                                                                      .gst! / 2,
-                                                                  sgst: productresp
-                                                                      .gst! / 2,
-                                                                );
+                                                                if (CompneyId == 1 && globalCartLength > 1) {
+                                                                  itemGrpCod = productresp.itmsGrpCod!;
+                                                                } else {
+                                                                  itemGrpCod = productresp.itmsGrpCod!;
+                                                                }
 
-                                                                cartProvider
-                                                                    .addToCart(
-                                                                    orderItem);
+                                                                if (cartProvider.isSameItemGroup(itemGrpCod)) {
+                                                                  orderItem = OrderItemXrefType(
+                                                                    id: 1,
+                                                                    orderId: 1001,
+                                                                    itemGrpCod: itemGrpCod,
+                                                                    itemGrpName: productresp.itmsGrpNam,
+                                                                    itemCode: productresp.itemCode,
+                                                                    itemName: productresp.itemName,
+                                                                    noOfPcs: '10',
+                                                                    orderQty: quantities[index],
+                                                                    price: productresp.price,
+                                                                    igst: productresp.gst,
+                                                                    cgst: productresp.gst! / 2,
+                                                                    sgst: productresp.gst! / 2,
+                                                                  );
 
+                                                                  await cartProvider.addToCart(orderItem!);
+                                                                  await prefs.setBool('isItemAddedToCart_$index', true);
+                                                                  // Get the total number of items in the cart
+                                                                  List<OrderItemXrefType> cartItems = cartProvider.getCartItems();
+                                                                  print('Added items length: ${cartItems.length}');
+                                                                  globalCartLength = cartItems.length;
 
-                                                                setState(() {
-                                                                  isSelectedList[index] =
-                                                                  true;
-                                                                });
-
-                                                                // Get the added item
-                                                                print(
-                                                                    'Added item: ${orderItem
-                                                                        .itemName}');
-
-                                                                // Get the total number of items in the cart
-                                                                List<
-                                                                    OrderItemXrefType> cartItems = cartProvider
-                                                                    .getCartItems();
-                                                                print(
-                                                                    'Added items length: ${cartItems
-                                                                        .length}');
-                                                                globalCartLength =
-                                                                    cartItems
-                                                                        .length;
-                                                              } else {
-                                                                CommonUtils.showCustomToastMessageLong(
-                                                                  "Cannot add items with different item Category to the cart", context, 1, 5);
-
-                                                                // Display an error message, as itemGrpCod is not the same
-                                                                print(
-                                                                    'Error: Cannot add items with different itemGrpCod to the cart');
+                                                                  print('Item added successfully');
+                                                                  setState(() {
+                                                                    isItemAddedToCart[index] = true;
+                                                                  });
+                                                                } else {
+                                                                  // Display an error message, as itemGrpCod is not the same
+                                                                  print('Error: Cannot add items with different itemGrpCod to the cart');
+                                                                  CommonUtils.showCustomToastMessageLong(
+                                                                      ' You can only add items with the Category ', context, 1, 4);
+                                                                  // Optionally reset isSelectedList[index] to false to keep UI in sync with cart state
+                                                                  setState(() {
+                                                                    isSelectedList[index] = false;
+                                                                  });
+                                                                }
                                                               }
                                                             }
                                                           },
-                                                          child: Container(
-                                                            height: 36,
-                                                            decoration: BoxDecoration(
-                                                              color: isSelectedList[index] ? Color(0xFFe78337) : Color(0xFFF8dac2),
-                                                              border: Border.all(
-                                                                color: Color(0xFFe78337),
-                                                                width: 1.0,
-                                                              ),
-                                                              borderRadius: BorderRadius.circular(8.0),
-                                                            ),
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                              child: Row(
-                                                                children: [
-                                                                  Icon(
-                                                                    Icons.add_shopping_cart,
-                                                                    size: 18.0,
-                                                                    color: isSelectedList[index] ? Color(0xFFfff6eb) : Color(0xFFe78337),
-                                                                  ),
-                                                                  SizedBox(width: 4.0),
-                                                                  Text(
-                                                                    isSelectedList[index] ? 'Added' : 'Add',
-                                                                    style: TextStyle(
-                                                                      color: isSelectedList[index] ? Color(0xFFfff6eb) : Color(0xFFe78337),
-                                                                      fontSize: 14,
-                                                                      fontFamily: "Roboto",
-                                                                      fontWeight: FontWeight.w600,
-                                                                    ),
-                                                                  ),
-                                                                  SizedBox(width: 4.0),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ),
-                                                      )
+    child: Container(
+    height: 36,
+    decoration: BoxDecoration(
+    color: isItemAddedToCart[index]
+    ? Color(0xFFe78337)
+        : Color(0xFFffefdf),
+    border: Border.all(
+    color: Color(0xFFe78337),
+    width: 1.0,
+    ),
+    borderRadius: BorderRadius.circular(8.0),
+    ),
+    child: Padding(
+    padding: const EdgeInsets.symmetric(horizontal: 6.0),
+    child: Row(
+    children: [
+    Icon(
+    Icons.add_shopping_cart,
+    size: 18.0,
+    color: isItemAddedToCart[index]
+    ? Color(0xFFffefdf)
+        : Color(0xFFe78337),
+    ),
+    SizedBox(width: 8.0),
+    Text(
+    isItemAddedToCart[index] ? 'Added' : 'Add',
+    style: TextStyle(
+    color: isItemAddedToCart[index]
+    ? Color(0xFFffefdf)
+        : Color(0xFFe78337),
+    fontSize: 14,
+    fontFamily: "Roboto",
+    fontWeight: FontWeight.w600,
+    ),
+    ),
+    SizedBox(width: 6.0),
+    ],
+    ),
+    ),
+    ),
+                                           // child: Container(
+                                           //                height: 36,
+                                           //                decoration: BoxDecoration(
+                                           //                  color: isSelectedList[index] ? Color(0xFFe78337) : Color(0xFFffefdf),
+                                           //                  border: Border.all(
+                                           //                    color: Color(0xFFe78337),
+                                           //                    width: 1.0,
+                                           //                  ),
+                                           //                  borderRadius: BorderRadius.circular(8.0),
+                                           //                ),
+                                           //                child: Padding(
+                                           //                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                                           //                  child: Row(
+                                           //                    children: [
+                                           //                      Icon(
+                                           //                        Icons.add_shopping_cart,
+                                           //                        size: 18.0,
+                                           //                        color: isSelectedList[index] ? Color(0xFFffefdf) : Color(0xFFe78337),
+                                           //                      ),
+                                           //                      SizedBox(width: 8.0),
+                                           //                      Text(
+                                           //                        isItemAddedToCart[index] ? 'Added' : 'Add',
+                                           //                        style: TextStyle(
+                                           //                          color: isItemAddedToCart[index] ? Color(0xFFffefdf) : Color(0xFFe78337),
+                                           //                          fontSize: 14,
+                                           //                          fontFamily: "Roboto",
+                                           //                          fontWeight: FontWeight.w600,
+                                           //                        ),
+                                           //                      ),
+                                           //                      SizedBox(width: 6.0),
+                                           //                    ],
+                                           //                  ),
+                                           //                ),
+                                           //              ),
+                                                      ),
+                                      ),
+
+
+
+
 
                                                     ],
                                                   ),
@@ -1228,7 +1138,7 @@ class _ProductListState extends State<Createorderscreen> {
                 .map((response) => ProductResponse.fromJson(response))
                 .toList();
             filteredproducts = List.from(totalproducts);
-
+            isItemAddedToCart = List.generate(filteredproducts.length, (index) => false);
             quantities = List.generate(filteredproducts.length, (index) => 1);
             isSelectedList =
                 List.generate(filteredproducts.length, (index) => false);
@@ -1246,7 +1156,18 @@ class _ProductListState extends State<Createorderscreen> {
       throw Exception('Failed to connect to the API');
     }
   }
+  void initSharedPreferences() async {
+    prefs = await SharedPreferences.getInstance();
+  }
 
+  void restoreAddedItemStates() {
+    // Initialize isItemAddedToCart based on SharedPreferences
+    //isItemAddedToCart = List.generate(filteredproducts.length, (index) => false);
+    isItemAddedToCart = List.generate(
+      filteredproducts.length,
+          (index) => prefs.getBool('isItemAddedToCart_$index') ?? false,
+    );
+  }
 
 
 }

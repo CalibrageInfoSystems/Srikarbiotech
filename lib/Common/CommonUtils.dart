@@ -5,11 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CommonUtils {
   static void showCustomToastMessageLong(
-    String message,
-    BuildContext context,
-    int backgroundColorType,
-    int length,
-  ) {
+      String message,
+      BuildContext context,
+      int backgroundColorType,
+      int length,
+      ) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double textWidth = screenWidth / 1.5; // Adjust multiplier as needed
 
@@ -28,10 +28,12 @@ class CommonUtils {
             width: toastWidth,
             decoration: BoxDecoration(
               border: Border.all(
-                color: backgroundColorType == 0 ? Colors.green : Colors.red,
+                color: backgroundColorType == 0 ? Color(0xFF54B471) : Color(0xFFDE5242),
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(8.0),
+              // Add background color based on backgroundColorType
+              color: backgroundColorType == 0 ? Color(0xFF54B471).withOpacity(0.2) : Color(0xFFDE5242).withOpacity(0.2),
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
@@ -39,9 +41,10 @@ class CommonUtils {
                 child: Text(
                   message,
                   style: TextStyle(
-                      fontSize: 16.0,
-                      color: Colors.black,
-                      fontFamily: 'Calibri'),
+                    fontSize: 16.0,
+                    color: Colors.black,
+                    fontFamily: 'Calibri',
+                  ),
                   textAlign: TextAlign.center,
                 ),
               ),
@@ -56,6 +59,7 @@ class CommonUtils {
       overlayEntry.remove();
     });
   }
+
 
   static Future<bool> checkInternetConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());

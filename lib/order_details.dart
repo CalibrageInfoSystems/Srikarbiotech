@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:srikarbiotech/HomeScreen.dart';
 import 'package:http/http.dart' as http;
+import 'Common/CommonUtils.dart';
 import 'Model/OrderDetailsResponse.dart';
 import 'orderdetails_model.dart';
 
@@ -10,11 +11,9 @@ class Orderdetails extends StatefulWidget {
   final String orderdate;
   final double totalprice;
   final String bookingplace;
-  final String preferabletransport;
+  final String transportmode;
   final int lrnumber;
   final String lrdate;
-  final String paymentmode;
-  final String transportmode;
   final String statusname;
   final String partyname;
   final String partycode;
@@ -29,11 +28,10 @@ class Orderdetails extends StatefulWidget {
       required this.orderdate,
       required this.totalprice,
       required this.bookingplace,
-      required this.preferabletransport,
+      required this.transportmode,
       required this.lrnumber,
       required this.lrdate,
-      required this.paymentmode,
-      required this.transportmode,
+
       required this.statusname,
       required this.partyname,
       required this.partycode,
@@ -48,16 +46,15 @@ class Orderdetails extends StatefulWidget {
 
 class _OrderdetailsPageState extends State<Orderdetails> {
   List tableCellTitles = [
-    ['Order Date', 'Booking Place', 'Preferabale Transport', 'LR Number'],
+    ['Order Date', 'Booking Place', 'LR Number'],
     [
       'Total',
-      'Transport Mode',
-      'Payment Mode',
+      'Transport Name',
       'LR Date',
     ]
   ];
   int orderid = 0;
-
+  bool isDataLoaded = false;
   //List<OrderDetailsResponse> orderdetailslist = [];
   late List tableCellValues;
   late Future<OrderDetailsResponse?> orderDetailsList;
@@ -81,15 +78,17 @@ class _OrderdetailsPageState extends State<Orderdetails> {
     print('OrderId: ${widget.orderid}');
     super.initState();
     fetchData();
-    orderid = widget.orderid;
-    fetchorderproducts();
     getOrderDetails();
+    fetchorderproducts().then((value) {
+      setState(() {
+        isDataLoaded = true;
+      });
+    });
   }
-
   Future<void> getOrderDetails() async {
-    String apiUrl =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetOrderDetailsById/$orderid';
-
+    orderid = widget.orderid;
+    String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetOrderDetailsById/$orderid';
+    print("apiUrl====> ${apiUrl}");
     try {
       final apiData = await http.get(Uri.parse(apiUrl));
 
@@ -97,13 +96,13 @@ class _OrderdetailsPageState extends State<Orderdetails> {
         Map<String, dynamic> response = json.decode(apiData.body);
         if (response['isSuccess']) {
           // extracting the getOrderDetailsResult
-          List<dynamic> orderDetailsData =
-              response['response']['getOrderDetailsResult'];
+          List<dynamic> orderDetailsData = response['response']['getOrderDetailsResult'];
           List<GetOrderDetailsResult> getOrderDetailsListResult =
               orderDetailsData
                   .map((item) => GetOrderDetailsResult.fromJson(item))
                   .toList();
           orderDetails = List.from(getOrderDetailsListResult);
+          print("/*${orderDetails}");
           setState(() {
             partyname = getOrderDetailsListResult[0].partyName;
             partyaddress = getOrderDetailsListResult[0].partyAddress;
@@ -113,7 +112,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
             ordernumber = getOrderDetailsListResult[0].orderNumber;
             totalcost = getOrderDetailsListResult[0].totalCost;
           });
-
+          print("partyname====> ${partyname}");
           // extracting the orderItemXrefList
           List<dynamic> orderItemsData =
               response['response']['orderItemXrefList'];
@@ -134,6 +133,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
         print('else: api failed');
       }
     } catch (error) {
+      CommonUtils.showCustomToastMessageLong(
+          '$error', context, 1, 4);
       print('Error: $error');
     }
   }
@@ -147,8 +148,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
       final Map<String, dynamic> data = json.decode(response.body);
       List<Map<String, dynamic>> items = [];
       for (final item in data['response']['orderItemXrefList']) {
-        items.add({
-          'itemGrpName': item['itemGrpName'],
+        items.add({'itemGrpName': item['itemGrpName'],
           // Replace 'fieldX' with the actual field name you want to use
           // Add other fields as needed
         });
@@ -171,13 +171,11 @@ class _OrderdetailsPageState extends State<Orderdetails> {
       [
         widget.orderdate,
         widget.bookingplace,
-        widget.transportmode,
         widget.lrnumber
       ],
       [
         widget.totalprice,
         widget.transportmode,
-        widget.paymentmode,
         widget.lrdate
       ]
     ];
@@ -244,7 +242,9 @@ class _OrderdetailsPageState extends State<Orderdetails> {
     return Scaffold(
         appBar: _appBar(),
         body: SingleChildScrollView(
-            child: Column(
+        child: isDataLoaded
+        ? Column(
+
                 //mainAxisSize: MainAxisSize.min,
                 crossAxisAlignment: CrossAxisAlignment.start,
                 // Set mainAxisSize to min for intrinsic height
@@ -443,7 +443,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                               color: Colors.grey.shade500,
                             ),
                             children: [
-                              ...List.generate(4, (index) {
+                              ...List.generate(3, (index) {
                                 return TableRow(
                                   children: [
                                     TableCell(
@@ -745,7 +745,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                       ),
                     ),
                   )))
-            ])));
+            ])
+            : CircularProgressIndicator(), ));
   }
 
   AppBar _appBar() {

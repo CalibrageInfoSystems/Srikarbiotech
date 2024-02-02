@@ -840,11 +840,19 @@ class PlusMinusButtons extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Container(
-      width: MediaQuery.of(context).size.width / 2.4,
+      width: MediaQuery.of(context).size.width / 2.3,
       height: 38,
-      child: Card(
-        color: Colors.orange,
-        margin: EdgeInsets.symmetric(horizontal: .0),
+      decoration: BoxDecoration(
+        color: Color(0xFFe78337),
+        borderRadius:
+        BorderRadius.circular(
+            8.0),
+      ),
+      child:
+      Card(
+          color: Color(0xFFe78337),
+
+        margin: EdgeInsets.symmetric(horizontal: 0.0),
         child: Row(
           children: [
             IconButton(
@@ -852,7 +860,12 @@ class PlusMinusButtons extends StatelessWidget {
                 deleteQuantity();
                 _updateTextController();
               },
-              icon: const Icon(Icons.remove, color: Colors.white),
+              icon:  SvgPicture.asset(
+                'assets/minus-small.svg',  // Replace with the correct path to your SVG icon
+                color: Colors.white,
+                width: 20.0,
+                height: 20.0,
+              ),
             ),
             Expanded(
               child: Align(
@@ -893,7 +906,12 @@ class PlusMinusButtons extends StatelessWidget {
                 addQuantity();
                 _updateTextController();
               },
-              icon: const Icon(Icons.add, color: Colors.white),
+              icon: SvgPicture.asset(
+                'assets/plus-small.svg',  // Replace with the correct path to your SVG icon
+                color: Colors.white,
+                width: 20.0,
+                height: 20.0,
+              ),
             ),
           ],
 

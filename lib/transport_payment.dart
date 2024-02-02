@@ -147,12 +147,14 @@ class _transportstate extends State<transport_payment> {
                                             child: TextFormField(
                                               controller: bookingplacecontroller,
                                               keyboardType: TextInputType.name,
+                                              maxLength: 50,
                                               style: TextStyle(
                                                   color: Color(0xFFe78337),
                                                   fontFamily: 'Roboto',
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 14),
                                               decoration: InputDecoration(
+                                                counterText: '',
                                                 hintText: 'Enter Booking Place',
                                                 hintStyle: TextStyle(
                                                   fontSize: 14,
@@ -183,7 +185,7 @@ class _transportstate extends State<transport_payment> {
                                 padding: EdgeInsets.only(
                                     top: 0.0, left: 5.0, right: 0.0),
                                 child: Text(
-                                  'Preferable Transport',
+                                  'Transport Name',
                                   style: TextStyle(
                                     color: Color(0xFF5f5f5f),
                                     fontFamily: 'Roboto',
@@ -219,13 +221,15 @@ class _transportstate extends State<transport_payment> {
                                             child: TextFormField(
                                               controller: Parcelservicecontroller,
                                               keyboardType: TextInputType.name,
+                                              maxLength: 50,
                                               style: TextStyle(
                                                   color: Color(0xFFe78337),
                                                   fontFamily: 'Roboto',
                                                   fontWeight: FontWeight.w600,
                                                   fontSize: 14),
                                               decoration: InputDecoration(
-                                                hintText: 'Enter Parcel Service',
+                                                counterText: '',
+                                                hintText: 'Enter Transport Name',
                                                 hintStyle: TextStyle(
                                                   fontSize: 14,
                                                   fontFamily: 'Roboto',
@@ -263,22 +267,7 @@ class _transportstate extends State<transport_payment> {
               child: InkWell(
                 onTap: () {
                   // Add logic for the download button
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => Ordersubmit_screen(
-                        cardName: '${widget.cardName}',
-                        cardCode: '${widget.cardCode}',
-                        address: '${widget.address}',
-                        state: '${widget.state}',
-                        phone: '${widget.phone}',
-                        proprietorName: '${widget.proprietorName}',
-                        gstRegnNo: '${widget.gstRegnNo}',
-                        BookingPlace: bookingplacecontroller.text,
-                        TransportName: Parcelservicecontroller.text,
-                      ),
-                    ),
-                  );
+                  validate();
 
                   print(' button clicked');
                 },
@@ -307,5 +296,43 @@ class _transportstate extends State<transport_payment> {
         ),
       ),
     );
+  }
+
+  void validate() {
+    bool isValid = true;
+    bool hasValidationFailed = false;
+    if (isValid && bookingplacecontroller.text.isEmpty) {
+      CommonUtils.showCustomToastMessageLong(
+          'Please Enter Booking Place', context, 1, 4);
+      isValid = false;
+      hasValidationFailed = true;
+    }
+
+    if (isValid && Parcelservicecontroller.text.isEmpty) {
+      CommonUtils.showCustomToastMessageLong(
+          'Please Enter Transport Name', context, 1, 4);
+
+      isValid = false;
+      hasValidationFailed = true;
+    }
+    if (isValid) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+          builder: (context) =>
+              Ordersubmit_screen(
+                cardName: '${widget.cardName}',
+                cardCode: '${widget.cardCode}',
+                address: '${widget.address}',
+                state: '${widget.state}',
+                phone: '${widget.phone}',
+                proprietorName: '${widget.proprietorName}',
+                gstRegnNo: '${widget.gstRegnNo}',
+                BookingPlace: bookingplacecontroller.text,
+                TransportName: Parcelservicecontroller.text,
+              ),
+        ),
+      );
+    }
   }
 }

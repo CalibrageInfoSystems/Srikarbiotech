@@ -55,28 +55,40 @@ class Selectparty_screen extends State<Selectpartyscreen> {
   }
 
   Future<void> fetchData() async {
-    final apiUrl = baseUrl+GetAllDealersBySlpCode+ '$CompneyId' +"/" +'$slpCode';
-    print("apiUrl: ${apiUrl}");
-    final response = await http.get(
-      Uri.parse(apiUrl),
-    );
-
-    if (response.statusCode == 200) {
-      final Map<String, dynamic> data = json.decode(response.body);
-      final List<dynamic> listResult = data['response']['listResult'];
-
+    try {
       setState(() {
-        dealers = listResult.map((json) => Dealer.fromJson(json)).toList();
-        filteredDealers = List.from(dealers);
+        _isLoading = true;
       });
 
+      final apiUrl = baseUrl + GetAllDealersBySlpCode + '$CompneyId' + "/" + '$slpCode';
+      print("apiUrl: ${apiUrl}");
 
-    } else {
-      throw Exception('Failed to load data');
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(response.body);
+        final List<dynamic> listResult = data['response']['listResult'];
+
+        setState(() {
+          dealers = listResult.map((json) => Dealer.fromJson(json)).toList();
+          filteredDealers = List.from(dealers);
+        });
+
+        setState(() {
+          _isLoading = false;
+        });
+      } else {
+        throw Exception('Failed to load data. Status Code: ${response.statusCode}');
+      }
+    } catch (e) {
+      // Handle exceptions here
+      print('Error in fetchData: $e');
+      setState(() {
+        _isLoading = false;
+      });
     }
+  }
 
-
-}
   @override
   Widget build(BuildContext context) {
 
@@ -179,7 +191,10 @@ class Selectparty_screen extends State<Selectpartyscreen> {
           ),
           // Add Expanded around the ListView.builder
           Expanded(
-            child: ListView.builder(
+            child: _isLoading
+                ? Center(
+              child: CircularProgressIndicator(),
+            ): ListView.builder(
               itemCount: filteredDealers.length,
               itemBuilder: (context, index) {
                 return GestureDetector(

@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'package:provider/provider.dart';
 import 'package:srikarbiotech/vieworders_provider.dart';
 import 'Common/CommonUtils.dart';
+import 'Common/SharedPrefsData.dart';
 import 'HomeScreen.dart';
 import 'OrctResponse.dart';
 import 'OrderResponse.dart';
@@ -48,9 +49,10 @@ class _VieworderPageState extends State<ViewOrders> {
 
   TextEditingController searchController = TextEditingController();
 
-  late Future<List<OrderResult>> apiData;
+  late  Future<List<OrderResult>?> apiData;
 
   late ViewOrdersProvider viewOrdersProvider;
+  int CompneyId = 0;
   @override
   void initState() {
     super.initState();
@@ -67,7 +69,7 @@ class _VieworderPageState extends State<ViewOrders> {
     apiData = getorder();
     apiData.then((data) {
       setState(() {
-        viewOrdersProvider.storeIntoViewOrderProvider(data);
+        viewOrdersProvider.storeIntoViewOrderProvider(data!);
       });
     }).catchError((error) {
       print('Error initializing data: $error');
@@ -75,8 +77,37 @@ class _VieworderPageState extends State<ViewOrders> {
   }
 
   Future<List<OrderResult>> getorder() async {
-    final response = await http.get(Uri.parse(url));
+    DateTime currentDate = DateTime.now();
 
+    // Get one week back date
+    DateTime oneWeekBackDate = currentDate.subtract(Duration(days: 7));
+
+    // Format dates as 'yyyy-MM-dd'
+    String formattedCurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
+    String formattedOneWeekBackDate = DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
+    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+
+      final url = Uri.parse(
+          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
+      final requestBody = {
+        "PartyCode":null, //selectedValue
+        "StatusId": 2,
+        "FormDate": formattedOneWeekBackDate,
+        "ToDate": formattedCurrentDate,
+        "CompanyId": CompneyId // passing 0
+      };
+      print('===========>${jsonEncode(requestBody)}');
+
+
+
+
+      final response = await http.post(
+      url,
+      body: json.encode(requestBody),
+      headers: {
+        'Content-Type': 'application/json',
+      },
+    );
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
       final List<dynamic> listResult = data['response']['listResult'];
@@ -92,12 +123,13 @@ class _VieworderPageState extends State<ViewOrders> {
     } else {
       throw Exception('Failed to load data');
     }
+
   }
 
   void filterOrderBasedOnProduct(String input) {
     apiData.then((data) {
       setState(() {
-        viewOrdersProvider.storeIntoViewOrderProvider(data
+        viewOrdersProvider.storeIntoViewOrderProvider(data!
             .where((item) =>
                 item.partyName.toLowerCase().contains(input.toLowerCase()))
             .toList());
@@ -149,127 +181,13 @@ class _VieworderPageState extends State<ViewOrders> {
                           // Change this to the number of static items you want
                           itemBuilder: (context, index) {
                             OrderResult orderresul = data[index];
-                            List<String> staticPartyNames = [
-                              'Calibrage Info System Pvt Ltd',
-                              'AMC Enterprisese',
-                              'In Rthym solutions',
-                              'Isha Enterprise',
-                              'Manya Enterprise',
-                              'Sudha rani Enterprise',
-                            ];
-                            List<String> staticdates = [
-                              '9 Jan,2023',
-                              '8 feb,2023',
-                              '8 April,2023',
-                              '8 May,2023',
-                              '8 Decemeber,2023',
-                              '8 October,2023',
-                              // Add more names as needed
-                            ];
-                            List<String> lrdates = [
-                              '9-2-2023',
-                              '8-09-2023',
-                              '8-06-2023',
-                              '8-02-2023',
-                              '8-11-2023',
-                              '8-5-2023',
-                              // Add more names as needed
-                            ];
-                            List<String> status = [
-                              'Pending',
-                              'Shipped',
-                              'Delivered',
-                              'Partially Shipped',
-                              'Rejected',
-                              'Pending',
-                              // Add more names as needed
-                            ];
-                            List<String> paymode = [
-                              'Online',
-                              'Cheque',
-                              'UPI',
-                              'Cheque',
-                              'Cheque',
-                              'Online',
-                              // Add more names as needed
-                            ];
-                            List<String> staticOrderIds = [
-                              '638468486486486',
-                              '123456789',
-                              '987654321',
-                              '4586842684',
-                              '65432154846',
-                              '9367468476',
-
-                              // Add more order IDs as needed
-                            ];
-                            List<String> bookingplace = [
-                              'Hyderabad',
-                              'chennai',
-                              'Pune',
-                              'Banglore',
-                              'Goa',
-                              'Ayyodha',
-
-                              // Add more order IDs as needed
-                            ];
-                            List<String> transportplace = [
-                              'Road',
-                              'Road',
-                              'Road',
-                              'Fly',
-                              'Fly',
-                              'Train',
-
-                              // Add more order IDs as needed
-                            ];
-                            List<double> staticprice = [
-                              550.0,
-                              858.0,
-                              415.0,
-                              104.0,
-                              476.3,
-                              5295.2
-                            ];
-                            List<int> lrnumber = [62, 81, 48, 10, 46, 52];
-                            List<int> staticNumberOfItems = [
-                              6,
-                              8,
-                              4,
-                              10,
-                              47,
-                              52
-                            ]; // Add more values as needed
+                            print('orderdate======>,${data[index].orderDate}');
                             // String fromatteddates = orderresul.orderDate;
-                            String fromatteddates =
-                                DateFormat('dd-mm-yyyy').format(
-                              DateTime.parse(data[index].orderDate),
-                            );
-                            // String fromatteddates =
-                            //     DateFormat('dd-MM-yyyy').format(orderresul.orderDate);
-                            // Use the static names based on the index
-                            // String partyName = staticPartyNames[
-                            //     index % staticPartyNames.length];
-                            // String orderId =
-                            //     staticOrderIds[index % staticOrderIds.length];
-                            // int numberOfItems = staticNumberOfItems[
-                            //     index % staticNumberOfItems.length];
-                            int lrnum =
-                                lrnumber[index % staticNumberOfItems.length];
+                            String dateString =data[index].orderDate;
+                            DateTime date = DateTime.parse(dateString);
+                            String formattedDate = DateFormat('dd MMM, yyyy').format(date);
 
-                            // String statusnames =
-                            //     status[index % staticNumberOfItems.length];
-                            // String booking = bookingplace[
-                            //     index % staticNumberOfItems.length];
-                            // String transport = transportplace[
-                            //     index % staticNumberOfItems.length];
-                            // double price =
-                            //     staticprice[index % staticNumberOfItems.length];
 
-                            String lrDates =
-                                lrdates[index % staticNumberOfItems.length];
-                            String paymentMode =
-                                paymode[index % staticNumberOfItems.length];
 
                             return GestureDetector(
                               onTap: () {
@@ -277,16 +195,12 @@ class _VieworderPageState extends State<ViewOrders> {
                                   MaterialPageRoute(
                                     builder: (context) => Orderdetails(
                                         orderid: data[index].id,
-                                        orderdate: fromatteddates,
+                                        orderdate: formattedDate,
                                         totalprice: data[index].totalCost,
                                         bookingplace: data[index].bookingPlace,
-                                        preferabletransport:
-                                            data[index].transportName,
-                                        lrnumber: lrnum,
-                                        lrdate: lrDates,
-                                        paymentmode: paymentMode,
-                                        transportmode:
-                                            data[index].transportName,
+                                        transportmode: data[index].transportName,
+                                        lrnumber: 12345,
+                                        lrdate: "",
                                         statusname: data[index].statusName,
                                         partyname: data[index].partyName,
                                         partycode: data[index].partyCode,
@@ -580,7 +494,7 @@ class _VieworderPageState extends State<ViewOrders> {
                                                               FontWeight.w400),
                                                     ),
                                                     Text(
-                                                      "$fromatteddates",
+                                                      "$formattedDate",
                                                       style: TextStyle(
                                                           fontFamily: 'Roboto',
                                                           fontSize: 13,

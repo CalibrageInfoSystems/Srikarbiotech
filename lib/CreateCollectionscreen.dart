@@ -19,6 +19,7 @@ import 'Common/CommonUtils.dart';
 import 'Common/SharedPrefsData.dart';
 import 'HomeScreen.dart';
 import 'OrctResponse.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class CreateCollectionscreen extends StatefulWidget {
   final String cardName;
@@ -248,8 +249,8 @@ getshareddata();
                                     textAlign: TextAlign.start,
                                   ),
                                 ),
-                                //  SizedBox(height: 8.0),
-                                SizedBox(height: 4.0),
+                                SizedBox(height: 8.0),
+
                                 GestureDetector(
                                   onTap: () {
                                     // Handle the click event for the second text view
@@ -259,7 +260,7 @@ getshareddata();
                                     width: MediaQuery.of(context).size.width,
                                     height: 55.0,
                                     decoration: BoxDecoration(
-                                      borderRadius: BorderRadius.circular(5.0),
+                                      borderRadius: BorderRadius.circular(8.0),
                                       border: Border.all(
                                         color: Color(0xFFe78337),
                                         width: 1,
@@ -275,8 +276,7 @@ getshareddata();
                                                   left: 10.0, top: 0.0),
                                               child: TextFormField(
                                                 controller: Amounttext,
-                                                keyboardType:
-                                                    TextInputType.number,
+                                                keyboardType: TextInputType.number,
                                                 maxLength: 10,
                                                 style: TextStyle(
                                                   fontSize: 14,
@@ -309,7 +309,7 @@ getshareddata();
                           SizedBox(height: 5.0),
                           Padding(
                             padding: EdgeInsets.only(
-                                top: 10.0, left: 0.0, right: 0.0),
+                                top: 10.0, left: 5.0, right: 0.0),
                             child: Text(
                               'Payment Mode * ',
                               style: TextStyle(
@@ -321,11 +321,11 @@ getshareddata();
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(height: 2.0),
+                          SizedBox(height: 5.0),
 
 
                           Container(
-                            height: 45,
+                            height: 40,
                             // child: Expanded(
                             child: apiResponse == null
                                 ? Center(child: CircularProgressIndicator())
@@ -389,7 +389,7 @@ getshareddata();
                                               width: 1,
                                             ),
                                             borderRadius:
-                                                BorderRadius.circular(5.0),
+                                                BorderRadius.circular(8.0),
                                           ),
                                           child: IntrinsicWidth(
                                             child: Column(
@@ -398,13 +398,13 @@ getshareddata();
                                               children: [
                                                 Container(
                                                   padding: EdgeInsets.symmetric(
-                                                      horizontal: 5.0),
+                                                      horizontal: 10.0),
                                                   child: Row(
                                                     children: [
                                                       SvgPicture.asset(
                                                         iconData,
-                                                        height: 20,
-                                                        width: 20,
+                                                        height: 18,
+                                                        width: 18,
                                                         fit: BoxFit.fitWidth,
                                                         color: isSelected
                                                             ? Colors.white
@@ -412,7 +412,7 @@ getshareddata();
                                                       ),
                                                       SizedBox(
                                                           width:
-                                                              4.0), // Add some spacing between icon and text
+                                                              8.0), // Add some spacing between icon and text
                                                       Text(
                                                         '${currentPaymode.desc.toString()}',
                                                         style: TextStyle(
@@ -432,11 +432,13 @@ getshareddata();
                                     },
                                   ),
                           ),
+                       //   SizedBox(height: 5.0),
+
                           Visibility(
                               visible: Selected_PaymentMode == 'Online',
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                    top: 10.0, left: 0.0, right: 0.0),
+                                    top: 15.0, left: 0.0, right: 0.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -453,7 +455,7 @@ getshareddata();
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
-                                    SizedBox(height: 4.0),
+                                    SizedBox(height: 8.0),
                                     GestureDetector(
                                       onTap: () {
                                         // Handle the click event for the second text view
@@ -465,7 +467,7 @@ getshareddata();
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(5.0),
+                                          BorderRadius.circular(8.0),
                                           border: Border.all(
                                             color: Color(0xFFe78337),
                                             width: 1,
@@ -513,12 +515,12 @@ getshareddata();
                                   ],
                                 ),
                               )),
-                          // SizedBox(height: 5.0),
+                      //  SizedBox(height: 5.0),
                           Visibility(
                               visible: Selected_PaymentMode == 'Online',
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                    top: 10.0, left: 0.0, right: 0.0),
+                                    top: 15.0, left: 0.0, right: 0.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -535,7 +537,7 @@ getshareddata();
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
-                                    SizedBox(height: 4.0),
+                                    SizedBox(height: 8.0),
                                     GestureDetector(
                                       onTap: () {
                                         // Handle the click event for the second text view
@@ -547,7 +549,7 @@ getshareddata();
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(5.0),
+                                          BorderRadius.circular(8.0),
                                           border: Border.all(
                                             color: Color(0xFFe78337),
                                             width: 1,
@@ -595,12 +597,12 @@ getshareddata();
                                   ],
                                 ),
                               )),
-                          // SizedBox(height: 5.0),
+                         //  SizedBox(height: 5.0),
                           Visibility(
                               visible: Selected_PaymentMode == 'Online',
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                    top: 10.0, left: 0.0, right: 0.0),
+                                    top: 15.0, left: 0.0, right: 0.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -618,7 +620,7 @@ getshareddata();
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
-                                    SizedBox(height: 5.0),
+                                    SizedBox(height: 8.0),
                                     GestureDetector(
                                       onTap: () {
                                         // Handle the click event for the second text view
@@ -630,7 +632,7 @@ getshareddata();
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(5.0),
+                                          BorderRadius.circular(8.0),
                                           border: Border.all(
                                             color: Color(0xFFe78337),
                                             width: 1,
@@ -679,18 +681,18 @@ getshareddata();
                                 ),
                               )),
                           //   ),
-                        //  SizedBox(height: 5.0),
+                       //  SizedBox(height: 5.0),
                           Visibility(
                               visible: Selected_PaymentMode == 'Cheque',
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                    top: 10.0, left: 0.0, right: 0.0),
+                                    top: 15.0, left: 0.0, right: 0.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Padding(
                                       padding: EdgeInsets.only(
-                                          top: 0.0, left: 0.0, right: 0.0),
+                                          top: 0.0, left: 5.0, right: 0.0),
                                       child: Text(
                                         'Check Number',
                                         style: TextStyle(
@@ -701,7 +703,7 @@ getshareddata();
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
-                                    SizedBox(height: 4.0),
+                                    SizedBox(height: 8.0),
                                     GestureDetector(
                                       onTap: () {
                                         // Handle the click event for the second text view
@@ -713,7 +715,7 @@ getshareddata();
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(5.0),
+                                              BorderRadius.circular(8.0),
                                           border: Border.all(
                                             color: Color(0xFFe78337),
                                             width: 1,
@@ -763,11 +765,12 @@ getshareddata();
                                 ),
                               )),
                           // Check Number
+                      //    SizedBox(height: 5.0),
 
                           Visibility(
                             visible: Selected_PaymentMode == 'Cheque',
                             child: Padding(
-                              padding: EdgeInsets.only(top: 10.0, bottom: 0.0), // Adjust the padding as needed
+                              padding: EdgeInsets.only(top: 15.0, bottom: 0.0), // Adjust the padding as needed
                               child: buildDateInput(
                                 context,
                                 'Check Date *',
@@ -777,12 +780,12 @@ getshareddata();
                             ),
                           ),
 
-                          // SizedBox(height: 5.0),
+                       //  SizedBox(height: 5.0),
                           Visibility(
                               visible: Selected_PaymentMode == 'Cheque',
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                    top: 10.0, left: 0.0, right: 0.0),
+                                    top: 15.0, left: 0.0, right: 0.0,bottom: 5.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -800,7 +803,7 @@ getshareddata();
                                       ),
                                     ),
                                     //  SizedBox(height: 8.0),
-                                    SizedBox(height: 4.0),
+                                    SizedBox(height: 8.0),
                                     GestureDetector(
                                       onTap: () {
                                         // Handle the click event for the second text view
@@ -812,7 +815,7 @@ getshareddata();
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(5.0),
+                                              BorderRadius.circular(8.0),
                                           border: Border.all(
                                             color: Color(0xFFe78337),
                                             width: 1,
@@ -860,14 +863,14 @@ getshareddata();
                                   ],
                                 ),
                               )),
-                          // SizedBox(height: 5.0),
+
 
                           // Download and Share buttons
 
                           // Purpose
                           Padding(
                             padding: EdgeInsets.only(
-                                top: 10.0, left: 0.0, right: 0.0),
+                                top: 10.0, left: 5.0, right: 0.0),
                             child: Text(
                               'Purpose *',
                               style: TextStyle(
@@ -878,7 +881,7 @@ getshareddata();
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(height: 4.0),
+                          SizedBox(height: 8.0),
                           GestureDetector(
                             onTap: () {
                               // Handle the click event for the container
@@ -888,7 +891,7 @@ getshareddata();
                                 width: MediaQuery.of(context).size.width,
                                 height: 55.0,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderRadius: BorderRadius.circular(8.0),
                                   border: Border.all(
                                     color: Color(0xFFe78337),
                                     width: 1,
@@ -897,8 +900,10 @@ getshareddata();
                                 child: Padding(
                                   padding: EdgeInsets.all(8.0),
                                   child: purposeList.isEmpty
-                                      ? CircularProgressIndicator
-                                          .adaptive() // Show a loading indicator
+                                      ? LoadingAnimationWidget.newtonCradle(
+                                    color: Colors.blue, // Set the color as needed
+                                    size: 40.0,
+                                  ) // Show a loading indicator
                                       : DropdownButton<String>(
                                           hint: Text(
                                             'Select Purpose',
@@ -956,14 +961,15 @@ getshareddata();
                                           isExpanded: true,
                                           underline: SizedBox(),
                                         ),
-                                )),
+                                )
+                            ),
                           ),
 
-                          SizedBox(height: 4.0),
+                          SizedBox(height: 5.0),
 
                           Padding(
                             padding: EdgeInsets.only(
-                                top: 0.0, left: 0.0, right: 0.0),
+                                top: 10.0, left: 5.0, right: 0.0),
                             child: Text(
                               'Category * ',
                               style: TextStyle(
@@ -974,7 +980,7 @@ getshareddata();
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(height: 4.0),
+                          SizedBox(height: 8.0),
                           GestureDetector(
                             onTap: () {
                               // Handle the click event for the container
@@ -984,7 +990,7 @@ getshareddata();
                                 width: MediaQuery.of(context).size.width,
                                 height: 55.0,
                                 decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(5.0),
+                                  borderRadius: BorderRadius.circular(8.0),
                                   border: Border.all(
                                     color: Color(0xFFe78337),
                                     width: 1,
@@ -994,7 +1000,10 @@ getshareddata();
                                   padding: EdgeInsets.all(
                                       8.0), // Adjust the padding as needed
                                   child: itemGroups.isEmpty
-                                      ? CircularProgressIndicator() // Show a loading indicator
+                                      ?  LoadingAnimationWidget.newtonCradle(
+                                  color: Colors.blue, // Set the color as needed
+                                  size: 40.0,
+                                ) // S // Show a loading indicator
                                       : DropdownButton<String>(
                                           hint: Text(
                                             'Select Category',
@@ -1051,6 +1060,7 @@ getshareddata();
                                         ),
                                 )),
                           ),
+                          SizedBox(height: 5.0),
                           Padding(
                             padding: EdgeInsets.only(
                                 top: 10.0, left: 0.0, right: 0.0),
@@ -1064,7 +1074,7 @@ getshareddata();
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(height: 4.0),
+                          SizedBox(height: 8.0),
                           if (_imageFile == null)
                           GestureDetector(
                             onTap: () {
@@ -1074,7 +1084,7 @@ getshareddata();
                             child: Container(
                               width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(5.0),
+                                borderRadius: BorderRadius.circular(8.0),
                               ),
                               padding: EdgeInsets.all(0.0),
                               child: DottedBorder(
@@ -1209,6 +1219,8 @@ getshareddata();
                           Container(
                             padding: const EdgeInsets.all(10),
                             width: double.infinity,
+                            height: 50,
+                            margin: const EdgeInsets.symmetric(vertical: 15),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: isButtonEnabled ? Color(0xFFe78337) : Colors.grey, // Change color based on button state
@@ -1216,7 +1228,7 @@ getshareddata();
                             child: GestureDetector(
                               onTap: isButtonEnabled ? () => AddUpdateCollections(context) : null,
                               child: Container(
-                                padding: const EdgeInsets.all(10),
+
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
@@ -1304,7 +1316,7 @@ getshareddata();
     else if (Selected_PaymentMode == 'Cheque') {
       if (isValid && checknumbercontroller.text.isEmpty) {
         CommonUtils.showCustomToastMessageLong(
-            'Please Enter check Number', context, 1, 6);
+            'Please Enter Check Number', context, 1, 6);
 
         isValid = false;
         hasValidationFailed = true;
@@ -1490,7 +1502,7 @@ getshareddata();
             width: MediaQuery.of(context).size.width,
             height: 55.0,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(5.0),
+              borderRadius: BorderRadius.circular(8.0),
               border: Border.all(
                 color: Color(0xFFe78337),
                 width: 1,

@@ -51,6 +51,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
     // ['Date', 'Payment Mode', 'Cheque Date', 'Purpose', '']
   ];
   int CompneyId = 0;
+  String checkdate = "";
   @override
   void initState() {
     super.initState();
@@ -65,11 +66,21 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
   Widget build(BuildContext context) {
   //  final arguments = ModalRoute.of(context)?.settings?.arguments as ListResult;
     String dateString = widget.listResult.date;
+
     DateTime date = DateTime.parse(dateString);
     String formattedDate = DateFormat('dd-MM-yyyy').format(date);
     String checkdateString = widget.listResult.checkDate;
-    DateTime date2 = DateTime.parse(checkdateString);
-    String checkdate = DateFormat('dd-MM-yyyy').format(date2);
+    String checkdate = '';
+
+    if (checkdateString != null) {
+      try {
+        DateTime date2 = DateTime.parse(checkdateString);
+        checkdate = DateFormat('dd-MM-yyyy').format(date2);
+      } catch (e) {
+        print('Error parsing date: $e');
+        // Handle the error as needed, e.g., set a default date or display an error message
+      }
+    }
     List tableCellValues = [
 
       [

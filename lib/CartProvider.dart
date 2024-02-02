@@ -96,5 +96,12 @@ class CartProvider extends ChangeNotifier {
     // Check if the newItemGrpCod is the same as the itemGrpCod of the first item in the cart
     return cartItems.first.itemGrpCod == newItemGrpCod;
   }
-
+// Inside CartProvider class
+  bool isItemInCart(OrderItemXrefType orderItem) {
+    // Implement the logic to check if the item is in the cart
+    // This could involve checking the list of items in the cart.
+    // Return true if the item is in the cart, false otherwise.
+    // Example:
+    return cartItems.contains(orderItem);
+  }
 }
