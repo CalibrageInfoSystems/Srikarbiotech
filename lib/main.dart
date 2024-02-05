@@ -8,6 +8,8 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
 import 'package:srikarbiotech/vieworders_provider.dart';
+import 'package:srikarbiotech/viewreturnorders_provider.dart';
+
 
 import 'CartProvider.dart';
 import 'Common/Constants.dart';
@@ -25,6 +27,7 @@ void main() {
         ChangeNotifierProvider(create: (context) => CartProvider()),
         ChangeNotifierProvider(create: (context) => ViewCollectionProvider()),
         ChangeNotifierProvider(create: (context) => ViewOrdersProvider()),
+        ChangeNotifierProvider(create: (context) => ViewReturnOrdersProvider()),
       ],
       child: MyApp(),
     ),

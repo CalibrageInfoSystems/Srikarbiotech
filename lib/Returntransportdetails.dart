@@ -4,12 +4,17 @@ import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'dart:convert';
 import 'dart:io';
 
+import 'Common/SharedPrefsData.dart';
+import 'HomeScreen.dart';
 import 'ReturnOrdersubmit_screen.dart';
 class Returntransportdetails extends StatefulWidget {
   final String cardName;
@@ -19,10 +24,13 @@ class Returntransportdetails extends StatefulWidget {
   final String gstRegnNo;
   final String state;
   final String phone;
+  final double creditLine;
+  final double balance;
 
   Returntransportdetails(
   {required this.cardName, required this.cardCode, required this.address, required  this.state, required  this.phone,
-  required  this.proprietorName, required  this.gstRegnNo});
+  required  this.proprietorName, required  this.gstRegnNo, required this.creditLine,
+    required this.balance});
 
   @override
   State<Returntransportdetails> createState() => _createreturnorderPageState();
@@ -44,45 +52,76 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
   String fileExtensionaddlattchments = '';
   String base64Imageaddlattchments = '';
   File? _imageFileaddlattchments;
-  TextEditingController _leavetext = TextEditingController();
+  TextEditingController remarkstext = TextEditingController();
   TextEditingController DateController = TextEditingController();
+
+  TextEditingController LRNumberController = TextEditingController();
   DateTime selectedDate = DateTime.now();
+  int CompneyId = 0;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFe78337),
+      appBar:
+      AppBar(
+        backgroundColor: const Color(0xFFe78337),
         automaticallyImplyLeading: false,
-        elevation: 5,
+        // This line removes the default back arrow
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Row(
               children: [
                 Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
                       Navigator.of(context).pop();
                     },
-                    child: Icon(
+                    child: const Icon(
                       Icons.chevron_left,
                       size: 30.0,
                       color: Colors.white,
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
-                Text(
-                  'My Orders',
+                const SizedBox(width: 8.0),
+                const Text(
+                  'Transport Details',
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
                   ),
                 ),
               ],
+            ),
+            FutureBuilder(
+              future: getshareddata(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  // Access the companyId after shared data is retrieved
+
+                  return GestureDetector(
+                    onTap: () {
+                      // Handle the click event for the home icon
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    },
+                    child: Image.asset(
+                      CompneyId == 1
+                          ? 'assets/srikar-home-icon.png'
+                          : 'assets/seeds-home-icon.png',
+                      width: 30,
+                      height: 30,
+                    ),
+                  );
+                } else {
+                  // Return a placeholder or loading indicator
+                  return SizedBox.shrink();
+                }
+              },
             ),
           ],
         ),
@@ -104,11 +143,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                         EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
                         child: Text(
                           'LR Number',
-                          style: TextStyle(
-                            fontSize: 12.0,
-                            color: Color(0xFF5f5f5f),
-                            fontWeight: FontWeight.bold,
-                          ),
+                          style: CommonUtils.Mediumtext_12,
                           textAlign: TextAlign.start,
                         ),
                       ),
@@ -123,10 +158,10 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                           width: MediaQuery.of(context).size.width,
                           height: 55.0,
                           decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(12.0),
+                            borderRadius: BorderRadius.circular(8.0),
                             border: Border.all(
                               color: Color(0xFFe78337),
-                              width: 2,
+                              width: 1,
                             ),
                           ),
                           child: Row(
@@ -138,19 +173,14 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                     padding:
                                     EdgeInsets.only(left: 10.0, top: 0.0),
                                     child: TextFormField(
+                                      controller: LRNumberController,
                                       keyboardType: TextInputType.name,
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        fontWeight: FontWeight.w300,
-                                      ),
+                                      maxLength: 100,
+                                      style:CommonUtils.Mediumtext_o_14,
                                       decoration: InputDecoration(
+                                        counterText: '',
                                         hintText: 'Enter LR Number',
-                                        hintStyle: TextStyle(
-                                          fontSize: 14,
-                                          fontFamily: 'Roboto-Bold',
-                                          fontWeight: FontWeight.w500,
-                                          color: Color(0xFFC4C2C2),
-                                        ),
+                                        hintStyle: CommonUtils.hintstyle_o_14,
                                         border: InputBorder.none,
                                       ),
                                     ),
@@ -185,11 +215,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                 top: 5.0, left: 5.0, right: 0.0),
                             child: Text(
                               'Remarks',
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Color(0xFF5f5f5f),
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: CommonUtils.Mediumtext_12,
                               textAlign: TextAlign.start,
                             ),
                           ),
@@ -198,27 +224,20 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                             width: MediaQuery.of(context).size.width,
                             decoration: BoxDecoration(
                               border: Border.all(
-                                  color: Color(0xFFe78337), width: 1.5),
-                              borderRadius: BorderRadius.circular(12.0),
+                                  color: Color(0xFFe78337), width: 1),
+                              borderRadius: BorderRadius.circular(8.0),
                               color: Colors.white,
                             ),
                             child: TextFormField(
-                              controller: _leavetext,
-                              style: TextStyle(
-                                fontFamily: 'Calibri',
-                                fontSize: 14,
-                                fontWeight: FontWeight.w300,
-                              ),
+                              controller: remarkstext,
+                              maxLength: 100,
+                              style: CommonUtils.Mediumtext_o_14,
                               maxLines:
                               null, // Set maxLines to null for multiline input
                               decoration: InputDecoration(
+                                counterText: '',
                                 hintText: 'Enter Return Order remarks',
-                                hintStyle: TextStyle(
-                                  color: Colors.black26,
-                                  fontSize: 12,
-                                  fontWeight: FontWeight.bold,
-                                  fontFamily: 'Calibri',
-                                ),
+                                hintStyle:CommonUtils.hintstyle_o_14,
                                 contentPadding: EdgeInsets.symmetric(
                                   horizontal: 10.0,
                                   vertical: 0.0,
@@ -230,452 +249,430 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                         ],
                       )),
                 ),
-                SizedBox(height: 10.0),
 
-
-
-
-          GestureDetector(
-            onTap: () {
-              // here
-              showBottomSheetForImageSelection(context);
-            },
-            child: Container(
-              width: MediaQuery.of(context).size.width,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(12.0),
-              ),
-              padding: EdgeInsets.all(0.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding:
-                    EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
-                    child: Text(
-                      'LR Attachment',
-                      style: TextStyle(
-                        fontSize: 12.0,
-                        color: Color(0xFF5f5f5f),
-                        fontWeight: FontWeight.bold,
-                      ),
-                      textAlign: TextAlign.start,
-                    ),
-                  ),
-                  SizedBox(height: 4.0),
-                  Container(
-                    padding: EdgeInsets.only(left: 15.0,right: 15.0),
-                    child: DottedBorder(
-                      borderType: BorderType.RRect,
-                      color: Color(0xFFe78337),
-                      padding: const EdgeInsets.only(top: 0, bottom: 0.0),
-                      strokeWidth: 2,
-                      child: Container(
-
-                        width: MediaQuery.of(context).size.width,
-                        padding: EdgeInsets.all(10.0),
-
-                        decoration: BoxDecoration(
-                          color: Color(0xFFffeee0),
-
+                Padding(
+                  padding: EdgeInsets.only(left: 15, top: 10.0, right: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(left: 5.0), // Add left padding to move the text 20 pixels left
+                        child: Text(
+                          'LR Attachment *',
+                          style: CommonUtils.Mediumtext_12,
+                          textAlign: TextAlign.start,
                         ),
-                        child: Column(
+                      ),
+                      SizedBox(height: 10.0),
+                      if (_imageFile == null)
+                        GestureDetector(
+                          onTap: () {
+                            // here
+                            showBottomSheetForImageSelection(context);
+                          },
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(12.0),
+                            ),
+                            padding: EdgeInsets.all(0.0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Container(
 
-                          children: [
-                            Container(
-                              padding: const EdgeInsets.all(6),
-                              // margin: const EdgeInsets.only(bottom: 5),
+                                  child: DottedBorder(
+                                    borderType: BorderType.RRect,
+                                    color: Color(0xFFe78337),
+                                    padding: const EdgeInsets.only(top: 0, bottom: 0.0),
+                                    strokeWidth: 2,
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      padding: EdgeInsets.all(10.0),
+                                      decoration: BoxDecoration(
+                                        color: Color(0xFFffeee0),
+                                      ),
+                                      child: Column(
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets.all(6),
+                                            decoration: BoxDecoration(
+                                              color: Color(0xFFe78337),
+                                              borderRadius: BorderRadius.circular(10),
+                                            ),
+                                            child: const Icon(
+                                              Icons.folder_rounded,
+                                              color: Colors.black,
+                                            ),
+                                          ),
+                                          SizedBox(
+                                            height: 4.0,
+                                          ),
+                                          Text(
+                                            'Choose file to upload',
+                                            style: TextStyle(
+                                              fontSize: 14,
+                                              color: Color(0xFFe78337),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                          const Text(
+                                            'Supported formats: jpg, png',
+                                            style: TextStyle(
+                                              fontSize: 10,
+                                              color: Color(0xFF414141),
+                                              fontWeight: FontWeight.bold,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+
+
+
+                      GestureDetector(
+                        onTap: () {
+                          // Handle tap on uploaded image to show in a popup
+                          if (_imageFile != null) {
+                            _showImagePopup(context, _imageFile!);
+                          }
+                        },
+                        child: SizedBox(
+                          width: _imageFile != null
+                              ? MediaQuery.of(context).size.width
+                              : MediaQuery.of(context).size.width,
+                          height: _imageFile != null ? 100 : 0,
+                          child: Stack(
+                            alignment: Alignment.topRight,
+                            children: [
+                              _imageFile != null
+                                  ? Image.file(
+                                _imageFile!,
+                                width: MediaQuery.of(context).size.width,
+                                fit: BoxFit.fitWidth,
+                              )
+                                  : Image.asset(
+                                'assets/shopping_bag.png',
+                                width: MediaQuery.of(context).size.width,
+                                fit: BoxFit.fitWidth,
+                              ),
+                              if (_imageFile != null)
+                                GestureDetector(
+                                  onTap: () {
+                                    // Handle tap on cross mark icon (optional)
+                                    setState(() {
+                                      _imageFile =
+                                      null; // Set _imageFile to null to remove the image
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(5.0),
+                                    margin: EdgeInsets.only(top: 5, right: 10.0),
+                                    color: HexColor('#ffeee0'), // Optional overlay color
+                                    child: SvgPicture.asset(
+                                      'assets/crosscircle.svg',
+                                      color: Color(0xFFe78337),
+                                      width: 24.0, // Set the width as needed
+                                      height: 24.0, // Set the height as needed
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
+
+
+
+                Padding(
+                  padding: EdgeInsets.only(left: 15, top: 10.0, right: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Return Order Receipt *',
+                        style: CommonUtils.Mediumtext_12,
+                        textAlign: TextAlign.start,
+                      ),
+                      SizedBox(height: 10.0),
+                      if (_imageFileorderreciept == null)
+                        Padding(
+                          padding: EdgeInsets.only(left: 5.0), // Add left padding
+                          child: GestureDetector(
+                            onTap: () {
+                              // here
+                              showBottomSheetForImageSelectionordereceipt(context);
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
                               decoration: BoxDecoration(
-                                color: Color(0xFFe78337),
-                                borderRadius: BorderRadius.circular(10),
+                                borderRadius: BorderRadius.circular(12.0),
                               ),
-                              child: const Icon(
-                                Icons.folder_rounded,
-                                color: Colors.black,
+                              padding: EdgeInsets.all(0.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+
+                                    child: DottedBorder(
+                                      borderType: BorderType.RRect,
+                                      color: Color(0xFFe78337),
+                                      padding: const EdgeInsets.only(top: 0, bottom: 0.0),
+                                      strokeWidth: 2,
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        padding: EdgeInsets.all(10.0),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFffeee0),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(6),
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFFe78337),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: const Icon(
+                                                Icons.folder_rounded,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 4.0,
+                                            ),
+                                            Text(
+                                              'Choose file to upload',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Color(0xFFe78337),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const Text(
+                                              'Supported formats: jpg,png',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                color: Color(0xFF414141),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ),
-                            SizedBox(
-                              height: 4.0,
-                            ),
-                            Text(
-                              'Choose file to upload',
-                              style: TextStyle(
-                                fontSize: 14,
-                                color: Color(0xFFe78337),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                            const Text(
-                              'Supported formats: jpg,png',
-                              style: TextStyle(
-                                fontSize: 10,
-                                color: Color(0xFF414141),
-                                fontWeight: FontWeight.bold,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ),
-                    ) ,
-                  )
-                 
-                ],
-              )
-
-            ),
-          ),
-          SizedBox(height: 10.0),
-
-
-          GestureDetector(
-            onTap: () {
-              // Handle tap on uploaded image to remove it
-              setState(() {
-                _imageFile =
-                null; // Set _imageFile to null to remove the image
-              });
-            },
-            child: SizedBox(
-              width: _imageFile != null
-                  ? MediaQuery.of(context).size.width
-                  : MediaQuery.of(context).size.width,
-              height: _imageFile != null ? 100 : 0,
-              child: Stack(
-                alignment: Alignment.topRight,
-                // Align cross mark icon to the top right
-                children: [
-                  _imageFile != null
-                      ? Image.file(
-                    _imageFile!,
-                    width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.fitWidth,
-                  )
-                      : Image.asset(
-                    'assets/shopping_bag.png',
-                    width: MediaQuery.of(context).size.width,
-                    fit: BoxFit.fitWidth,
-                  ),
-                  if (_imageFile != null)
-                    GestureDetector(
-                      onTap: () {
-                        // Handle tap on cross mark icon (optional)
-                        setState(() {
-                          _imageFile = null; // Set _imageFile to null to remove the image
-                        });
-                      },
-                      child: Container(
-                        padding: EdgeInsets.all(5.0),
-                        margin:
-                        EdgeInsets.only(top: 5, right: 10.0),
-                        color: Color(0xFFffeee0), // Optional overlay color
-                        child: SvgPicture.asset(
-                          'assets/crosscircle.svg',
-                          color: Color(0xFFe78337),
-                          width: 24.0, // Set the width as needed
-                          height: 24.0, // Set the height as needed
-                        ),
-                      ),
-                    ),
-                ],
-              ),
-            ),
-          ),
-
-
-
-                GestureDetector(
-                  onTap: () {
-                    // here
-                    showBottomSheetForImageSelectionordereceipt(context);
-                  },
-                  child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      padding: EdgeInsets.all(0.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding:
-                            EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
-                            child: Text(
-                              'Return Order Receipt',
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Color(0xFF5f5f5f),
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(height: 4.0),
-                          Container(
-                            padding: EdgeInsets.only(left: 15.0,right: 15.0),
-                            child: DottedBorder(
-                              borderType: BorderType.RRect,
-                              color: Color(0xFFe78337),
-                              padding: const EdgeInsets.only(top: 0, bottom: 0.0),
-                              strokeWidth: 2,
-                              child: Container(
-
+                        ),
+                      // SizedBox(height: 10.0),
+                      GestureDetector(
+                        onTap: () {
+                          // Handle tap on uploaded image to show in a popup
+                          if (_imageFileorderreciept != null) {
+                            _showImagePopup(context, _imageFileorderreciept!);
+                          }
+                        },
+                        child: SizedBox(
+                          width: _imageFileorderreciept != null
+                              ? MediaQuery.of(context).size.width
+                              : MediaQuery.of(context).size.width,
+                          height: _imageFileorderreciept != null ? 100 : 0,
+                          child: Stack(
+                            alignment: Alignment.topRight,
+                            children: [
+                              _imageFileorderreciept != null
+                                  ? Image.file(
+                                _imageFileorderreciept!,
                                 width: MediaQuery.of(context).size.width,
-                                padding: EdgeInsets.all(10.0),
-
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFffeee0),
-
-                                ),
-                                child: Column(
-
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(6),
-                                      // margin: const EdgeInsets.only(bottom: 5),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFe78337),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: const Icon(
-                                        Icons.folder_rounded,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 4.0,
-                                    ),
-                                    Text(
-                                      'Choose file to upload',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Color(0xFFe78337),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const Text(
-                                      'Supported formats: jpg,png',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Color(0xFF414141),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
+                                fit: BoxFit.fitWidth,
+                              )
+                                  : Image.asset(
+                                'assets/shopping_bag.png',
+                                width: MediaQuery.of(context).size.width,
+                                fit: BoxFit.fitWidth,
                               ),
-                            ) ,
-                          )
+                              if (_imageFileorderreciept != null)
+                                GestureDetector(
+                                  onTap: () {
+                                    // Handle tap on cross mark icon (optional)
+                                    setState(() {
+                                      _imageFileorderreciept =
+                                      null; // Set _imageFileOrderReceipt to null to remove the image
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(5.0),
+                                    margin: EdgeInsets.only(top: 5, right: 10.0),
+                                    color: HexColor('#ffeee0'), // Optional overlay color
+                                    child: SvgPicture.asset(
+                                      'assets/crosscircle.svg',
+                                      color: Color(0xFFe78337),
+                                      width: 24.0, // Set the width as needed
+                                      height: 24.0, // Set the height as needed
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                ),
 
-                        ],
-                      )
 
+                Padding(
+                  padding: EdgeInsets.only(left: 15, top: 10.0, right: 15),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Text(
+                        'Addl. Attachments',
+                        style: CommonUtils.Mediumtext_12,
+                        textAlign: TextAlign.start,
+                      ),
+                      SizedBox(height: 10.0),
+                      if (_imageFileaddlattchments == null)
+                        Padding(
+                          padding: EdgeInsets.only(left: 5.0), // Add left padding
+                          child: GestureDetector(
+                            onTap: () {
+                              // here
+                              showBottomSheetForImageSelectionaddlattachment(context);
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(12.0),
+                              ),
+                              padding: EdgeInsets.all(0.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+
+                                    child: DottedBorder(
+                                      borderType: BorderType.RRect,
+                                      color: Color(0xFFe78337),
+                                      padding: const EdgeInsets.only(top: 0, bottom: 0.0),
+                                      strokeWidth: 2,
+                                      child: Container(
+                                        width: MediaQuery.of(context).size.width,
+                                        padding: EdgeInsets.all(10.0),
+                                        decoration: BoxDecoration(
+                                          color: Color(0xFFffeee0),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(6),
+                                              decoration: BoxDecoration(
+                                                color: Color(0xFFe78337),
+                                                borderRadius: BorderRadius.circular(10),
+                                              ),
+                                              child: const Icon(
+                                                Icons.folder_rounded,
+                                                color: Colors.black,
+                                              ),
+                                            ),
+                                            SizedBox(
+                                              height: 4.0,
+                                            ),
+                                            Text(
+                                              'Choose file to upload',
+                                              style: TextStyle(
+                                                fontSize: 14,
+                                                color: Color(0xFFe78337),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                            const Text(
+                                              'Supported formats: jpg, png',
+                                              style: TextStyle(
+                                                fontSize: 10,
+                                                color: Color(0xFF414141),
+                                                fontWeight: FontWeight.bold,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ),
+
+                      GestureDetector(
+                        onTap: () {
+                          // Handle tap on uploaded image to show in a popup
+                          if (_imageFileaddlattchments != null) {
+                            _showImagePopup(context, _imageFileaddlattchments!);
+                          }
+                        },
+                        child: SizedBox(
+                          width: _imageFileaddlattchments != null
+                              ? MediaQuery.of(context).size.width
+                              : MediaQuery.of(context).size.width,
+                          height: _imageFileaddlattchments != null ? 100 : 0,
+                          child: Stack(
+                            alignment: Alignment.topRight,
+                            children: [
+                              _imageFileaddlattchments != null
+                                  ? Image.file(
+                                _imageFileaddlattchments!,
+                                width: MediaQuery.of(context).size.width,
+                                fit: BoxFit.fitWidth,
+                              )
+                                  : Image.asset(
+                                'assets/shopping_bag.png',
+                                width: MediaQuery.of(context).size.width,
+                                fit: BoxFit.fitWidth,
+                              ),
+                              if (_imageFileaddlattchments != null)
+                                GestureDetector(
+                                  onTap: () {
+                                    // Handle tap on cross mark icon (optional)
+                                    setState(() {
+                                      _imageFileaddlattchments =
+                                      null; // Set _imageFileOrderReceipt to null to remove the image
+                                    });
+                                  },
+                                  child: Container(
+                                    padding: EdgeInsets.all(5.0),
+                                    margin: EdgeInsets.only(top: 5, right: 10.0),
+                                    color: HexColor('#ffeee0'), // Optional overlay color
+                                    child: SvgPicture.asset(
+                                      'assets/crosscircle.svg',
+                                      color: Color(0xFFe78337),
+                                      width: 24.0, // Set the width as needed
+                                      height: 24.0, // Set the height as needed
+                                    ),
+                                  ),
+                                ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ],
                   ),
                 ),
                 SizedBox(height: 10.0),
-
-
-                GestureDetector(
-                  onTap: () {
-                    // Handle tap on uploaded image to remove it
-                    setState(() {
-                      _imageFileorderreciept =
-                      null; // Set _imageFile to null to remove the image
-                    });
-                  },
-                  child: SizedBox(
-                    width: _imageFileorderreciept != null
-                        ? MediaQuery.of(context).size.width
-                        : MediaQuery.of(context).size.width,
-                    height: _imageFileorderreciept != null ? 100 : 0,
-                    child: Stack(
-                      alignment: Alignment.topRight,
-                      // Align cross mark icon to the top right
-                      children: [
-                        _imageFileorderreciept != null
-                            ? Image.file(
-                          _imageFileorderreciept!,
-                          width: MediaQuery.of(context).size.width,
-                          fit: BoxFit.fitWidth,
-                        )
-                            : Image.asset(
-                          'assets/shopping_bag.png',
-                          width: MediaQuery.of(context).size.width,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        if (_imageFileorderreciept != null)
-                          GestureDetector(
-                            onTap: () {
-                              // Handle tap on cross mark icon (optional)
-                              setState(() {
-                                _imageFileorderreciept = null; // Set _imageFile to null to remove the image
-                              });
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(5.0),
-                              margin:
-                              EdgeInsets.only(top: 5, right: 10.0),
-                              color: Color(0xFFffeee0), // Optional overlay color
-                              child: SvgPicture.asset(
-                                'assets/crosscircle.svg',
-                                color: Color(0xFFe78337),
-                                width: 24.0, // Set the width as needed
-                                height: 24.0, // Set the height as needed
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-
-
-                GestureDetector(
-                  onTap: () {
-                    // here
-                    showBottomSheetForImageSelectionaddlattachment(context);
-                  },
-                  child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.0),
-                      ),
-                      padding: EdgeInsets.all(0.0),
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding:
-                            EdgeInsets.only(top: 10.0, left: 15.0, right: 15.0),
-                            child: Text(
-                              'Addl. Attachments',
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Color(0xFF5f5f5f),
-                                fontWeight: FontWeight.bold,
-                              ),
-                              textAlign: TextAlign.start,
-                            ),
-                          ),
-                          SizedBox(height: 4.0),
-                          Container(
-                            padding: EdgeInsets.only(left: 15.0,right: 15.0),
-                            child: DottedBorder(
-                              borderType: BorderType.RRect,
-                              color: Color(0xFFe78337),
-                              padding: const EdgeInsets.only(top: 0, bottom: 0.0),
-                              strokeWidth: 2,
-                              child: Container(
-
-                                width: MediaQuery.of(context).size.width,
-                                padding: EdgeInsets.all(10.0),
-
-                                decoration: BoxDecoration(
-                                  color: Color(0xFFffeee0),
-
-                                ),
-                                child: Column(
-
-                                  children: [
-                                    Container(
-                                      padding: const EdgeInsets.all(6),
-                                      // margin: const EdgeInsets.only(bottom: 5),
-                                      decoration: BoxDecoration(
-                                        color: Color(0xFFe78337),
-                                        borderRadius: BorderRadius.circular(10),
-                                      ),
-                                      child: const Icon(
-                                        Icons.folder_rounded,
-                                        color: Colors.black,
-                                      ),
-                                    ),
-                                    SizedBox(
-                                      height: 4.0,
-                                    ),
-                                    Text(
-                                      'Choose file to upload',
-                                      style: TextStyle(
-                                        fontSize: 14,
-                                        color: Color(0xFFe78337),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                    const Text(
-                                      'Supported formats: jpg,png',
-                                      style: TextStyle(
-                                        fontSize: 10,
-                                        color: Color(0xFF414141),
-                                        fontWeight: FontWeight.bold,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ) ,
-                          )
-
-                        ],
-                      )
-
-                  ),
-                ),
-                SizedBox(height: 10.0),
-
-
-                GestureDetector(
-                  onTap: () {
-                    // Handle tap on uploaded image to remove it
-                    setState(() {
-                      _imageFileaddlattchments =
-                      null; // Set _imageFile to null to remove the image
-                    });
-                  },
-                  child: SizedBox(
-                    width: _imageFileaddlattchments != null
-                        ? MediaQuery.of(context).size.width
-                        : MediaQuery.of(context).size.width,
-                    height: _imageFileaddlattchments != null ? 100 : 0,
-                    child: Stack(
-                      alignment: Alignment.topRight,
-                      // Align cross mark icon to the top right
-                      children: [
-                        _imageFileaddlattchments != null
-                            ? Image.file(
-                          _imageFileaddlattchments!,
-                          width: MediaQuery.of(context).size.width,
-                          fit: BoxFit.fitWidth,
-                        )
-                            : Image.asset(
-                          'assets/shopping_bag.png',
-                          width: MediaQuery.of(context).size.width,
-                          fit: BoxFit.fitWidth,
-                        ),
-                        if (_imageFileaddlattchments != null)
-                          GestureDetector(
-                            onTap: () {
-                              // Handle tap on cross mark icon (optional)
-                              setState(() {
-                                _imageFileaddlattchments = null; // Set _imageFile to null to remove the image
-                              });
-                            },
-                            child: Container(
-                              padding: EdgeInsets.all(5.0),
-                              margin:
-                              EdgeInsets.only(top: 5, right: 10.0),
-                              color: Color(0xFFffeee0), // Optional overlay color
-                              child: SvgPicture.asset(
-                                'assets/crosscircle.svg',
-                                color: Color(0xFFe78337),
-                                width: 24.0, // Set the width as needed
-                                height: 24.0, // Set the height as needed
-                              ),
-                            ),
-                          ),
-                      ],
-                    ),
-                  ),
-                ),
-
               ],
             ),
           ),
@@ -701,20 +698,11 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
             height: 55.0,
             child: Center(
               child: GestureDetector(
+
+
                 onTap: () {
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => ReturnOrdersubmit_screen(
-                          cardName: '${widget.cardName}',
-                          cardCode:'${widget.cardCode}',
-                          address: '${widget.address}',
-                          state:'${widget.state}',
-                          phone: '${widget.phone}',
-                          proprietorName: '${widget.proprietorName}',
-                          gstRegnNo: '${widget.gstRegnNo}'),
-                    ),
-                  );
+                  validate(context);
+
                 },
                 child: Container(
                   // width: desiredWidth * 0.9,
@@ -969,6 +957,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       Navigator.pop(context);
     }
   }
+
   static Widget buildDateInput(
       BuildContext context,
       String labelText,
@@ -979,28 +968,27 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 5.0, left: 0.0, right: 0.0),
+          padding: EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
           child: Text(
             labelText,
-            style: TextStyle(
-              fontSize: 12.0,
-              color: Color(0xFF5f5f5f),
-              fontWeight: FontWeight.bold,
-            ),
+            style: CommonUtils.Mediumtext_12,
             textAlign: TextAlign.start,
           ),
         ),
-        SizedBox(height: 8.0), // Add space between labelText and TextFormField
+        SizedBox(height: 8.0),
         GestureDetector(
-          onTap: onTap,
+          onTap: () async {
+            // Call the onTap callback to open the date picker
+            onTap();
+          },
           child: Container(
             width: MediaQuery.of(context).size.width,
             height: 55.0,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(8.0),
               border: Border.all(
                 color: Color(0xFFe78337),
-                width: 2,
+                width: 1,
               ),
             ),
             child: Row(
@@ -1010,35 +998,40 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                     alignment: Alignment.centerLeft,
                     child: Padding(
                       padding: EdgeInsets.only(left: 10.0, top: 0.0),
-                      child: TextFormField(
-                        controller: controller,
-                        style: TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFFe78337),
-                        ),
-                        decoration: InputDecoration(
-                          hintText: labelText,
-                          hintStyle: TextStyle(
+                      child: IgnorePointer(
+                        child: TextFormField(
+                          controller: controller,
+                          style: TextStyle(
                             fontSize: 14,
                             fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w500,
+                            fontWeight: FontWeight.w600,
                             color: Color(0xFFe78337),
                           ),
-                          border: InputBorder.none,
+                          decoration: InputDecoration(
+                            hintText: labelText,
+                            hintStyle: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              fontWeight: FontWeight.w700,
+                              color: Color(0xa0e78337),
+                            ),
+                            border: InputBorder.none,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
                 InkWell(
-                  onTap: onTap,
+                  onTap: () async {
+                    // Call the onTap callback to open the date picker
+                    onTap();
+                  },
                   child: Padding(
                     padding: EdgeInsets.all(10.0),
                     child: Icon(
                       Icons.calendar_today,
-                      color: Color(0xFFe78337),
+                      color: Colors.orange,
                     ),
                   ),
                 ),
@@ -1049,7 +1042,6 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       ],
     );
   }
-
   Future<void> _selectDate(
       BuildContext context,
       TextEditingController controller,
@@ -1069,9 +1061,11 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       initialDate = currentDate;
     }
 
+
     try {
       DateTime? picked = await showDatePicker(
         context: context,
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: initialDate,
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
@@ -1083,16 +1077,116 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
 
         // Save selected dates as DateTime objects
         selectedDate = picked;
-        print("Selected  Date: $selectedDate");
+        print("Selected Date: $selectedDate");
 
         // Print formatted date
-        print("Selected  Date: ${DateFormat('yyyy-MM-dd').format(picked)}");
+        print("Selected Date: ${DateFormat('yyyy-MM-dd').format(picked)}");
       }
     } catch (e) {
       print("Error selecting date: $e");
       // Handle the error, e.g., show a message to the user or log it.
     }
   }
+
+  void _showImagePopup(BuildContext context, File imageFile) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => _buildImagePopup(imageFile),
+      ),
+    );
+  }
+
+  Widget _buildImagePopup(File imageFile) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFFe78337),
+        automaticallyImplyLeading: false,
+        title: Text("Attached Image"),
+      ),
+      body: Container(
+        child: PhotoView(
+          imageProvider: FileImage(imageFile),
+          minScale: PhotoViewComputedScale.contained,
+          maxScale: PhotoViewComputedScale.covered * 2,
+          enableRotation: true,
+        ),
+      ),
+    );
+  }
+
+  Future<void> getshareddata() async {
+    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+
+    print('Company ID: $CompneyId');
+
+  }
+
+  void validate(BuildContext context) {
+    bool isValid = true;
+    bool hasValidationFailed = false;
+    if (isValid && LRNumberController.text.isEmpty) {
+      CommonUtils.showCustomToastMessageLong(
+          'Please Enter LR Number', context, 1, 4);
+      isValid = false;
+      hasValidationFailed = true;
+    }
+
+    if (isValid && DateController.text.isEmpty) {
+      CommonUtils.showCustomToastMessageLong(
+          'Please Enter LR Date', context, 1, 4);
+
+      isValid = false;
+      hasValidationFailed = true;
+    }
+    if (isValid && remarkstext.text.isEmpty) {
+      CommonUtils.showCustomToastMessageLong(
+          'Please Enter Return Order remarks', context, 1, 4);
+      isValid = false;
+      hasValidationFailed = true;
+    }
+    if (isValid && _imageFile == null){
+
+      CommonUtils.showCustomToastMessageLong(
+          'Please Upload LR Attachment', context, 1, 6);
+
+      isValid = false;
+      hasValidationFailed = true;
+    }
+    if (isValid && _imageFileorderreciept == null){
+
+      CommonUtils.showCustomToastMessageLong(
+          'Please Upload Return Order Receipt ', context, 1, 6);
+
+      isValid = false;
+      hasValidationFailed = true;
+    }
+    if (isValid) {
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                ReturnOrdersubmit_screen(
+                    cardName: '${widget.cardName}',
+                    cardCode: '${widget.cardCode}',
+                    address: '${widget.address}',
+                    state: '${widget.state}',
+                    phone: '${widget.phone}',
+                    proprietorName: '${widget.proprietorName}',
+                    gstRegnNo: '${widget.gstRegnNo}',
+                    LrNumber: LRNumberController.text,
+                    Lrdate :  DateController.text,
+                    Remarks : remarkstext.text,
+                    LRAttachment: base64Image,
+                    ReturnOrderReceipt :base64Imageorderreciept,
+                    addlattchments: base64Imageaddlattchments,
+                  creditLine: double.parse('${widget.creditLine}'), // Convert to double
+                  balance: double.parse('${widget.balance}'),)
+
+        ),
+      );
+    }
+  }
+
 }
 
 // enum ImageSource {

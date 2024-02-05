@@ -7,6 +7,7 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
 
@@ -17,6 +18,7 @@ import 'HomeScreen.dart';
 import 'Model/card_collection.dart';
 import 'OrctResponse.dart';
 import 'Payment_model.dart';
+import 'Services/api_config.dart';
 import 'ViewCollectionProvider.dart';
 
 class ViewCollectionPage extends StatefulWidget {
@@ -54,6 +56,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   List<ListResult> filteredData = [];
   late ViewCollectionProvider viewProvider;
   int CompneyId = 0;
+  String? slpCode = "";
   @override
   void initState() {
     super.initState();
@@ -82,15 +85,10 @@ initializeData();
 
   Future<List<ListResult>> getCollection() async {
     DateTime currentDate = DateTime.now();
-
-    // Get one week back date
     DateTime oneWeekBackDate = currentDate.subtract(Duration(days: 7));
-
-    // Format dates as 'yyyy-MM-dd'
     String formattedCurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
     String formattedOneWeekBackDate = DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-
 
     try {
       final url = Uri.parse(
@@ -113,13 +111,20 @@ initializeData();
         },
       );
 
-
       if (response.statusCode == 200) {
         Map<String, dynamic> json = jsonDecode(response.body);
-        List<dynamic> listResult = json['response']['listResult'];
-        List<ListResult> result =
-            listResult.map((element) => ListResult.fromJson(element)).toList();
-        return result;
+
+        if (json['response']['listResult'] != null) {
+          List<dynamic> listResult = json['response']['listResult'];
+          List<ListResult> result =
+          listResult.map((element) => ListResult.fromJson(element)).toList();
+          return result;
+        } else {
+          print('listResult is null.');
+          // Handle the case where "listResult" is null.
+          // You can return an empty list or handle it based on your application's requirements.
+          return [];
+        }
       } else {
         throw Exception('Error occurred');
       }
@@ -200,7 +205,8 @@ initializeData();
   }
 
   PreferredSizeWidget _viewCollectionAppBar() {
-    return AppBar(
+    return
+      AppBar(
       backgroundColor: const Color(0xFFe78337),
       automaticallyImplyLeading: false,
       // This line removes the default back arrow
@@ -374,7 +380,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   int? payid;
   late String selectedName;
   ApiResponse? apiResponse;
-  int indexselected = -1;
+  int indexselected = 0;
   String? Selected_PaymentMode = "";
   TextEditingController todateController = TextEditingController();
   TextEditingController fromdateController = TextEditingController();
@@ -384,10 +390,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   String? selectedPurpose, selectformattedfromdate, selectformattedtodate;
   Purpose? selectedPurposeObj; // Declare it globally
   String purposename = '';
-  int? savedCompanyId = 1;
-
+  int? savedCompanyId = 0;
+  String? slpCode = "";
   @override
   void initState() {
+    todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    DateTime oneWeekAgo = DateTime.now().subtract(Duration(days: 7));
+    fromdateController.text = DateFormat('dd-MM-yyyy').format(oneWeekAgo);
     fetchData();
     getpaymentmethods();
     fetchdropdownitems();
@@ -395,8 +404,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> fetchdropdownitems() async {
-    const apiUrl =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/1';
+
+    savedCompanyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    final apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'+'$savedCompanyId';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -683,9 +693,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> fetchData() async {
-    final response = await http.get(Uri.parse(
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetAllDealersBySlpCode/1/100'));
+    slpCode= await SharedPrefsData.getStringFromSharedPrefs("slpCode");
+    savedCompanyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    final response = await http.get(Uri.parse(baseUrl + GetAllDealersBySlpCode + '$savedCompanyId' + "/" + '$slpCode'));
 
+   // print("apiUrl: ${apiUrl}");
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body);
 
@@ -829,8 +841,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   child: Padding(
                     padding: const EdgeInsets.all(8.0),
                     child: purposeList.isEmpty
-                        ? const CircularProgressIndicator
-                            .adaptive() // Show a loading indicator
+                        ? LoadingAnimationWidget.newtonCradle(
+                      color: Colors.blue, // Set the color as needed
+                      size: 40.0,
+                    ) // S // Show a loading indicator
                         : DropdownButton<String>(
                             hint: const Text(
                               'Select Purpose',
@@ -883,102 +897,85 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           const SizedBox(
             height: 10.0,
           ),
-          SizedBox(
+          Container(
             height: 40,
-            child: Container(
-              child: apiResponse == null
-                  ? const Center(child: CircularProgressIndicator.adaptive())
-                  : ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      itemCount: apiResponse!.listResult.length,
-                      itemBuilder: (BuildContext context, int index) {
-                        bool isSelected = index == indexselected;
-                        PaymentMode currentPaymode = apiResponse!.listResult[
-                            index]; // Store the current paymode in a local variable
+            child: apiResponse == null
+                ? Center(child: CircularProgressIndicator.adaptive())
+                : ListView.builder(
+              scrollDirection: Axis.horizontal,
+              shrinkWrap: true,
+              itemCount: apiResponse!.listResult.length + 1, // Add 1 for the "All" option
+              itemBuilder: (BuildContext context, int index) {
+                bool isSelected = index == indexselected;
+                PaymentMode currentPaymode;
 
-                        switch (currentPaymode.desc) {
-                          case 'Cheque':
-                            // iconData = Icons.payment;
-                            break;
-                          case 'Online':
-                            //   iconData = Icons.access_alarm;
-                            break;
-                          case 'UPI':
-                            //   iconData = Icons.payment;
-                            break;
-                          // Add more cases as needed
-                          default:
-                            //   iconData = Icons.payment; // Default icon
-                            break;
-                        }
+                // Handle the "All" option
+                if (index == 0) {
+                  currentPaymode = PaymentMode(
+                    // Provide default values or handle the null case as needed
+                    typeCdId: null,
+                    classTypeId: 3,
+                    name: 'All',
+                    desc: 'All',
+                    tableName: 'all',
+                    columnName: 'all',
+                    sortOrder: 0,
+                    isActive: true,
+                  );
+                } else {
+                  currentPaymode =
+                  apiResponse!.listResult[index - 1]; // Adjust index for actual data
+                }
 
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              indexselected = index;
-                              selectedPaymode =
-                                  currentPaymode; // Update the selectedPaymode outside the build method
-                            });
-                            payid = currentPaymode.typeCdId;
-                            Selected_PaymentMode = currentPaymode.desc;
-                            print('payid:$payid');
-                            print(
-                                'Selected Payment Mode: ${currentPaymode.desc}, TypeCdId: $payid');
-                            print(
-                                'Selected Payment Mode: $Selected_PaymentMode, TypeCdId: $payid');
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                            decoration: BoxDecoration(
-                              color: isSelected
-                                  ? const Color(0xFFe78337)
-                                  : const Color(0xFFe78337).withOpacity(0.1),
-                              border: Border.all(
-                                color: isSelected
-                                    ? const Color(0xFFe78337)
-                                    : const Color(0xFFe78337),
-                                width: 1.0,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: IntrinsicWidth(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10.0),
-                                    child: Row(
-                                      children: [
-                                        // Icon(
-                                        //   iconData, // Use the dynamically determined icon
-                                        //   color: isSelected
-                                        //       ? Colors.white
-                                        //       : Colors.black,
-                                        // ),
-                                        // SizedBox(
-                                        //     width:
-                                        //         8.0), // Add some spacing between icon and text
-                                        Text(
-                                          currentPaymode.desc.toString(),
-                                          style: TextStyle(
-                                            color: isSelected
-                                                ? Colors.white
-                                                : Colors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                return GestureDetector(
+                  onTap: () {
+                    setState(() {
+                      indexselected = index;
+                      selectedPaymode = currentPaymode;
+                    });
+                    payid = currentPaymode.typeCdId;
+                    Selected_PaymentMode = currentPaymode.desc;
+                    print('payid:$payid');
+                  },
+                  child: Container(
+                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                    decoration: BoxDecoration(
+                      color: isSelected
+                          ? Color(0xFFe78337)
+                          : Color(0xFFe78337).withOpacity(0.1),
+                      border: Border.all(
+                        color: isSelected ? Color(0xFFe78337) : Color(0xFFe78337),
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: IntrinsicWidth(
+                      child: Column(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                            child: Row(
+                              children: [
+                                Text(
+                                  '${currentPaymode.desc.toString()}',
+                                  style: TextStyle(
+                                    color: isSelected ? Colors.white : Colors.black,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
                           ),
-                        );
-                      },
+                        ],
+                      ),
                     ),
+                  ),
+                );
+              },
             ),
           ),
+
+
 
           const SizedBox(
             height: 10.0,
@@ -1087,6 +1084,16 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
 // x000
   Future<void> getappliedflitters(BuildContext context) async {
+
+    DateTime todate = DateFormat('dd-MM-yyyy').parse(todateController.text);
+    selectformattedtodate = DateFormat('yyyy-MM-dd').format(todate);
+
+// Convert the fromdateController text to 'yyyy-MM-dd'
+    DateTime pickedFromDate = DateFormat('dd-MM-yyyy').parse(fromdateController.text);
+     selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
+    print('Converted to date: $selectformattedtodate');
+    print('Converted from date: $selectformattedfromdate');
+
     try {
       final url = Uri.parse(
           'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollectionsbyMobileSearch');
@@ -1119,6 +1126,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             viewProvider.storeIntoProvider(result);
           } else {
             print('listResult is null');
+            List<ListResult> emptyList = [];
+            viewProvider.storeIntoProvider(emptyList);
+            CommonUtils.showCustomToastMessageLong('No collection found!', context, 2, 2);
           }
         } else {
           print('Request failed: ${jsonResponse['endUserMessage']}');

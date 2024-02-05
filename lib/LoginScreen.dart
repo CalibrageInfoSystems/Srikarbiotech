@@ -81,10 +81,10 @@ class _MyHomePageState extends State<LoginScreen> {
             alignment: FractionalOffset.bottomCenter,
             child: Padding(
               padding:
-                  const EdgeInsets.only(left: 22.0, right: 22.0, bottom: 20.0),
+                  const EdgeInsets.only(left: 22.0, right: 22.0, bottom: 15.0),
               // Adjust the padding as needed
               child: Container(
-                height: MediaQuery.of(context).size.height / 2,
+                height: MediaQuery.of(context).size.height / 1.9,
                 width: MediaQuery.of(context).size.width,
                 child: Card(
                   shape: RoundedRectangleBorder(
@@ -113,7 +113,7 @@ class _MyHomePageState extends State<LoginScreen> {
                       ),                SizedBox(height: 10.0),
                       Text(
                         'Enter your credentials to continue',
-    style: CommonUtils.Mediumtext_14
+              style: CommonUtils.Mediumtext_14
 
                       ),
                       Padding(
@@ -277,6 +277,7 @@ class _MyHomePageState extends State<LoginScreen> {
                           ],
                         ),
                       ),
+                      SizedBox(height: 5.0),
                       Column(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
@@ -285,7 +286,7 @@ class _MyHomePageState extends State<LoginScreen> {
                                 top: 8.0, left: 30.0, right: 30.0),
                             child: Container(
                               width: MediaQuery.of(context).size.width,
-                              height: 55.0,
+                              height: 45.0,
                               child: Center(
                                 child: GestureDetector(
                                   onTap: () {
@@ -293,7 +294,7 @@ class _MyHomePageState extends State<LoginScreen> {
                                   },
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
-                                    height: 55.0,
+                                    height: 45.0,
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(6.0),
                                       color: Color(0xFFe78337),
@@ -379,7 +380,7 @@ class _MyHomePageState extends State<LoginScreen> {
     };
 
     if (emailController.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong('Please Enter Username', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong('Please Enter Email/Username', context, 1, 4);
       return;
     }
     if (passwordController.text.isEmpty) {

@@ -1,11 +1,21 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
+import 'package:provider/provider.dart';
+import 'package:srikarbiotech/Common/CommonUtils.dart';
+import 'package:srikarbiotech/OrctResponse.dart';
+import 'package:srikarbiotech/Payment_model.dart';
+import 'package:srikarbiotech/viewreturnorders_provider.dart';
+
 
 import 'HomeScreen.dart';
+import 'Model/returnorders_model.dart';
 import 'ReturnOrderDetailsPage.dart';
 import 'ViewOrders.dart';
-
 
 class ViewReturnorder extends StatefulWidget {
   const ViewReturnorder({super.key});
@@ -31,7 +41,6 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
       border: Border.all(
         color: HexColor('#e58338'),
       ));
-
   final List<String> orderStatusList = [
     'Shipped',
     'Pending',
@@ -41,149 +50,260 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
     'Shipped',
     'Delivered',
   ];
+  late Future<List<ReturnOrdersList>> apiData;
+  late ViewReturnOrdersProvider returnOrdersProvider;
+  @override
+  void initState() {
+    super.initState();
+    initializeApiData();
+  }
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    returnOrdersProvider = Provider.of<ViewReturnOrdersProvider>(context);
+  }
+
+  void initializeApiData() {
+    apiData = getReturnOrderApi();
+    apiData.then((data) {
+      setState(() {
+        returnOrdersProvider.storeIntoReturnOrdersProvider(data);
+      });
+    }).catchError((error) {
+      print('Error initializing data: $error');
+    });
+  }
+
+  Future<List<ReturnOrdersList>> getReturnOrderApi() async {
+    final url = Uri.parse(
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetAppReturnOrdersBySearch');
+    try {
+      final requestBody = {
+        "PartyCode": null,
+        "StatusId": null,
+        "FormDate": "2023-12-01",
+        "ToDate": "2024-02-05",
+        "CompanyId": 1
+      };
+      final response = await http.post(
+        url,
+        body: json.encode(requestBody),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        if (jsonResponse['isSuccess']) {
+          List<dynamic> data = jsonResponse['response']['listResult'];
+          List<ReturnOrdersList> result =
+          data.map((item) => ReturnOrdersList.fromJson(item)).toList();
+          returnOrdersProvider.storeIntoReturnOrdersProvider(result);
+          return result;
+        } else {
+          List<ReturnOrdersList> emptyList = [];
+          returnOrdersProvider.storeIntoReturnOrdersProvider(emptyList);
+          return emptyList;
+        }
+      } else {
+        print(
+            'Failed to send the request. Status code: ${response.statusCode}');
+        throw Exception(
+            'Failed to send the request. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+      throw Exception('Error: $e');
+    }
+  }
+
+// search
+  filterRecordsBasedOnPartyName(String input) {
+    apiData.then((data) {
+      setState(() {
+        returnOrdersProvider.storeIntoReturnOrdersProvider(data
+            .where((item) =>
+            item.partyName.toLowerCase().contains(input.toLowerCase()))
+            .toList());
+      });
+    });
+  }
 
   @override
   Widget build(BuildContext context) {
-    return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFe78337),
-        automaticallyImplyLeading: false,
-        elevation: 5,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                  child: GestureDetector(
-                    onTap: () {
-                      // Handle the click event for the back button
-                      Navigator.of(context).pop();
-                    },
-                    child: Icon(
-                      Icons.chevron_left,
-                      size: 30.0,
-                      color: Colors.white,
+    return Consumer<ViewReturnOrdersProvider>(
+      builder: (context, viewReturnOrdersProvider, _) => Scaffold(
+        appBar: _appBar(),
+        body: FutureBuilder(
+            future: apiData,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(
+                    child: CircularProgressIndicator.adaptive());
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error occurred: ${snapshot.error}'),
+                );
+              } else {
+                if (snapshot.hasData) {
+                  // List<ListResult> data = snapshot.data!;
+                  List<ReturnOrdersList> data =
+                      viewReturnOrdersProvider.returnOrdersProviderData;
+                  return Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _searchBarAndFilter(),
+                        if (viewReturnOrdersProvider
+                            .returnOrdersProviderData.isNotEmpty)
+                        // card items
+                          Expanded(
+                            child: ListView.builder(
+                              itemCount: data.length,
+                              itemBuilder: (context, index) {
+                                return ReturnCarditem(
+                                  index: index,
+                                  data: data[index],
+                                );
+                              },
+                            ),
+                          )
+                        else
+                          noCollectionText(),
+                      ],
                     ),
-                  ),
-                ),
-                SizedBox(width: 8.0),
-                Text(
-                  'My Return Orders',
-                  style: TextStyle(
+                  );
+                } else {
+                  return const Center(
+                    child: Text('No data available'),
+                  );
+                }
+              }
+            }),
+      ),
+    );
+  }
+
+  AppBar _appBar() {
+    return AppBar(
+      backgroundColor: const Color(0xFFe78337),
+      automaticallyImplyLeading: false,
+      elevation: 5,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                child: GestureDetector(
+                  onTap: () {
+                    // Handle the click event for the back button
+                    Navigator.of(context).pop();
+                  },
+                  child: Icon(
+                    Icons.chevron_left,
+                    size: 30.0,
                     color: Colors.white,
-                    fontSize: 18,
                   ),
                 ),
-              ],
+              ),
+              SizedBox(width: 8.0),
+              Text(
+                'My Return Orders',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+              ),
+            ],
+          ),
+          GestureDetector(
+            onTap: () {
+              // Handle the click event for the home icon
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => HomeScreen()),
+              );
+            },
+            child: Icon(
+              Icons.home,
+              size: 30,
+              color: Colors.white,
             ),
-            GestureDetector(
+          ),
+        ],
+      ),
+    );
+  }
+
+  Widget _searchBarAndFilter() {
+    return Container(
+      margin: const EdgeInsets.only(bottom: 10),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.start,
+        crossAxisAlignment: CrossAxisAlignment.center,
+        children: [
+          Expanded(
+            child: SizedBox(
+              height: 45,
+              child: TextField(
+                onChanged: (input) =>
+                    filterRecordsBasedOnPartyName(input), // search
+                decoration: InputDecoration(
+                  hintText: 'Collection Search',
+                  hintStyle: _hintTextStyle,
+                  suffixIcon: const Icon(Icons.search),
+                  border: CommonUtils.searchBarOutPutInlineBorder,
+                  focusedBorder:
+                  CommonUtils.searchBarEnabledNdFocuedOutPutInlineBorder,
+                ),
+              ),
+            ),
+          ),
+          const SizedBox(
+            width: 10,
+          ),
+          Container(
+            height: 45,
+            width: 45,
+            decoration: _borderforContainer,
+            child: GestureDetector(
               onTap: () {
-                // Handle the click event for the home icon
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                showModalBottomSheet(
+                  context: context,
+                  builder: (context) => const FilterBottomSheet(), //here
                 );
               },
-              child: Icon(
-                Icons.home,
-                size: 30,
-                color: Colors.white,
+              child: Center(
+                child: SvgPicture.asset(
+                  'assets/apps-sort.svg',
+                  color: _orangeColor,
+                ),
               ),
             ),
-          ],
-        ),
+          )
+        ],
       ),
+    );
+  }
 
-      body: Padding(
-        padding: const EdgeInsets.all(12),
+  Widget noCollectionText() {
+    return const Expanded(
+      child: SizedBox(
+        width: double.infinity,
         child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisAlignment: MainAxisAlignment.center,
+          crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            Container(
-              margin: const EdgeInsets.only(bottom: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.start,
-                crossAxisAlignment: CrossAxisAlignment.center,
-                children: [
-                  Expanded(
-                    child: SizedBox(
-                      height: 45,
-                      child: TextField(
-                        decoration: InputDecoration(
-                          hintText: 'Collection Search',
-                          hintStyle: _hintTextStyle,
-                          suffixIcon: const Icon(Icons.search),
-                          border: OutlineInputBorder(
-                            borderRadius: BorderRadius.circular(10),
-                            borderSide: const BorderSide(color: Colors.black),
-                          ),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    width: 10,
-                  ),
-                  Container(
-                    height: 45,
-                    width: 45,
-                    decoration: _borderforContainer,
-                    child: GestureDetector(
-                      onTap: () {
-                        showModalBottomSheet(
-                          context: context,
-                          builder: (context) => const FilterBottomSheet(),
-                        );
-                      },
-                      child: Center(
-                        child: SvgPicture.asset(
-                          'assets/apps-sort.svg',
-                          color: _orangeColor,
-
-                        ),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
-
-            // options (chips)
-            // SizedBox(
-            //   height: 50,
-            //   width: double.infinity,
-            //   child: ListView.separated(
-            //     scrollDirection: Axis.horizontal,
-            //     itemCount: 6,
-            //     itemBuilder: (context, index) {
-            //       return Chip(
-            //         shape: RoundedRectangleBorder(
-            //           borderRadius: BorderRadius.circular(7),
-            //         ),
-            //         padding: const EdgeInsets.all(0),
-            //         label: Text('Option $index'),
-            //         side: BorderSide(width: 2, color: _orangeColor),
-            //       );
-            //     },
-            //     separatorBuilder: (context, index) {
-            //       return const SizedBox(
-            //         width: 10,
-            //       );
-            //     },
-            //   ),
-            // ),
-
-            // card items
-            // Iterating the list
-            Expanded(
-              child: ListView.builder(
-                itemCount: orderStatusList.length,
-                itemBuilder: (context, index) {
-                  return ReturnCarditem(orderStatus: orderStatusList[index]);
-                },
+            Padding(
+              padding: EdgeInsets.all(5.0),
+              child: Text(
+                'No collection found!',
+                style: CommonUtils.Mediumtext_14_cb,
               ),
             ),
           ],
@@ -194,8 +314,9 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
 }
 
 class ReturnCarditem extends StatefulWidget {
-  final String orderStatus;
-  const ReturnCarditem({super.key, required this.orderStatus});
+  final int index;
+  final ReturnOrdersList data;
+  const ReturnCarditem({super.key, required this.index, required this.data});
 
   @override
   State<ReturnCarditem> createState() => _ReturnCarditemState();
@@ -268,7 +389,6 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
       height: 50,
       fit: BoxFit.fill,
       color: iconColor,
-
     );
   }
 
@@ -278,7 +398,8 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) => const ReturnOrderDetailsPage(),
+            builder: (context) =>
+                ReturnOrderDetailsPage(orderId: widget.data.id),
           ),
         );
       },
@@ -311,7 +432,7 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                           width: 75,
                           decoration: _iconBoxBorder,
                           child: Center(
-                            child: getSvgAsset(widget.orderStatus),
+                            child: getSvgAsset(widget.data.statusName),
                           ),
                         ),
                       ),
@@ -325,7 +446,7 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                           color: statusBgColor,
                         ),
                         child: Text(
-                          widget.orderStatus,
+                          widget.data.statusName,
                           textAlign: TextAlign.center,
                           style: TextStyle(
                               fontSize: 11,
@@ -347,7 +468,7 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Text(
-                          'Sri Venkateswara Traders',
+                          widget.data.partyName,
                           style: _textStyle,
                         ),
                         Column(
@@ -359,37 +480,33 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                                   style: _textStyle,
                                 ),
                                 Text(
-                                  'data',
+                                  widget.data.returnOrderNumber,
                                   style: _orangeTextStyle,
                                 ),
                               ],
                             ),
                             Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                Row(
-                                  children: [
-                                    Text(
-                                      'LR No: ',
-                                      style: _textStyle,
-                                    ),
-                                    Text(
-                                      'data',
-                                      style: _orangeTextStyle,
-                                    ),
-                                  ],
+                                Text(
+                                  'LR No: ',
+                                  style: _textStyle,
                                 ),
-                                Row(
-                                  children: [
-                                    Text(
-                                      'No of items: ',
-                                      style: _textStyle,
-                                    ),
-                                    Text(
-                                      'data',
-                                      style: _orangeTextStyle,
-                                    ),
-                                  ],
+                                Text(
+                                  widget.data.lrNumber,
+                                  style: _orangeTextStyle,
+                                ),
+                              ],
+                            ),
+                            Row(
+                              children: [
+                                Text(
+                                  'No of items: ',
+                                  style: _textStyle,
+                                ),
+                                Text(
+                                  widget.data.noOfItems
+                                      .toString(), // widget.data.noOfItems.toString()
+                                  style: _orangeTextStyle,
                                 ),
                               ],
                             ),
@@ -400,24 +517,24 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                           children: [
                             Row(
                               children: [
+                                // Text(
+                                //   'Date: ',
+                                //   style: _textStyle,
+                                // ),
                                 Text(
-                                  'Date: ',
-                                  style: _textStyle,
-                                ),
-                                Text(
-                                  'data',
+                                  widget.data.lrDate.toString(),
                                   style: _orangeTextStyle,
                                 ),
                               ],
                             ),
                             Row(
                               children: [
+                                // Text(
+                                //   'Total Amount: ',
+                                //   style: _textStyle,
+                                // ),
                                 Text(
-                                  'Total Amount: ',
-                                  style: _textStyle,
-                                ),
-                                Text(
-                                  'data',
+                                  widget.data.totalCost.toString(),
                                   style: _orangeTextStyle,
                                 ),
                               ],
@@ -434,5 +551,727 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
         ),
       ),
     );
+  }
+}
+
+// here
+class FilterBottomSheet extends StatefulWidget {
+  const FilterBottomSheet({super.key});
+
+  @override
+  State<FilterBottomSheet> createState() => _FilterBottomSheetState();
+}
+
+class _FilterBottomSheetState extends State<FilterBottomSheet> {
+  final _labelTextStyle = const TextStyle(
+      color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold);
+  List<Dealer> dealers = [];
+  int selectedCardCode = -1;
+
+  // ... Other variables and methods
+  final _primaryOrange = const Color(0xFFe58338);
+  int selectedChipIndex = 1;
+
+  final _titleTextStyle = const TextStyle(
+      color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold);
+
+  final _clearTextStyle = const TextStyle(
+      color: Color(0xFFe58338),
+      fontSize: 16,
+      decoration: TextDecoration.underline,
+      decorationColor: Color(0xFFe58338));
+  DateTime toDate = DateTime.now();
+  DateTime fromDate = DateTime.now();
+  String? selectedValue;
+  List dropDownItems = [
+    'item 1',
+    'item 2',
+    'item 3',
+    'item 4',
+    'item 5',
+  ];
+  List<dynamic> dropdownItems = [];
+  PaymentMode? selectedPaymode;
+  int? payid;
+  late String selectedName;
+  ApiResponse? apiResponse;
+  int indexselected = -1;
+  String? Selected_PaymentMode = "";
+  TextEditingController todateController = TextEditingController();
+  TextEditingController fromdateController = TextEditingController();
+  DateTime selectedDate = DateTime.now();
+  DateTime selectedfromdateDate = DateTime.now();
+  List<Purpose> purposeList = [];
+  String? selectedPurpose, selectformattedfromdate, selectformattedtodate;
+  Purpose? selectedPurposeObj; // Declare it globally
+  String purposename = '';
+  int? savedCompanyId = 0;
+
+  @override
+  void initState() {
+    fetchData();
+    getpaymentmethods();
+    fetchdropdownitems();
+    super.initState();
+  }
+
+  Future<void> fetchdropdownitems() async {
+    String apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/1';
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final listResult = data['response']['listResult'] as List;
+
+        setState(() {
+          purposeList =
+              listResult.map((item) => Purpose.fromJson(item)).toList();
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
+
+  Future<void> getpaymentmethods() async {
+    final response = await http.get(Uri.parse(
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Master/GetAllTypeCdDmt/1'));
+
+    if (response.statusCode == 200) {
+      setState(() {
+        apiResponse = ApiResponse.fromJson(jsonDecode(response.body));
+        print('========>apiResponse$apiResponse');
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  Future<void> _selectDate(
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
+    DateTime currentDate = DateTime.now();
+    DateTime initialDate;
+
+    if (controller.text.isNotEmpty) {
+      try {
+        initialDate = DateTime.parse(controller.text);
+      } catch (e) {
+        print("Invalid date format: $e");
+        initialDate = currentDate;
+      }
+    } else {
+      initialDate = currentDate;
+    }
+
+    try {
+      DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: initialDate,
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+      );
+
+      if (picked != null) {
+        String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
+        controller.text = formattedDate;
+
+        // Save selected dates as DateTime objects
+        selectedDate = picked;
+        print("todate selected: $selectedDate");
+
+        // Print formatted date
+        print("fromatted todate: ${DateFormat('yyyy-MM-dd').format(picked)}");
+        selectformattedtodate = DateFormat('yyyy-MM-dd').format(picked);
+        print("selectformattedtodate: $selectformattedtodate");
+      }
+    } catch (e) {
+      print("Error selecting date: $e");
+      // Handle the error, e.g., show a message to the user or log it.
+    }
+  }
+
+  Widget buildDateInput(
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      VoidCallback onTap,
+      ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
+          child: Text(
+            labelText,
+            style: const TextStyle(
+              fontSize: 16.0,
+              color: Color(0xFF5f5f5f),
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.start,
+          ),
+        ),
+        const SizedBox(
+            height: 4.0), // Add space between labelText and TextFormField
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: 40.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.0),
+              border: Border.all(
+                color: const Color(0xFFe78337),
+                width: 1.0,
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10.0, top: 0.0),
+                      child: TextFormField(
+                        controller: controller,
+                        enabled: false,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFFe78337),
+                        ),
+                        decoration: InputDecoration(
+                          hintText: labelText,
+                          hintStyle: const TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFFe78337),
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: onTap,
+                  child: const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Icon(
+                      Icons.calendar_today,
+                      color: Color(0xFFe78337),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> _selectfromDate(
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
+    DateTime currentDate = DateTime.now();
+    DateTime initialDate;
+
+    if (controller.text.isNotEmpty) {
+      try {
+        initialDate = DateTime.parse(controller.text);
+      } catch (e) {
+        print("Invalid date format: $e");
+        initialDate = currentDate;
+      }
+    } else {
+      initialDate = currentDate;
+    }
+
+    try {
+      DateTime? picked = await showDatePicker(
+        context: context,
+        initialDate: initialDate,
+        firstDate: DateTime(2000),
+        lastDate: DateTime(2101),
+      );
+
+      if (picked != null) {
+        String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
+        controller.text = formattedDate;
+
+        // Save selected dates as DateTime objects
+        selectedfromdateDate = picked;
+        print("fromdate selected: $selectedfromdateDate");
+
+        // Print formatted date
+        print("fromattedfromdate: ${DateFormat('yyyy-MM-dd').format(picked)}");
+        selectformattedfromdate = DateFormat('yyyy-MM-dd').format(picked);
+        print("selectformattedfromdate: $selectformattedfromdate");
+      }
+    } catch (e) {
+      print("Error selecting date: $e");
+      // Handle the error, e.g., show a message to the user or log it.
+    }
+  }
+
+  Widget buildDateInputfromdate(
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      VoidCallback onTap,
+      ) {
+    return Column(
+      crossAxisAlignment: CrossAxisAlignment.start,
+      children: [
+        Padding(
+          padding: const EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
+          child: Text(
+            labelText,
+            style: const TextStyle(
+              fontSize: 16.0,
+              color: Color(0xFF5f5f5f),
+              fontWeight: FontWeight.bold,
+            ),
+            textAlign: TextAlign.start,
+          ),
+        ),
+        const SizedBox(
+            height: 4.0), // Add space between labelText and TextFormField
+        GestureDetector(
+          onTap: onTap,
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            height: 40.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(12.0),
+              border: Border.all(
+                color: const Color(0xFFe78337),
+                width: 1.0,
+              ),
+            ),
+            child: Row(
+              children: [
+                Expanded(
+                  child: Align(
+                    alignment: Alignment.centerLeft,
+                    child: Padding(
+                      padding: const EdgeInsets.only(left: 10.0, top: 0.0),
+                      child: TextFormField(
+                        controller: controller,
+                        enabled: false,
+                        style: const TextStyle(
+                          fontSize: 14,
+                          fontFamily: 'Roboto',
+                          fontWeight: FontWeight.w600,
+                          color: Color(0xFFe78337),
+                        ),
+                        decoration: InputDecoration(
+                          hintText: labelText,
+                          hintStyle: const TextStyle(
+                            fontSize: 14,
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w500,
+                            color: Color(0xFFe78337),
+                          ),
+                          border: InputBorder.none,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                InkWell(
+                  onTap: onTap,
+                  child: const Padding(
+                    padding: EdgeInsets.all(10.0),
+                    child: Icon(
+                      Icons.calendar_today,
+                      color: Color(0xFFe78337),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        ),
+      ],
+    );
+  }
+
+  Future<void> fetchData() async {
+    final response = await http.get(Uri.parse(
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetAllDealersBySlpCode/1/100'));
+
+    if (response.statusCode == 200) {
+      Map<String, dynamic> data = json.decode(response.body);
+      if (data['isSuccess']) {
+        // Check if 'listResult' key exists and is not null
+        if (data['response']['listResult'] != null) {
+          setState(() {
+            dropdownItems = List.from(data['response']['listResult']);
+          });
+        }
+      }
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return SingleChildScrollView(
+        child: Padding(
+          padding: const EdgeInsets.all(20),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'Filter By',
+                    style: _titleTextStyle,
+                  ),
+                  // Text('Clear all filters', style: _labelTextStyle,),
+                  Text(
+                    'Clear all filters',
+                    style: _clearTextStyle,
+                  ),
+                ],
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 5, bottom: 12),
+                child: const Divider(
+                  height: 5,
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: Text(
+                      'Party',
+                      style: _labelTextStyle,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0, top: 5.0, right: 0),
+                    child: Container(
+                      // width: double.infinity,
+                      height: 40.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: const Color(0xFFe58338),
+                        ),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: ButtonTheme(
+                          alignedDropdown: true,
+                          child: DropdownButton<int>(
+                              value: selectedCardCode,
+                              iconSize: 20,
+                              icon: null,
+                              isExpanded: true,
+                              underline: const SizedBox(),
+                              style: const TextStyle(
+                                color: Color(0xFFe58338),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedCardCode = value!;
+                                  if (selectedCardCode != -1) {
+                                    selectedValue =
+                                    dropdownItems[selectedCardCode]['cardCode'];
+                                    selectedName =
+                                    dropdownItems[selectedCardCode]['cardName'];
+
+                                    print("selectedValue:$selectedValue");
+                                  } else {
+                                    print(selectedValue);
+                                    print(selectedName);
+                                  }
+                                  // isDropdownValid = selectedTypeCdId != -1;
+                                });
+                              },
+                              items: [
+                                const DropdownMenuItem<int>(
+                                  value: -1,
+                                  child: Text('Select Party'), // Static text
+                                ),
+                                ...dropdownItems.asMap().entries.map((entry) {
+                                  final index = entry.key;
+                                  final item = entry.value;
+                                  return DropdownMenuItem<int>(
+                                      value: index,
+                                      child: Text(
+                                        item['cardName'],
+                                        overflow: TextOverflow.visible,
+                                        // wrapText: true,
+                                      ));
+                                }).toList(),
+                              ]),
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+
+              const SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                height: 40,
+                //  child: Expanded(
+                child: apiResponse == null
+                    ? const Center(child: CircularProgressIndicator.adaptive())
+                    : ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: apiResponse!.listResult.length,
+                  itemBuilder: (BuildContext context, int index) {
+                    bool isSelected = index == indexselected;
+                    PaymentMode currentPaymode = apiResponse!.listResult[
+                    index]; // Store the current paymode in a local variable
+
+                    switch (currentPaymode.desc) {
+                      case 'Cheque':
+                      // iconData = Icons.payment;
+                        break;
+                      case 'Online':
+                      //   iconData = Icons.access_alarm;
+                        break;
+                      case 'UPI':
+                      //   iconData = Icons.payment;
+                        break;
+                    // Add more cases as needed
+                      default:
+                      //   iconData = Icons.payment; // Default icon
+                        break;
+                    }
+
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          indexselected = index;
+                          selectedPaymode =
+                              currentPaymode; // Update the selectedPaymode outside the build method
+                        });
+                        payid = currentPaymode.typeCdId;
+                        Selected_PaymentMode = currentPaymode.desc;
+                        print('payid:$payid');
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? const Color(0xFFe78337)
+                              : const Color(0xFFe78337).withOpacity(0.1),
+                          border: Border.all(
+                            color: isSelected
+                                ? const Color(0xFFe78337)
+                                : const Color(0xFFe78337),
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: IntrinsicWidth(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Row(
+                                  children: [
+                                    // Icon(
+                                    //   iconData, // Use the dynamically determined icon
+                                    //   color: isSelected
+                                    //       ? Colors.white
+                                    //       : Colors.black,
+                                    // ),
+                                    // SizedBox(
+                                    //     width:
+                                    //         8.0), // Add some spacing between icon and text
+                                    Text(
+                                      currentPaymode.desc.toString(),
+                                      style: TextStyle(
+                                        color: isSelected
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
+                ),
+              ),
+
+              const SizedBox(
+                height: 10.0,
+              ), // From date
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildDateInput(
+                    context,
+                    'To Date',
+                    todateController,
+                        () => _selectDate(context, todateController),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              // To Date
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildDateInputfromdate(
+                    context,
+                    'From Date',
+                    fromdateController,
+                        () => _selectfromDate(context, fromdateController),
+                  ),
+                ],
+              ),
+              const SizedBox(
+                height: 10.0,
+              ),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {},
+                      style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(
+                          color: Colors.red,
+                        ),
+                        side: const BorderSide(
+                          color: Colors.red,
+                        ),
+                        backgroundColor: Colors.white,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
+                      ),
+                    ),
+                  ),
+                  const SizedBox(
+                    width: 20,
+                  ),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        getappliedfilterData(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(
+                          color: Colors.white,
+                        ),
+                        backgroundColor: _primaryOrange,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        'Apply',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        ));
+  }
+
+  late ViewReturnOrdersProvider viewReturnOrdersProvider;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    viewReturnOrdersProvider = Provider.of<ViewReturnOrdersProvider>(context);
+  }
+
+  Future<void> getappliedfilterData(BuildContext context) async {
+    print('filter called');
+    final url = Uri.parse(
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetAppReturnOrdersBySearch');
+    try {
+      final requestBody = {
+        "PartyCode": selectedValue,
+        "StatusId": payid,
+        "FormDate": selectformattedfromdate,
+        "ToDate": selectformattedtodate,
+        "CompanyId": 1
+      };
+
+      print('PartyCode : $selectedValue');
+      print('StatusId : $payid');
+      print('FormDate : $selectformattedfromdate');
+      print('ToDate : $selectformattedtodate');
+      print('CompanyId : $savedCompanyId');
+
+      final response = await http.post(
+        url,
+        body: json.encode(requestBody),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        if (jsonResponse['isSuccess']) {
+          List<dynamic> data = jsonResponse['response']['listResult'];
+          List<ReturnOrdersList> result =
+          data.map((item) => ReturnOrdersList.fromJson(item)).toList();
+          viewReturnOrdersProvider.storeIntoReturnOrdersProvider(result);
+          print('response is successs');
+        } else {
+          List<ReturnOrdersList> emptyList = [];
+          viewReturnOrdersProvider.storeIntoReturnOrdersProvider(emptyList);
+          print('response is unsuccesss');
+        }
+      } else {
+        print(
+            'Failed to send the request. Status code: ${response.statusCode}');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+    Navigator.of(context).pop();
   }
 }

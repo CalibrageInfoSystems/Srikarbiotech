@@ -16,6 +16,7 @@ import 'Common/SharedPrefsData.dart';
 import 'CreateCollectionscreen.dart';
 import 'CreateReturnorderscreen.dart';
 import 'Createorderscreen.dart';
+import 'HomeScreen.dart';
 import 'Ledgerscreen.dart';
 import 'Model/Dealer.dart';
 
@@ -82,6 +83,7 @@ class Selectparty_screen extends State<Selectpartyscreen> {
       }
     } catch (e) {
       // Handle exceptions here
+      Text('Error occurred: ${e}');
       print('Error in fetchData: $e');
       setState(() {
         _isLoading = false;
@@ -96,36 +98,59 @@ class Selectparty_screen extends State<Selectpartyscreen> {
       appBar:
       AppBar(
         backgroundColor: Color(0xFFe78337),
-        automaticallyImplyLeading: false, // This line removes the default back arrow
+        automaticallyImplyLeading: false,
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-              child: GestureDetector(
-                onTap: () {
-                  // Handle the click event for the back arrow icon
-                  Navigator.of(context).pop();
-                },
-                child: Icon(
-                  Icons.chevron_left,
-                  size: 30.0,
-                  color: Colors.white,
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Handle the click event for the back button
+                      Navigator.of(context).pop();
+                    },
+                    child: const Icon(
+                      Icons.chevron_left,
+                      size: 30.0,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 8.0),
+                const Text(
+                  'Select Party',
+                  style: TextStyle(
+                  fontFamily: 'Roboto',
+                  fontWeight: FontWeight.w600,
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
+                ),
+              ],
             ),
-            Text(
-              'Select Party',
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-                fontSize: 18,
-              ),
-            ),
+
+    GestureDetector(
+    onTap: () {
+    // Handle the click event for the home icon
+    Navigator.pushReplacement(
+    context,
+    MaterialPageRoute(builder: (context) => HomeScreen()),
+    );
+    },
+    child: Image.asset(
+    CompneyId == 1
+    ? 'assets/srikar-home-icon.png'
+        : 'assets/seeds-home-icon.png',
+    width: 30,
+    height: 30,
+    ),
+    )
+
           ],
-        ),
+        ),// This line removes the default back arrow
+
       ),
       body:
       Column(
@@ -222,7 +247,9 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                                 state: filteredDealers[index].state,
                                 phone: filteredDealers[index].phoneNumber,
                                 proprietorName:  filteredDealers[index].proprietorName,
-                                gstRegnNo:  filteredDealers[index].gstRegnNo
+                                gstRegnNo:  filteredDealers[index].gstRegnNo,
+                                creditLine:filteredDealers[index].creditLine,
+                                balance:filteredDealers[index].balance
                             ),
                           ),
                         );
@@ -276,7 +303,9 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                 state: filteredDealers[index].state,
                 phone: filteredDealers[index].phoneNumber,
                 proprietorName:  filteredDealers[index].proprietorName,
-                gstRegnNo:  filteredDealers[index].gstRegnNo
+                gstRegnNo:  filteredDealers[index].gstRegnNo,
+                creditLine:filteredDealers[index].creditLine,
+                balance:filteredDealers[index].balance
             ),
           ),
         );

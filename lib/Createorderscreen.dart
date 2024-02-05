@@ -27,6 +27,8 @@ class Createorderscreen extends StatefulWidget {
   final String gstRegnNo;
   final String state;
   final String phone;
+  final double creditLine;
+  final double balance;
 
   Createorderscreen(
       {required this.cardName,
@@ -35,28 +37,14 @@ class Createorderscreen extends StatefulWidget {
         required this.state,
         required this.phone,
         required this.proprietorName,
-        required this.gstRegnNo});
+        required this.gstRegnNo,
+        required this.creditLine,
+        required this.balance});
 
   @override
   State<Createorderscreen> createState() => _ProductListState();
 }
-// class OrderItemXrefType {
-//   final String itemName;
-//   final int price;
-//   final int orderQty;
-//
-//   OrderItemXrefType({
-//     required this.itemName,
-//     required this.price,
-//     required this.orderQty,
-//   });
-//   Map<String, dynamic> toJson() => {
-//     'itemName': itemName,
-//     'price': price,
-//     'orderQty': orderQty,
-//   };
-//
-// }
+
 
 class _ProductListState extends State<Createorderscreen> {
   // DBHelper dbHelper = DBHelper();
@@ -90,30 +78,7 @@ class _ProductListState extends State<Createorderscreen> {
   OrderItemXrefType? orderItem; // Initialize orderItem to null
   late SharedPreferences prefs;
 
-// Function to save cart items to SharedPreferences
-  Future<void> saveCartItems(List<OrderItemXrefType> selectedProducts) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    // Retrieve existing cart items from SharedPreferences
-    cartItemsJson = prefs.getStringList('cart_items') ?? [];
-
-    // Convert the selected products to a JSON string
-    List<String> selectedProductStrings =
-    selectedProducts.map((product) => jsonEncode(product.toJson())).toList();
-
-    // Add the selected products to the existing cart items
-    cartItemsJson!.addAll(selectedProductStrings);
-
-    // Save the updated cart items back to SharedPreferences
-    prefs.setStringList('cart_items', cartItemsJson!);
-
-    // Log the cart items
-    print('Cart Items: $cartItemsJson');
-    // cartitemslength = '${cartItemsJson.length}';
-    print('Cart Items Length: ${cartItemsJson!.length}');
-
-
-  }
 
 // Declare ApiResponse globally
   @override
@@ -125,7 +90,6 @@ class _ProductListState extends State<Createorderscreen> {
     selectindex = 0;
     getshareddata();
     initSharedPreferences();
-  //  restoreAddedItemStates();
 
 
   }
@@ -160,15 +124,27 @@ class _ProductListState extends State<Createorderscreen> {
 
   @override
   Widget build(BuildContext context) {
-    // ... (the rest of your existing build method)
 
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+      // Clear the cart data here
+      final cartProvider = context.read<CartProvider>();
+
+      clearCartData(cartProvider);
+
+      return true; // Allow the back navigation
+    },
+    child: Scaffold(
       appBar:
       AppBar(
         backgroundColor: Color(0xFFe78337),
         leading: IconButton(
           icon: Icon(Icons.chevron_left, color: Colors.white),
           onPressed: () {
+            final cartProvider = context.read<CartProvider>();
+
+            // Clear the cart data here
+            clearCartData(cartProvider);
             Navigator.pop(context); // This line will navigate back
           },
         ),
@@ -242,7 +218,8 @@ class _ProductListState extends State<Createorderscreen> {
         ],
       ),
 
-        body: Column(
+        body:
+        Column(
         children: [
           Padding(
             padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
@@ -372,69 +349,65 @@ class _ProductListState extends State<Createorderscreen> {
 
             ),
           ),
-    Padding(
-    padding: const EdgeInsets.all(0.0),
-    child:Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-              child: IntrinsicHeight(
-                  child: Card(
-                    color: Colors.white,
-                    child: Container(
-                      padding: EdgeInsets.all(10.0),
-                      width: MediaQuery.of(context).size.width,
-                      child: Column(
+
+
+        Padding(
+          padding: const EdgeInsets.all(0.0),
+          child: Container(
+            width: MediaQuery.of(context).size.width,
+            padding: EdgeInsets.only(top: 2.0, left: 10.0, right: 10.0),
+            child: IntrinsicHeight(
+              child: Card(
+                color: Colors.white,
+                child: Container(
+                  padding: EdgeInsets.all(10.0),
+                  width: MediaQuery.of(context).size.width,
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Container(
+                        padding: EdgeInsets.only(top: 1.0),
+                        child: Text(
+                          '${widget.cardName}',
+                          style: CommonUtils.header_Styles16,
+                          maxLines: 2, // Display in 2 lines
+                          overflow: TextOverflow.ellipsis,
+                        ),
+                      ),
+                      Row(
+                        crossAxisAlignment: CrossAxisAlignment.end,
                         children: [
-                          Row(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.start,
-                            children: [
-                              Container(
-                                padding: EdgeInsets.only(top: 10.0),
-                                child: Text(
-                                  '${widget.cardName}',
-                                  style: TextStyle(
-                                    color: Color(0xFFe78337),
-                                    fontFamily: "Roboto",
-                                    fontWeight: FontWeight.w700,
-                                    fontSize: 14.0,
-                                  ),
-                                ),
-                              ),
-                              Spacer(),
-                              Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Container(
-                                    //   width: MediaQuery.of(context).size.width / 1.8,
-                                    padding: EdgeInsets.only(top: 10.0),
-                                    child: Row(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Text(
-                                          '₹${12765.00}',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontFamily: "Roboto",
-                                            fontWeight: FontWeight.w700,
-                                            fontSize: 16.0,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
-                              ),
-                            ],
+                          Text(
+                            '₹${widget.balance}',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: "Roboto",
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14.0,
+                            ),
+                          ),
+                          SizedBox(width: 5.0), // Add some space between balance and credit line
+                          Text(
+                            '(${widget.creditLine})',
+                            style: TextStyle(
+                              color: Colors.black,
+                              fontFamily: "Roboto",
+                              fontWeight: FontWeight.w700,
+                              fontSize: 14.0,
+                            ),
                           ),
                         ],
                       ),
-                    ),
-                  )))),
+                    ],
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ),
 
-          Expanded(
+
+        Expanded(
               child: Padding(
                 padding:
                 const EdgeInsets.all(8.0), // Adjust the padding as needed
@@ -543,49 +516,15 @@ class _ProductListState extends State<Createorderscreen> {
                                                         mainAxisAlignment:
                                                         MainAxisAlignment.end,
                                                         children: [
-
-                                                          RichText(
-                                                            maxLines: 1,
-                                                            text: TextSpan(
-                                                              text:
-                                                              '${quantities[index]}',
-                                                              style: TextStyle(
-                                                                color:Colors.black,
-                                                                fontFamily: "Roboto",
-                                                                fontWeight: FontWeight.w600,
-                                                                fontSize: 16.0,
-                                                              ),
-                                                              children: [
-                                                                TextSpan(
-                                                                  text: ' case = ',
-                                                                  style: TextStyle(
-                                                                    color:Colors.black,
-                                                                    fontWeight: FontWeight.bold,
-                                                                    fontSize: 16.0,
-                                                                    // decoration: TextDecoration.lineThrough,
-                                                                  ),
-                                                                ),
-                                                                TextSpan(
-                                                                  text: '${productresp.numInSale! * quantities[index]}',
-                                                                  style: TextStyle(
-                                                                    color: Color(0xFFe78337),
-                                                                    fontFamily: "Roboto",
-                                                                    fontWeight: FontWeight.w600,
-                                                                    fontSize: 16.0,
-                                                                  ),
-                                                                ),
-                                                                TextSpan(
-                                                                  text: ' Items ',
-                                                                  style: TextStyle(
-                                                                    color: Color(0xFFe78337),
-                                                                    fontWeight: FontWeight.bold,
-                                                                    fontSize: 16.0,
-                                                                    // decoration: TextDecoration.lineThrough,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
+                                                Text(
+                                                '${productresp.ugpCode.toString()}',
+                                  style: TextStyle(
+                                    color: Color(0xFFe78337),
+                                    fontFamily: "Roboto",
+                                    fontWeight: FontWeight.w600,
+                                    fontSize: 12.0,
+                                  ),
+                                                )
                                                         ],
                                                       ),
                                                     )
@@ -797,7 +736,7 @@ class _ProductListState extends State<Createorderscreen> {
 
                                                                 String itemGrpCod;
 
-                                                                if (CompneyId == 1 && globalCartLength > 1) {
+                                                                if (CompneyId == 1 || globalCartLength > 1) {
                                                                   itemGrpCod = productresp.itmsGrpCod!;
                                                                 } else {
                                                                   itemGrpCod = productresp.itmsGrpCod!;
@@ -817,12 +756,14 @@ class _ProductListState extends State<Createorderscreen> {
                                                                     igst: productresp.gst,
                                                                     cgst: productresp.gst! / 2,
                                                                     sgst: productresp.gst! / 2,
+                                                                      numInSale :productresp.numInSale
                                                                   );
 
                                                                   await cartProvider.addToCart(orderItem!);
                                                                   await prefs.setBool('isItemAddedToCart_$index', true);
                                                                   // Get the total number of items in the cart
                                                                   List<OrderItemXrefType> cartItems = cartProvider.getCartItems();
+
                                                                   print('Added items length: ${cartItems.length}');
                                                                   globalCartLength = cartItems.length;
 
@@ -940,7 +881,13 @@ class _ProductListState extends State<Createorderscreen> {
               )
           )
         ],
+
+
+
       ),
+
+
+
       bottomNavigationBar: Container(
         height: 60,
         margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -950,26 +897,36 @@ class _ProductListState extends State<Createorderscreen> {
             Expanded(
               child: InkWell(
                 onTap: () {
-                  // Add logic for the download button
-                  Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => transport_payment(
-                        cardName: '${widget.cardName}',
-                        cardCode: '${widget.cardCode}',
-                        address: '${widget.address}',
-                        state: '${widget.state}',
-                        phone: '${widget.phone}',
-                        proprietorName: '${widget.proprietorName}',
-                        gstRegnNo: '${widget.gstRegnNo}',
-                        bookingplace: '',
-                        preferabletransport: '',
+          // Add logic for the download button
+                  if (globalCartLength > 0) {
+                    Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => transport_payment(
+                          cardName: '${widget.cardName}',
+                          cardCode: '${widget.cardCode}',
+                          address: '${widget.address}',
+                          state: '${widget.state}',
+                          phone: '${widget.phone}',
+                          proprietorName: '${widget.proprietorName}',
+                          gstRegnNo: '${widget.gstRegnNo}',
+                          bookingplace: '',
+                          preferabletransport: '',
+                          creditLine: double.parse('${widget.creditLine}'), // Convert to double
+                          balance: double.parse('${widget.balance}'), // Convert to double
+                        ),
                       ),
-                    ),
-                  );
+                    );
 
-                  print('Download button clicked');
-                },
+                    print('Download button clicked');
+                  }
+
+          else{
+            CommonUtils.showCustomToastMessageLong(
+                'Please Select Atleast One Product', context, 1, 4);
+          }
+    },
+
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
@@ -994,7 +951,7 @@ class _ProductListState extends State<Createorderscreen> {
           ],
         ),
       ),
-    );
+    ));
   }
 
   Widget buildweight(int index, String mode, Function onTap,
@@ -1032,37 +989,7 @@ class _ProductListState extends State<Createorderscreen> {
     );
   }
 
-  void saveData(int index) async {
-    // Get the SharedPreferences instance
-    List<OrderItemXrefType> savedDataList = [];
-    SharedPreferences prefs = await SharedPreferences.getInstance();
 
-    final productresp = filteredproducts[index];
-
-    Map<String, dynamic> savedData = {
-      "Id": 1,
-      "OrderId": 123,
-      "ItemGrpCod": productresp.itmsGrpCod,
-      "ItemGrpName": productresp.itmsGrpNam,
-      "ItemCode": productresp.itemCode,
-      "ItemName": productresp.itemName,
-      "NoOfPcs": quantities,
-      "OrderQty": quantities,
-      "Price":  productresp.price,
-      "IGST":productresp.gst,
-      "CGST": productresp.gst!/2,
-      "SGST": productresp.gst!/2,
-    };
-
-    setState(() {
-      savedDataList.add(savedData as OrderItemXrefType);
-    });
-  }
-
-  // Future<void> clearSharedPreferences() async {
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   await prefs.clear();
-  // }
 
   void filterproducts() {
     final String searchTerm = searchController.text.toLowerCase();
@@ -1083,6 +1010,7 @@ class _ProductListState extends State<Createorderscreen> {
     print('User ID: $userId');
     print('SLP Code: $slpCode');
     print('Company ID: $CompneyId');
+
     fetchProducts().then((response) {
       setState(() {
 
@@ -1160,14 +1088,14 @@ class _ProductListState extends State<Createorderscreen> {
     prefs = await SharedPreferences.getInstance();
   }
 
-  void restoreAddedItemStates() {
-    // Initialize isItemAddedToCart based on SharedPreferences
-    //isItemAddedToCart = List.generate(filteredproducts.length, (index) => false);
-    isItemAddedToCart = List.generate(
-      filteredproducts.length,
-          (index) => prefs.getBool('isItemAddedToCart_$index') ?? false,
-    );
+
+
+  void clearCartData(CartProvider cartProvider) {
+    cartProvider.clearCart();
   }
+
+
+
 
 
 }

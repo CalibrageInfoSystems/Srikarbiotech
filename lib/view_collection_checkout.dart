@@ -2,6 +2,8 @@ import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 
 import 'Common/CommonUtils.dart';
 import 'Common/SharedPrefsData.dart';
@@ -40,6 +42,17 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
   );
 
   List tableCellTitles = [
+    ['Date', 'Payment Mode', 'Credit Bank', 'Purpose', 'Remarks'],
+    [
+      'Amount',
+      'Credit Account No',
+      'UTR Number',
+      'Category',
+      ''
+    ]
+    // ['Date', 'Payment Mode', 'Cheque Date', 'Purpose', '']
+  ];
+  List tableCellTitles2 = [
     ['Date', 'Payment Mode', 'Cheque Date', 'Purpose', 'Remarks'],
     [
       'Amount',
@@ -52,6 +65,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
   ];
   int CompneyId = 0;
   String checkdate = "";
+  String payment_mode = "";
   @override
   void initState() {
     super.initState();
@@ -59,14 +73,15 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
     getshareddata();
     print("screenFrom: ${widget.listResult.phoneNumber}");
 
+    print("screenFrom: ${widget.listResult.paymentTypeName}");
 
-
+    print("screenFrom: $payment_mode");
   }
   @override
   Widget build(BuildContext context) {
   //  final arguments = ModalRoute.of(context)?.settings?.arguments as ListResult;
     String dateString = widget.listResult.date;
-
+    payment_mode = '${widget.listResult.paymentTypeName}';
     DateTime date = DateTime.parse(dateString);
     String formattedDate = DateFormat('dd-MM-yyyy').format(date);
     String checkdateString = widget.listResult.checkDate;
@@ -82,6 +97,23 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
       }
     }
     List tableCellValues = [
+
+      [
+        formattedDate,
+        widget.listResult.paymentTypeName,
+        widget.listResult.creditBank,
+        widget.listResult.purposeName,
+        widget.listResult.remarks
+      ],
+      [
+        widget.listResult.amount, // double
+        widget.listResult.creditAccountNo,
+        widget.listResult.utrNumber,
+        widget.listResult.categoryName,
+        ''// int
+      ]
+    ];
+    List tableCellValues2 = [
 
       [
         formattedDate,
@@ -201,22 +233,21 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                   child: Column(
                     children: [
                       // Table
-                      Table(
-                        border: TableBorder.all(
-                          width: 1,
-                          color: Colors.grey.shade500,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        children: [
-                          ...List.generate(5, (index) {
+                      if (payment_mode == "Online")
+                        Table(
+                          border: TableBorder.all(
+                            width: 1,
+                            color: Colors.grey.shade500,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          children: List.generate(5, (index) {
                             return TableRow(
                               children: [
                                 TableCell(
                                   child: Container(
                                     padding: _tableCellPadding,
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles[0][index],
@@ -235,8 +266,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                   child: Container(
                                     padding: _tableCellPadding,
                                     child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles[1][index],
@@ -253,42 +283,99 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                 ),
                               ],
                             );
-                          })
-                        ],
-                      ),
+                          }),
+                        ),
 
-                      // space
+                      // Table for Cheque
+                      if (payment_mode == "Cheque")
+                        Table(
+                          border: TableBorder.all(
+                            width: 1,
+                            color: Colors.grey.shade500,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          children: List.generate(5, (index) {
+                            return TableRow(
+                              children: [
+                                TableCell(
+                                  child: Container(
+                                    padding: _tableCellPadding,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          tableCellTitles2[0][index],
+                                          style: _titleTextStyle,
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(
+                                          tableCellValues2[0][index].toString(),
+                                          style: _dataTextStyle,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                TableCell(
+                                  child: Container(
+                                    padding: _tableCellPadding,
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: <Widget>[
+                                        Text(
+                                          tableCellTitles2[1][index],
+                                          style: _titleTextStyle,
+                                        ),
+                                        SizedBox(height: 5),
+                                        Text(
+                                          tableCellValues2[1][index].toString(),
+                                          style: _dataTextStyle,
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            );
+                          }),
+                        ),
+
+                      // Space
                       const SizedBox(
                         height: 20,
                       ),
 
                       // Attachment
                       Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            'Attachment',
-                            style: _titleTextStyle,
-                          ),
-                          SizedBox(
-                            width: double.infinity,
-                            height: 150,
-                            child: ClipRRect(
-                              borderRadius: BorderRadius.circular(10),
-                              child:  widget.listResult.fileUrl != null
-                                  ? Image.network(
-                                widget.listResult.fileUrl,
-                                      fit: BoxFit.fill,
-                                    )
-                                  : Image.asset(
-                                      'assets/sreekar_seeds.png',
-                                      fit: BoxFit.fill,
-                                    ),
-                            ),
-                          ),
-                        ],
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                      Text(
+                      'Attachment',
+                      style: _titleTextStyle,
+                      ),
+                      SizedBox(
+                      width: double.infinity,
+                      height: 150,
+                      child: ClipRRect(
+                      borderRadius: BorderRadius.circular(10),
+                      child: GestureDetector(
+                      onTap: _showZoomedDialog,
+                      child: widget.listResult.fileUrl != null
+                      ? Image.network(
+                      widget.listResult.fileUrl,
+                      fit: BoxFit.fill,
                       )
+                          : Image.asset(
+                      'assets/sreekar_seeds.png',
+    fit: BoxFit.fill,
+    ),
+    ),
+    ),
+    ),
+    ],
+    ),
                     ],
+
                   ),
                 ),
               ),
@@ -306,5 +393,52 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
     print('Company ID: $CompneyId');
 
 
+  }
+
+  void _showZoomedDialog() {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.end,
+            children: [
+              GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Padding(
+                  padding: const EdgeInsets.all(8.0),
+                  child: Icon(
+                    Icons.close,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+              SizedBox(
+                width: double.infinity,
+                height: 400, // Adjust the height as needed
+                child: PhotoViewGallery.builder(
+                  itemCount: 1, // Only one image in the gallery
+                  builder: (context, index) {
+                    return PhotoViewGalleryPageOptions(
+                      imageProvider: NetworkImage(widget.listResult.fileUrl ?? ''),
+                      minScale: PhotoViewComputedScale.contained,
+                      maxScale: PhotoViewComputedScale.covered * 2,
+                    );
+                  },
+                  scrollPhysics: BouncingScrollPhysics(),
+                  backgroundDecoration: BoxDecoration(
+                    color: Colors.black,
+                  ),
+                  pageController: PageController(),
+                  onPageChanged: (index) {
+                    // Handle page change if needed
+                  },
+                ),
+              ),
+            ],
+          ),
+        );
+      },
+    );
   }
 }

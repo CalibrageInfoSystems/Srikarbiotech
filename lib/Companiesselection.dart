@@ -1,3 +1,5 @@
+import 'dart:io';
+
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
@@ -84,6 +86,10 @@ class Companies_selection extends State<Companiesselection> {
                   height: 50, // Adjust the space height as needed
                 ),
                 // Using ListView.builder to add space between cards
+              _isLoading
+                    ? Center(
+                  child: CircularProgressIndicator(),
+                ):
                 ListView.builder(
                   shrinkWrap: true,
                   itemCount: companies.length,
@@ -92,10 +98,11 @@ class Companies_selection extends State<Companiesselection> {
                       children: [
                         CardForScreenOne(
                           cardIndex: companies[index].companyId - 1,
-                          cardImage: '',
+                          cardImage:companies[index].fileUrl,
                           companyName: companies[index].companyName,
                           companyAddress: companies[index].companyAddress,
                           companyId: companies[index].companyId,
+                          fileUrl: companies[index].fileUrl,
                         ),
                         const SizedBox(
                           height: 30, // Adjust the space height as needed
@@ -111,6 +118,8 @@ class Companies_selection extends State<Companiesselection> {
       ),
     );
   }
+
+
 
   void fetchGetCompaniesData() async {
     setState(() {
@@ -128,7 +137,7 @@ class Companies_selection extends State<Companiesselection> {
 
         final List<dynamic> listResult = responseData['response']['listResult'];
         final List<CompanyModel> fetchedCompanies =
-            listResult.map((data) => CompanyModel.fromJson(data)).toList();
+        listResult.map((data) => CompanyModel.fromJson(data)).toList();
 
         setState(() {
           companies = fetchedCompanies;
@@ -136,10 +145,20 @@ class Companies_selection extends State<Companiesselection> {
       } else {
         throw Exception('Failed to load data from the API');
       }
+    } on SocketException catch (e) {
+      print('Connection timeout: $e');
+      Text('Connection timeout: $e');
+      // Handle connection timeout here (e.g., show a message to the user)
     } catch (e) {
       print('Error fetching data: $e');
-    } finally {}
+      // Handle other types of errors here
+    } finally {
+      setState(() {
+        _isLoading = false;
+      });
+    }
   }
+
 }
 
 class CardForScreenOne extends StatelessWidget {
@@ -148,6 +167,7 @@ class CardForScreenOne extends StatelessWidget {
   final String companyName;
   final String companyAddress;
   final int companyId;
+  final String fileUrl;
   CardForScreenOne({
     Key? key,
     required this.cardIndex,
@@ -155,6 +175,7 @@ class CardForScreenOne extends StatelessWidget {
     required this.companyName,
     required this.companyAddress,
     required this.companyId,
+    required this.fileUrl,
   }) : super(key: key);
 
   final List cardColors = [
@@ -208,7 +229,7 @@ class CardForScreenOne extends StatelessWidget {
                                   text:
                                       "${companyName.split(" ")[0]}\n", // First word
                                   style: TextStyle(
-                                    fontSize: 28,
+                                    fontSize: 22,
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w700,
                                     color: cardIndex == 0
@@ -223,7 +244,7 @@ class CardForScreenOne extends StatelessWidget {
                                       .sublist(1)
                                       .join(" "), // Remaining words
                                   style: TextStyle(
-                                    fontSize: 35,
+                                    fontSize: 30,
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w700,
                                     color: cardIndex == 0
@@ -246,14 +267,18 @@ class CardForScreenOne extends StatelessWidget {
                   // image
                   Expanded(
                     child: Container(
-                      height: 100,
-                      alignment:
-                          Alignment.center, // Center the image horizontally
-                      child: cardIndex == 0
-                          ? SvgPicture.asset(cardColors[2][0])
-                          : Image.asset(cardColors[2][1]),
+                      height: 80,
+                      alignment: Alignment.center,
+                      child: Image.network(
+                        cardImage,
+                        width: 100,
+                        height: 100,
+                        fit: BoxFit.contain,
+                      ),
                     ),
                   ),
+
+
                 ],
               ),
             ),

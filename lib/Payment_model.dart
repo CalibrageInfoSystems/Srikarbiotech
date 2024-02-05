@@ -1,6 +1,6 @@
 class PaymentMode {
-  final int typeCdId;
-  final int classTypeId;
+  final int? typeCdId;
+  final int? classTypeId; // Make it nullable by adding '?'
   final String name;
   final String desc;
   final String tableName;
@@ -19,7 +19,9 @@ class PaymentMode {
     required this.isActive,
   });
 
-  factory PaymentMode.fromJson(Map<String, dynamic> json) {
+
+
+factory PaymentMode.fromJson(Map<String, dynamic> json) {
     return PaymentMode(
       typeCdId: json['typeCdId'],
       classTypeId: json['classTypeId'],

@@ -45,7 +45,7 @@ class OrderItemXrefType {
   double? igst;
   double? cgst;
   double? sgst;
-
+  int? numInSale;
   OrderItemXrefType({
     required this.id,
     required this.orderId,
@@ -59,6 +59,7 @@ class OrderItemXrefType {
     this.igst,
     this.cgst,
     this.sgst,
+    this.numInSale,
   });
 
   // Factory constructor to create an instance from a JSON map
@@ -76,6 +77,7 @@ class OrderItemXrefType {
       igst: json['igst'],
       cgst: json['cgst'],
       sgst: json['sgst'],
+        numInSale :json['numInSale'],
     );
   }
 
@@ -95,6 +97,11 @@ class OrderItemXrefType {
       'cgst': cgst,
       'sgst': sgst,
     };
+  }
+
+// Method to update quantity
+  void updateQuantity(int newQuantity) {
+    orderQty = newQuantity;
   }
 }
 

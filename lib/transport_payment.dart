@@ -5,6 +5,8 @@ import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'package:srikarbiotech/Ordersubmit_screen.dart';
 
 import 'Billing_screen.dart';
+import 'Common/SharedPrefsData.dart';
+import 'HomeScreen.dart';
 import 'Model/CartHelper.dart';
 
 class transport_payment extends StatefulWidget {
@@ -17,6 +19,8 @@ class transport_payment extends StatefulWidget {
   final String phone;
   final String bookingplace;
   final String preferabletransport;
+  final double creditLine;
+  final double balance;
 
   transport_payment(
       {required this.cardName,
@@ -27,7 +31,9 @@ class transport_payment extends StatefulWidget {
         required this.preferabletransport,
         required this.phone,
         required this.proprietorName,
-        required this.gstRegnNo});
+        required this.gstRegnNo,
+        required this.creditLine,
+        required this.balance});
 
   @override
   _transportstate createState() => _transportstate();
@@ -36,6 +42,7 @@ class transport_payment extends StatefulWidget {
 class _transportstate extends State<transport_payment> {
   TextEditingController bookingplacecontroller = TextEditingController();
   TextEditingController Parcelservicecontroller = TextEditingController();
+  int CompneyId = 0;
   @override
   void initState() {
     bookingplacecontroller = TextEditingController(text: widget.bookingplace);
@@ -49,40 +56,72 @@ class _transportstate extends State<transport_payment> {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFe78337),
-        automaticallyImplyLeading:
-        false, // This line removes the default back arrow
+      appBar:
+      AppBar(
+        backgroundColor: const Color(0xFFe78337),
+        automaticallyImplyLeading: false,
+        // This line removes the default back arrow
         title: Row(
-          mainAxisAlignment: MainAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
+          mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-              child: GestureDetector(
-                onTap: () {
-                  // Handle the click event for the back arrow icon
-                  Navigator.of(context).pop();
-                },
-                child: Icon(
-                  Icons.chevron_left,
-                  size: 30.0,
-                  color: Colors.white,
+            Row(
+              children: [
+                Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  child: GestureDetector(
+                    onTap: () {
+                      // Handle the click event for the back button
+                      Navigator.of(context).pop();
+                    },
+                    child: const Icon(
+                      Icons.chevron_left,
+                      size: 30.0,
+                      color: Colors.white,
+                    ),
+                  ),
                 ),
-              ),
+                const SizedBox(width: 8.0),
+                const Text(
+                  'Select Transport',
+                  style: TextStyle(
+                    color: Colors.white,
+                    fontSize: 18,
+                  ),
+                ),
+              ],
             ),
-            Text(
-              'Select Transport',
-              style: TextStyle(
-                fontFamily: 'Roboto',
-                fontWeight: FontWeight.w600,
-                color: Colors.white,
-                fontSize: 18,
-              ),
+            FutureBuilder(
+              future: getshareddata(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  // Access the companyId after shared data is retrieved
+
+                  return GestureDetector(
+                    onTap: () {
+                      // Handle the click event for the home icon
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
+                    },
+                    child: Image.asset(
+                      CompneyId == 1
+                          ? 'assets/srikar-home-icon.png'
+                          : 'assets/seeds-home-icon.png',
+                      width: 30,
+                      height: 30,
+                    ),
+                  );
+                } else {
+                  // Return a placeholder or loading indicator
+                  return SizedBox.shrink();
+                }
+              },
             ),
           ],
         ),
       ),
+
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -330,9 +369,19 @@ class _transportstate extends State<transport_payment> {
                 gstRegnNo: '${widget.gstRegnNo}',
                 BookingPlace: bookingplacecontroller.text,
                 TransportName: Parcelservicecontroller.text,
+                creditLine: double.parse('${widget.creditLine}'), // Convert to double
+                balance: double.parse('${widget.balance}'), // Convert to double
               ),
         ),
       );
     }
   }
+
+  Future<void> getshareddata() async {
+    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+
+    print('Company ID: $CompneyId');
+
+  }
+
 }

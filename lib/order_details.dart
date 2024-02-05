@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:srikarbiotech/HomeScreen.dart';
 import 'package:http/http.dart' as http;
 import 'Common/CommonUtils.dart';
+import 'Common/SharedPrefsData.dart';
 import 'Model/OrderDetailsResponse.dart';
 import 'orderdetails_model.dart';
 
@@ -73,6 +74,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
   double totalcost = 0.0;
   late List<GetOrderDetailsResult> orderDetails;
   late List<OrderItemXrefList> orderItemsList = [];
+  int CompneyId = 0;
   @override
   void initState() {
     print('OrderId: ${widget.orderid}');
@@ -788,22 +790,44 @@ class _OrderdetailsPageState extends State<Orderdetails> {
               ),
             ],
           ),
-          GestureDetector(
-            onTap: () {
-              // Handle the click event for the home icon
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
-              );
+          FutureBuilder(
+            future: getshareddata(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // Access the companyId after shared data is retrieved
+
+                return GestureDetector(
+                  onTap: () {
+                    // Handle the click event for the home icon
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
+                  },
+                  child: Image.asset(
+                    CompneyId == 1
+                        ? 'assets/srikar-home-icon.png'
+                        : 'assets/seeds-home-icon.png',
+                    width: 30,
+                    height: 30,
+                  ),
+                );
+              } else {
+                // Return a placeholder or loading indicator
+                return SizedBox.shrink();
+              }
             },
-            child: Icon(
-              Icons.home,
-              size: 30,
-              color: Colors.white,
-            ),
           ),
         ],
       ),
     );
   }
+
+  Future<void> getshareddata() async {
+    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+
+    print('Company ID: $CompneyId');
+
+  }
 }
+

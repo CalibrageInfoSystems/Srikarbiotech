@@ -11,6 +11,7 @@ import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:path/path.dart';
+import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/Payment_model.dart';
 import 'package:srikarbiotech/categroy_model.dart';
@@ -241,11 +242,7 @@ getshareddata();
                                       top: 0.0, left: 5.0, right: 0.0),
                                   child: Text(
                                     'Amount * ',
-                                    style: TextStyle(
-                                      fontSize: 12.0,
-                                      color: Color(0xFF5f5f5f),
-                                      fontWeight: FontWeight.bold,
-                                    ),
+                                    style: CommonUtils.Mediumtext_12,
                                     textAlign: TextAlign.start,
                                   ),
                                 ),
@@ -278,21 +275,11 @@ getshareddata();
                                                 controller: Amounttext,
                                                 keyboardType: TextInputType.number,
                                                 maxLength: 10,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: 'Roboto',
-                                                  fontWeight: FontWeight.w500,
-                                                  color: Color(0xFFe78337),
-                                                ),
+                                                style: CommonUtils.Mediumtext_o_14,
                                                 decoration: InputDecoration(
                                                   counterText: '',
                                                   hintText: 'Enter  Amount',
-                                                  hintStyle: TextStyle(
-                                                      fontSize: 14,
-                                                      fontFamily: 'Roboto',
-                                                      fontWeight: FontWeight.w700,
-                                                      color: Color(0xa0e78337),
-                                                  ),
+                                                  hintStyle: CommonUtils.hintstyle_o_14,
                                                   border: InputBorder.none,
                                                 ),
                                               ),
@@ -312,12 +299,7 @@ getshareddata();
                                 top: 10.0, left: 5.0, right: 0.0),
                             child: Text(
                               'Payment Mode * ',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.w600,
-                                color: Color(0xFF5f5f5f),
-                              ),
+                              style: CommonUtils.Mediumtext_12,
                               textAlign: TextAlign.start,
                             ),
                           ),
@@ -447,11 +429,7 @@ getshareddata();
                                           top: 0.0, left: 5.0, right: 0.0),
                                       child: Text(
                                         'Credit Account No *',
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                          color: Color(0xFF5f5f5f),
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                        style: CommonUtils.Mediumtext_12,
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
@@ -486,6 +464,7 @@ getshareddata();
                                                     accountnumcontroller,
                                                     keyboardType:
                                                     TextInputType.number,
+                                                    maxLength: 20,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
@@ -494,6 +473,7 @@ getshareddata();
                                                       color: Color(0xFFe78337),
                                                     ),
                                                     decoration: InputDecoration(
+                                                      counterText: '',
                                                       hintText:
                                                       'Enter Credit Account No',
                                                       hintStyle: TextStyle(
@@ -529,11 +509,7 @@ getshareddata();
                                           top: 0.0, left: 5.0, right: 0.0),
                                       child: Text(
                                         'Credit Bank *',
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                          color: Color(0xFF5f5f5f),
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                  style: CommonUtils.Mediumtext_12,
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
@@ -568,6 +544,7 @@ getshareddata();
                                                     creditbankcontroller,
                                                     keyboardType:
                                                     TextInputType.name,
+                                                    maxLength: 25,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
@@ -576,6 +553,7 @@ getshareddata();
                                                       color: Color(0xFFe78337),
                                                     ),
                                                     decoration: InputDecoration(
+                                                      counterText: '',
                                                       hintText:
                                                       'Enter Credit Bank',
                                                       hintStyle: TextStyle(
@@ -611,12 +589,7 @@ getshareddata();
                                           top: 0.0, left: 5.0, right: 0.0),
                                       child: Text(
                                         'UTR Number *',
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                          color: Color(0xFF5f5f5f),
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.w600,
-                                        ),
+                                        style: CommonUtils.Mediumtext_12,
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
@@ -651,6 +624,7 @@ getshareddata();
                                                     utrcontroller,
                                                     keyboardType:
                                                     TextInputType.name,
+                                                    maxLength: 25,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
@@ -659,6 +633,7 @@ getshareddata();
                                                       color: Color(0xFFe78337),
                                                     ),
                                                     decoration: InputDecoration(
+                                                      counterText: '',
                                                       hintText:
                                                       'Enter UTR Number',
                                                       hintStyle: TextStyle(
@@ -695,11 +670,7 @@ getshareddata();
                                           top: 0.0, left: 5.0, right: 0.0),
                                       child: Text(
                                         'Check Number',
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                          color: Color(0xFF5f5f5f),
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                        style: CommonUtils.Mediumtext_12,
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
@@ -794,11 +765,7 @@ getshareddata();
                                           top: 0.0, left: 5.0, right: 0.0),
                                       child: Text(
                                         'Check Issued Bank *',
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                          color: Color(0xFF5f5f5f),
-                                          fontWeight: FontWeight.bold,
-                                        ),
+                                        style: CommonUtils.Mediumtext_12,
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
@@ -834,6 +801,7 @@ getshareddata();
                                                         checkissuedbankcontroller,
                                                     keyboardType:
                                                         TextInputType.name,
+                                                    maxLength:  25,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
@@ -842,6 +810,7 @@ getshareddata();
                                                       color: Color(0xFFe78337),
                                                     ),
                                                     decoration: InputDecoration(
+                                                      counterText: '',
                                                       hintText:
                                                           'Enter Issued Bank',
                                                       hintStyle: TextStyle(
@@ -873,11 +842,7 @@ getshareddata();
                                 top: 10.0, left: 5.0, right: 0.0),
                             child: Text(
                               'Purpose *',
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Color(0xFF5f5f5f),
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: CommonUtils.Mediumtext_12,
                               textAlign: TextAlign.start,
                             ),
                           ),
@@ -972,11 +937,7 @@ getshareddata();
                                 top: 10.0, left: 5.0, right: 0.0),
                             child: Text(
                               'Category * ',
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Color(0xFF5f5f5f),
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: CommonUtils.Mediumtext_12,
                               textAlign: TextAlign.start,
                             ),
                           ),
@@ -1027,8 +988,7 @@ getshareddata();
                                                     newValue,
                                                 orElse: () => ItemGroup(
                                                     itmsGrpCod: '',
-                                                    itmsGrpNam: '',
-                                                    itemClass: ''),
+                                                    itmsGrpNam: ''),
                                               );
 
                                               // Print the selected values
@@ -1066,11 +1026,7 @@ getshareddata();
                                 top: 10.0, left: 0.0, right: 0.0),
                             child: Text(
                               'Attachment *',
-                              style: TextStyle(
-                                fontSize: 12.0,
-                                color: Color(0xFF5f5f5f),
-                                fontWeight: FontWeight.bold,
-                              ),
+                              style: CommonUtils.Mediumtext_12,
                               textAlign: TextAlign.start,
                             ),
                           ),
@@ -1153,64 +1109,61 @@ getshareddata();
                           ),
                           SizedBox(height: 10.0),
 
-                          GestureDetector    (
-                            onTap: () {
-                              // Handle tap on uploaded image to remove it
-                              setState(() {
-                                _imageFile = null; // Set _imageFile to null to remove the image
-                              });
-                            },
-                            child: SizedBox(
-                              width: _imageFile != null
-                                  ? MediaQuery.of(context).size.width
-                                  : MediaQuery.of(context).size.width,
-                              height: _imageFile != null ? 100 : 0,
-                              child: Stack(
-                                alignment: Alignment.topRight,
-                                // Align cross mark icon to the top right
-                                children: [
-                                  _imageFile != null
-                                      ? Image.file(
-                                          _imageFile!,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          fit: BoxFit.fitWidth,
-                                        )
-                                      : Image.asset(
-                                          'assets/shopping_bag.png',
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          fit: BoxFit.fitWidth,
-                                        ),
-                                  if (_imageFile != null)
-                                    GestureDetector(
-                                      onTap: () {
-                                        // Handle tap on cross mark icon (optional)
-                                        setState(() {
-                                          _imageFile =
-                                              null; // Set _imageFile to null to remove the image
-                                        });
-                                      },
-                                      child: Container(
-                                        padding: EdgeInsets.all(5.0),
-                                        margin: EdgeInsets.only(
-                                            top: 5, right: 10.0),
-                                        color: HexColor(
-                                            '#ffeee0'), // Optional overlay color
-                                        child: SvgPicture.asset(
-                                          'assets/crosscircle.svg',
-                                          color: Color(0xFFe78337),
-                                          width:
-                                              24.0, // Set the width as needed
-                                          height:
-                                              24.0, // Set the height as needed
-                                        ),
-                                      ),
-                                    ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          GestureDetector(
+                          onTap: () {
+                          // Handle tap on uploaded image to show in a popup
+                          if (_imageFile != null) {
+                          _showImagePopup(context, _imageFile!);
+                          }
+                          },
+                          child: SizedBox(
+                          width: _imageFile != null
+                          ? MediaQuery.of(context).size.width
+                              : MediaQuery.of(context).size.width,
+                          height: _imageFile != null ? 100 : 0,
+                          child: Stack(
+                          alignment: Alignment.topRight,
+                          children: [
+                          _imageFile != null
+                          ? Image.file(
+                          _imageFile!,
+                          width: MediaQuery.of(context).size.width,
+    fit: BoxFit.fitWidth,
+    )
+        : Image.asset(
+    'assets/shopping_bag.png',
+    width: MediaQuery.of(context).size.width,
+    fit: BoxFit.fitWidth,
+    ),
+    if (_imageFile != null)
+    GestureDetector(
+    onTap: () {
+    // Handle tap on cross mark icon (optional)
+    setState(() {
+    _imageFile =
+    null; // Set _imageFile to null to remove the image
+    });
+    },
+    child: Container(
+    padding: EdgeInsets.all(5.0),
+    margin: EdgeInsets.only(top: 5, right: 10.0),
+    color: HexColor('#ffeee0'), // Optional overlay color
+    child: SvgPicture.asset(
+    'assets/crosscircle.svg',
+    color: Color(0xFFe78337),
+    width: 24.0, // Set the width as needed
+    height: 24.0, // Set the height as needed
+    ),
+    ),
+    ),
+    ],
+    ),
+    ),
+    ),
+
+
+
+
 
                           // Submit Button
                           SizedBox(height: 18.0),
@@ -1484,11 +1437,7 @@ getshareddata();
           padding: EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
           child: Text(
             labelText,
-            style: TextStyle(
-              fontSize: 12.0,
-              color: Color(0xFF5f5f5f),
-              fontWeight: FontWeight.bold,
-            ),
+            style: CommonUtils.Mediumtext_12,
             textAlign: TextAlign.start,
           ),
         ),
@@ -1809,6 +1758,32 @@ getshareddata();
     setState(() {
       isButtonEnabled = false;
     });
+  }
+
+  void _showImagePopup(BuildContext context, File imageFile) {
+    Navigator.of(context).push(
+      MaterialPageRoute(
+        builder: (context) => _buildImagePopup(imageFile),
+      ),
+    );
+  }
+
+  Widget _buildImagePopup(File imageFile) {
+    return Scaffold(
+      appBar: AppBar(
+        backgroundColor: Color(0xFFe78337),
+        automaticallyImplyLeading: false,
+        title: Text("Attached Image"),
+      ),
+      body: Container(
+        child: PhotoView(
+          imageProvider: FileImage(imageFile),
+          minScale: PhotoViewComputedScale.contained,
+          maxScale: PhotoViewComputedScale.covered * 2,
+          enableRotation: true,
+        ),
+      ),
+    );
   }
 
 }

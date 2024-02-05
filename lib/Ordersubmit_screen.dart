@@ -33,6 +33,8 @@ class Ordersubmit_screen extends StatefulWidget {
   final String phone;
   final String BookingPlace;
   final String TransportName;
+  final double creditLine;
+  final double balance;
 
   Ordersubmit_screen(
       {required this.cardName,
@@ -43,7 +45,9 @@ class Ordersubmit_screen extends StatefulWidget {
         required this.proprietorName,
         required this.gstRegnNo,
         required this.BookingPlace,
-        required this.TransportName});
+        required this.TransportName,
+        required this.creditLine,
+        required this.balance});
   @override
   Order_submit_screen createState() => Order_submit_screen();
 }
@@ -60,6 +64,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
   int CompneyId = 0;
   String? userId = "";
   String? slpCode = "";
+  double totalSum = 0.0;
   @override
   initState() {
     super.initState();
@@ -77,6 +82,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
 
   @override
   Widget build(BuildContext context) {
+    cartItems = Provider.of<CartProvider>(context).getCartItems();
+    totalSum = calculateTotalSum(cartItems);
     return Scaffold(
       appBar:
       AppBar(
@@ -163,7 +170,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
         ),
       ),
 
-      body: SingleChildScrollView(
+      body:
+      SingleChildScrollView(
         child: Column(
           children: [
             Padding(
@@ -184,67 +192,32 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                 ],
               ),
             ),
-        FutureBuilder(
-          future: Future.value(), // Replace with an actual asynchronous operation if needed
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              // If the Future is still running, show a loading indicator
-              return CircularProgressIndicator();
-            } else if (snapshot.connectionState == ConnectionState.done) {
-              // If the Future is completed, access the cart data from the provider
-              cartItems = Provider.of<CartProvider>(context).getCartItems();
+  //           }
+  //         },
+  //       ),
 
-              // Print the length of the cart items
-              globalCartLength = cartItems.length;
-              print('Cart Items globalCartLength: $globalCartLength');
+              FutureBuilder(
+              future: Future.value(),
+              builder: (context, snapshot) {
+    if (snapshot.connectionState == ConnectionState.waiting) {
+    return CircularProgressIndicator();
+    } else if (snapshot.connectionState == ConnectionState.done) {
+    cartItems = Provider.of<CartProvider>(context).getCartItems();
 
-              return ListView.builder(
-                key: UniqueKey(), // Add a unique key to ListView.builder
-                shrinkWrap: true,
-                physics: PageScrollPhysics(),
-                scrollDirection: Axis.vertical,
-                itemCount: cartItems.length,
-                itemBuilder: (context, index) {
-                  OrderItemXrefType cartItem = cartItems[index];
-                  if (cartItems.length != textEditingControllers.length) {
-                    textEditingControllers = List.generate(cartItems.length,
-                            (index) => TextEditingController());
-                  }
-    return CartItemWidget(
-    cartItem: cartItems[index],
-    onDelete: () {
-    setState(() {
-    // Remove the item from the list when delete is pressed
 
-    cartItems.removeAt(index);
-    });
+    // Print the total sum
+    print('Total Sum of Product Prices: $totalSum');
+
+    return buildListView();
+    } else {
+    return Text('Error: Unable to fetch cart data');
+    }
     },
-    );
-    },
-
-              );
-            } else {
-              // Handle other connection states (such as ConnectionState.active or ConnectionState.none)
-              return Text('Error: Unable to fetch cart data');
-            }
-          },
-        ),
+    ),
 
 
-            // Container(
-            //   child: cartItems != null && cartItems!.isNotEmpty
-            //       ?
-            // SingleChildScrollView(
-            //   scrollDirection: Axis.vertical,
-            //   child:
-            // Flexible(
-            //   fit: FlexFit.loose,
-            //child:
 
-            // : Center(
-            //     child: Text('No items in the cart'),
-            //      ),
-            //   ),
+
             SizedBox(height: 10),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -295,10 +268,10 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                                                   proprietorName:
                                                   widget.proprietorName,
                                                   gstRegnNo: widget.gstRegnNo,
-                                                  preferabletransport:
-                                                  widget.TransportName,
-                                                  bookingplace:
-                                                  widget.BookingPlace,
+                                                  preferabletransport: widget.TransportName,
+                                                  bookingplace: widget.BookingPlace,
+                                                  creditLine:0.0,
+                                                  balance: 0.0,
                                                 )),
                                       );
                                     },
@@ -432,7 +405,9 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
               ),
             ),
             Container(
+
                 width: MediaQuery.of(context).size.width,
+
                 padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
                 child: IntrinsicHeight(
                     child: Card(
@@ -470,7 +445,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                                         mainAxisAlignment: MainAxisAlignment.end,
                                         children: [
                                           Text(
-                                            '₹${12765.00}',
+                                            '₹${totalSum.toStringAsFixed(2)}',
                                             style: TextStyle(
                                               color: Color(0xFFe78337),
                                               fontWeight: FontWeight.bold,
@@ -535,23 +510,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     );
   }
 
-  //
-  // void saveCartData() async {
-  //   // Get the SharedPreferences instance
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //
-  //   // Save the updated cart data in SharedPreferences
-  //   prefs.setStringList('cartItems', cartItems!);
-  //
-  //   // Print the items saved in the cart
-  //   print('Items saved in the cart:');
-  //   for (String item in cartItems!) {
-  //     print(item);
-  //   }
-  //
-  //   // Print the count of items in the cart
-  //   print('Total items in the cart: ${cartItems!.length}');
-  // }
+
 
   void AddOrder() async {
 
@@ -591,7 +550,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       "Id": 1,
       "CompanyId": CompneyId,
       "OrderNumber": "",
-      "OrderDate": "2024-01-24T10:39:00.9845541+05:30",
+      "OrderDate": formattedcurrentDate,
       "PartyCode": '${widget.cardCode}',
       "PartyName": '${widget.cardName}',
       "PartyAddress": '${widget.address}',
@@ -599,7 +558,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       "PartyPhoneNumber": '${widget.phone}',
       "PartyGSTNumber": '${widget.gstRegnNo}',
       "ProprietorName": '${widget.proprietorName}',
-      "PartyOutStandingAmount": totalOrderPrice,
+      "PartyOutStandingAmount": '${widget.balance}',
       "BookingPlace": '${widget.BookingPlace}',
       "TransportName": '${widget.TransportName}',
       "FileName": "",
@@ -610,7 +569,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       "IGST": 1.1,
       "CGST": 1.1,
       "SGST": 1.1,
-      "TotalCost": totalOrderPrice,
+      "TotalCost": totalSum,
       "Remarks": "test",
       "IsActive": true,
       "CreatedBy": userId,
@@ -634,10 +593,9 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
         final responseData = jsonDecode(response.body);
         print(responseData);
 
-        // 1. Retrieve the orderNumber from the API response
-        String orderNumber = responseData['response']['orderNumber'];
+        final cartProvider = context.read<CartProvider>();
 
-        // 2. Display orderNumber in orderStatusScreen
+        clearCartData(cartProvider);
 
         Navigator.push(
           context,
@@ -669,35 +627,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     prefs.remove('cartItems');
   }
 
-  // Function to retrieve cart items from SharedPreferences
-  Future<List<OrderItemXrefType>> getCartItems() async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
-
-    // Retrieve existing cart items from SharedPreferences
-    List<String>? cartItemsJson = prefs.getStringList('cart_items') ?? [];
-
-    // Convert JSON strings back to OrderItemXrefType objects
-    List<OrderItemXrefType> cartItems = cartItemsJson
-        .map((jsonString) => OrderItemXrefType.fromJson(jsonDecode(jsonString)))
-        .toList();
-
-    return cartItems;
-  }
-
-  Future<void> fetchCartItems() async {
-    List<OrderItemXrefType> items = await getCartItems();
-
-    // Print the retrieved cart items
-    print('Retrieved Cart Items:');
-    items.forEach((item) {
-      print(
-          'Item Name: ${item.itemName}, Price: ${item.price}, Quantity: ${item.orderQty}');
-    });
-
-    setState(() {
-      cartItems = items;
-    });
-  }
 
   Future<void> getshareddata() async {
 
@@ -710,26 +639,83 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
 
 
   }
+
+  Widget buildListView() {
+    return ListView.builder(
+      key: UniqueKey(),
+      shrinkWrap: true,
+      physics: PageScrollPhysics(),
+      scrollDirection: Axis.vertical,
+      itemCount: cartItems.length,
+      itemBuilder: (context, index) {
+        OrderItemXrefType cartItem = cartItems[index];
+        if (cartItems.length != textEditingControllers.length) {
+          textEditingControllers = List.generate(cartItems.length,
+                  (index) => TextEditingController());
+        }
+        double orderQty = cartItem.orderQty.toDouble();
+        double price = cartItem.price ?? 0.0;
+        double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
+        double totalPrice = orderQty * price * numInSale;
+
+        return CartItemWidget(
+          cartItem: cartItem,
+          onDelete: () {
+            setState(() {
+              cartItems.removeAt(index);
+            });
+          },
+          totalPrice: totalPrice,
+        );
+      },
+    );
+  }
+
+  double calculateTotalSum(List<OrderItemXrefType> cartItems) {
+    double sum = 0.0;
+    for (OrderItemXrefType cartItem in cartItems) {
+      double orderQty = cartItem.orderQty.toDouble();
+      double price = cartItem.price ?? 0.0;
+      double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
+      sum += orderQty * price * numInSale;
+    }
+    return sum;
+  }
+
+  void clearCartData(CartProvider cartProvider) {
+    cartProvider.clearCart();
+  }
+
 }
 class CartItemWidget extends StatefulWidget {
   final OrderItemXrefType cartItem;
-  final VoidCallback onDelete;
+  final Function onDelete;
+  final double totalPrice;
 
-  CartItemWidget({required this.cartItem, required this.onDelete});
+  CartItemWidget({
+    required this.cartItem,
+    required this.onDelete,
+    required this.totalPrice,
+  });
 
   @override
   _CartItemWidgetState createState() => _CartItemWidgetState();
 }
+
 class _CartItemWidgetState extends State<CartItemWidget> {
   late TextEditingController _textController;
   late int _orderQty;
+
 
   @override
   void initState() {
     super.initState();
     _orderQty = widget.cartItem.orderQty;
     _textController = TextEditingController(text: _orderQty.toString());
+
   }
+
+
 
   @override
   Widget build(BuildContext context) {
@@ -752,30 +738,46 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 style: CommonUtils.Mediumtext_14,
               ),
               SizedBox(height: 8.0),
-              Text(
-                '₹${widget.cartItem.price}',
-                style: CommonUtils.Mediumtext_o_14,
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Expanded(
+                    child: Text(
+                      '₹${widget.cartItem.price}',
+                      style: CommonUtils.Mediumtext_o_14,
+                    ),
+                  ),
+                  Text(
+                    '₹${widget.totalPrice.toStringAsFixed(2)}',
+                    style: CommonUtils.Mediumtext_o_14,
+                  ),
+                ],
               ),
               SizedBox(height: 8.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
                   Container(
-                    width: (totalWidth - 40) / 2, // Adjusted width dynamically
+                    width: (totalWidth - 40) / 2,
                     child: PlusMinusButtons(
                       addQuantity: () {
                         setState(() {
-                          _orderQty++;
+                          _orderQty = (_orderQty ?? 0) + 1;
                           _textController.text = _orderQty.toString();
+                          // Call the updateQuantity method in your model class
+                          widget.cartItem.updateQuantity(_orderQty);
                         });
+
                       },
                       deleteQuantity: () {
                         setState(() {
-                          if (_orderQty > 1) {
-                            _orderQty--;
+                          if (_orderQty! > 1) {
+                            _orderQty = (_orderQty ?? 0) - 1;
                             _textController.text = _orderQty.toString();
+                            widget.cartItem.updateQuantity(_orderQty);
                           }
                         });
+
                       },
                       textController: _textController,
                     ),
@@ -783,7 +785,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                   SizedBox(width: 8.0),
                   GestureDetector(
                     onTap: () {
-                      widget.onDelete(); // Corrected to invoke the onDelete callback
+                      widget.onDelete();
                     },
                     child: Container(
                       height: 36,
@@ -814,7 +816,6 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                       ),
                     ),
                   ),
-
                 ],
               ),
             ],
@@ -823,8 +824,9 @@ class _CartItemWidgetState extends State<CartItemWidget> {
       ),
     );
   }
-}
 
+
+}
 class PlusMinusButtons extends StatelessWidget {
   final VoidCallback deleteQuantity;
   final VoidCallback addQuantity;

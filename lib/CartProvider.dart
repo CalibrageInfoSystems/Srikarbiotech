@@ -104,4 +104,10 @@ class CartProvider extends ChangeNotifier {
     // Example:
     return cartItems.contains(orderItem);
   }
+  // Method to clear the cart
+  void clearCart() {
+    // Your logic to clear the cart
+    cartItems.clear();
+  }
+
 }

@@ -85,7 +85,8 @@ class CommonUtils {
     Color backgroundColor,
     BorderRadius borderRadius,
   ) {
-    return Card(
+    return
+      Card(
       elevation: 2.0,
       shape: RoundedRectangleBorder(
         borderRadius: borderRadius,
@@ -150,6 +151,14 @@ class CommonUtils {
       ),
     );
   }
+  static final searchBarOutPutInlineBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide: const BorderSide(color: Colors.black38),
+  );
+  static final searchBarEnabledNdFocuedOutPutInlineBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide: const BorderSide(color: Colors.black),
+  );
 
   // header style
   static final TextStyle headerStyles = TextStyle(
@@ -179,6 +188,7 @@ class CommonUtils {
     fontWeight: FontWeight.w600,
     color: Color(0xFFe78337),
   );
+
   static final TextStyle Mediumtext_14 = TextStyle(
     fontSize: 14,
     fontFamily: "Roboto",
@@ -204,7 +214,14 @@ class CommonUtils {
     fontWeight: FontWeight.w600,
     color: Color(0xFFC4C2C2),
   );
+  static final TextStyle hintstyle_o_14 = TextStyle(
 
+    fontSize: 14,
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.w700,
+    color: Color(0xa0e78337),
+
+  );
   static final TextStyle Buttonstyle = TextStyle(
     fontSize: 14,
     fontFamily: "Roboto",

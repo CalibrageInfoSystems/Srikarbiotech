@@ -132,7 +132,7 @@ getshareddata();
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                SizedBox(height: 8.0),
+
                 CommonUtils.buildCard(
                   widget.cardName,
                   widget.cardCode,
@@ -381,6 +381,7 @@ getshareddata();
     try {
       DateTime? picked = await showDatePicker(
         context: context,
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: initialDate,
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
@@ -426,6 +427,7 @@ getshareddata();
     try {
       DateTime? picked = await showDatePicker(
         context: context,
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: initialDate,
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
@@ -504,9 +506,9 @@ getshareddata();
           setState(() {
             downloading = false;
           });
-          if (jsonResponse['isSuccess']) {
+          if (jsonResponse['result']['isSuccess']) {
             // Convert base64 string to bytes
-            if (jsonResponse['response'] == null) {
+            if (jsonResponse['result']['response'] == null) {
               // Handle null response
               CommonUtils.showCustomToastMessageLong(
                   'PDF is not available.', context, 1, 4);
@@ -516,7 +518,7 @@ getshareddata();
               print(jsonResponse);
               // Your further processing logic here
             }
-            List<int> pdfBytes = base64.decode(jsonResponse['response']);
+            List<int> pdfBytes = base64.decode(jsonResponse['result']['response']);
             var status = await Permission.storage.request();
             var manageExternalStorage = await Permission.manageExternalStorage.request();
             if (status!.isGranted || manageExternalStorage!.isGranted) {
@@ -545,9 +547,13 @@ getshareddata();
             // Get the directory for saving files
 
 
-          } else {
-            print('API Error: ${jsonResponse['endUserMessage']}'); CommonUtils.showCustomToastMessageLong(
-                '${jsonResponse['endUserMessage']}', context, 1, 4);
+          }
+
+          else {
+            print('API Error: ${jsonResponse['result']['endUserMessage']}');
+            CommonUtils.showCustomToastMessageLong(
+                '${jsonResponse['result']['endUserMessage']}', context, 1, 4);
+
 
           }
         } else {
@@ -614,9 +620,9 @@ getshareddata();
         if (response.statusCode == 200) {
           final jsonResponse = json.decode(response.body);
 
-          if (jsonResponse['isSuccess']) {
+          if (jsonResponse['result']['isSuccess']) {
             // Convert base64 string to bytes
-            List<int> pdfBytes = base64.decode(jsonResponse['response']);
+            List<int> pdfBytes = base64.decode(jsonResponse['result']['response']);
             //   var status = await Permission.storage.request();
             final status = await Permission.storage.request();
             // if (status.isDenied ||
@@ -648,9 +654,10 @@ getshareddata();
 
 
           } else {
-            print('API Error: ${jsonResponse['endUserMessage']}');
+            print('API Error: ${jsonResponse['result']['endUserMessage']}');
             CommonUtils.showCustomToastMessageLong(
-                '${jsonResponse['endUserMessage']}', context, 1, 4);
+                '${jsonResponse['result']['endUserMessage']}', context, 1, 4);
+
           }
         } else {
           print('Error: ${response.reasonPhrase}');

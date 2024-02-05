@@ -1,11 +1,19 @@
+import 'dart:convert';
+
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:http/http.dart' as http;
+import 'package:srikarbiotech/Common/CommonUtils.dart';
+import 'package:srikarbiotech/Model/returnorderimagedata_model.dart';
+import 'package:srikarbiotech/Model/viewreturnorders_model.dart';
+import 'package:srikarbiotech/Model/viewreturnorders_model.dart';
 
 import 'HomeScreen.dart';
 
 class ReturnOrderDetailsPage extends StatefulWidget {
-  const ReturnOrderDetailsPage({super.key});
+  final int orderId;
+  const ReturnOrderDetailsPage({super.key, required this.orderId});
 
   @override
   State<ReturnOrderDetailsPage> createState() => _OrderDetailsPageState();
@@ -13,7 +21,6 @@ class ReturnOrderDetailsPage extends StatefulWidget {
 
 class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
   final _orangeColor = HexColor('#e58338');
-
   final _titleTextStyle = const TextStyle(
     fontFamily: 'Roboto',
     fontWeight: FontWeight.w700,
@@ -27,135 +34,245 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
     fontSize: 14,
   );
 
+  late Future<List<ReturnOrderDetailsResult>> apiData;
+
+  late List<ReturnOrderDetailsResult> returnOrderDetailsResultList = [];
+  late List<ReturnOrderItemXrefList> returnOrderItemXrefList = [];
+
+  @override
+  void initState() {
+    super.initState();
+    apiData = tempApi();
+    apiDataInitialization();
+  }
+
+  Future<void> apiDataInitialization() async {
+    try {
+      Map<String, dynamic> apiResult = await getApiData();
+
+      List<Map<String, dynamic>> returnOrderDetailsResultListData =
+      List<Map<String, dynamic>>.from(
+          apiResult['response']['returnOrderDetailsResult']);
+
+      returnOrderDetailsResultList = returnOrderDetailsResultListData
+          .map((item) => ReturnOrderDetailsResult.fromJson(item))
+          .toList();
+
+      List<Map<String, dynamic>> returnOrderItemXrefListData =
+      List<Map<String, dynamic>>.from(
+          apiResult['response']['returnOrderItemXrefList']);
+      returnOrderItemXrefList = returnOrderItemXrefListData
+          .map((item) => ReturnOrderItemXrefList.fromJson(item))
+          .toList();
+    } catch (e) {
+      print('Error initializing data: $e');
+    }
+  }
+
+  Future<Map<String, dynamic>> getApiData() async {
+    String apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderDetailsById/${widget.orderId}';
+    final response = await http.get(Uri.parse(apiUrl));
+    if (response.statusCode == 200) {
+      return jsonDecode(response.body);
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  Future<List<ReturnOrderDetailsResult>> tempApi() async {
+    String apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderDetailsById/${widget.orderId}';
+    final response = await http.get(Uri.parse(apiUrl));
+    if (response.statusCode == 200) {
+      Map<String, dynamic> jsonResponse = json.decode(response.body);
+      if (jsonResponse['isSuccess']) {
+        List<dynamic> data =
+        jsonResponse['response']['returnOrderDetailsResult'];
+        List<ReturnOrderDetailsResult> result = data
+            .map((item) => ReturnOrderDetailsResult.fromJson(item))
+            .toList();
+        return result;
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } else {
+      throw Exception('unsuccess api call');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFe78337),
-        automaticallyImplyLeading: false,
-        elevation: 5,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                  child: GestureDetector(
-                    onTap: () {
-                      // Handle the click event for the back button
-                      Navigator.of(context).pop();
-                    },
-                    child: Icon(
-                      Icons.chevron_left,
-                      size: 30.0,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                SizedBox(width: 8.0),
-                Text(
-                  'Return Order Details',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
-                ),
-              ],
-            ),
-            GestureDetector(
-              onTap: () {
-                // Handle the click event for the home icon
-                Navigator.pushReplacement(
-                  context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
-                );
-              },
-              child: Icon(
-                Icons.home,
-                size: 30,
-                color: Colors.white,
+      appBar: _appBar(),
+      body: FutureBuilder(
+        future: apiData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const CircularProgressIndicator.adaptive();
+          } else if (snapshot.hasError) {
+            return const Center(
+              child: Text(
+                'No collection found!',
+                style: CommonUtils.Mediumtext_14_cb,
               ),
-            ),
-          ],
-        ),
-      ),
+            );
+          } else {
+            if (snapshot.hasData) {
+              List<ReturnOrderDetailsResult> data =
+              List.from(returnOrderDetailsResultList);
 
-      body: SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(12),
-          child: Column(
-            children: [
-              Card(
-                elevation: 5,
-                child: Container(
-                  decoration: BoxDecoration(
-                    color: Colors.white,
-                    borderRadius: BorderRadius.circular(10),
-                  ),
-                  width: double.infinity,
+              print('....................');
+              print(data[0].partyName);
+              return SingleChildScrollView(
+                child: Padding(
                   padding: const EdgeInsets.all(12),
                   child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: <Widget>[
-                      Text(
-                        'Party Details',
-                        style: _titleTextStyle,
+                    children: [
+                      Card(
+                        elevation: 5,
+                        child: Container(
+                          decoration: BoxDecoration(
+                            color: Colors.white,
+                            borderRadius: BorderRadius.circular(10),
+                          ),
+                          width: double.infinity,
+                          padding: const EdgeInsets.all(12),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: <Widget>[
+                              Text(
+                                'Party Details',
+                                style: _titleTextStyle,
+                              ),
+                              Text(
+                                data[0].partyName,
+                                style: _dataTextStyle,
+                              ),
+                              Text(
+                                data[0].partyCode,
+                                style: _dataTextStyle,
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Text(
+                                'Address',
+                                style: _titleTextStyle,
+                              ),
+                              Text(
+                                data[0].partyAddress,
+                                style: _dataTextStyle,
+                              ),
+                            ],
+                          ),
+                        ),
                       ),
-                      Text(
-                        'Priya Enterprises Pvt.Ltd',
-                        style: _dataTextStyle,
+
+                      // shipment details card
+                      ShipmentDetailsCard(orderId: widget.orderId, data: data),
+
+                      // item card
+                      ListView(
+                        physics: const NeverScrollableScrollPhysics(),
+                        shrinkWrap: true,
+                        children: List.generate(
+                          returnOrderItemXrefList.length,
+                              (index) =>
+                              ItemCard(data: returnOrderItemXrefList[index]),
+                        ),
                       ),
-                      Text(
-                        'PTX2383916',
-                        style: _dataTextStyle,
-                      ),
+                      // Expanded(
+                      //   child: ListView.builder(
+                      //     physics: const NeverScrollableScrollPhysics(),
+                      //     shrinkWrap: true,
+                      //     itemCount: 2, // Provide the itemCount here
+                      //     itemBuilder: (context, index) {
+                      //       return const ItemCard(); // ItemCard should not be const if it needs to be built dynamically
+                      //     },
+                      //   ),
+                      // ),
+
                       const SizedBox(
-                        height: 10,
+                        height: 20,
                       ),
-                      Text(
-                        'Address',
-                        style: _titleTextStyle,
-                      ),
-                      Text(
-                        'xxxxxxxxxxxxxx',
-                        style: _dataTextStyle,
-                      ),
+
+                      // payment details card
+                      const PaymentDetailsCard(),
                     ],
                   ),
                 ),
-              ),
+              );
+            } else {
+              return const Center(
+                child: Text('No Collection'),
+              );
+            }
+          }
+        },
+      ),
+    );
+  }
 
-              // shipment details card
-              const ShipmentDetailsCard(),
-
-              // item card
-              ListView(
-                physics: const NeverScrollableScrollPhysics(),
-                shrinkWrap: true,
-                children: List.generate(
-                  3,
-                      (index) => const ItemCard(),
+  AppBar _appBar() {
+    return AppBar(
+      backgroundColor: _orangeColor,
+      automaticallyImplyLeading: false,
+      elevation: 5,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                child: GestureDetector(
+                  onTap: () {
+                    // Handle the click event for the back button
+                    Navigator.of(context).pop();
+                  },
+                  child: const Icon(
+                    Icons.chevron_left,
+                    size: 30.0,
+                    color: Colors.white,
+                  ),
                 ),
               ),
-
-              const SizedBox(
-                height: 20,
+              const SizedBox(width: 8.0),
+              const Text(
+                'Return Order Details',
+                style: TextStyle(
+                  color: Colors.white,
+                  fontSize: 18,
+                ),
               ),
-
-              // payment details card
-              const PaymentDetailsCard(),
             ],
           ),
-        ),
+          GestureDetector(
+            onTap: () {
+              // Handle the click event for the home icon
+              Navigator.pushReplacement(
+                context,
+                MaterialPageRoute(builder: (context) => HomeScreen()),
+              );
+            },
+            child: const Icon(
+              Icons.home,
+              size: 30,
+              color: Colors.white,
+            ),
+          ),
+        ],
       ),
     );
   }
 }
 
 class ShipmentDetailsCard extends StatefulWidget {
-  const ShipmentDetailsCard({super.key});
+  final int orderId;
+  final List<ReturnOrderDetailsResult> data;
+  const ShipmentDetailsCard(
+      {super.key, required this.orderId, required this.data});
 
   @override
   State<ShipmentDetailsCard> createState() => _ShipmentDetailsCardState();
@@ -189,204 +306,250 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
     color: Colors.grey,
   );
 
+  late Future<List<ReturnOrdersImageList>> imageApiData;
+
+  @override
+  void initState() {
+    super.initState();
+    imageApiData = getReturnOrderImagesById();
+  }
+
+// here
+  Future<List<ReturnOrdersImageList>> getReturnOrderImagesById() async {
+    String apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderImagesById/${widget.orderId}';
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        List<dynamic> resultList = jsonResponse['response']['listResult'];
+        List<ReturnOrdersImageList> returnOrdersImageList = resultList
+            .map((item) => ReturnOrdersImageList.fromJson(item))
+            .toList();
+        return returnOrdersImageList;
+      } else {
+        throw Exception('unsuccess api call');
+      }
+    } catch (e) {
+      throw Exception('catch');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
-        ),
-        width: double.infinity, // remove padding here
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            // row one
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      Text(
-                        'LR Number',
-                        style: _titleTextStyle,
-                      ),
-                      Text(
-                        'IRTCP8932654',
-                        style: _dataTextStyle,
-                      ),
-                    ],
-                  ),
-                  ClipRRect(
-                    borderRadius: BorderRadius.circular(15),
-                    child: Container(
-                      decoration: const BoxDecoration(
-                        color: Color.fromARGB(255, 243, 214, 175),
-                      ),
+    return FutureBuilder(
+      future: imageApiData,
+      builder: (context, snapshot) {
+        if (snapshot.connectionState == ConnectionState.waiting) {
+          return const CircularProgressIndicator.adaptive();
+        } else if (snapshot.hasError) {
+          return const Center(child: Text('No data present'));
+        } else {
+          if (snapshot.hasData) {
+            List<ReturnOrdersImageList> data = snapshot.data!;
+            return Card(
+              elevation: 5,
+              child: Container(
+                decoration: BoxDecoration(
+                  color: Colors.white,
+                  borderRadius: BorderRadius.circular(10),
+                ),
+                width: double.infinity, // remove padding here
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: <Widget>[
+                    // row one
+                    Padding(
                       padding: const EdgeInsets.symmetric(
-                          vertical: 4, horizontal: 12),
+                          horizontal: 12, vertical: 10),
                       child: Row(
-                        children: [
-                          // Icon(
-                          //   Icons.shopify,
-                          //   color: _orangeColor,
-                          // ),
-                          SvgPicture.asset(
-                            'assets/shipping-fast.svg',
-                            fit: BoxFit.fill,
-                            width: 15,
-                            height: 15,
-                            color:_orangeColor ,
-
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Text(
+                                'LR Number',
+                                style: _titleTextStyle,
+                              ),
+                              Text(
+                                widget.data[0].lrNumber,
+                                style: _dataTextStyle,
+                              ),
+                            ],
                           ),
-                          const SizedBox(
-                            width: 5,
-                          ),
-                          Text(
-                            'Shipped',
-                            style: _dataTextStyle,
-                          ),
+                          ClipRRect(
+                            borderRadius: BorderRadius.circular(15),
+                            child: Container(
+                              decoration: const BoxDecoration(
+                                color: Color.fromARGB(255, 243, 214, 175),
+                              ),
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 4, horizontal: 12),
+                              child: Row(
+                                children: [
+                                  // Icon(
+                                  //   Icons.shopify,
+                                  //   color: _orangeColor,
+                                  // ),
+                                  SvgPicture.asset(
+                                    'assets/shipping-fast.svg',
+                                    fit: BoxFit.fill,
+                                    width: 15,
+                                    height: 15,
+                                    color: _orangeColor,
+                                  ),
+                                  const SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    'Shipped',
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          )
                         ],
                       ),
                     ),
-                  )
-                ],
-              ),
-            ),
 
-            dividerForHorizontal,
+                    dividerForHorizontal,
 
-            // row two
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'LR Date',
-                          style: _titleTextStyle,
+                    // row two
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'LR Date',
+                                  style: _titleTextStyle,
+                                ),
+                                Text(
+                                  widget.data[0].lrDate.toString(),
+                                  style: _dataTextStyle,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        Text(
-                          'xx-xx-xxxx',
-                          style: _dataTextStyle,
+                        dividerForVertical,
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Total',
+                                  style: _titleTextStyle,
+                                ),
+                                Text(
+                                  widget.data[0].totalCost.toString(),
+                                  style: _dataTextStyle,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ),
-                dividerForVertical,
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Total',
-                          style: _titleTextStyle,
+
+                    dividerForHorizontal,
+
+                    // row three
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Transport Mode',
+                                  style: _titleTextStyle,
+                                ),
+                                Text(
+                                  'xxxxx',
+                                  style: _dataTextStyle,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        Text(
-                          'xxxxxx',
-                          style: _dataTextStyle,
+                        dividerForVertical,
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Transport Name',
+                                  style: _titleTextStyle,
+                                ),
+                                Text(
+                                  'Railway Parcel Service',
+                                  style: _dataTextStyle,
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
                       ],
                     ),
-                  ),
-                ),
-              ],
-            ),
 
-            dividerForHorizontal,
+                    dividerForHorizontal,
 
-            // row three
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Transport Mode',
-                          style: _titleTextStyle,
+                    // row four
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 12, vertical: 10),
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 10, vertical: 4),
+                        decoration: BoxDecoration(
+                          color: Colors.orange.shade100,
+                          border: Border.all(
+                            color: _orangeColor,
+                          ),
+                          borderRadius: BorderRadius.circular(10),
                         ),
-                        Text(
-                          'Train',
-                          style: _dataTextStyle,
+                        child: Row(
+                          mainAxisSize: MainAxisSize.min,
+                          children: [
+                            const Icon(Icons.link),
+                            const SizedBox(
+                              width: 5,
+                            ),
+                            Text(
+                              'Attachment',
+                              style: _titleTextStyle,
+                            ),
+                          ],
                         ),
-                      ],
-                    ),
-                  ),
-                ),
-                dividerForVertical,
-                Expanded(
-                  child: Padding(
-                    padding: const EdgeInsets.symmetric(
-                        horizontal: 12, vertical: 10),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text(
-                          'Transport Name',
-                          style: _titleTextStyle,
-                        ),
-                        Text(
-                          'Railway Parcel Service',
-                          style: _dataTextStyle,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-
-            dividerForHorizontal,
-
-            // row four
-            Padding(
-              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-              child: Container(
-                padding:
-                const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-                decoration: BoxDecoration(
-                  color: Colors.orange.shade100,
-                  border: Border.all(
-                    color: _orangeColor,
-                  ),
-                  borderRadius: BorderRadius.circular(10),
-                ),
-                child: Row(
-                  mainAxisSize: MainAxisSize.min,
-                  children: [
-                    const Icon(Icons.link),
-                    const SizedBox(
-                      width: 5,
-                    ),
-                    Text(
-                      'Attachment',
-                      style: _titleTextStyle,
-                    ),
+                      ),
+                    )
                   ],
                 ),
               ),
-            )
-          ],
-        ),
-      ),
+            );
+          } else {
+            return const Center(child: Text('No data present'));
+          }
+        }
+      },
     );
   }
 }
@@ -471,7 +634,8 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
 // }
 
 class ItemCard extends StatelessWidget {
-  const ItemCard({super.key});
+  final ReturnOrderItemXrefList data;
+  const ItemCard({super.key, required this.data});
 
   final _titleTextStyle = const TextStyle(
     fontFamily: 'Roboto',
@@ -501,7 +665,7 @@ class ItemCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              'Nuca-11 (Calcium 11% SC) - 1 Liter',
+              data.itemCode,
               style: _titleTextStyle,
             ),
             Row(
@@ -511,7 +675,7 @@ class ItemCard extends StatelessWidget {
                   style: _titleTextStyle,
                 ),
                 Text(
-                  '12',
+                  data.orderQty.toString(),
                   style: _dataTextStyle,
                 ),
               ],
@@ -522,15 +686,15 @@ class ItemCard extends StatelessWidget {
             Row(
               children: [
                 Text(
-                  '\$5475.00 ',
+                  '\$${data.price.toString()} ',
                   style: _dataTextStyle,
                 ),
                 const SizedBox(
                   width: 10,
                 ),
-                const Text(
-                  '\$8500.00 ',
-                  style: TextStyle(
+                Text(
+                  '\$${data.price.toString()} ',
+                  style: const TextStyle(
                     fontSize: 12,
                     fontFamily: 'Roboto',
                     fontWeight: FontWeight.bold,

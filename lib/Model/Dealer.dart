@@ -9,7 +9,8 @@ class Dealer {
   final String state;
   final String proprietorName;
   final String gstRegnNo;
-
+  final double creditLine;
+  final double balance;
   Dealer({
     required this.cardCode,
     required this.cardName,
@@ -19,6 +20,8 @@ class Dealer {
     required this.state,
     required this.proprietorName,
     required this.gstRegnNo,
+    required this.creditLine,
+    required this.balance,
   });
 
   factory Dealer.fromJson(Map<String, dynamic> json) {
@@ -31,6 +34,8 @@ class Dealer {
       state: json['state'] ?? '',
       proprietorName: json['proprietorName'] ?? '',
       gstRegnNo: json['gstRegnNo'] ?? '',
+      creditLine: json['creditLine']?.toDouble() ?? 0.0,
+      balance: json['balance']?.toDouble() ?? 0.0,
     );
   }
 }

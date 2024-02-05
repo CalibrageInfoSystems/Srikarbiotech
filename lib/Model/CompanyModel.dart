@@ -5,6 +5,7 @@ class CompanyModel {
   final bool isActive;
   final String createdDate;
   final String updatedDate;
+  final String fileUrl;
 
   CompanyModel({
     required this.companyId,
@@ -13,6 +14,7 @@ class CompanyModel {
     required this.isActive,
     required this.createdDate,
     required this.updatedDate,
+    required this.fileUrl,
   });
 
   factory CompanyModel.fromJson(Map<String, dynamic> json) {
@@ -23,6 +25,7 @@ class CompanyModel {
       isActive: json['isActive'],
       createdDate: json['createdDate'],
       updatedDate: json['updatedDate'],
+      fileUrl: json['fileUrl'],
     );
   }
 }
