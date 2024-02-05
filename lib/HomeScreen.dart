@@ -38,113 +38,107 @@ class _home_Screen extends State<HomeScreen> {
       if (isConnected) {
         print('Connected to the internet');
         getshareddata();
-
-
       } else {
-        CommonUtils.showCustomToastMessageLong('No Internet Connection', context, 1, 4);
-        print('Not connected to the internet');  // Not connected to the internet
+        CommonUtils.showCustomToastMessageLong(
+            'No Internet Connection', context, 1, 4);
+        print('Not connected to the internet'); // Not connected to the internet
       }
     });
-   }
-
+  }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height / 3;
     return WillPopScope(
-        onWillPop: () async {
-          // Handle back button press here
-          // You can add any custom logic before closing the app
-          return true; // Return true to allow back button press and close the app
-        },
-        child: Scaffold(
+      onWillPop: () async {
+        // Handle back button press here
+        // You can add any custom logic before closing the app
+        return true; // Return true to allow back button press and close the app
+      },
+      child: Scaffold(
         appBar: AppBar(
-        elevation: 5.0,
-        backgroundColor: Colors.white,
-        automaticallyImplyLeading: false,
-        title: FutureBuilder(
-        future: getshareddata(),
-    builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.done) {
-      return Row(
-        mainAxisAlignment: MainAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: [
-          Padding(
-            padding:
-            const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-          ),
-          Image.asset(
-            CompneyId == 1
-                ? 'assets/srikar-bio.png'
-                : 'assets/srikar-seed.png',
-            width: 60.0,
-            height: 40.0,
-          ),
-          Text(
-            CompneyId == 1 ? 'Srikar Bio Tech' : 'Srikar Seeds ',
-            style: TextStyle(
-              color: Color(0xFF414141),
-              fontWeight: FontWeight.w600,
-            ),
-          ),
-          Spacer(),
-          GestureDetector(
-            onTap: () {
-              // Show the bell icon functionality
-              // Implement your logic here for the bell icon click
+          elevation: 5.0,
+          backgroundColor: Colors.white,
+          automaticallyImplyLeading: false,
+          title: FutureBuilder(
+            future: getshareddata(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return Row(
+                  mainAxisAlignment: MainAxisAlignment.start,
+                  mainAxisSize: MainAxisSize.min,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 2, vertical: 2),
+                    ),
+                    Image.asset(
+                      CompneyId == 1
+                          ? 'assets/srikar-bio.png'
+                          : 'assets/srikar-seed.png',
+                      width: 60.0,
+                      height: 40.0,
+                    ),
+                    Text(
+                      CompneyId == 1 ? 'Srikar Bio Tech' : 'Srikar Seeds ',
+                      style: TextStyle(
+                        color: Color(0xFF414141),
+                        fontWeight: FontWeight.w600,
+                      ),
+                    ),
+                    Spacer(),
+                    GestureDetector(
+                      onTap: () {
+                        // Show the bell icon functionality
+                        // Implement your logic here for the bell icon click
+                      },
+                      child: SvgPicture.asset(
+                        'assets/bell.svg',
+                        width: 18.0,
+                        height: 25.0,
+                        color: Color(0xFFe78337),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 15.0,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        // Show the logout confirmation dialog
+                        logOutDialog();
+                      },
+                      child: SvgPicture.asset(
+                        'assets/sign-out-alt.svg',
+                        width: 18.0,
+                        height: 25.0,
+                        color: Color(0xFFe78337),
+                      ),
+                    ),
+                    SizedBox(
+                      width: 20.0,
+                    ),
+                  ],
+                );
+              } else {
+                // Return a placeholder or loading indicator
+                return SizedBox.shrink();
+              }
             },
-            child: SvgPicture.asset(
-              'assets/bell.svg',
-              width: 18.0,
-              height: 25.0,
-              color: Color(0xFFe78337),
-            ),
           ),
-          SizedBox(
-            width: 15.0,
-          ),
-          GestureDetector(
-            onTap: () {
-              // Show the logout confirmation dialog
-              logOutDialog();
-            },
-            child: SvgPicture.asset(
-              'assets/sign-out-alt.svg',
-              width: 18.0,
-              height: 25.0,
-              color: Color(0xFFe78337),
-            ),
-          ),
-          SizedBox(
-            width: 20.0,
-          ),
-        ],
-      );
-    }
-    else {
-    // Return a placeholder or loading indicator
-    return SizedBox.shrink();
-    }
-    },
-    ),
-    ),
-      body: imageslider(),
-    ),
+        ),
+        body: imageslider(),
+      ),
     );
   }
 
   Future<void> getshareddata() async {
-      userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
-      slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
-      CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-      print('User ID: $userId');
-      print('SLP Code: $slpCode');
-      print('Company ID: $CompneyId');
-
-
+    userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
+    slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
+    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    print('User ID: $userId');
+    print('SLP Code: $slpCode');
+    print('Company ID: $CompneyId');
   }
-
 
   void logOutDialog() {
     showDialog(
@@ -177,15 +171,12 @@ class _home_Screen extends State<HomeScreen> {
     SharedPreferencesHelper.putBool(Constants.IS_LOGIN, false);
     CommonUtils.showCustomToastMessageLong("Logout Successful", context, 0, 3);
 
-
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => Companiesselection()),
-          (route) => false,
+      (route) => false,
     );
   }
-
 }
-
 
 class BannerImages {
   final String FilePath;
@@ -231,8 +222,8 @@ class _imagesliderState extends State<imageslider> {
 
                         height: MediaQuery.of(context).size.height,
                         padding: EdgeInsets.only(
-                          left: 0.0,
-                          right: 0.0,
+                          left: 10.0,
+                          right: 10.0,
                           top: 20.0,
                         ),
                         width: MediaQuery.of(context).size.width,
@@ -282,7 +273,7 @@ class _imagesliderState extends State<imageslider> {
                               child: Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Padding(
-                                  padding: EdgeInsets.only(bottom: 20.0),
+                                  padding: EdgeInsets.only(bottom: 30.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: List.generate(
@@ -306,6 +297,11 @@ class _imagesliderState extends State<imageslider> {
                   child: SingleChildScrollView(
                     child: Container(
                       width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.only(
+                        left: 10.0,
+                        right: 10.0,
+                        top: 0.0,
+                      ),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -338,7 +334,7 @@ class _imagesliderState extends State<imageslider> {
                                       },
                                     ),
                                     SizedBox(
-                                      width: 7.0,
+                                      width: 5.0,
                                     ),
                                     Container(
                                       height:
@@ -378,7 +374,7 @@ class _imagesliderState extends State<imageslider> {
                                           //       0.02, // 2% of the screen height
                                           // ),
                                           _customcontainerCard(
-                                            imageUrl: "shoppingbag.svg",
+                                            imageUrl: "bags-orders.svg",
                                             item: "View Orders",
                                             item1: "View All Order",
                                             color: Color(0xFFb7dbc1),
@@ -513,7 +509,7 @@ class _imagesliderState extends State<imageslider> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 4.0,
+                                  width: 5.0,
                                 ),
                                 Container(
                                   height:
@@ -614,7 +610,7 @@ class _imagesliderState extends State<imageslider> {
                                   ),
                                 ),
                                 SizedBox(
-                                  width: 4.0,
+                                  width: 5.0,
                                 ),
                                 Container(
                                   height:
@@ -624,7 +620,7 @@ class _imagesliderState extends State<imageslider> {
                                     //     MainAxisAlignment.spaceAround,
                                     children: [
                                       _customcontainerCard(
-                                        imageUrl: "shoppingbag.svg",
+                                        imageUrl: "bags-orders.svg",
                                         item: "View Return order",
                                         item1: "View All Reorders",
                                         color: Color(0xFFb7dbc1),
@@ -708,7 +704,7 @@ class _imagesliderState extends State<imageslider> {
         //  height: MediaQuery.of(context).size.height * (4 / 9) - 250 / 2,
         height: MediaQuery.of(context).size.height / 3,
         // height: height,
-        width: MediaQuery.of(context).size.width / 2.1,
+        width: MediaQuery.of(context).size.width / 2.25,
         child: Card(
           color: color,
           shape:
@@ -759,27 +755,31 @@ class _imagesliderState extends State<imageslider> {
                             fontFamily: "Roboto",
                             fontWeight: FontWeight.w600),
                         children: [
+                          // TextSpan(
+                          //   text: 'All Incoming and\n',
+                          // ),
+                          // WidgetSpan(
+                          //   child: SizedBox(height: 25),
+                          // ),
+                          // TextSpan(
+                          //   text: 'Outgoing Transactions\n',
+                          // ),
+                          // WidgetSpan(
+                          //   child: SizedBox(height: 25),
+                          // ),
+                          // TextSpan(
+                          //   text: 'Record',
+                          // ),
                           TextSpan(
-                            text: 'All Incoming and\n',
-                          ),
-                          WidgetSpan(
-                            child: SizedBox(height: 25),
-                          ),
-                          TextSpan(
-                            text: 'Outgoing Transactions\n',
-                          ),
-                          WidgetSpan(
-                            child: SizedBox(height: 25),
-                          ),
-                          TextSpan(
-                            text: 'Record',
-                          ),
+                              text:
+                                  'All Incoming and Outgoing Transactions Record',
+                              style: TextStyle(height: 2.5))
                         ],
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 12),
+                SizedBox(height: 16),
               ],
             ),
           ),
@@ -801,7 +801,7 @@ class _imagesliderState extends State<imageslider> {
       onTap: onTap,
       child: SizedBox(
         //  height: MediaQuery.of(context).size.width * (3.8 / 9) - 110 / 2,
-        width: MediaQuery.of(context).size.width / 2.1,
+        width: MediaQuery.of(context).size.width / 2.25,
         //  height: 275 / 2,
         height: MediaQuery.of(context).size.height / 6,
         child: Card(
@@ -880,10 +880,10 @@ class _imagesliderState extends State<imageslider> {
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: SizedBox(
+      child: Container(
         //height: 260 / 2,
         height: MediaQuery.of(context).size.height / 6,
-        width: MediaQuery.of(context).size.width / 2.2,
+        width: MediaQuery.of(context).size.width / 2.3,
         child: Card(
           color: color,
           shape:
