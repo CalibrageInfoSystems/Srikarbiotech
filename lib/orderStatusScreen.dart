@@ -62,7 +62,7 @@ class orderStatusScreen extends StatelessWidget {
               height: 35,
             ),
             Text(
-              'Your Order Placed  successfully',
+              'Your Order Placed  Successfully',
               style: TextStyle(
                 fontSize: 19,
                 letterSpacing: 0,

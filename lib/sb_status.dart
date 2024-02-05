@@ -46,7 +46,7 @@ class StatusScreen extends StatelessWidget {
               height: 35,
             ),
             Text(
-              'Your Collection Submitted successfully',
+              'Your Collection Submitted Successfully',
               style: TextStyle(
                 fontSize: 19,
                 letterSpacing: 0,

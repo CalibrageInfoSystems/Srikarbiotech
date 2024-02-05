@@ -1237,10 +1237,15 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 'Filter By',
                 style: _titleTextStyle,
               ),
-              // Text('Clear all filters', style: _labelTextStyle,),
-              Text(
-                'Clear all filters',
-                style: _clearTextStyle,
+              GestureDetector(
+                onTap: () {
+                  // Call the function to clear all filters
+                  clearAllFilters();
+                },
+                child: Text(
+                  'Clear all filters',
+                  style: _clearTextStyle,
+                ),
               ),
             ],
           ),
@@ -1576,32 +1581,31 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           'Something went wrong', context, 2, 2);
     }
     Navigator.of(context).pop();
-    //   if (response.statusCode == 200) {
-    //     Map<String, dynamic> jsonResponse = jsonDecode(response.body);
-    //     print('===========>${jsonResponse}');
-    //
-    //
-    //     if (jsonResponse['isSuccess']) {
-    //       List<dynamic> data = jsonResponse['response']['listResult'];
-    //       List<OrderResult> result =
-    //       data.map((item) => OrderResult.fromJson(item)).toList();
-    //       viewOrdersProvider.storeIntoViewOrderProvider(result);
-    //     } else {
-    //
-    //       List<OrderResult> emptyList = [];
-    //       viewOrdersProvider.storeIntoViewOrderProvider(emptyList);
-    //       print('response is unsuccesss');
-    //     }
-    //   } else {
-    //     List<OrderResult> emptyList = [];
-    //     viewOrdersProvider.storeIntoViewOrderProvider(emptyList);
-    //     print(
-    //         'Failed to send the request. Status code: ${response.statusCode}');
-    //   }
-    // } catch (e) {
-    //   print('Error: $e');
-    // }
-    // Navigator.of(context).pop();
+   
+  }
+  void clearAllFilters() {
+    setState(() {
+      // Reset the selected values to their initial state or default values
+      selectedCardCode = -1;
+      selectedValue = null;
+      selectedName = "";
+
+      selectedPurpose = null;
+      selectedPurposeObj = null;
+      purposename = "";
+
+      indexselected = 0;
+      selectedPaymode = null;
+      payid = null;
+      Selected_PaymentMode = null;
+
+      // Add similar reset logic for other filter options
+
+      // Clear date controllers if you have date filters
+      todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
+      DateTime oneWeekAgo = DateTime.now().subtract(Duration(days: 7));
+      fromdateController.text = DateFormat('dd-MM-yyyy').format(oneWeekAgo);
+    });
   }
 }
 
