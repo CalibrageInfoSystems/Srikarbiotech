@@ -19,16 +19,21 @@ import 'HomeScreen.dart';
 
 class Ledgerscreen extends StatefulWidget {
   final String cardName;
-  final String  cardCode;
-  final String  address;
+  final String cardCode;
+  final String address;
   final String proprietorName;
   final String gstRegnNo;
   final String state;
   final String phone;
 
   Ledgerscreen(
-      {required this.cardName, required this.cardCode, required this.address, required  this.state, required  this.phone,
-        required  this.proprietorName, required  this.gstRegnNo});
+      {required this.cardName,
+      required this.cardCode,
+      required this.address,
+      required this.state,
+      required this.phone,
+      required this.proprietorName,
+      required this.gstRegnNo});
   @override
   Ledger_screen createState() => Ledger_screen();
 }
@@ -42,13 +47,13 @@ class Ledger_screen extends State<Ledgerscreen> {
   DateTime selectedToDate = DateTime.now();
   int CompneyId = 0;
   @override
-  initState()  {
+  initState() {
     super.initState();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
-getshareddata();
+    getshareddata();
     checkStoragePermission();
     print('cardName: ${widget.cardName}');
     print('cardCode: ${widget.cardCode}');
@@ -58,8 +63,7 @@ getshareddata();
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-      AppBar(
+      appBar: AppBar(
         backgroundColor: Color(0xFFe78337),
         automaticallyImplyLeading: false,
         title: Row(
@@ -68,7 +72,8 @@ getshareddata();
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
@@ -97,7 +102,7 @@ getshareddata();
                 if (snapshot.connectionState == ConnectionState.done) {
                   // Access the companyId after shared data is retrieved
 
-                  return   GestureDetector(
+                  return GestureDetector(
                     onTap: () {
                       // Handle the click event for the home icon
                       Navigator.pushReplacement(
@@ -113,7 +118,6 @@ getshareddata();
                       height: 30,
                     ),
                   );
-
                 } else {
                   // Return a placeholder or loading indicator
                   return SizedBox.shrink();
@@ -124,65 +128,58 @@ getshareddata();
         ),
       ),
 
-
-      body: Column(
-        children: [
-          Padding(
+      body: Column(children: [
+        Padding(
             padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
+            child:
+                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+              CommonUtils.buildCard(
+                widget.cardName,
+                widget.cardCode,
+                widget.proprietorName,
+                widget.gstRegnNo,
+                widget.address,
+                Colors.white,
+                BorderRadius.circular(10.0),
+              ),
+              SizedBox(height: 16.0),
+              Card(
+                  elevation: 2.0,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(10.0),
+                  ),
+                  color: Colors.white,
+                  child: Container(
+                    width: double.infinity,
+                    color: Colors.white,
+                    padding: EdgeInsets.all(16.0),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        // From Date TextFormField with Calendar Icon
+                        buildDateInput(
+                          context,
+                          'From Date',
+                          fromDateController,
+                          () => _selectfromDate(context, fromDateController),
+                        ),
+                        SizedBox(height: 16.0),
+                        // To Date TextFormField with Calendar Icon
+                        buildDateInput(
+                          context,
+                          'To Date',
+                          toDateController,
+                          () => _selectDate(context, toDateController),
+                        ),
 
-                CommonUtils.buildCard(
-                  widget.cardName,
-                  widget.cardCode,
-                  widget.proprietorName,
-                  widget.gstRegnNo,
-                  widget.address,
-                  Colors.white,
-                  BorderRadius.circular(10.0),
-                ),
-                SizedBox(height: 16.0),
+                        SizedBox(height: 16.0),
 
-    Card(
-    elevation: 2.0,
-    shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(10.0),
-    ),
-    color: Colors.white,
-    child: Container(
-    width: double.infinity,
-    padding: EdgeInsets.all(16.0),
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    // From Date TextFormField with Calendar Icon
-    buildDateInput(
-    context,
-    'From Date',
-    fromDateController,
-    () => _selectfromDate(context, fromDateController),
-    ),
-    SizedBox(height: 16.0),
-    // To Date TextFormField with Calendar Icon
-    buildDateInput(
-    context,
-    'To Date',
-    toDateController,
-    () => _selectDate(context, toDateController),
-    ),
-
-
-    SizedBox(height: 16.0),
-
-    // Download and Share buttons
-
-    ],
-    ),
-    )
-    )
-
-              ]))]),
+                        // Download and Share buttons
+                      ],
+                    ),
+                  ))
+            ]))
+      ]),
       bottomNavigationBar: Container(
         height: 60,
         margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -208,7 +205,8 @@ getshareddata();
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
-                        fontWeight: FontWeight.bold, // Set the font weight to bold
+                        fontWeight:
+                            FontWeight.bold, // Set the font weight to bold
                         fontFamily: 'Roboto', // Set the font family to Roboto
                       ),
                     ),
@@ -229,9 +227,8 @@ getshareddata();
             InkWell(
               onTap: () {
                 print('Share button clicked');
-                 shareData();
+                shareData();
               },
-
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
@@ -239,7 +236,8 @@ getshareddata();
                   border: Border.all(
                     color: Color(0xFFe78337),
                   ),
-                  color: Color(0xFFF8dac2), // Replace with the desired background color
+                  color: Color(
+                      0xFFF8dac2), // Replace with the desired background color
                 ),
                 child: SvgPicture.asset(
                   'assets/share.svg', // Replace with your SVG file path
@@ -248,30 +246,21 @@ getshareddata();
                   height: 25,
                 ),
               ),
-
             )
           ],
         ),
       ),
 
- //    ),
+      //    ),
     );
-
-
-
-
-
-
-
-
   }
 
   static Widget buildDateInput(
-      BuildContext context,
-      String labelText,
-      TextEditingController controller,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String labelText,
+    TextEditingController controller,
+    VoidCallback onTap,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -355,14 +344,10 @@ getshareddata();
     );
   }
 
-
-
-
-
   Future<void> _selectfromDate(
-      BuildContext context,
-      TextEditingController controller,
-      ) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
@@ -395,7 +380,6 @@ getshareddata();
         selectedFromDate = picked;
         print("Selected From Date: $selectedFromDate");
 
-
         // Print formatted date
         print("Selected To Date: ${DateFormat('yyyy-MM-dd').format(picked)}");
       }
@@ -406,9 +390,9 @@ getshareddata();
   }
 
   Future<void> _selectDate(
-      BuildContext context,
-      TextEditingController controller,
-      ) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
@@ -441,7 +425,6 @@ getshareddata();
         selectedToDate = picked;
         print("Selected to Date: $selectedToDate");
 
-
         // Print formatted date
         print("Selected To Date: ${DateFormat('yyyy-MM-dd').format(picked)}");
       }
@@ -450,6 +433,7 @@ getshareddata();
       // Handle the error, e.g., show a message to the user or log it.
     }
   }
+
   Future<void> downloadData() async {
     bool isValid = true;
     bool hasValidationFailed = false;
@@ -477,7 +461,8 @@ getshareddata();
     }
 
     if (isValid) {
-      final apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Party/GetCustomerLedgerReport';
+      final apiUrl =
+          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Party/GetCustomerLedgerReport';
       final requestHeaders = {'Content-Type': 'application/json'};
       // final requestBody = {
       //   "PartyCode": "SRIKARTS00139",
@@ -487,7 +472,7 @@ getshareddata();
 
       final requestBody = {
         "CompanyId": '$CompneyId',
-        "PartyCode":'${widget.cardCode}',
+        "PartyCode": '${widget.cardCode}',
         "FromDate": fromdate,
         "ToDate": todate
       };
@@ -518,15 +503,17 @@ getshareddata();
               print(jsonResponse);
               // Your further processing logic here
             }
-            List<int> pdfBytes = base64.decode(jsonResponse['result']['response']);
+            List<int> pdfBytes =
+                base64.decode(jsonResponse['result']['response']);
             var status = await Permission.storage.request();
-            var manageExternalStorage = await Permission.manageExternalStorage.request();
+            var manageExternalStorage =
+                await Permission.manageExternalStorage.request();
             if (status!.isGranted || manageExternalStorage!.isGranted) {
-              Directory downloadsDirectory = Directory(
-                  '/storage/emulated/0/Download');
+              Directory downloadsDirectory =
+                  Directory('/storage/emulated/0/Download');
 
-              String fileName = "srikar_${DateFormat('yyyyMMdd_HHmmss').format(
-                  DateTime.now())}.pdf";
+              String fileName =
+                  "srikar_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.pdf";
 
               String filePath = '${downloadsDirectory.path}/$fileName';
 
@@ -545,16 +532,10 @@ getshareddata();
             }
 
             // Get the directory for saving files
-
-
-          }
-
-          else {
+          } else {
             print('API Error: ${jsonResponse['result']['endUserMessage']}');
             CommonUtils.showCustomToastMessageLong(
                 '${jsonResponse['result']['endUserMessage']}', context, 1, 4);
-
-
           }
         } else {
           print('Error: ${response.reasonPhrase}');
@@ -564,8 +545,6 @@ getshareddata();
       }
     }
   }
-
-
 
   Future<void> shareData() async {
     bool isValid = true;
@@ -594,7 +573,8 @@ getshareddata();
     }
 
     if (isValid) {
-      final apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Party/GetCustomerLedgerReport';
+      final apiUrl =
+          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Party/GetCustomerLedgerReport';
       final requestHeaders = {'Content-Type': 'application/json'};
 
       // final requestBody = {
@@ -604,7 +584,7 @@ getshareddata();
       // };
       final requestBody = {
         "CompanyId": '$CompneyId',
-        "PartyCode":'${widget.cardCode}',
+        "PartyCode": '${widget.cardCode}',
         "FromDate": fromdate,
         "ToDate": todate
       };
@@ -622,20 +602,21 @@ getshareddata();
 
           if (jsonResponse['result']['isSuccess']) {
             // Convert base64 string to bytes
-            List<int> pdfBytes = base64.decode(jsonResponse['result']['response']);
+            List<int> pdfBytes =
+                base64.decode(jsonResponse['result']['response']);
             //   var status = await Permission.storage.request();
             final status = await Permission.storage.request();
             // if (status.isDenied ||
             //     status.isPermanentlyDenied ||
             //     status.isRestricted) {
-            var manageExternalStorage = await Permission.manageExternalStorage
-                .request();
+            var manageExternalStorage =
+                await Permission.manageExternalStorage.request();
             if (status!.isGranted || manageExternalStorage!.isGranted) {
-              Directory downloadsDirectory = Directory(
-                  '/storage/emulated/0/Download');
+              Directory downloadsDirectory =
+                  Directory('/storage/emulated/0/Download');
 
-              String fileName = "srikar_${DateFormat('yyyyMMdd_HHmmss').format(
-                  DateTime.now())}.pdf";
+              String fileName =
+                  "srikar_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.pdf";
 
               String filePath = '${downloadsDirectory.path}/$fileName';
 
@@ -651,13 +632,10 @@ getshareddata();
             }
 
             // Get the directory for saving files
-
-
           } else {
             print('API Error: ${jsonResponse['result']['endUserMessage']}');
             CommonUtils.showCustomToastMessageLong(
                 '${jsonResponse['result']['endUserMessage']}', context, 1, 4);
-
           }
         } else {
           print('Error: ${response.reasonPhrase}');
@@ -684,8 +662,6 @@ getshareddata();
   }
 
   Future<void> checkStoragePermission() async {
-
-
     bool permissionStatus;
     final deviceInfo = await DeviceInfoPlugin().androidInfo;
 
@@ -696,22 +672,22 @@ getshareddata();
     }
     print('Storage permission is granted $permissionStatus');
     if (await Permission.storage.request().isGranted) {
-    // Permission is granted, you can proceed with your tasks
-    print('Storage permission is granted');
+      // Permission is granted, you can proceed with your tasks
+      print('Storage permission is granted');
     } else {
-    // Permission is not granted, request it
-    Map<Permission, PermissionStatus> status = await [
-    Permission.storage,
-    ].request();
+      // Permission is not granted, request it
+      Map<Permission, PermissionStatus> status = await [
+        Permission.storage,
+      ].request();
 
-    if (status[Permission.storage] == PermissionStatus.granted) {
-    // Permission granted, you can proceed with your tasks
-    print('Storage permission is granted');
-    } else {
-    // Permission denied, handle accordingly
-    print('Storage permission is denied');
-    // You might want to show a dialog or message to inform the user
-    }
+      if (status[Permission.storage] == PermissionStatus.granted) {
+        // Permission granted, you can proceed with your tasks
+        print('Storage permission is granted');
+      } else {
+        // Permission denied, handle accordingly
+        print('Storage permission is denied');
+        // You might want to show a dialog or message to inform the user
+      }
     }
   }
 
@@ -720,21 +696,8 @@ getshareddata();
 
 // Retrieve userId and slpCode
 
+    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
 
-      CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-
-      print('Company ID: $CompneyId');
-
+    print('Company ID: $CompneyId');
   }
-
-
-
-
 }
-
-
-
-
-
-
-

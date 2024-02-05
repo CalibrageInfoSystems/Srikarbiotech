@@ -5,11 +5,11 @@ import 'package:shared_preferences/shared_preferences.dart';
 
 class CommonUtils {
   static void showCustomToastMessageLong(
-      String message,
-      BuildContext context,
-      int backgroundColorType,
-      int length,
-      ) {
+    String message,
+    BuildContext context,
+    int backgroundColorType,
+    int length,
+  ) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double textWidth = screenWidth / 1.5; // Adjust multiplier as needed
 
@@ -28,12 +28,16 @@ class CommonUtils {
             width: toastWidth,
             decoration: BoxDecoration(
               border: Border.all(
-                color: backgroundColorType == 0 ? Color(0xFF54B471) : Color(0xFFDE5242),
+                color: backgroundColorType == 0
+                    ? Color(0xFF54B471)
+                    : Color(0xFFDE5242),
                 width: 2.0,
               ),
               borderRadius: BorderRadius.circular(8.0),
               // Add background color based on backgroundColorType
-              color: backgroundColorType == 0 ? Color(0xFF54B471).withOpacity(0.2) : Color(0xFFDE5242).withOpacity(0.2),
+              color: backgroundColorType == 0
+                  ? Color(0xFF54B471).withOpacity(0.2)
+                  : Color(0xFFDE5242).withOpacity(0.2),
             ),
             child: Padding(
               padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
@@ -60,7 +64,6 @@ class CommonUtils {
     });
   }
 
-
   static Future<bool> checkInternetConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
@@ -85,22 +88,22 @@ class CommonUtils {
     Color backgroundColor,
     BorderRadius borderRadius,
   ) {
-    return
-      Card(
+    return Card(
       elevation: 2.0,
       shape: RoundedRectangleBorder(
         borderRadius: borderRadius,
       ),
       color: backgroundColor,
       child: Container(
-        width: double.infinity, // Make the width match the parent
+        width: double.infinity,
+        color: Colors.white,
         padding: EdgeInsets.all(16.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
             Text(
               title,
-              style:CommonUtils.header_Styles16,
+              style: CommonUtils.header_Styles16,
               maxLines: 2, // Display in 2 lines
               overflow: TextOverflow.ellipsis,
             ),
@@ -113,7 +116,7 @@ class CommonUtils {
             SizedBox(height: 8.0),
             Text(
               subtitle2,
-                style: CommonUtils.Mediumtext_14,
+              style: CommonUtils.Mediumtext_14,
               maxLines: 2, // Display in 2 lines
               overflow: TextOverflow.ellipsis,
             ),
@@ -121,14 +124,8 @@ class CommonUtils {
             RichText(
               text: TextSpan(
                 children: <TextSpan>[
-                  TextSpan(
-                    text: 'GST No. ',
-                    style: CommonUtils.Mediumtext_12
-                  ),
-                  TextSpan(
-                    text: subtitle3,
-                    style: CommonUtils.Mediumtext_12_0
-                  ),
+                  TextSpan(text: 'GST No. ', style: CommonUtils.Mediumtext_12),
+                  TextSpan(text: subtitle3, style: CommonUtils.Mediumtext_12_0),
                 ],
               ),
               overflow: TextOverflow.ellipsis,
@@ -139,7 +136,7 @@ class CommonUtils {
               style: CommonUtils.Mediumtext_12,
               overflow: TextOverflow.ellipsis,
             ),
-            SizedBox(height: 8.0),
+            SizedBox(height: 3.0),
             Text(
               subtitle4,
               style: CommonUtils.Mediumtext_12_0,
@@ -151,6 +148,7 @@ class CommonUtils {
       ),
     );
   }
+
   static final searchBarOutPutInlineBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(10),
     borderSide: const BorderSide(color: Colors.black38),
@@ -215,12 +213,10 @@ class CommonUtils {
     color: Color(0xFFC4C2C2),
   );
   static final TextStyle hintstyle_o_14 = TextStyle(
-
     fontSize: 14,
     fontFamily: 'Roboto',
     fontWeight: FontWeight.w700,
     color: Color(0xa0e78337),
-
   );
   static final TextStyle Buttonstyle = TextStyle(
     fontSize: 14,
@@ -245,4 +241,3 @@ Future<int?> getIntFromPreferences(String key) async {
   SharedPreferences prefs = await SharedPreferences.getInstance();
   return prefs.getInt(key);
 }
-

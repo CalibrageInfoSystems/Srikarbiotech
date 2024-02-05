@@ -128,6 +128,8 @@ flutter:
     - assets/seeds-home-icon.png
     - assets/plus-small.svg
     - assets/minus-small.svg
+    - assets/bags-orders.svg
+    - assets/srikar_biotech_logo.svg
 
   #   - images/a_dot_ham.jpeg
 

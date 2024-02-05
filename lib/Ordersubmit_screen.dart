@@ -38,16 +38,16 @@ class Ordersubmit_screen extends StatefulWidget {
 
   Ordersubmit_screen(
       {required this.cardName,
-        required this.cardCode,
-        required this.address,
-        required this.state,
-        required this.phone,
-        required this.proprietorName,
-        required this.gstRegnNo,
-        required this.BookingPlace,
-        required this.TransportName,
-        required this.creditLine,
-        required this.balance});
+      required this.cardCode,
+      required this.address,
+      required this.state,
+      required this.phone,
+      required this.proprietorName,
+      required this.gstRegnNo,
+      required this.BookingPlace,
+      required this.TransportName,
+      required this.creditLine,
+      required this.balance});
   @override
   Order_submit_screen createState() => Order_submit_screen();
 }
@@ -85,8 +85,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     cartItems = Provider.of<CartProvider>(context).getCartItems();
     totalSum = calculateTotalSum(cartItems);
     return Scaffold(
-      appBar:
-      AppBar(
+      appBar: AppBar(
         backgroundColor: Color(0xFFe78337),
         automaticallyImplyLeading: false,
         title: Row(
@@ -95,7 +94,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
@@ -121,7 +121,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       // Access the cart data from the provider
-                      cartItems = Provider.of<CartProvider>(context).getCartItems();
+                      cartItems =
+                          Provider.of<CartProvider>(context).getCartItems();
                       // Update the globalCartLength
                       globalCartLength = cartItems.length;
                     }
@@ -143,7 +144,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                 if (snapshot.connectionState == ConnectionState.done) {
                   // Access the companyId after shared data is retrieved
 
-                  return   GestureDetector(
+                  return GestureDetector(
                     onTap: () {
                       // Handle the click event for the home icon
                       Navigator.pushReplacement(
@@ -159,7 +160,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                       height: 30,
                     ),
                   );
-
                 } else {
                   // Return a placeholder or loading indicator
                   return SizedBox.shrink();
@@ -170,8 +170,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
         ),
       ),
 
-      body:
-      SingleChildScrollView(
+      body: SingleChildScrollView(
         child: Column(
           children: [
             Padding(
@@ -192,31 +191,27 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                 ],
               ),
             ),
-  //           }
-  //         },
-  //       ),
+            //           }
+            //         },
+            //       ),
 
-              FutureBuilder(
+            FutureBuilder(
               future: Future.value(),
               builder: (context, snapshot) {
-    if (snapshot.connectionState == ConnectionState.waiting) {
-    return CircularProgressIndicator();
-    } else if (snapshot.connectionState == ConnectionState.done) {
-    cartItems = Provider.of<CartProvider>(context).getCartItems();
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.connectionState == ConnectionState.done) {
+                  cartItems = Provider.of<CartProvider>(context).getCartItems();
 
+                  // Print the total sum
+                  print('Total Sum of Product Prices: $totalSum');
 
-    // Print the total sum
-    print('Total Sum of Product Prices: $totalSum');
-
-    return buildListView();
-    } else {
-    return Text('Error: Unable to fetch cart data');
-    }
-    },
-    ),
-
-
-
+                  return buildListView();
+                } else {
+                  return Text('Error: Unable to fetch cart data');
+                }
+              },
+            ),
 
             SizedBox(height: 10),
             Container(
@@ -227,7 +222,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                   color: Colors.white,
                   child: Container(
                     width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.all(10.0),
+                    color: Colors.white,
+                    padding: EdgeInsets.all(8.0),
                     child: Column(
                       children: [
                         Column(
@@ -238,8 +234,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Padding(
-                                  padding:
-                                  EdgeInsets.only(left: 15.0, top: 8.0),
+                                  padding: EdgeInsets.only(left: 0.0, top: 8.0),
                                   child: Text(
                                     'Transport  Details',
                                     style: TextStyle(
@@ -252,7 +247,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                                 ),
                                 Padding(
                                   padding:
-                                  EdgeInsets.only(right: 15.0, top: 8.0),
+                                      EdgeInsets.only(right: 5.0, top: 8.0),
                                   child: GestureDetector(
                                     onTap: () {
                                       Navigator.pushReplacement(
@@ -266,11 +261,13 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                                                   state: widget.state,
                                                   phone: widget.phone,
                                                   proprietorName:
-                                                  widget.proprietorName,
+                                                      widget.proprietorName,
                                                   gstRegnNo: widget.gstRegnNo,
-                                                  preferabletransport: widget.TransportName,
-                                                  bookingplace: widget.BookingPlace,
-                                                  creditLine:0.0,
+                                                  preferabletransport:
+                                                      widget.TransportName,
+                                                  bookingplace:
+                                                      widget.BookingPlace,
+                                                  creditLine: 0.0,
                                                   balance: 0.0,
                                                 )),
                                       );
@@ -294,7 +291,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                           decoration: BoxDecoration(
                             border: Border.all(
                               color:
-                              Colors.grey, // specify your border color here
+                                  Colors.grey, // specify your border color here
                               width: 1.0, // specify the border width
                             ),
                             borderRadius: BorderRadius.circular(
@@ -307,11 +304,11 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                                 children: [
                                   Container(
                                     width:
-                                    MediaQuery.of(context).size.width / 2.2,
-                                    padding: EdgeInsets.all(10.0),
+                                        MediaQuery.of(context).size.width / 2.2,
+                                    padding: EdgeInsets.all(8.0),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(
@@ -350,13 +347,13 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                                   ),
                                   Container(
                                     width:
-                                    MediaQuery.of(context).size.width / 2.9,
+                                        MediaQuery.of(context).size.width / 2.9,
                                     padding: EdgeInsets.all(10.0),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       mainAxisAlignment:
-                                      MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(
@@ -405,64 +402,62 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
               ),
             ),
             Container(
-
                 width: MediaQuery.of(context).size.width,
-
                 padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
                 child: IntrinsicHeight(
                     child: Card(
-                      color: Colors.white,
-                      child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
+                  color: Colors.white,
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            Container(
+                              padding: EdgeInsets.only(top: 10.0),
+                              child: Text(
+                                'Total',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ),
+                            Spacer(),
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Container(
+                                  //   width: MediaQuery.of(context).size.width / 1.8,
                                   padding: EdgeInsets.only(top: 10.0),
-                                  child: Text(
-                                    'Total',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14.0,
-                                    ),
-                                  ),
-                                ),
-                                Spacer(),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      //   width: MediaQuery.of(context).size.width / 1.8,
-                                      padding: EdgeInsets.only(top: 10.0),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            '₹${totalSum.toStringAsFixed(2)}',
-                                            style: TextStyle(
-                                              color: Color(0xFFe78337),
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16.0,
-                                            ),
-                                          ),
-                                        ],
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '₹${totalSum.toStringAsFixed(2)}',
+                                        style: TextStyle(
+                                          color: Color(0xFFe78337),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0,
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
                           ],
                         ),
-                      ),
-                    )))
+                      ],
+                    ),
+                  ),
+                )))
           ],
         ),
       ),
@@ -494,7 +489,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight:
-                        FontWeight.w700, // Set the font weight to bold
+                            FontWeight.w700, // Set the font weight to bold
                         fontFamily: 'Roboto', // Set the font family to Roboto
                       ),
                     ),
@@ -510,29 +505,26 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     );
   }
 
-
-
   void AddOrder() async {
-
     DateTime currentDate = DateTime.now();
 
     // Format the date as 'yyyy-MM-dd'
     String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
     print('Formatted Date: $formattedcurrentDate');
-    final String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/AddOrder';
+    final String apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/AddOrder';
     List<Map<String, dynamic>> orderItemList = cartItems.map((cartItem) {
-
       return {
         "Id": 1,
         "OrderId": 2,
-        "ItemGrpCod":  cartItem.itemGrpCod,
+        "ItemGrpCod": cartItem.itemGrpCod,
         "ItemGrpName": cartItem.itemGrpName,
         "ItemCode": cartItem.itemCode,
         "ItemName": cartItem.itemName,
-        "NoOfPcs": 10 ,
-        "OrderQty":  cartItem.orderQty,
-        "Price":  cartItem.price,
-        "IGST":  cartItem.igst,
+        "NoOfPcs": 10,
+        "OrderQty": cartItem.orderQty,
+        "Price": cartItem.price,
+        "IGST": cartItem.igst,
         "CGST": cartItem.cgst,
         "SGST": cartItem.sgst
         // Map other cart item properties to corresponding fields
@@ -540,12 +532,11 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       };
     }).toList();
     // Calculate the sum of prices for the entire order
-    double totalOrderPrice = orderItemList.fold(0.0, (sum, item) => sum + (item['Price'] ?? 0.0));
+    double totalOrderPrice =
+        orderItemList.fold(0.0, (sum, item) => sum + (item['Price'] ?? 0.0));
     print('totalOrderPrice====$totalOrderPrice');
 
     Map<String, dynamic> orderData = {
-
-
       "OrderItemXrefTypeList": orderItemList,
       "Id": 1,
       "CompanyId": CompneyId,
@@ -627,17 +618,13 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     prefs.remove('cartItems');
   }
 
-
   Future<void> getshareddata() async {
-
     userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
     slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     print('User ID: $userId');
     print('SLP Code: $slpCode');
     print('Company ID: $CompneyId');
-
-
   }
 
   Widget buildListView() {
@@ -650,8 +637,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       itemBuilder: (context, index) {
         OrderItemXrefType cartItem = cartItems[index];
         if (cartItems.length != textEditingControllers.length) {
-          textEditingControllers = List.generate(cartItems.length,
-                  (index) => TextEditingController());
+          textEditingControllers = List.generate(
+              cartItems.length, (index) => TextEditingController());
         }
         double orderQty = cartItem.orderQty.toDouble();
         double price = cartItem.price ?? 0.0;
@@ -685,8 +672,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
   void clearCartData(CartProvider cartProvider) {
     cartProvider.clearCart();
   }
-
 }
+
 class CartItemWidget extends StatefulWidget {
   final OrderItemXrefType cartItem;
   final Function onDelete;
@@ -706,29 +693,27 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   late TextEditingController _textController;
   late int _orderQty;
 
-
   @override
   void initState() {
     super.initState();
     _orderQty = widget.cartItem.orderQty;
     _textController = TextEditingController(text: _orderQty.toString());
-
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     double totalWidth = MediaQuery.of(context).size.width;
 
     return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 10.0),
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
       child: Card(
         elevation: 5.0,
+        color: Colors.white,
         shape: RoundedRectangleBorder(
           borderRadius: BorderRadius.circular(8.0),
         ),
-        child: Padding(
+        child: Container(
+          color: Colors.white,
           padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -767,7 +752,6 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                           // Call the updateQuantity method in your model class
                           widget.cartItem.updateQuantity(_orderQty);
                         });
-
                       },
                       deleteQuantity: () {
                         setState(() {
@@ -777,7 +761,6 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                             widget.cartItem.updateQuantity(_orderQty);
                           }
                         });
-
                       },
                       textController: _textController,
                     ),
@@ -824,9 +807,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
       ),
     );
   }
-
-
 }
+
 class PlusMinusButtons extends StatelessWidget {
   final VoidCallback deleteQuantity;
   final VoidCallback addQuantity;
@@ -846,14 +828,10 @@ class PlusMinusButtons extends StatelessWidget {
       height: 38,
       decoration: BoxDecoration(
         color: Color(0xFFe78337),
-        borderRadius:
-        BorderRadius.circular(
-            8.0),
+        borderRadius: BorderRadius.circular(8.0),
       ),
-      child:
-      Card(
-          color: Color(0xFFe78337),
-
+      child: Card(
+        color: Color(0xFFe78337),
         margin: EdgeInsets.symmetric(horizontal: 0.0),
         child: Row(
           children: [
@@ -862,8 +840,8 @@ class PlusMinusButtons extends StatelessWidget {
                 deleteQuantity();
                 _updateTextController();
               },
-              icon:  SvgPicture.asset(
-                'assets/minus-small.svg',  // Replace with the correct path to your SVG icon
+              icon: SvgPicture.asset(
+                'assets/minus-small.svg', // Replace with the correct path to your SVG icon
                 color: Colors.white,
                 width: 20.0,
                 height: 20.0,
@@ -909,14 +887,13 @@ class PlusMinusButtons extends StatelessWidget {
                 _updateTextController();
               },
               icon: SvgPicture.asset(
-                'assets/plus-small.svg',  // Replace with the correct path to your SVG icon
+                'assets/plus-small.svg', // Replace with the correct path to your SVG icon
                 color: Colors.white,
                 width: 20.0,
                 height: 20.0,
               ),
             ),
           ],
-
         ),
       ),
     );

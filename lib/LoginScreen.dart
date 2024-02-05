@@ -281,7 +281,7 @@ class _MyHomePageState extends State<LoginScreen> {
                         children: [
                           Padding(
                             padding: EdgeInsets.only(
-                                top: 8.0, left: 30.0, right: 30.0),
+                                top: 15.0, left: 30.0, right: 30.0),
                             child: Container(
                               width: MediaQuery.of(context).size.width,
                               height: 45.0,

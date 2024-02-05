@@ -24,16 +24,16 @@ class transport_payment extends StatefulWidget {
 
   transport_payment(
       {required this.cardName,
-        required this.cardCode,
-        required this.address,
-        required this.state,
-        required this.bookingplace,
-        required this.preferabletransport,
-        required this.phone,
-        required this.proprietorName,
-        required this.gstRegnNo,
-        required this.creditLine,
-        required this.balance});
+      required this.cardCode,
+      required this.address,
+      required this.state,
+      required this.bookingplace,
+      required this.preferabletransport,
+      required this.phone,
+      required this.proprietorName,
+      required this.gstRegnNo,
+      required this.creditLine,
+      required this.balance});
 
   @override
   _transportstate createState() => _transportstate();
@@ -56,8 +56,7 @@ class _transportstate extends State<transport_payment> {
     double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-      appBar:
-      AppBar(
+      appBar: AppBar(
         backgroundColor: const Color(0xFFe78337),
         automaticallyImplyLeading: false,
         // This line removes the default back arrow
@@ -67,7 +66,8 @@ class _transportstate extends State<transport_payment> {
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
@@ -121,178 +121,183 @@ class _transportstate extends State<transport_payment> {
           ],
         ),
       ),
-
       body: SingleChildScrollView(
         child: Column(
           children: [
+            // Padding(
+            //   // height: screenHeight / 2.8,
+            //   // width: screenWidth,
+            //   // alignment: Alignment.center,
+            //
+            //   padding:
+            //       EdgeInsets.only(top: 10.0, left: 10, right: 10, bottom: 10),
+            //   child:
             Container(
-              // height: screenHeight / 2.8,
-              width: screenWidth,
-              alignment: Alignment.center,
               padding:
-              EdgeInsets.only(top: 10.0, left: 10, right: 10, bottom: 10),
+                  EdgeInsets.only(top: 10.0, left: 10, right: 10, bottom: 25),
               child: Card(
-                color: Colors.white,
-                elevation: 5.0,
-                // You can adjust the elevation as needed
-                // Other card properties go here
-                child: IntrinsicHeight(
-                    child: Column(
-                      // mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Padding(
-                          padding:
-                          EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: 0.0, left: 5.0, right: 0.0),
-                                child: Text(
-                                  'Booking Place',
-                                  style: TextStyle(
-                                      color: Color(0xFF5f5f5f),
-                                      fontFamily: 'Roboto',
-                                      fontWeight: FontWeight.w600,
-                                      fontSize: 14),
-                                  textAlign: TextAlign.start,
-                                ),
-                              ),
-                              SizedBox(height: 8.0),
-                              //  SizedBox(height: 8.0),
-                              GestureDetector(
-                                onTap: () {
-                                  // Handle the click event for the second text view
-                                  print('first textview clicked');
-                                },
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    border: Border.all(
-                                      color: Color(0xFFe78337),
-                                      width: 1,
-                                    ),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 10.0, top: 0.0),
-                                            child: TextFormField(
-                                              controller: bookingplacecontroller,
-                                              keyboardType: TextInputType.name,
-                                              maxLength: 50,
-                                              style: TextStyle(
-                                                  color: Color(0xFFe78337),
-                                                  fontFamily: 'Roboto',
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 14),
-                                              decoration: InputDecoration(
-                                                counterText: '',
-                                                hintText: 'Enter Booking Place',
-                                                hintStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: 'Roboto',
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Color(0xa0e78337),
-                                                ),
-                                                border: InputBorder.none,
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                        Padding(
-                          padding:
-                          EdgeInsets.only(top: 8.0, left: 15.0, right: 15.0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.only(
-                                    top: 0.0, left: 5.0, right: 0.0),
-                                child: Text(
-                                  'Transport Name',
-                                  style: TextStyle(
+                  color: Colors.white,
+                  elevation: 5.0,
+                  // You can adjust the elevation as needed
+                  // Other card properties go here
+
+                  child: IntrinsicHeight(
+                      child: Column(
+                    // mainAxisAlignment: MainAxisAlignment.center,
+                    children: [
+                      Container(
+                        color: Colors.white,
+                        padding:
+                            EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: 0.0, left: 0.0, right: 0.0),
+                              child: Text(
+                                'Booking Place',
+                                style: TextStyle(
                                     color: Color(0xFF5f5f5f),
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w600,
-                                    fontSize: 14,
-                                  ),
-                                  textAlign: TextAlign.start,
-                                ),
+                                    fontSize: 14),
+                                textAlign: TextAlign.start,
                               ),
-                              SizedBox(height: 8.0),
-                              //  SizedBox(height: 8.0),
-                              GestureDetector(
-                                onTap: () {
-                                  print('first textview clicked');
-                                },
-                                child: Container(
-                                  width: MediaQuery.of(context).size.width,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(5.0),
-                                    border: Border.all(
-                                      color: Color(0xFFe78337),
-                                      width: 1,
-                                    ),
+                            ),
+                            SizedBox(height: 2.0),
+                            //  SizedBox(height: 8.0),
+                            GestureDetector(
+                              onTap: () {
+                                // Handle the click event for the second text view
+                                print('first textview clicked');
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  border: Border.all(
+                                    color: Color(0xFFe78337),
+                                    width: 1,
                                   ),
-                                  child: Row(
-                                    children: [
-                                      Expanded(
-                                        child: Align(
-                                          alignment: Alignment.centerLeft,
-                                          child: Padding(
-                                            padding: EdgeInsets.only(
-                                                left: 10.0, top: 0.0),
-                                            child: TextFormField(
-                                              controller: Parcelservicecontroller,
-                                              keyboardType: TextInputType.name,
-                                              maxLength: 50,
-                                              style: TextStyle(
-                                                  color: Color(0xFFe78337),
-                                                  fontFamily: 'Roboto',
-                                                  fontWeight: FontWeight.w600,
-                                                  fontSize: 14),
-                                              decoration: InputDecoration(
-                                                counterText: '',
-                                                hintText: 'Enter Transport Name',
-                                                hintStyle: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: 'Roboto',
-                                                  fontWeight: FontWeight.w700,
-                                                  color: Color(0xa0e78337),
-                                                ),
-                                                border: InputBorder.none,
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 10.0, top: 0.0),
+                                          child: TextFormField(
+                                            controller: bookingplacecontroller,
+                                            keyboardType: TextInputType.name,
+                                            maxLength: 50,
+                                            style: TextStyle(
+                                                color: Color(0xFFe78337),
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14),
+                                            decoration: InputDecoration(
+                                              counterText: '',
+                                              hintText: 'Enter Booking Place',
+                                              hintStyle: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.w700,
+                                                color: Color(0xa0e78337),
                                               ),
+                                              border: InputBorder.none,
                                             ),
                                           ),
                                         ),
                                       ),
-                                    ],
-                                  ),
+                                    ),
+                                  ],
                                 ),
                               ),
-                            ],
-                          ),
+                            ),
+                          ],
                         ),
-                        SizedBox(height: 15.0),
-                      ],
-                    )),
-              ),
+                      ),
+                      Container(
+                        color: Colors.white,
+                        padding: EdgeInsets.only(
+                            top: 15.0, left: 15.0, right: 15.0, bottom: 20.0),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: EdgeInsets.only(
+                                  top: 0.0, left: 0.0, right: 0.0),
+                              child: Text(
+                                'Transport Name',
+                                style: TextStyle(
+                                  color: Color(0xFF5f5f5f),
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w600,
+                                  fontSize: 14,
+                                ),
+                                textAlign: TextAlign.start,
+                              ),
+                            ),
+                            SizedBox(height: 2.0),
+                            GestureDetector(
+                              onTap: () {
+                                print('first textview clicked');
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                  border: Border.all(
+                                    color: Color(0xFFe78337),
+                                    width: 1,
+                                  ),
+                                ),
+                                child: Row(
+                                  children: [
+                                    Expanded(
+                                      child: Align(
+                                        alignment: Alignment.centerLeft,
+                                        child: Padding(
+                                          padding: EdgeInsets.only(
+                                              left: 10.0, top: 0.0),
+                                          child: TextFormField(
+                                            controller: Parcelservicecontroller,
+                                            keyboardType: TextInputType.name,
+                                            maxLength: 50,
+                                            style: TextStyle(
+                                                color: Color(0xFFe78337),
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.w600,
+                                                fontSize: 14),
+                                            decoration: InputDecoration(
+                                              counterText: '',
+                                              hintText: 'Enter Transport Name',
+                                              hintStyle: TextStyle(
+                                                fontSize: 14,
+                                                fontFamily: 'Roboto',
+                                                fontWeight: FontWeight.w700,
+                                                color: Color(0xa0e78337),
+                                              ),
+                                              border: InputBorder.none,
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ],
+                  ))),
             ),
+            //  ),
           ],
         ),
       ),
@@ -323,7 +328,7 @@ class _transportstate extends State<transport_payment> {
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight:
-                        FontWeight.w700, // Set the font weight to bold
+                            FontWeight.w700, // Set the font weight to bold
                         fontFamily: 'Roboto', // Set the font family to Roboto
                       ),
                     ),
@@ -358,20 +363,20 @@ class _transportstate extends State<transport_payment> {
       Navigator.push(
         context,
         MaterialPageRoute(
-          builder: (context) =>
-              Ordersubmit_screen(
-                cardName: '${widget.cardName}',
-                cardCode: '${widget.cardCode}',
-                address: '${widget.address}',
-                state: '${widget.state}',
-                phone: '${widget.phone}',
-                proprietorName: '${widget.proprietorName}',
-                gstRegnNo: '${widget.gstRegnNo}',
-                BookingPlace: bookingplacecontroller.text,
-                TransportName: Parcelservicecontroller.text,
-                creditLine: double.parse('${widget.creditLine}'), // Convert to double
-                balance: double.parse('${widget.balance}'), // Convert to double
-              ),
+          builder: (context) => Ordersubmit_screen(
+            cardName: '${widget.cardName}',
+            cardCode: '${widget.cardCode}',
+            address: '${widget.address}',
+            state: '${widget.state}',
+            phone: '${widget.phone}',
+            proprietorName: '${widget.proprietorName}',
+            gstRegnNo: '${widget.gstRegnNo}',
+            BookingPlace: bookingplacecontroller.text,
+            TransportName: Parcelservicecontroller.text,
+            creditLine:
+                double.parse('${widget.creditLine}'), // Convert to double
+            balance: double.parse('${widget.balance}'), // Convert to double
+          ),
         ),
       );
     }
@@ -381,7 +386,5 @@ class _transportstate extends State<transport_payment> {
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
 
     print('Company ID: $CompneyId');
-
   }
-
 }

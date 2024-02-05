@@ -10,6 +10,7 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:path/path.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -20,7 +21,6 @@ import 'Common/CommonUtils.dart';
 import 'Common/SharedPrefsData.dart';
 import 'HomeScreen.dart';
 import 'OrctResponse.dart';
-import 'package:loading_animation_widget/loading_animation_widget.dart';
 
 class CreateCollectionscreen extends StatefulWidget {
   final String cardName;
@@ -104,7 +104,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
     print('address: ${widget.address}');
     print('gstRegnNo: ${widget.gstRegnNo}');
     print('proprietorName: ${widget.proprietorName}');
-getshareddata();
+    getshareddata();
     DateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
     CommonUtils.checkInternetConnectivity().then((isConnected) {
       if (isConnected) {
@@ -164,7 +164,7 @@ getshareddata();
                 if (snapshot.connectionState == ConnectionState.done) {
                   // Access the companyId after shared data is retrieved
 
-                  return   GestureDetector(
+                  return GestureDetector(
                     onTap: () {
                       // Handle the click event for the home icon
                       Navigator.pushReplacement(
@@ -180,14 +180,12 @@ getshareddata();
                       height: 30,
                     ),
                   );
-
                 } else {
                   // Return a placeholder or loading indicator
                   return SizedBox.shrink();
                 }
               },
             ),
-
           ],
         ),
       ),
@@ -247,7 +245,6 @@ getshareddata();
                                   ),
                                 ),
                                 SizedBox(height: 8.0),
-
                                 GestureDetector(
                                   onTap: () {
                                     // Handle the click event for the second text view
@@ -273,13 +270,16 @@ getshareddata();
                                                   left: 10.0, top: 0.0),
                                               child: TextFormField(
                                                 controller: Amounttext,
-                                                keyboardType: TextInputType.number,
+                                                keyboardType:
+                                                    TextInputType.number,
                                                 maxLength: 10,
-                                                style: CommonUtils.Mediumtext_o_14,
+                                                style:
+                                                    CommonUtils.Mediumtext_o_14,
                                                 decoration: InputDecoration(
                                                   counterText: '',
                                                   hintText: 'Enter  Amount',
-                                                  hintStyle: CommonUtils.hintstyle_o_14,
+                                                  hintStyle: CommonUtils
+                                                      .hintstyle_o_14,
                                                   border: InputBorder.none,
                                                 ),
                                               ),
@@ -305,7 +305,6 @@ getshareddata();
                           ),
                           SizedBox(height: 5.0),
 
-
                           Container(
                             height: 40,
                             // child: Expanded(
@@ -323,7 +322,6 @@ getshareddata();
 
                                       String iconData;
                                       switch (currentPaymode.desc) {
-
                                         case 'Online':
                                           iconData = 'assets/site-alt.svg';
                                           break;
@@ -337,23 +335,28 @@ getshareddata();
                                           break;
                                       }
                                       if (isSelected) {
-                                        print('Default selected item: ${currentPaymode.desc}, TypeCdId: ${currentPaymode.typeCdId}');
+                                        print(
+                                            'Default selected item: ${currentPaymode.desc}, TypeCdId: ${currentPaymode.typeCdId}');
                                         payid = currentPaymode.typeCdId;
-                                        Selected_PaymentMode = currentPaymode.desc;
+                                        Selected_PaymentMode =
+                                            currentPaymode.desc;
                                       }
 
                                       return GestureDetector(
                                         onTap: () {
                                           setState(() {
                                             indexselected = index;
-                                            selectedPaymode = currentPaymode; // Update the selectedPaymode outside the build method
+                                            selectedPaymode =
+                                                currentPaymode; // Update the selectedPaymode outside the build method
                                           });
                                           payid = currentPaymode.typeCdId;
-                                          Selected_PaymentMode = currentPaymode.desc;
+                                          Selected_PaymentMode =
+                                              currentPaymode.desc;
                                           print('payid:$payid');
                                           print(
                                               'Selected Payment Mode: ${currentPaymode.desc}, TypeCdId: $payid');
-                                          print('Selected Payment Mode: ${Selected_PaymentMode}, TypeCdId: $payid');
+                                          print(
+                                              'Selected Payment Mode: ${Selected_PaymentMode}, TypeCdId: $payid');
                                         },
                                         child: Container(
                                           // color: Color(0xFFF8dac2),
@@ -414,7 +417,7 @@ getshareddata();
                                     },
                                   ),
                           ),
-                       //   SizedBox(height: 5.0),
+                          //   SizedBox(height: 5.0),
 
                           Visibility(
                               visible: Selected_PaymentMode == 'Online',
@@ -441,11 +444,11 @@ getshareddata();
                                       },
                                       child: Container(
                                         width:
-                                        MediaQuery.of(context).size.width,
+                                            MediaQuery.of(context).size.width,
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(8.0),
+                                              BorderRadius.circular(8.0),
                                           border: Border.all(
                                             color: Color(0xFFe78337),
                                             width: 1,
@@ -461,26 +464,28 @@ getshareddata();
                                                       left: 10.0, top: 0.0),
                                                   child: TextFormField(
                                                     controller:
-                                                    accountnumcontroller,
+                                                        accountnumcontroller,
                                                     keyboardType:
-                                                    TextInputType.number,
+                                                        TextInputType.number,
                                                     maxLength: 20,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
                                                       fontWeight:
-                                                      FontWeight.w600,
+                                                          FontWeight.w600,
                                                       color: Color(0xFFe78337),
                                                     ),
                                                     decoration: InputDecoration(
                                                       counterText: '',
                                                       hintText:
-                                                      'Enter Credit Account No',
+                                                          'Enter Credit Account No',
                                                       hintStyle: TextStyle(
                                                         fontSize: 14,
                                                         fontFamily: 'Roboto',
-                                                        fontWeight: FontWeight.w700,
-                                                        color: Color(0xa0e78337),
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color:
+                                                            Color(0xa0e78337),
                                                       ),
                                                       border: InputBorder.none,
                                                     ),
@@ -495,7 +500,7 @@ getshareddata();
                                   ],
                                 ),
                               )),
-                      //  SizedBox(height: 5.0),
+                          //  SizedBox(height: 5.0),
                           Visibility(
                               visible: Selected_PaymentMode == 'Online',
                               child: Padding(
@@ -509,7 +514,7 @@ getshareddata();
                                           top: 0.0, left: 5.0, right: 0.0),
                                       child: Text(
                                         'Credit Bank *',
-                                  style: CommonUtils.Mediumtext_12,
+                                        style: CommonUtils.Mediumtext_12,
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
@@ -521,11 +526,11 @@ getshareddata();
                                       },
                                       child: Container(
                                         width:
-                                        MediaQuery.of(context).size.width,
+                                            MediaQuery.of(context).size.width,
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(8.0),
+                                              BorderRadius.circular(8.0),
                                           border: Border.all(
                                             color: Color(0xFFe78337),
                                             width: 1,
@@ -541,26 +546,28 @@ getshareddata();
                                                       left: 10.0, top: 0.0),
                                                   child: TextFormField(
                                                     controller:
-                                                    creditbankcontroller,
+                                                        creditbankcontroller,
                                                     keyboardType:
-                                                    TextInputType.name,
+                                                        TextInputType.name,
                                                     maxLength: 25,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
                                                       fontWeight:
-                                                      FontWeight.w600,
+                                                          FontWeight.w600,
                                                       color: Color(0xFFe78337),
                                                     ),
                                                     decoration: InputDecoration(
                                                       counterText: '',
                                                       hintText:
-                                                      'Enter Credit Bank',
+                                                          'Enter Credit Bank',
                                                       hintStyle: TextStyle(
                                                         fontSize: 14,
                                                         fontFamily: 'Roboto',
-                                                        fontWeight: FontWeight.w700,
-                                                        color: Color(0xa0e78337),
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color:
+                                                            Color(0xa0e78337),
                                                       ),
                                                       border: InputBorder.none,
                                                     ),
@@ -575,7 +582,7 @@ getshareddata();
                                   ],
                                 ),
                               )),
-                         //  SizedBox(height: 5.0),
+                          //  SizedBox(height: 5.0),
                           Visibility(
                               visible: Selected_PaymentMode == 'Online',
                               child: Padding(
@@ -601,11 +608,11 @@ getshareddata();
                                       },
                                       child: Container(
                                         width:
-                                        MediaQuery.of(context).size.width,
+                                            MediaQuery.of(context).size.width,
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                          BorderRadius.circular(8.0),
+                                              BorderRadius.circular(8.0),
                                           border: Border.all(
                                             color: Color(0xFFe78337),
                                             width: 1,
@@ -620,27 +627,28 @@ getshareddata();
                                                   padding: EdgeInsets.only(
                                                       left: 10.0, top: 0.0),
                                                   child: TextFormField(
-                                                    controller:
-                                                    utrcontroller,
+                                                    controller: utrcontroller,
                                                     keyboardType:
-                                                    TextInputType.name,
+                                                        TextInputType.name,
                                                     maxLength: 25,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
                                                       fontWeight:
-                                                      FontWeight.w600,
+                                                          FontWeight.w600,
                                                       color: Color(0xFFe78337),
                                                     ),
                                                     decoration: InputDecoration(
                                                       counterText: '',
                                                       hintText:
-                                                      'Enter UTR Number',
+                                                          'Enter UTR Number',
                                                       hintStyle: TextStyle(
                                                         fontSize: 14,
                                                         fontFamily: 'Roboto',
-                                                        fontWeight: FontWeight.w700,
-                                                        color: Color(0xa0e78337),
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color:
+                                                            Color(0xa0e78337),
                                                       ),
                                                       border: InputBorder.none,
                                                     ),
@@ -656,7 +664,7 @@ getshareddata();
                                 ),
                               )),
                           //   ),
-                       //  SizedBox(height: 5.0),
+                          //  SizedBox(height: 5.0),
                           Visibility(
                               visible: Selected_PaymentMode == 'Cheque',
                               child: Padding(
@@ -717,10 +725,12 @@ getshareddata();
                                                       counterText: '',
                                                       hintText: 'XXXXXXXXXX',
                                                       hintStyle: TextStyle(
-                                                          fontSize: 14,
-                                                          fontFamily: 'Roboto',
-                                                          fontWeight: FontWeight.w700,
-                                                          color: Color(0xa0e78337),
+                                                        fontSize: 14,
+                                                        fontFamily: 'Roboto',
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color:
+                                                            Color(0xa0e78337),
                                                       ),
                                                       border: InputBorder.none,
                                                     ),
@@ -736,27 +746,33 @@ getshareddata();
                                 ),
                               )),
                           // Check Number
-                      //    SizedBox(height: 5.0),
+                          //    SizedBox(height: 5.0),
 
                           Visibility(
                             visible: Selected_PaymentMode == 'Cheque',
                             child: Padding(
-                              padding: EdgeInsets.only(top: 15.0, bottom: 0.0), // Adjust the padding as needed
+                              padding: EdgeInsets.only(
+                                  top: 15.0,
+                                  bottom: 0.0), // Adjust the padding as needed
                               child: buildDateInput(
                                 context,
                                 'Check Date *',
                                 checkDateController,
-                                    () => _selectcheckDate(context, checkDateController),
+                                () => _selectcheckDate(
+                                    context, checkDateController),
                               ),
                             ),
                           ),
 
-                       //  SizedBox(height: 5.0),
+                          //  SizedBox(height: 5.0),
                           Visibility(
                               visible: Selected_PaymentMode == 'Cheque',
                               child: Padding(
                                 padding: EdgeInsets.only(
-                                    top: 15.0, left: 0.0, right: 0.0,bottom: 5.0),
+                                    top: 15.0,
+                                    left: 0.0,
+                                    right: 0.0,
+                                    bottom: 5.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -801,7 +817,7 @@ getshareddata();
                                                         checkissuedbankcontroller,
                                                     keyboardType:
                                                         TextInputType.name,
-                                                    maxLength:  25,
+                                                    maxLength: 25,
                                                     style: TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
@@ -816,8 +832,10 @@ getshareddata();
                                                       hintStyle: TextStyle(
                                                         fontSize: 14,
                                                         fontFamily: 'Roboto',
-                                                        fontWeight: FontWeight.w700,
-                                                        color: Color(0xa0e78337),
+                                                        fontWeight:
+                                                            FontWeight.w700,
+                                                        color:
+                                                            Color(0xa0e78337),
                                                       ),
                                                       border: InputBorder.none,
                                                     ),
@@ -832,7 +850,6 @@ getshareddata();
                                   ],
                                 ),
                               )),
-
 
                           // Download and Share buttons
 
@@ -866,9 +883,10 @@ getshareddata();
                                   padding: EdgeInsets.all(8.0),
                                   child: purposeList.isEmpty
                                       ? LoadingAnimationWidget.newtonCradle(
-                                    color: Colors.blue, // Set the color as needed
-                                    size: 40.0,
-                                  ) // Show a loading indicator
+                                          color: Colors
+                                              .blue, // Set the color as needed
+                                          size: 40.0,
+                                        ) // Show a loading indicator
                                       : DropdownButton<String>(
                                           hint: Text(
                                             'Select Purpose',
@@ -926,8 +944,7 @@ getshareddata();
                                           isExpanded: true,
                                           underline: SizedBox(),
                                         ),
-                                )
-                            ),
+                                )),
                           ),
 
                           SizedBox(height: 5.0),
@@ -961,10 +978,11 @@ getshareddata();
                                   padding: EdgeInsets.all(
                                       8.0), // Adjust the padding as needed
                                   child: itemGroups.isEmpty
-                                      ?  LoadingAnimationWidget.newtonCradle(
-                                  color: Colors.blue, // Set the color as needed
-                                  size: 40.0,
-                                ) // S // Show a loading indicator
+                                      ? LoadingAnimationWidget.newtonCradle(
+                                          color: Colors
+                                              .blue, // Set the color as needed
+                                          size: 40.0,
+                                        ) // S // Show a loading indicator
                                       : DropdownButton<String>(
                                           hint: Text(
                                             'Select Category',
@@ -1032,138 +1050,140 @@ getshareddata();
                           ),
                           SizedBox(height: 8.0),
                           if (_imageFile == null)
-                          GestureDetector(
-                            onTap: () {
-                              // here
-                              showBottomSheetForImageSelection(context);
-                            },
-                            child: Container(
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              padding: EdgeInsets.all(0.0),
-                              child: DottedBorder(
-                                borderType: BorderType.RRect,
-                                color: Color(0xFFe78337),
-                                padding:
-                                    const EdgeInsets.only(top: 0, bottom: 0.0),
-                                strokeWidth: 1,
-                                child: Container(
-                                  //padding: const EdgeInsets.all(15),
-                                  // margin: const EdgeInsets.only(top: 3, bottom: 15),
-                                  //   height: 70,
-                                  width: MediaQuery.of(context).size.width,
-                                  padding: EdgeInsets.all(10.0),
+                            GestureDetector(
+                              onTap: () {
+                                // here
+                                showBottomSheetForImageSelection(context);
+                              },
+                              child: Container(
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8.0),
+                                ),
+                                padding: EdgeInsets.all(0.0),
+                                child: DottedBorder(
+                                  borderType: BorderType.RRect,
+                                  color: Color(0xFFe78337),
+                                  padding: const EdgeInsets.only(
+                                      top: 0, bottom: 0.0),
+                                  strokeWidth: 1,
+                                  child: Container(
+                                    //padding: const EdgeInsets.all(15),
+                                    // margin: const EdgeInsets.only(top: 3, bottom: 15),
+                                    //   height: 70,
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: EdgeInsets.all(10.0),
 
-                                  decoration: BoxDecoration(
+                                    decoration: BoxDecoration(
 //                                borderRadius: BorderRadius.circular(12.0),
 
-                                    color: HexColor('#ffeee0'),
-                                    //  borderRadius: BorderRadius.circular(10),
-                                    // border: Border.all(
-                                    //   color: _orangeColor,
-                                    //   width:      1, // You can adjust the width of the border as needed
-                                    //   //style: BorderStyle.solid, // Use dotted style
-                                    // ),
-                                  ),
-                                  child: Column(
-                                    children: [
-                                      Container(
-                                        padding: const EdgeInsets.all(6),
-                                        // margin: const EdgeInsets.only(bottom: 5),
-                                        decoration: BoxDecoration(
-                                          color: Color(0xFFe78337),
-                                          borderRadius:
-                                              BorderRadius.circular(10),
+                                      color: HexColor('#ffeee0'),
+                                      //  borderRadius: BorderRadius.circular(10),
+                                      // border: Border.all(
+                                      //   color: _orangeColor,
+                                      //   width:      1, // You can adjust the width of the border as needed
+                                      //   //style: BorderStyle.solid, // Use dotted style
+                                      // ),
+                                    ),
+                                    child: Column(
+                                      children: [
+                                        Container(
+                                          padding: const EdgeInsets.all(6),
+                                          // margin: const EdgeInsets.only(bottom: 5),
+                                          decoration: BoxDecoration(
+                                            color: Color(0xFFe78337),
+                                            borderRadius:
+                                                BorderRadius.circular(10),
+                                          ),
+                                          child: const Icon(
+                                            Icons.folder_rounded,
+                                            color: Colors.black,
+                                          ),
                                         ),
-                                        child: const Icon(
-                                          Icons.folder_rounded,
-                                          color: Colors.black,
+                                        SizedBox(
+                                          height: 4.0,
                                         ),
-                                      ),
-                                      SizedBox(
-                                        height: 4.0,
-                                      ),
-                                      Text(
-                                        'Choose file to upload',
-                                        style: TextStyle(
-                                          fontSize: 14,
-                                          color: Color(0xFFe78337),
-                                          fontWeight: FontWeight.bold,
+                                        Text(
+                                          'Choose file to upload',
+                                          style: TextStyle(
+                                            fontSize: 14,
+                                            color: Color(0xFFe78337),
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                      const Text(
-                                        'Supported formats: jpg,png',
-                                        style: TextStyle(
-                                          fontSize: 10,
-                                          color: Color(0xFF414141),
-                                          fontWeight: FontWeight.bold,
+                                        const Text(
+                                          'Supported formats: jpg,png',
+                                          style: TextStyle(
+                                            fontSize: 10,
+                                            color: Color(0xFF414141),
+                                            fontWeight: FontWeight.bold,
+                                          ),
                                         ),
-                                      ),
-                                    ],
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),
                             ),
-                          ),
                           SizedBox(height: 10.0),
 
                           GestureDetector(
-                          onTap: () {
-                          // Handle tap on uploaded image to show in a popup
-                          if (_imageFile != null) {
-                          _showImagePopup(context, _imageFile!);
-                          }
-                          },
-                          child: SizedBox(
-                          width: _imageFile != null
-                          ? MediaQuery.of(context).size.width
-                              : MediaQuery.of(context).size.width,
-                          height: _imageFile != null ? 100 : 0,
-                          child: Stack(
-                          alignment: Alignment.topRight,
-                          children: [
-                          _imageFile != null
-                          ? Image.file(
-                          _imageFile!,
-                          width: MediaQuery.of(context).size.width,
-    fit: BoxFit.fitWidth,
-    )
-        : Image.asset(
-    'assets/shopping_bag.png',
-    width: MediaQuery.of(context).size.width,
-    fit: BoxFit.fitWidth,
-    ),
-    if (_imageFile != null)
-    GestureDetector(
-    onTap: () {
-    // Handle tap on cross mark icon (optional)
-    setState(() {
-    _imageFile =
-    null; // Set _imageFile to null to remove the image
-    });
-    },
-    child: Container(
-    padding: EdgeInsets.all(5.0),
-    margin: EdgeInsets.only(top: 5, right: 10.0),
-    color: HexColor('#ffeee0'), // Optional overlay color
-    child: SvgPicture.asset(
-    'assets/crosscircle.svg',
-    color: Color(0xFFe78337),
-    width: 24.0, // Set the width as needed
-    height: 24.0, // Set the height as needed
-    ),
-    ),
-    ),
-    ],
-    ),
-    ),
-    ),
-
-
-
-
+                            onTap: () {
+                              // Handle tap on uploaded image to show in a popup
+                              if (_imageFile != null) {
+                                _showImagePopup(context, _imageFile!);
+                              }
+                            },
+                            child: SizedBox(
+                              width: _imageFile != null
+                                  ? MediaQuery.of(context).size.width
+                                  : MediaQuery.of(context).size.width,
+                              height: _imageFile != null ? 100 : 0,
+                              child: Stack(
+                                alignment: Alignment.topRight,
+                                children: [
+                                  _imageFile != null
+                                      ? Image.file(
+                                          _imageFile!,
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          fit: BoxFit.fitWidth,
+                                        )
+                                      : Image.asset(
+                                          'assets/shopping_bag.png',
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          fit: BoxFit.fitWidth,
+                                        ),
+                                  if (_imageFile != null)
+                                    GestureDetector(
+                                      onTap: () {
+                                        // Handle tap on cross mark icon (optional)
+                                        setState(() {
+                                          _imageFile =
+                                              null; // Set _imageFile to null to remove the image
+                                        });
+                                      },
+                                      child: Container(
+                                        padding: EdgeInsets.all(5.0),
+                                        margin: EdgeInsets.only(
+                                            top: 5, right: 10.0),
+                                        color: HexColor(
+                                            '#ffeee0'), // Optional overlay color
+                                        child: SvgPicture.asset(
+                                          'assets/crosscircle.svg',
+                                          color: Color(0xFFe78337),
+                                          width:
+                                              24.0, // Set the width as needed
+                                          height:
+                                              24.0, // Set the height as needed
+                                        ),
+                                      ),
+                                    ),
+                                ],
+                              ),
+                            ),
+                          ),
 
                           // Submit Button
                           SizedBox(height: 18.0),
@@ -1176,16 +1196,23 @@ getshareddata();
                             margin: const EdgeInsets.symmetric(vertical: 15),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
-                              color: isButtonEnabled ? Color(0xFFe78337) : Colors.grey, // Change color based on button state
+                              color: isButtonEnabled
+                                  ? Color(0xFFe78337)
+                                  : Colors
+                                      .grey, // Change color based on button state
                             ),
                             child: GestureDetector(
-                              onTap: isButtonEnabled ? () => AddUpdateCollections(context) : null,
+                              onTap: isButtonEnabled
+                                  ? () => AddUpdateCollections(context)
+                                  : null,
                               child: Container(
-
                                 width: double.infinity,
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
-                                  color: isButtonEnabled ? Color(0xFFe78337) : Colors.grey, // Change color based on button state
+                                  color: isButtonEnabled
+                                      ? Color(0xFFe78337)
+                                      : Colors
+                                          .grey, // Change color based on button state
                                 ),
                                 child: Center(
                                   child: Text(
@@ -1201,8 +1228,6 @@ getshareddata();
                               ),
                             ),
                           ),
-
-
                         ],
                       ),
                     ),
@@ -1265,8 +1290,7 @@ getshareddata();
         isValid = false;
         hasValidationFailed = true;
       }
-    }
-    else if (Selected_PaymentMode == 'Cheque') {
+    } else if (Selected_PaymentMode == 'Cheque') {
       if (isValid && checknumbercontroller.text.isEmpty) {
         CommonUtils.showCustomToastMessageLong(
             'Please Enter Check Number', context, 1, 6);
@@ -1308,14 +1332,13 @@ getshareddata();
       isValid = false;
       hasValidationFailed = true;
     }
-    if (isValid && _imageFile == null){
-
+    if (isValid && _imageFile == null) {
       CommonUtils.showCustomToastMessageLong(
           'Please upload attachment', context, 1, 6);
 
       isValid = false;
       hasValidationFailed = true;
-  }
+    }
     setState(() {
       isLoading = true;
     });
@@ -1346,11 +1369,13 @@ getshareddata();
         if (Selected_PaymentMode == 'Online') ...{
           "CreditAccountNo": accountnumcontroller.text,
           "CreditBank": creditbankcontroller.text,
-          "UTRNumber": utrcontroller.text,},
-         if (Selected_PaymentMode == 'Cheque') ...{
-        "CheckNumber": checknumbercontroller.text,
-        "CheckDate": checkdate,
-        "CheckIssuedBank": checkissuedbankcontroller.text,},
+          "UTRNumber": utrcontroller.text,
+        },
+        if (Selected_PaymentMode == 'Cheque') ...{
+          "CheckNumber": checknumbercontroller.text,
+          "CheckDate": checkdate,
+          "CheckIssuedBank": checkissuedbankcontroller.text,
+        },
         "FileName": filename,
         "FileLocation": "",
         "FileExtension": fileExtension,
@@ -1556,9 +1581,9 @@ getshareddata();
   }
 
   Future<void> _selectDate(
-      BuildContext context,
-      TextEditingController controller,
-      ) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
@@ -1573,7 +1598,6 @@ getshareddata();
     } else {
       initialDate = currentDate;
     }
-
 
     try {
       DateTime? picked = await showDatePicker(
@@ -1600,7 +1624,6 @@ getshareddata();
       // Handle the error, e.g., show a message to the user or log it.
     }
   }
-
 
   Future<void> getpaymentmethods() async {
     final response = await http.get(Uri.parse(
@@ -1691,7 +1714,8 @@ getshareddata();
 
   Future<void> fetchdropdownitems() async {
     final apiUrl =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'+'$CompneyId';
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/' +
+            '$CompneyId';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -1714,7 +1738,9 @@ getshareddata();
 
   Future<void> fetchdropdownitemscategory() async {
     final apiUrl =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Item/GetItemGroups/'+'$CompneyId'+'/null';
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Item/GetItemGroups/' +
+            '$CompneyId' +
+            '/null';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -1740,18 +1766,16 @@ getshareddata();
       print('Error: $e');
     }
   }
+
   Future<void> getshareddata() async {
+    userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
+    slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
+    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    print('User ID: $userId');
+    print('SLP Code: $slpCode');
+    print('Company ID: $CompneyId');
 
-      userId= await SharedPrefsData.getStringFromSharedPrefs("userId");
-      slpCode= await SharedPrefsData.getStringFromSharedPrefs("slpCode");
-      CompneyId= await SharedPrefsData.getIntFromSharedPrefs("companyId");
-      print('User ID: $userId');
-      print('SLP Code: $slpCode');
-      print('Company ID: $CompneyId');
-
-      print('Retrieved CompneyId: $CompneyId');
-
-
+    print('Retrieved CompneyId: $CompneyId');
   }
 
   void disableButton() {
@@ -1785,5 +1809,4 @@ getshareddata();
       ),
     );
   }
-
 }

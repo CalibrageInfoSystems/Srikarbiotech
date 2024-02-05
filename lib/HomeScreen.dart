@@ -95,7 +95,7 @@ class _home_Screen extends State<HomeScreen> {
                       child: logoWidget,
                     ),
                     SizedBox(
-                      width: 4.0,
+                      width: 2.0,
                     ),
                     Text(
                       CompneyId == 1 ? 'Srikar Bio Tech' : 'Srikar Seeds ',
