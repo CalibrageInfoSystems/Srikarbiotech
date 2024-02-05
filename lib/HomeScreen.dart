@@ -64,20 +64,38 @@ class _home_Screen extends State<HomeScreen> {
             future: getshareddata(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
+                Widget logoWidget = CompneyId == 1
+                    ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
+                    : Image.asset('assets/srikar-seed.png',
+                        width: 60.0, height: 40.0);
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.start,
-                  mainAxisSize: MainAxisSize.min,
+                  // mainAxisSize: MainAxisSize.min,
                   children: [
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 2, vertical: 2),
                     ),
-                    Image.asset(
-                      CompneyId == 1
-                          ? 'assets/srikar-bio.png'
-                          : 'assets/srikar-seed.png',
-                      width: 60.0,
+                    // Container(
+                    //   width: 40.0,
+                    //   height: 40.0,
+                    //   child: SvgPicture.asset(
+                    //     CompneyId == 1
+                    //         ? 'assets/srikar_biotech_logo.svg'
+                    //         : 'assets/srikar-seed.png',
+                    //     fit: BoxFit.contain,
+                    //     alignment: Alignment.center,
+                    //     // width: 60.0,
+                    //     // height: 40.0,
+                    //   ),
+                    // ),
+                    Container(
+                      width: 50.0,
                       height: 40.0,
+                      child: logoWidget,
+                    ),
+                    SizedBox(
+                      width: 4.0,
                     ),
                     Text(
                       CompneyId == 1 ? 'Srikar Bio Tech' : 'Srikar Seeds ',
@@ -95,12 +113,12 @@ class _home_Screen extends State<HomeScreen> {
                       child: SvgPicture.asset(
                         'assets/bell.svg',
                         width: 18.0,
-                        height: 25.0,
+                        height: 23.0,
                         color: Color(0xFFe78337),
                       ),
                     ),
                     SizedBox(
-                      width: 15.0,
+                      width: 10.0,
                     ),
                     GestureDetector(
                       onTap: () {
@@ -110,12 +128,12 @@ class _home_Screen extends State<HomeScreen> {
                       child: SvgPicture.asset(
                         'assets/sign-out-alt.svg',
                         width: 18.0,
-                        height: 25.0,
+                        height: 23.0,
                         color: Color(0xFFe78337),
                       ),
                     ),
                     SizedBox(
-                      width: 20.0,
+                      width: 0.0,
                     ),
                   ],
                 );
@@ -210,22 +228,21 @@ class _imagesliderState extends State<imageslider> {
       children: [
         Expanded(
           child: Padding(
-            padding: EdgeInsets.symmetric(horizontal: 10.0),
+            padding: EdgeInsets.only(
+              left: 10.0,
+              right: 10.0,
+            ),
             child: Column(
               children: [
                 Expanded(
                     //   child: SingleChildScrollView(
-
                     child: Container(
                         // width: MediaQuery.of(context).size.width,
                         //  padding: EdgeInsets.all(20.0),
 
                         height: MediaQuery.of(context).size.height,
-                        padding: EdgeInsets.only(
-                          left: 10.0,
-                          right: 10.0,
-                          top: 20.0,
-                        ),
+                        padding:
+                            EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
                         width: MediaQuery.of(context).size.width,
                         child: Stack(
                           children: [
@@ -273,7 +290,7 @@ class _imagesliderState extends State<imageslider> {
                               child: Align(
                                 alignment: Alignment.bottomCenter,
                                 child: Padding(
-                                  padding: EdgeInsets.only(bottom: 30.0),
+                                  padding: EdgeInsets.only(bottom: 25.0),
                                   child: Row(
                                     mainAxisAlignment: MainAxisAlignment.center,
                                     children: List.generate(
@@ -290,10 +307,10 @@ class _imagesliderState extends State<imageslider> {
                     //  )
                     ),
                 SizedBox(
-                  height: 10.0,
+                  height: 5.0,
                 ),
                 Expanded(
-                  flex: 3,
+                  flex: 4,
                   child: SingleChildScrollView(
                     child: Container(
                       width: MediaQuery.of(context).size.width,
@@ -489,7 +506,7 @@ class _imagesliderState extends State<imageslider> {
                                       _customwidthCard(
                                         imageUrl: "creditcard.svg",
                                         item: "Create Collections",
-                                        item1: "Create a New Collection",
+                                        item1: "Create a New Collection ",
                                         color: Color(0xFFb7dbc1),
                                         color_1: Color(0xFF43a05a),
                                         textcolor: Color(0xFF118730),
@@ -772,14 +789,14 @@ class _imagesliderState extends State<imageslider> {
                           // ),
                           TextSpan(
                               text:
-                                  'All Incoming and Outgoing Transactions Record',
-                              style: TextStyle(height: 2.5))
+                                  'All Incoming and Outgoing Transactions record',
+                              style: TextStyle(height: 1.5))
                         ],
                       ),
                     ),
                   ),
                 ),
-                SizedBox(height: 16),
+                // SizedBox(height: 16),
               ],
             ),
           ),
@@ -817,7 +834,7 @@ class _imagesliderState extends State<imageslider> {
               children: <Widget>[
                 SizedBox(height: 8),
                 Container(
-                  margin: EdgeInsets.only(bottom: 8),
+                  margin: EdgeInsets.only(bottom: 6),
                   padding: EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: color_1,
@@ -826,7 +843,7 @@ class _imagesliderState extends State<imageslider> {
                   child: SvgPicture.asset(
                     "assets/" + imageUrl,
                     width: 20.0,
-                    height: 25.0,
+                    height: 22.0,
                     color: Color(0xFF414141),
                   ),
                 ),
@@ -848,19 +865,27 @@ class _imagesliderState extends State<imageslider> {
                 // SizedBox(
                 //   height: 8.0,
                 // ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      item1,
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontFamily: "Roboto",
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF414141)),
-                    ),
-                  ),
+                Text(
+                  item1,
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: "Roboto",
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF414141)),
                 ),
+                // Expanded(
+                //   child: Align(
+                //     alignment: Alignment.topLeft,
+                //     child: Text(
+                //       item1,
+                //       style: TextStyle(
+                //           fontSize: 12,
+                //           fontFamily: "Roboto",
+                //           fontWeight: FontWeight.w500,
+                //           color: Color(0xFF414141)),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
@@ -897,7 +922,7 @@ class _imagesliderState extends State<imageslider> {
               children: <Widget>[
                 SizedBox(height: 8),
                 Container(
-                  margin: EdgeInsets.only(bottom: 8),
+                  margin: EdgeInsets.only(bottom: 6),
                   padding: EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: color_1,
@@ -906,7 +931,7 @@ class _imagesliderState extends State<imageslider> {
                   child: SvgPicture.asset(
                     "assets/" + imageUrl,
                     width: 20.0,
-                    height: 25.0,
+                    height: 22.0,
                     color: Color(0xFF414141),
                   ),
                 ),
@@ -928,19 +953,27 @@ class _imagesliderState extends State<imageslider> {
                 // SizedBox(
                 //   height: 8.0,
                 // ),
-                Expanded(
-                  child: Align(
-                    alignment: Alignment.topLeft,
-                    child: Text(
-                      item1,
-                      style: TextStyle(
-                          fontSize: 12,
-                          fontFamily: "Roboto",
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF414141)),
-                    ),
-                  ),
+                Text(
+                  item1,
+                  style: TextStyle(
+                      fontSize: 12,
+                      fontFamily: "Roboto",
+                      fontWeight: FontWeight.w500,
+                      color: Color(0xFF414141)),
                 ),
+                // Expanded(
+                //   child: Align(
+                //     alignment: Alignment.topLeft,
+                //     child: Text(
+                //       item1,
+                //       style: TextStyle(
+                //           fontSize: 12,
+                //           fontFamily: "Roboto",
+                //           fontWeight: FontWeight.w500,
+                //           color: Color(0xFF414141)),
+                //     ),
+                //   ),
+                // ),
               ],
             ),
           ),
