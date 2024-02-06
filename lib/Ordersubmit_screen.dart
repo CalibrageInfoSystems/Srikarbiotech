@@ -38,16 +38,16 @@ class Ordersubmit_screen extends StatefulWidget {
 
   Ordersubmit_screen(
       {required this.cardName,
-        required this.cardCode,
-        required this.address,
-        required this.state,
-        required this.phone,
-        required this.proprietorName,
-        required this.gstRegnNo,
-        required this.BookingPlace,
-        required this.TransportName,
-        required this.creditLine,
-        required this.balance});
+      required this.cardCode,
+      required this.address,
+      required this.state,
+      required this.phone,
+      required this.proprietorName,
+      required this.gstRegnNo,
+      required this.BookingPlace,
+      required this.TransportName,
+      required this.creditLine,
+      required this.balance});
   @override
   Order_submit_screen createState() => Order_submit_screen();
 }
@@ -96,7 +96,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
               children: [
                 Padding(
                   padding:
-                  const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
@@ -186,7 +186,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                     widget.gstRegnNo,
                     widget.address,
                     Colors.white,
-                    BorderRadius.circular(10.0),
+                    BorderRadius.circular(5.0),
                   ),
                   SizedBox(height: 16.0),
                 ],
@@ -203,7 +203,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                   return CircularProgressIndicator();
                 } else if (snapshot.connectionState == ConnectionState.done) {
                   List<OrderItemXrefType> cartItems =
-                  Provider.of<CartProvider>(context).getCartItems();
+                      Provider.of<CartProvider>(context).getCartItems();
 
                   // Print the total sum
                   print('Total Sum of Product Prices: $totalSum');
@@ -215,17 +215,25 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
               },
             ),
 
-
             SizedBox(height: 10),
             Container(
               width: MediaQuery.of(context).size.width,
               padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
               child: IntrinsicHeight(
                 child: Card(
-                  color: Colors.white,
+                  // color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
                   child: Container(
                     width: MediaQuery.of(context).size.width,
-                    color: Colors.white,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      color: Colors.white,
+
+                      // color: Colors.white
+                    ),
+                    //  color: Colors.white,
                     padding: EdgeInsets.all(8.0),
                     child: Column(
                       children: [
@@ -250,7 +258,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                                 ),
                                 Padding(
                                   padding:
-                                  EdgeInsets.only(right: 5.0, top: 8.0),
+                                      EdgeInsets.only(right: 5.0, top: 8.0),
                                   child: GestureDetector(
                                     onTap: () {
                                       Navigator.pushReplacement(
@@ -264,12 +272,12 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                                                   state: widget.state,
                                                   phone: widget.phone,
                                                   proprietorName:
-                                                  widget.proprietorName,
+                                                      widget.proprietorName,
                                                   gstRegnNo: widget.gstRegnNo,
                                                   preferabletransport:
-                                                  widget.TransportName,
+                                                      widget.TransportName,
                                                   bookingplace:
-                                                  widget.BookingPlace,
+                                                      widget.BookingPlace,
                                                   creditLine: 0.0,
                                                   balance: 0.0,
                                                 )),
@@ -294,7 +302,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                           decoration: BoxDecoration(
                             border: Border.all(
                               color:
-                              Colors.grey, // specify your border color here
+                                  Colors.grey, // specify your border color here
                               width: 1.0, // specify the border width
                             ),
                             borderRadius: BorderRadius.circular(
@@ -307,16 +315,16 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                                 children: [
                                   Container(
                                     width:
-                                    MediaQuery.of(context).size.width / 2.2,
+                                        MediaQuery.of(context).size.width / 2.2,
                                     padding: EdgeInsets.all(8.0),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(
                                             top: 0.0,
-                                            left: 20.0,
+                                            left: 10.0,
                                             right: 0.0,
                                           ),
                                           child: Text(
@@ -334,7 +342,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                                         ),
                                         Padding(
                                           padding: EdgeInsets.only(
-                                              top: 0.0, left: 20.0, right: 0.0),
+                                              top: 0.0, left: 10.0, right: 0.0),
                                           child: Text(
                                             '${widget.BookingPlace}',
                                             style: TextStyle(
@@ -350,13 +358,13 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                                   ),
                                   Container(
                                     width:
-                                    MediaQuery.of(context).size.width / 2.9,
+                                        MediaQuery.of(context).size.width / 2.9,
                                     padding: EdgeInsets.all(10.0),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       mainAxisAlignment:
-                                      MainAxisAlignment.start,
+                                          MainAxisAlignment.start,
                                       children: [
                                         Padding(
                                           padding: EdgeInsets.only(
@@ -406,61 +414,68 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
             ),
             Container(
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+                padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
                 child: IntrinsicHeight(
                     child: Card(
+                  //  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
                       color: Colors.white,
-                      child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
                           children: [
+                            Container(
+                              padding: EdgeInsets.only(top: 5.0),
+                              child: Text(
+                                'Total',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ),
+                            Spacer(),
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.end,
                               children: [
                                 Container(
-                                  padding: EdgeInsets.only(top: 10.0),
-                                  child: Text(
-                                    'Total',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14.0,
-                                    ),
-                                  ),
-                                ),
-                                Spacer(),
-                                Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.end,
-                                  children: [
-                                    Container(
-                                      //   width: MediaQuery.of(context).size.width / 1.8,
-                                      padding: EdgeInsets.only(top: 10.0),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            '₹${totalSum.toStringAsFixed(2)}',
-                                            style: TextStyle(
-                                              color: Color(0xFFe78337),
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16.0,
-                                            ),
-                                          ),
-                                        ],
+                                  //   width: MediaQuery.of(context).size.width / 1.8,
+                                  padding: EdgeInsets.only(top: 5.0),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '₹${totalSum.toStringAsFixed(2)}',
+                                        style: TextStyle(
+                                          color: Color(0xFFe78337),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0,
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                ),
+                                    ],
+                                  ),
+                                )
                               ],
                             ),
                           ],
                         ),
-                      ),
-                    )))
+                      ],
+                    ),
+                  ),
+                )))
           ],
         ),
       ),
@@ -492,7 +507,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight:
-                        FontWeight.w700, // Set the font weight to bold
+                            FontWeight.w700, // Set the font weight to bold
                         fontFamily: 'Roboto', // Set the font family to Roboto
                       ),
                     ),
@@ -509,8 +524,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
   }
 
   void AddOrder() async {
-
-
     DateTime currentDate = DateTime.now();
 
     // Format the date as 'yyyy-MM-dd'
@@ -519,16 +532,16 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     final String apiUrl =
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/AddOrder';
     List<Map<String, dynamic>> orderItemList = cartItems.map((cartItem) {
-
-      int NoOfPcs =  cartItem.orderQty! * cartItem.numInSale!;
+      int NoOfPcs = cartItem.orderQty! * cartItem.numInSale!;
 
       double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
       double price = cartItem.price ?? 0.0;
       double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
 
       double totalPrice = orderQty * price * numInSale;
-      double totalgstPrice =(totalPrice * cartItem.gst! / 100);
-      double totalPriceWithGST = totalPrice + (totalPrice * cartItem.gst! / 100);
+      double totalgstPrice = (totalPrice * cartItem.gst! / 100);
+      double totalPriceWithGST =
+          totalPrice + (totalPrice * cartItem.gst! / 100);
 
       print('Order Quantity: $orderQty');
       print('Price: $price');
@@ -536,32 +549,31 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       print('Total Price: $totalPrice');
       print('Total Price With GST: $totalPriceWithGST');
 
-
       return {
-
         "Id": 1,
         "OrderId": 2,
-        "ItemGrpCod":  cartItem.itemGrpCod,
+        "ItemGrpCod": cartItem.itemGrpCod,
         "ItemGrpName": cartItem.itemGrpName,
         "ItemCode": cartItem.itemCode,
         "ItemName": cartItem.itemName,
         "NoOfPcs": NoOfPcs,
-        "OrderQty":  cartItem.orderQty,
-        "Price":  cartItem.price,
+        "OrderQty": cartItem.orderQty,
+        "Price": cartItem.price,
         "UgpName": cartItem.ugpName,
-        "NumInSale":  cartItem.numInSale,
+        "NumInSale": cartItem.numInSale,
         "SalUnitMsr": cartItem.salUnitMsr,
         "GST": cartItem.gst,
-        "TotalPrice":totalPrice,
-        "TotalPriceWithGST":totalPriceWithGST,
-        "GSTPrice":totalgstPrice,
+        "TotalPrice": totalPrice,
+        "TotalPriceWithGST": totalPriceWithGST,
+        "GSTPrice": totalgstPrice,
 
         // Map other cart item properties to corresponding fields
         // ...
       };
     }).toList();
     // Calculate the sum of prices for the entire order
-    double totalOrderPrice = orderItemList.fold(0.0, (sum, item) => sum + (item['Price'] ?? 0.0));
+    double totalOrderPrice =
+        orderItemList.fold(0.0, (sum, item) => sum + (item['Price'] ?? 0.0));
     print('totalOrderPrice====$totalOrderPrice');
 
     Map<String, dynamic> orderData = {
@@ -594,7 +606,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       "UpdatedDate": formattedcurrentDate,
       "TotalCostWithGST": 1.1,
       "GSTCost": 1.1
-
     };
     print(jsonEncode(orderData));
 
@@ -687,7 +698,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     );
   }
 
-
   double calculateTotalSum(List<OrderItemXrefType> cartItems) {
     double sum = 0.0;
     for (OrderItemXrefType cartItem in cartItems) {
@@ -702,8 +712,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
   void clearCartData(CartProvider cartProvider) {
     cartProvider.clearCart();
   }
-
-
 }
 
 class CartItemWidget extends StatefulWidget {
@@ -719,9 +727,8 @@ class CartItemWidget extends StatefulWidget {
     required this.totalPrice,
     required this.cartItems,
   }) : totalSumNotifier = ValueNotifier<double>(
-    calculateTotalSum(cartItems),
-  ); // Initialize in the constructor
-
+          calculateTotalSum(cartItems),
+        ); // Initialize in the constructor
 
   @override
   _CartItemWidgetState createState() => _CartItemWidgetState();
@@ -736,9 +743,10 @@ class _CartItemWidgetState extends State<CartItemWidget> {
     super.initState();
     _orderQty = widget.cartItem.orderQty ?? 0;
     _textController = TextEditingController(text: _orderQty.toString());
-    widget.totalSumNotifier = ValueNotifier<double>(
-        calculateTotalSum(widget.cartItems)); // Initialize totalSumNotifier in initState
+    widget.totalSumNotifier = ValueNotifier<double>(calculateTotalSum(
+        widget.cartItems)); // Initialize totalSumNotifier in initState
   }
+
   @override
   Widget build(BuildContext context) {
     double totalWidth = MediaQuery.of(context).size.width;
@@ -751,20 +759,25 @@ class _CartItemWidgetState extends State<CartItemWidget> {
     double totalSumForProduct = calculateTotalSumForProduct(widget.cartItem);
 
     // Calculate GST price based on totalSum
-    double gstPrice = calculateGstPrice(totalSumForProduct,widget.cartItem.gst);
-    int? Quantity = widget.cartItem.orderQty;
-    print('Quantity==$Quantity');
+    double gstPrice =
+        calculateGstPrice(totalSumForProduct, widget.cartItem.gst);
 
     return Padding(
       padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
       child: Card(
         elevation: 5.0,
-        color: Colors.white,
+        //  color: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(5.0),
         ),
         child: Container(
-          color: Colors.white,
+          // color: Colors.white,
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            color: Colors.white,
+
+            // color: Colors.white
+          ),
           padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -784,10 +797,9 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                     ),
                   ),
                   Text(
-                    '$Quantity ${widget.cartItem.salUnitMsr} = ${Quantity! *  widget.cartItem.numInSale!}  Nos', // Display totalSumForProduct for the single product
+                    '  ${widget.cartItem.numInSale}', // Display totalSumForProduct for the single product
                     style: CommonUtils.Mediumtext_o_14,
                   ),
-
                   // Add the GST price column
                   // Text(
                   //   'GST: ₹${gstPrice.toStringAsFixed(2)}',
@@ -807,8 +819,10 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                           _orderQty = (_orderQty ?? 0) + 1;
                           _textController.text = _orderQty.toString();
                           widget.cartItem.updateQuantity(_orderQty);
-                          widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
-                          print('totalSumNotifier ${widget.totalSumNotifier.value}');
+                          widget.totalSumNotifier.value =
+                              calculateTotalSum(widget.cartItems);
+                          print(
+                              'totalSumNotifier ${widget.totalSumNotifier.value}');
                         });
                       },
                       deleteQuantity: () {
@@ -819,16 +833,17 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                             widget.cartItem.updateQuantity(_orderQty);
                             widget.totalSumNotifier.value =
                                 calculateTotalSum(widget.cartItems);
-                            print('totalSumNotifier ${widget.totalSumNotifier.value}');
+                            print(
+                                'totalSumNotifier ${widget.totalSumNotifier.value}');
                           }
                         });
                       },
                       textController: _textController,
                       updateTotalPrice: () {
                         widget.totalSumNotifier.value =
-                            calculateTotalSumForProduct(
-                                widget.cartItem);
-                      }, onQuantityChanged: (int value) {  },
+                            calculateTotalSumForProduct(widget.cartItem);
+                      },
+                      onQuantityChanged: (int value) {},
                     ),
                   ),
                   SizedBox(width: 8.0),
@@ -979,18 +994,19 @@ class PlusMinusButtons extends StatelessWidget {
     print('Current Value: ${textController.text}');
   }
 }
+
 double calculateTotalSumForProduct(OrderItemXrefType cartItem) {
   return cartItem.orderQty! *
       cartItem.price! *
       (cartItem.numInSale?.toDouble() ?? 0.0);
-
 }
 
 double calculateTotalSum(List<OrderItemXrefType> cartItems) {
   double totalSum = 0.0;
   for (OrderItemXrefType cartItem in cartItems) {
-    totalSum +=
-        cartItem.orderQty! * cartItem.price! * (cartItem.numInSale?.toDouble() ?? 0.0);
+    totalSum += cartItem.orderQty! *
+        cartItem.price! *
+        (cartItem.numInSale?.toDouble() ?? 0.0);
   }
   return totalSum;
 }

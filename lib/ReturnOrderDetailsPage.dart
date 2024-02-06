@@ -51,16 +51,16 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
   void test(Map<String, dynamic> apiData) {
     try {
       List<Map<String, dynamic>> returnOrderDetailsResultListData =
-      List<Map<String, dynamic>>.from(
-          apiData['response']['returnOrderDetailsResult']);
+          List<Map<String, dynamic>>.from(
+              apiData['response']['returnOrderDetailsResult']);
 
       returnOrderDetailsResultList = returnOrderDetailsResultListData
           .map((item) => ReturnOrderDetailsResult.fromJson(item))
           .toList();
 
       List<Map<String, dynamic>> returnOrderItemXrefListData =
-      List<Map<String, dynamic>>.from(
-          apiData['response']['returnOrderItemXrefList']);
+          List<Map<String, dynamic>>.from(
+              apiData['response']['returnOrderItemXrefList']);
       returnOrderItemXrefList = returnOrderItemXrefListData
           .map((item) => ReturnOrderItemXrefList.fromJson(item))
           .toList();
@@ -99,7 +99,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
           } else {
             if (snapshot.hasData) {
               List<ReturnOrderDetailsResult> result =
-              List.from(returnOrderDetailsResultList);
+                  List.from(returnOrderDetailsResultList);
               if (result.isNotEmpty) {
                 ReturnOrderDetailsResult data = result[0];
                 return SingleChildScrollView(
@@ -115,7 +115,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                           data.partyGstNumber,
                           data.partyAddress,
                           Colors.white,
-                          BorderRadius.circular(20.0),
+                          BorderRadius.circular(5.0),
                         ),
                         const SizedBox(
                           height: 10,
@@ -167,7 +167,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                           shrinkWrap: true,
                           children: List.generate(
                             returnOrderDetailsResultList.length,
-                                (index) => ShipmentDetailsCard(
+                            (index) => ShipmentDetailsCard(
                                 orderId: widget.orderId, data: result[index]),
                           ),
                         ),
@@ -183,7 +183,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                           shrinkWrap: true,
                           children: List.generate(
                             returnOrderItemXrefList.length,
-                                (index) =>
+                            (index) =>
                                 ItemCard(data: returnOrderItemXrefList[index]),
                           ),
                         ),
@@ -365,12 +365,12 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
             return Card(
               elevation: 5,
               shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(20),
+                borderRadius: BorderRadius.circular(5),
               ),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(20),
+                  borderRadius: BorderRadius.circular(5),
                 ),
                 width: double.infinity,
                 child: Column(
@@ -397,7 +397,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                             ],
                           ),
                           ClipRRect(
-                            borderRadius: BorderRadius.circular(15),
+                            borderRadius: BorderRadius.circular(5),
                             child: Container(
                               decoration: const BoxDecoration(
                                 color: Color.fromARGB(255, 243, 214, 175),
@@ -492,7 +492,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                           border: Border.all(
                             color: _orangeColor,
                           ),
-                          borderRadius: BorderRadius.circular(10),
+                          borderRadius: BorderRadius.circular(5),
                         ),
                         child: GestureDetector(
                           onTap: () {
@@ -515,10 +515,10 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                                       }).toList(),
                                       options: CarouselOptions(
                                         scrollPhysics:
-                                        const BouncingScrollPhysics(),
+                                            const BouncingScrollPhysics(),
                                         autoPlay: true,
                                         height:
-                                        MediaQuery.of(context).size.height,
+                                            MediaQuery.of(context).size.height,
                                         aspectRatio: 23 / 9,
                                         viewportFraction: 1,
                                         onPageChanged: (index, reason) {
@@ -676,12 +676,12 @@ class ItemCard extends StatelessWidget {
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(12),
+        borderRadius: BorderRadius.circular(5),
       ),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(12),
+          borderRadius: BorderRadius.circular(5),
         ),
         width: double.infinity,
         padding: const EdgeInsets.all(12),
@@ -776,12 +776,12 @@ class _PaymentDetailsCardState extends State<PaymentDetailsCard> {
     return Card(
       elevation: 5,
       shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(20),
+        borderRadius: BorderRadius.circular(5),
       ),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(20),
+          borderRadius: BorderRadius.circular(5),
         ),
         width: double.infinity, // remove padding here
         child: Column(
@@ -809,7 +809,5 @@ class _PaymentDetailsCardState extends State<PaymentDetailsCard> {
     );
   }
 }
-
-
 
 // apply code in OrderDetailsPage

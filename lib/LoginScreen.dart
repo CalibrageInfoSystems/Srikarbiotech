@@ -298,29 +298,29 @@ class _MyHomePageState extends State<LoginScreen> {
                                       color: Color(0xFFe78337),
                                     ),
                                     child:
-                                        isLoading // Show loading indicator if isLoading is true
-                                            ? Center(
-                                                child:
-                                                    CircularProgressIndicator())
-                                            : Row(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.center,
-                                                mainAxisAlignment:
-                                                    MainAxisAlignment.center,
-                                                children: [
-                                                  Text(
-                                                    'LogIn',
-                                                    style:
-                                                        CommonUtils.Buttonstyle,
-                                                  ),
-                                                  Image.asset(
-                                                    'assets/right_arrow.png',
-                                                    width: 20,
-                                                    height: 10,
-                                                    color: Colors.white,
-                                                  )
-                                                ],
-                                              ),
+                                        // isLoading // Show loading indicator if isLoading is true
+                                        //     ? Center(
+                                        //         child:
+                                        //             CircularProgressIndicator())
+                                        //     :
+                                        Row(
+                                      crossAxisAlignment:
+                                          CrossAxisAlignment.center,
+                                      mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                      children: [
+                                        Text(
+                                          'LogIn',
+                                          style: CommonUtils.Buttonstyle,
+                                        ),
+                                        Image.asset(
+                                          'assets/right_arrow.png',
+                                          width: 20,
+                                          height: 10,
+                                          color: Colors.white,
+                                        )
+                                      ],
+                                    ),
                                   ),
                                 ),
                               ),

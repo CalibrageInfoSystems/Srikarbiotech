@@ -32,16 +32,13 @@ class _VieworderPageState extends State<ViewOrders> {
         color: HexColor('#e58338'),
       ));
 
-
-
-
   List<OrderResult> orderesponselist = [];
 
   List<OrderResult> filterorderesponselist = [];
 
   TextEditingController searchController = TextEditingController();
 
-  late  Future<List<OrderResult>?> apiData;
+  late Future<List<OrderResult>?> apiData;
 
   late ViewOrdersProvider viewOrdersProvider;
   int CompneyId = 0;
@@ -76,7 +73,8 @@ class _VieworderPageState extends State<ViewOrders> {
     DateTime currentDate = DateTime.now();
     DateTime oneWeekBackDate = currentDate.subtract(Duration(days: 7));
     String formattedCurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
-    String formattedOneWeekBackDate = DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
+    String formattedOneWeekBackDate =
+        DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
 
     final url = Uri.parse(
@@ -185,11 +183,10 @@ class _VieworderPageState extends State<ViewOrders> {
                             OrderResult orderresul = data[index];
                             print('orderdate======>,${data[index].orderDate}');
                             // String fromatteddates = orderresul.orderDate;
-                            String dateString =data[index].orderDate;
+                            String dateString = data[index].orderDate;
                             DateTime date = DateTime.parse(dateString);
-                            String formattedDate = DateFormat('dd MMM, yyyy').format(date);
-
-
+                            String formattedDate =
+                                DateFormat('dd MMM, yyyy').format(date);
 
                             return GestureDetector(
                               onTap: () {
@@ -200,7 +197,8 @@ class _VieworderPageState extends State<ViewOrders> {
                                         orderdate: formattedDate,
                                         totalprice: data[index].totalCost,
                                         bookingplace: data[index].bookingPlace,
-                                        transportmode: data[index].transportName,
+                                        transportmode:
+                                            data[index].transportName,
                                         lrnumber: 12345,
                                         lrdate: "",
                                         statusname: data[index].statusName,
@@ -217,7 +215,7 @@ class _VieworderPageState extends State<ViewOrders> {
                               },
                               child: Container(
                                 margin: const EdgeInsets.only(bottom: 10),
-                                color: Colors.transparent,
+                                color: Colors.white,
                                 child: Card(
                                   elevation: 5,
                                   color: Colors.white,
@@ -244,7 +242,7 @@ class _VieworderPageState extends State<ViewOrders> {
                                               // starting icon of card
                                               Card(
                                                 elevation: 2,
-                                                color: Colors.white70,
+                                                color: Colors.white,
                                                 child: Container(
                                                   height: 65,
                                                   width: 90,
@@ -467,7 +465,8 @@ class _VieworderPageState extends State<ViewOrders> {
                                                       style: TextStyle(
                                                         color:
                                                             getStatusTypeTextColor(
-                                                                orderresul.statusName),
+                                                                orderresul
+                                                                    .statusName),
                                                       ),
                                                     ),
                                                   ],
@@ -485,15 +484,15 @@ class _VieworderPageState extends State<ViewOrders> {
                                                 Container(
                                                     child: Row(
                                                   children: [
-                                                    Text(
-                                                      'Date: ',
-                                                      style: TextStyle(
-                                                          fontFamily: 'Roboto',
-                                                          fontSize: 12,
-                                                          color: Colors.black,
-                                                          fontWeight:
-                                                              FontWeight.w400),
-                                                    ),
+                                                    // Text(
+                                                    //   'Date: ',
+                                                    //   style: TextStyle(
+                                                    //       fontFamily: 'Roboto',
+                                                    //       fontSize: 12,
+                                                    //       color: Colors.black,
+                                                    //       fontWeight:
+                                                    //           FontWeight.w400),
+                                                    // ),
                                                     Text(
                                                       "$formattedDate",
                                                       style: TextStyle(
@@ -828,12 +827,10 @@ class _VieworderPageState extends State<ViewOrders> {
     );
   }
 
-
   Future<void> getshareddata() async {
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
 
     print('Company ID: $CompneyId');
-
   }
 }
 
@@ -896,7 +893,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
   Future<void> fetchdropdownitems() async {
     savedCompanyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-    final apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'+'$savedCompanyId';
+    final apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/' +
+            '$savedCompanyId';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -918,7 +917,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> getpaymentmethods() async {
-
     final response = await http.get(Uri.parse(
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Master/GetAllTypeCdDmt/1'));
 
@@ -952,7 +950,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
     try {
       DateTime? picked = await showDatePicker(
-
         context: context,
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: initialDate,
@@ -1190,14 +1187,16 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> fetchData() async {
-    slpCode= await SharedPrefsData.getStringFromSharedPrefs("slpCode");
+    slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
     savedCompanyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-    final response = await http.get(Uri.parse(baseUrl + GetAllDealersBySlpCode + '$savedCompanyId' + "/" + '$slpCode'));
-
+    final response = await http.get(Uri.parse(baseUrl +
+        GetAllDealersBySlpCode +
+        '$savedCompanyId' +
+        "/" +
+        '$slpCode'));
 
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body);
-
 
       if (data['isSuccess']) {
         // Check if 'listResult' key exists and is not null
@@ -1317,7 +1316,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   ),
                 ),
               ),
-
             ],
           ),
 
@@ -1329,79 +1327,84 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             child: apiResponse == null
                 ? Center(child: CircularProgressIndicator.adaptive())
                 : ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: apiResponse!.listResult.length + 1, // Add 1 for the "All" option
-              itemBuilder: (BuildContext context, int index) {
-                bool isSelected = index == indexselected;
-                PaymentMode currentPaymode;
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: apiResponse!.listResult.length +
+                        1, // Add 1 for the "All" option
+                    itemBuilder: (BuildContext context, int index) {
+                      bool isSelected = index == indexselected;
+                      PaymentMode currentPaymode;
 
-                // Handle the "All" option
-                if (index == 0) {
-                  currentPaymode = PaymentMode(
-                    // Provide default values or handle the null case as needed
-                    typeCdId: null,
-                    classTypeId: 1,
-                    name: 'All',
-                    desc: 'All',
-                    tableName: 'all',
-                    columnName: 'all',
-                    sortOrder: 0,
-                    isActive: true,
-                  );
-                } else {
-                  currentPaymode =
-                  apiResponse!.listResult[index - 1]; // Adjust index for actual data
-                }
+                      // Handle the "All" option
+                      if (index == 0) {
+                        currentPaymode = PaymentMode(
+                          // Provide default values or handle the null case as needed
+                          typeCdId: null,
+                          classTypeId: 1,
+                          name: 'All',
+                          desc: 'All',
+                          tableName: 'all',
+                          columnName: 'all',
+                          sortOrder: 0,
+                          isActive: true,
+                        );
+                      } else {
+                        currentPaymode = apiResponse!.listResult[
+                            index - 1]; // Adjust index for actual data
+                      }
 
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      indexselected = index;
-                      selectedPaymode = currentPaymode;
-                    });
-                    payid = currentPaymode.typeCdId;
-                    Selected_PaymentMode = currentPaymode.desc;
-                    print('payid:$payid');
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? Color(0xFFe78337)
-                          : Color(0xFFe78337).withOpacity(0.1),
-                      border: Border.all(
-                        color: isSelected ? Color(0xFFe78337) : Color(0xFFe78337),
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: IntrinsicWidth(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Row(
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            indexselected = index;
+                            selectedPaymode = currentPaymode;
+                          });
+                          payid = currentPaymode.typeCdId;
+                          Selected_PaymentMode = currentPaymode.desc;
+                          print('payid:$payid');
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? Color(0xFFe78337)
+                                : Color(0xFFe78337).withOpacity(0.1),
+                            border: Border.all(
+                              color: isSelected
+                                  ? Color(0xFFe78337)
+                                  : Color(0xFFe78337),
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: IntrinsicWidth(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  '${currentPaymode.desc.toString()}',
-                                  style: TextStyle(
-                                    color: isSelected ? Colors.white : Colors.black,
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        '${currentPaymode.desc.toString()}',
+                                        style: TextStyle(
+                                          color: isSelected
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
-
 
           const SizedBox(
             height: 10.0,
@@ -1429,7 +1432,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 context,
                 'To Date',
                 todateController,
-                    () => _selectDate(context, todateController),
+                () => _selectDate(context, todateController),
               ),
             ],
           ),
@@ -1511,7 +1514,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     selectformattedtodate = DateFormat('yyyy-MM-dd').format(todate);
 
 // Convert the fromdateController text to 'yyyy-MM-dd'
-    DateTime pickedFromDate = DateFormat('dd-MM-yyyy').parse(fromdateController.text);
+    DateTime pickedFromDate =
+        DateFormat('dd-MM-yyyy').parse(fromdateController.text);
     selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
     print('Converted to date: $selectformattedtodate');
     print('Converted from date: $selectformattedfromdate');
@@ -1548,13 +1552,14 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
           if (data != null) {
             List<OrderResult> result =
-            data.map((item) => OrderResult.fromJson(item)).toList();
+                data.map((item) => OrderResult.fromJson(item)).toList();
             viewOrdersProvider.storeIntoViewOrderProvider(result);
           } else {
             print('listResult is null');
             List<OrderResult> emptyList = [];
             viewOrdersProvider.storeIntoViewOrderProvider(emptyList);
-            CommonUtils.showCustomToastMessageLong('No Order found!', context, 2, 2);
+            CommonUtils.showCustomToastMessageLong(
+                'No Order found!', context, 2, 2);
           }
         } else {
           print('Request failed: ${jsonResponse['endUserMessage']}');
@@ -1572,8 +1577,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           'Something went wrong', context, 2, 2);
     }
     Navigator.of(context).pop();
-   
   }
+
   void clearAllFilters() {
     setState(() {
       // Reset the selected values to their initial state or default values
