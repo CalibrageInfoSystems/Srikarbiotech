@@ -752,6 +752,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
 
     // Calculate GST price based on totalSum
     double gstPrice = calculateGstPrice(totalSumForProduct,widget.cartItem.gst);
+    int? Quantity = widget.cartItem.orderQty;
+    print('Quantity==$Quantity');
 
     return Padding(
       padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
@@ -782,9 +784,10 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                     ),
                   ),
                   Text(
-                    '  ${widget.cartItem.numInSale}', // Display totalSumForProduct for the single product
+                    '$Quantity ${widget.cartItem.salUnitMsr} = ${Quantity! *  widget.cartItem.numInSale!}  Nos', // Display totalSumForProduct for the single product
                     style: CommonUtils.Mediumtext_o_14,
                   ),
+
                   // Add the GST price column
                   // Text(
                   //   'GST: ₹${gstPrice.toStringAsFixed(2)}',

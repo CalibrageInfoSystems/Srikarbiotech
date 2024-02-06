@@ -91,6 +91,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   bool isLoading = false;
   int CompneyId = 0;
   int indexselected = 0;
+  String? Compneyname;
   @override
   initState() {
     super.initState();
@@ -1429,7 +1430,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
             // Navigate to the next screen
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => StatusScreen()),
+              MaterialPageRoute(builder: (context) => StatusScreen(Compneyname!)),
             );
           } else {
             CommonUtils.showCustomToastMessageLong('Error', context, 1, 6);
@@ -1771,10 +1772,11 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
     userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
     slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    Compneyname = await SharedPrefsData.getStringFromSharedPrefs("companyName");
     print('User ID: $userId');
     print('SLP Code: $slpCode');
     print('Company ID: $CompneyId');
-
+    print('Compneyname : $Compneyname');
     print('Retrieved CompneyId: $CompneyId');
   }
 

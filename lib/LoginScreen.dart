@@ -108,7 +108,7 @@ class _MyHomePageState extends State<LoginScreen> {
                       Text(
                         compneyid == 1
                             ? 'Hi, Welcome to Srikar Bio Tech'
-                            : 'Hi, Welcome to Srikar Seeds ',
+                            : 'Hi, Welcome to ${widget.companyName} ',
                         style: CommonUtils.header_Styles16,
                       ),
                       SizedBox(height: 10.0),
@@ -406,6 +406,7 @@ class _MyHomePageState extends State<LoginScreen> {
         prefs.setString("userId", jsonResponse['response']['userId']);
         prefs.setString("slpCode", jsonResponse['response']['slpCode']);
         prefs.setInt("companyId", jsonResponse['response']['companyId']);
+        prefs.setString("companyName", jsonResponse['response']['companyName']);
 
         SharedPrefsData.updateStringValue(
             "userId", jsonResponse['response']['userId']);

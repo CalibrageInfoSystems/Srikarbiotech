@@ -5,17 +5,23 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:srikarbiotech/view_collection_page.dart';
 
 import 'HomeScreen.dart';
-
 class StatusScreen extends StatelessWidget {
-  const StatusScreen({super.key});
+  final String Compneyname;
+
+  const StatusScreen(this.Compneyname, {Key? key}) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
-    // final arguments = ModalRoute.of(context)?.settings.arguments as ListResult;
     final primaryGreen = HexColor('#11872f');
     final primaryOrange = HexColor('#dc762b');
 
     String orderId = 'xxxxxxxxxx';
+    String successText = 'Your Collection Submitted Successfully';
+
+    // Modify the success text based on the compneyId
+
+print('===>$Compneyname');
+
     return WillPopScope(
         onWillPop: () async {
       // Disable the back button functionality
@@ -54,13 +60,14 @@ class StatusScreen extends StatelessWidget {
                 color: primaryGreen,
               ),
             ),
-            const Text(
-              'Thank you for shopping with Srikar Bio Tech',
+            Text(
+              'Thank you for shopping with $Compneyname',
               style: TextStyle(
                 fontSize: 18,
                 letterSpacing: 0,
               ),
             ),
+
             // const SizedBox(
             //   height: 5,
             // ),
