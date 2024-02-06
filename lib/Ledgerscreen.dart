@@ -140,18 +140,21 @@ class Ledger_screen extends State<Ledgerscreen> {
                 widget.gstRegnNo,
                 widget.address,
                 Colors.white,
-                BorderRadius.circular(10.0),
+                BorderRadius.circular(5.0),
               ),
               SizedBox(height: 16.0),
               Card(
                   elevation: 2.0,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(10.0),
+                    borderRadius: BorderRadius.circular(5.0),
                   ),
                   color: Colors.white,
                   child: Container(
                     width: double.infinity,
-                    color: Colors.white,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      color: Colors.white,
+                    ),
                     padding: EdgeInsets.all(16.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,

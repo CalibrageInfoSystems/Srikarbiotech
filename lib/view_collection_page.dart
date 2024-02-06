@@ -61,7 +61,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   void initState() {
     super.initState();
     getshareddata();
-initializeData();
+    initializeData();
   }
 
   @override
@@ -69,8 +69,6 @@ initializeData();
     super.didChangeDependencies();
     viewProvider = Provider.of<ViewCollectionProvider>(context);
   }
-
-
 
   void filterRecordsBasedOnPartyName(String input) {
     apiData.then((data) {
@@ -87,7 +85,8 @@ initializeData();
     DateTime currentDate = DateTime.now();
     DateTime oneWeekBackDate = currentDate.subtract(Duration(days: 7));
     String formattedCurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
-    String formattedOneWeekBackDate = DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
+    String formattedOneWeekBackDate =
+        DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
 
     try {
@@ -116,8 +115,9 @@ initializeData();
 
         if (json['response']['listResult'] != null) {
           List<dynamic> listResult = json['response']['listResult'];
-          List<ListResult> result =
-          listResult.map((element) => ListResult.fromJson(element)).toList();
+          List<ListResult> result = listResult
+              .map((element) => ListResult.fromJson(element))
+              .toList();
           return result;
         } else {
           print('listResult is null.');
@@ -205,8 +205,7 @@ initializeData();
   }
 
   PreferredSizeWidget _viewCollectionAppBar() {
-    return
-      AppBar(
+    return AppBar(
       backgroundColor: const Color(0xFFe78337),
       automaticallyImplyLeading: false,
       // This line removes the default back arrow
@@ -327,7 +326,6 @@ initializeData();
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
 
     print('Company ID: $CompneyId');
-
   }
 
   void initializeData() {
@@ -404,9 +402,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> fetchdropdownitems() async {
-
     savedCompanyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-    final apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'+'$savedCompanyId';
+    final apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/' +
+            '$savedCompanyId';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -693,11 +692,15 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> fetchData() async {
-    slpCode= await SharedPrefsData.getStringFromSharedPrefs("slpCode");
+    slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
     savedCompanyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-    final response = await http.get(Uri.parse(baseUrl + GetAllDealersBySlpCode + '$savedCompanyId' + "/" + '$slpCode'));
+    final response = await http.get(Uri.parse(baseUrl +
+        GetAllDealersBySlpCode +
+        '$savedCompanyId' +
+        "/" +
+        '$slpCode'));
 
-   // print("apiUrl: ${apiUrl}");
+    // print("apiUrl: ${apiUrl}");
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body);
 
@@ -715,8 +718,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return
-      SingleChildScrollView(
+    return SingleChildScrollView(
         child: Padding(
       padding: const EdgeInsets.all(20),
       child: Column(
@@ -785,8 +787,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                             setState(() {
                               selectedCardCode = value!;
                               if (selectedCardCode != -1) {
-                                selectedValue = dropdownItems[selectedCardCode]['cardCode'];
-                                selectedName = dropdownItems[selectedCardCode]['cardName'];
+                                selectedValue =
+                                    dropdownItems[selectedCardCode]['cardCode'];
+                                selectedName =
+                                    dropdownItems[selectedCardCode]['cardName'];
 
                                 print("selectedValue:$selectedValue");
                                 print("selectedName:$selectedName");
@@ -846,9 +850,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     padding: const EdgeInsets.all(8.0),
                     child: purposeList.isEmpty
                         ? LoadingAnimationWidget.newtonCradle(
-                      color: Colors.blue, // Set the color as needed
-                      size: 40.0,
-                    ) // S // Show a loading indicator
+                            color: Colors.blue, // Set the color as needed
+                            size: 40.0,
+                          ) // S // Show a loading indicator
                         : DropdownButton<String>(
                             hint: const Text(
                               'Select Purpose',
@@ -906,85 +910,88 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             child: apiResponse == null
                 ? Center(child: CircularProgressIndicator.adaptive())
                 : ListView.builder(
-              scrollDirection: Axis.horizontal,
-              shrinkWrap: true,
-              itemCount: apiResponse!.listResult.length + 1, // Add 1 for the "All" option
-              itemBuilder: (BuildContext context, int index) {
-                bool isSelected = index == indexselected;
-                PaymentMode currentPaymode;
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: apiResponse!.listResult.length +
+                        1, // Add 1 for the "All" option
+                    itemBuilder: (BuildContext context, int index) {
+                      bool isSelected = index == indexselected;
+                      PaymentMode currentPaymode;
 
-                // Handle the "All" option
-                if (index == 0) {
-                  currentPaymode = PaymentMode(
-                    // Provide default values or handle the null case as needed
-                    typeCdId: null,
-                    classTypeId: 3,
-                    name: 'All',
-                    desc: 'All',
-                    tableName: 'all',
-                    columnName: 'all',
-                    sortOrder: 0,
-                    isActive: true,
-                  );
-                } else {
-                  currentPaymode =
-                  apiResponse!.listResult[index - 1]; // Adjust index for actual data
-                }
+                      // Handle the "All" option
+                      if (index == 0) {
+                        currentPaymode = PaymentMode(
+                          // Provide default values or handle the null case as needed
+                          typeCdId: null,
+                          classTypeId: 3,
+                          name: 'All',
+                          desc: 'All',
+                          tableName: 'all',
+                          columnName: 'all',
+                          sortOrder: 0,
+                          isActive: true,
+                        );
+                      } else {
+                        currentPaymode = apiResponse!.listResult[
+                            index - 1]; // Adjust index for actual data
+                      }
 
-                return GestureDetector(
-                  onTap: () {
-                    setState(() {
-                      indexselected = index;
-                      selectedPaymode = currentPaymode;
-                    });
-                    payid = currentPaymode.typeCdId;
-                    Selected_PaymentMode = currentPaymode.desc;
-                    print('payid:$payid');
-                  },
-                  child: Container(
-                    margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                    decoration: BoxDecoration(
-                      color: isSelected
-                          ? Color(0xFFe78337)
-                          : Color(0xFFe78337).withOpacity(0.1),
-                      border: Border.all(
-                        color: isSelected ? Color(0xFFe78337) : Color(0xFFe78337),
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: IntrinsicWidth(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                            child: Row(
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            indexselected = index;
+                            selectedPaymode = currentPaymode;
+                          });
+                          payid = currentPaymode.typeCdId;
+                          Selected_PaymentMode = currentPaymode.desc;
+                          print('payid:$payid');
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? Color(0xFFe78337)
+                                : Color(0xFFe78337).withOpacity(0.1),
+                            border: Border.all(
+                              color: isSelected
+                                  ? Color(0xFFe78337)
+                                  : Color(0xFFe78337),
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: IntrinsicWidth(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text(
-                                  '${currentPaymode.desc.toString()}',
-                                  style: TextStyle(
-                                    color: isSelected ? Colors.white : Colors.black,
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        '${currentPaymode.desc.toString()}',
+                                        style: TextStyle(
+                                          color: isSelected
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ],
                             ),
                           ),
-                        ],
-                      ),
-                    ),
+                        ),
+                      );
+                    },
                   ),
-                );
-              },
-            ),
           ),
-
-
 
           const SizedBox(
             height: 10.0,
           ), // From date
-
 
           // To Date
           Column(
@@ -1008,7 +1015,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 context,
                 'To Date',
                 todateController,
-                    () => _selectDate(context, todateController),
+                () => _selectDate(context, todateController),
               ),
             ],
           ),
@@ -1088,13 +1095,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
 // x000
   Future<void> getappliedflitters(BuildContext context) async {
-
     DateTime todate = DateFormat('dd-MM-yyyy').parse(todateController.text);
     selectformattedtodate = DateFormat('yyyy-MM-dd').format(todate);
 
 // Convert the fromdateController text to 'yyyy-MM-dd'
-    DateTime pickedFromDate = DateFormat('dd-MM-yyyy').parse(fromdateController.text);
-     selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
+    DateTime pickedFromDate =
+        DateFormat('dd-MM-yyyy').parse(fromdateController.text);
+    selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
     print('Converted to date: $selectformattedtodate');
     print('Converted from date: $selectformattedfromdate');
 
@@ -1132,7 +1139,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             print('listResult is null');
             List<ListResult> emptyList = [];
             viewProvider.storeIntoProvider(emptyList);
-            CommonUtils.showCustomToastMessageLong('No collection found!', context, 2, 2);
+            CommonUtils.showCustomToastMessageLong(
+                'No collection found!', context, 2, 2);
           }
         } else {
           print('Request failed: ${jsonResponse['endUserMessage']}');
@@ -1194,13 +1202,13 @@ class MyCard extends StatefulWidget {
 
 class _MyCardState extends State<MyCard> {
   final _boxBorder = BoxDecoration(
-    borderRadius: BorderRadius.circular(10),
+    borderRadius: BorderRadius.circular(5.0),
     color: Colors.white,
   );
 
   final _iconBoxBorder = BoxDecoration(
-    borderRadius: BorderRadius.circular(10),
-    color: Colors.white10,
+    borderRadius: BorderRadius.circular(5.0),
+    color: Colors.white,
   );
 
   final _textStyle = const TextStyle(
@@ -1267,6 +1275,10 @@ class _MyCardState extends State<MyCard> {
                       // starting icon of card
                       Card(
                         elevation: 3,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
                         child: Container(
                           height: 65,
                           width: 60,

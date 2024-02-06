@@ -338,67 +338,76 @@ class _ProductListState extends State<Createorderscreen> {
                         ),
                 ),
               ),
-              Padding(
-                padding: const EdgeInsets.all(0.0),
-                child: Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.only(top: 2.0, left: 8.0, right: 10.0),
-                  child: IntrinsicHeight(
-                    child: Card(
-                      color: Colors.white,
-                      child: Container(
-                        padding: const EdgeInsets.all(15.0),
+              // Padding(
+              //   padding: const EdgeInsets.all(0.0),
+              //   child:
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.only(top: 2.0, left: 8.0, right: 10.0),
+                child: IntrinsicHeight(
+                  child: Card(
+                    //color: Colors.white,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    child: Container(
+                      padding: const EdgeInsets.all(5.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.0),
                         color: Colors.white,
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(top: 1.0),
-                              child: Text(
-                                '${widget.cardName}',
-                                style: CommonUtils.header_Styles16,
-                                maxLines: 2, // Display in 2 lines
-                                overflow: TextOverflow.ellipsis,
-                              ),
+
+                        // color: Colors.white
+                      ),
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            padding: EdgeInsets.only(top: 1.0),
+                            child: Text(
+                              '${widget.cardName}',
+                              style: CommonUtils.header_Styles16,
+                              maxLines: 2, // Display in 2 lines
+                              overflow: TextOverflow.ellipsis,
                             ),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              child: Row(
-                                crossAxisAlignment: CrossAxisAlignment.end,
-                                mainAxisAlignment: MainAxisAlignment.end,
-                                children: [
-                                  Text(
-                                    '₹${widget.balance}',
-                                    style: TextStyle(
-                                      color: Color(0xFFe78337),
-                                      fontFamily: "Roboto",
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 14.0,
-                                    ),
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            child: Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Text(
+                                  '₹${widget.balance}',
+                                  style: TextStyle(
+                                    color: Color(0xFFe78337),
+                                    fontFamily: "Roboto",
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14.0,
                                   ),
-                                  SizedBox(
-                                      width:
-                                          5.0), // Add some space between balance and credit line
-                                  Text(
-                                    '(${widget.creditLine})',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontFamily: "Roboto",
-                                      fontWeight: FontWeight.w700,
-                                      fontSize: 14.0,
-                                    ),
+                                ),
+                                SizedBox(
+                                    width:
+                                        5.0), // Add some space between balance and credit line
+                                Text(
+                                  '(${widget.creditLine})',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontFamily: "Roboto",
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14.0,
                                   ),
-                                ],
-                              ),
-                            )
-                          ],
-                        ),
+                                ),
+                              ],
+                            ),
+                          )
+                        ],
                       ),
                     ),
                   ),
                 ),
               ),
+              //),
               Expanded(
                   child: Padding(
                 padding:
@@ -452,15 +461,22 @@ class _ProductListState extends State<Createorderscreen> {
                                   print(
                                       'Tapped on ID: ${productresp.itemCode}');
                                 },
-                                child: Container(
-                                    //  color: Colors.white,
-                                    child: Card(
+                                // child: Container(
+                                //     //  color: Colors.white,
+                                //
+                                child: Card(
                                   //     color: Colors.white,
-
-                                  elevation: 5.0,
+                                  shape: RoundedRectangleBorder(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                  ),
+                                  elevation: 10.0,
                                   child: Container(
-                                    color: Colors.white,
-                                    padding: const EdgeInsets.all(15.0),
+                                    //color: Colors.white,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(5.0),
+                                      color: Colors.white,
+                                    ),
+                                    padding: const EdgeInsets.all(5.0),
                                     child: Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
@@ -772,24 +788,45 @@ class _ProductListState extends State<Createorderscreen> {
                                                                       .itmsGrpCod!;
                                                             }
 
-                                                            if (cartProvider.isSameItemGroup(itemGrpCod)) {
-                                                              orderItem = OrderItemXrefType(
+                                                            if (cartProvider
+                                                                .isSameItemGroup(
+                                                                    itemGrpCod)) {
+                                                              orderItem =
+                                                                  OrderItemXrefType(
                                                                 id: 1,
                                                                 orderId: 1001,
-                                                                itemGrpCod: itemGrpCod,
-                                                                itemGrpName: productresp.itmsGrpNam,
-                                                                itemCode: productresp.itemCode,
-                                                                itemName: productresp.itemName,
+                                                                itemGrpCod:
+                                                                    itemGrpCod,
+                                                                itemGrpName:
+                                                                    productresp
+                                                                        .itmsGrpNam,
+                                                                itemCode:
+                                                                    productresp
+                                                                        .itemCode,
+                                                                itemName:
+                                                                    productresp
+                                                                        .itemName,
                                                                 noOfPcs: '10',
-                                                                orderQty: quantities[index],
-                                                                price: productresp.price,
-                                                                ugpName: productresp.ugpName,
-                                                                numInSale : productresp.numInSale,
-                                                                salUnitMsr: productresp.salUnitMsr,
-                                                                gst: productresp.gst,
-                                                                totalPrice :1.1,
-                                                                totalPriceWithGST :1.1,
-
+                                                                orderQty:
+                                                                    quantities[
+                                                                        index],
+                                                                price:
+                                                                    productresp
+                                                                        .price,
+                                                                ugpName:
+                                                                    productresp
+                                                                        .ugpName,
+                                                                numInSale:
+                                                                    productresp
+                                                                        .numInSale,
+                                                                salUnitMsr:
+                                                                    productresp
+                                                                        .salUnitMsr,
+                                                                gst: productresp
+                                                                    .gst,
+                                                                totalPrice: 1.1,
+                                                                totalPriceWithGST:
+                                                                    1.1,
                                                               );
 
                                                               await cartProvider
@@ -949,7 +986,9 @@ class _ProductListState extends State<Createorderscreen> {
                                       ],
                                     ),
                                   ),
-                                )));
+                                )
+                                // )
+                                );
                             // rest of your code...
                           },
                         );
@@ -998,7 +1037,7 @@ class _ProductListState extends State<Createorderscreen> {
                     child: Container(
                       padding: const EdgeInsets.all(10),
                       decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
+                        borderRadius: BorderRadius.circular(5),
                         color: Color(0xFFe78337),
                       ),
                       child: const Center(
@@ -1204,7 +1243,7 @@ class ProductResponse {
       ugpCode: json['ugpCode'] ?? '',
       ugpName: json['ugpName'] ?? '',
       numInSale: json['numInSale'] ?? 0,
-        salUnitMsr: json['salUnitMsr'] ?? '',
+      salUnitMsr: json['salUnitMsr'] ?? '',
     );
   }
 }

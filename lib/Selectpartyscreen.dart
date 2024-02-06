@@ -314,7 +314,7 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                               ? Color(0xFFfff5ec)
                               : null,
                           shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(10.0),
+                            borderRadius: BorderRadius.circular(5.0),
                             side: BorderSide(
                               color: selectedCardIndex == index
                                   ? Color(
