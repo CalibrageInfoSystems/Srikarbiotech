@@ -50,70 +50,66 @@ class Response {
 
 class OrderResult {
   int id;
-  int companyId;
-  String orderNumber;
+  int? companyId;
+  String?  orderNumber;
   String orderDate;
-  String partyCode;
-  String partyName;
+  String  partyCode;
+  String  partyName;
   String partyAddress;
-  String partyState;
-  String partyPhoneNumber;
-  String partyGSTNumber;
-  String proprietorName;
-  double partyOutStandingAmount;
+  String? partyState;
+  String? partyPhoneNumber;
+  String? partyGSTNumber;
+  String? proprietorName;
+  double? partyOutStandingAmount;
   String bookingPlace;
   String transportName;
-  int statusTypeId;
-  String fileName;
-  String fileLocation;
-  String fileExtension;
-  dynamic fileUrl; // Replace with the actual type if needed
+  int? statusTypeId;
+  String? fileName;
+  String? fileLocation;
+  String? fileExtension;
+  String? fileUrl;
   String statusName;
-  double discount;
-  double igst;
-  double cgst;
-  double sgst;
+  double? discount;
   double totalCost;
-  int noOfItems;
-  String remarks;
-  bool isActive;
-  String createdBy;
-  String createdDate;
-  String updatedBy;
-  String updatedDate;
+  double? totalCostWithGST;
+  int? noOfItems;
+  String? remarks;
+  bool? isActive;
+  String? createdBy;
+  DateTime? createdDate;
+  String? updatedBy;
+  DateTime? updatedDate;
 
   OrderResult({
-    required this.id,
+    required  this.id,
     required this.companyId,
-    required this.orderNumber,
-    required this.orderDate,
+    required  this.orderNumber,
+     required this.orderDate,
     required this.partyCode,
     required this.partyName,
-    required this.partyAddress,
-    required this.partyState,
+    required  this.partyAddress,
+    required  this.partyState,
     required this.partyPhoneNumber,
     required this.partyGSTNumber,
     required this.proprietorName,
-    required this.partyOutStandingAmount,
-    required this.bookingPlace,
+    required   this.partyOutStandingAmount,
+    required  this.bookingPlace,
     required this.transportName,
-    required this.statusTypeId,
+    required  this.statusTypeId,
     required this.fileName,
     required this.fileLocation,
-    required this.fileExtension,
-    required this.fileUrl,
-    required this.statusName,
-    required this.discount,
-    required this.igst,
-    required this.cgst,
-    required this.sgst,
-    required this.totalCost,
+    required  this.fileExtension,
+    required   this.fileUrl,
+    required  this.statusName,
+    required  this.discount,
+    required  this.totalCost,
+    required this.totalCostWithGST,
     required this.noOfItems,
     required this.remarks,
     required this.isActive,
     required this.createdBy,
     required this.createdDate,
-    required this.updatedBy,
+    required  this.updatedBy,
     required this.updatedDate,
   });
 
@@ -123,6 +119,7 @@ class OrderResult {
       companyId: json['companyId'],
       orderNumber: json['orderNumber'],
       orderDate: json['orderDate'],
+
       partyCode: json['partyCode'],
       partyName: json['partyName'],
       partyAddress: json['partyAddress'],
@@ -140,17 +137,19 @@ class OrderResult {
       fileUrl: json['fileUrl'],
       statusName: json['statusName'],
       discount: json['discount'],
-      igst: json['igst'],
-      cgst: json['cgst'],
-      sgst: json['sgst'],
       totalCost: json['totalCost'],
+      totalCostWithGST: json['totalCostWithGST'],
       noOfItems: json['noOfItems'],
-      remarks: json['remarks'] ?? "",
+      remarks: json['remarks'],
       isActive: json['isActive'],
       createdBy: json['createdBy'],
-      createdDate: json['createdDate'],
+      createdDate: json['createdDate'] != null
+          ? DateTime.parse(json['createdDate'])
+          : null,
       updatedBy: json['updatedBy'],
-      updatedDate: json['updatedDate'],
+      updatedDate: json['updatedDate'] != null
+          ? DateTime.parse(json['updatedDate'])
+          : null,
     );
   }
 }

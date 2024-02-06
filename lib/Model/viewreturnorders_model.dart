@@ -88,7 +88,7 @@ class ReturnOrderDetailsResult {
   final String proprietorName;
   final double partyOutStandingAmount;
   final String lrNumber;
-  final DateTime lrDate;
+  final String lrDate;
   final int statusTypeId;
   final String fileName;
   final String fileLocation;
@@ -158,7 +158,7 @@ class ReturnOrderDetailsResult {
         proprietorName: json["proprietorName"],
         partyOutStandingAmount: json["partyOutStandingAmount"]?.toDouble(),
         lrNumber: json["lrNumber"],
-        lrDate: DateTime.parse(json["lrDate"]),
+        lrDate:(json["lrDate"]),
         statusTypeId: json["statusTypeId"],
         fileName: json["fileName"],
         fileLocation: json["fileLocation"],
@@ -193,7 +193,7 @@ class ReturnOrderDetailsResult {
         "proprietorName": proprietorName,
         "partyOutStandingAmount": partyOutStandingAmount,
         "lrNumber": lrNumber,
-        "lrDate": lrDate.toIso8601String(),
+        "lrDate": lrDate,
         "statusTypeId": statusTypeId,
         "fileName": fileName,
         "fileLocation": fileLocation,

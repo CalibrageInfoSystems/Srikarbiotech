@@ -32,14 +32,6 @@ class _VieworderPageState extends State<ViewOrders> {
         color: HexColor('#e58338'),
       ));
 
-  final _searchBarOutPutInlineBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(10),
-    borderSide: const BorderSide(color: Colors.black38),
-  );
-  final _searchBarEnabledNdFocuedOutPutInlineBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(10),
-    borderSide: const BorderSide(color: Colors.black),
-  );
 
 
 
@@ -141,7 +133,7 @@ class _VieworderPageState extends State<ViewOrders> {
       setState(() {
         viewOrdersProvider.storeIntoViewOrderProvider(data!
             .where((item) =>
-                item.partyName.toLowerCase().contains(input.toLowerCase()))
+                item.partyName!.toLowerCase().contains(input.toLowerCase()))
             .toList());
       });
     });
@@ -151,8 +143,8 @@ class _VieworderPageState extends State<ViewOrders> {
     final String searchTerm = searchController.text.toLowerCase();
     setState(() {
       filterorderesponselist = orderesponselist.where((dealer) {
-        return dealer.partyName.toLowerCase().contains(searchTerm) ||
-            dealer.partyGSTNumber.toLowerCase().contains(searchTerm);
+        return dealer.partyName!.toLowerCase().contains(searchTerm) ||
+            dealer.partyGSTNumber!.toLowerCase().contains(searchTerm);
       }).toList();
     });
   }
@@ -215,10 +207,10 @@ class _VieworderPageState extends State<ViewOrders> {
                                         partyname: data[index].partyName,
                                         partycode: data[index].partyCode,
                                         proprietorName:
-                                            data[index].proprietorName,
+                                            data[index].proprietorName!,
                                         partyGSTNumber:
-                                            data[index].partyGSTNumber,
-                                        ordernumber: data[index].orderNumber,
+                                            data[index].partyGSTNumber!,
+                                        ordernumber: data[index].orderNumber!,
                                         partyAddress: data[index].partyAddress),
                                   ),
                                 );
@@ -475,8 +467,7 @@ class _VieworderPageState extends State<ViewOrders> {
                                                       style: TextStyle(
                                                         color:
                                                             getStatusTypeTextColor(
-                                                                orderresul
-                                                                    .statusName),
+                                                                orderresul.statusName),
                                                       ),
                                                     ),
                                                   ],

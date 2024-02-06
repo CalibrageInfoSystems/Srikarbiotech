@@ -823,32 +823,31 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                                     if (cartProvider
                                                                         .isSameItemGroup(
                                                                         itemGrpCod)) {
-                                                                      orderItem =
-                                                                          OrderItemXrefType(
-                                                                              id: 1,
-                                                                              orderId: 1001,
-                                                                              itemGrpCod: itemGrpCod,
-                                                                              itemGrpName: productresp
-                                                                                  .itmsGrpNam,
-                                                                              itemCode: productresp
-                                                                                  .itemCode,
-                                                                              itemName: productresp
-                                                                                  .itemName,
-                                                                              noOfPcs: '10',
-                                                                              orderQty: quantities[index],
-                                                                              price: productresp
-                                                                                  .price,
-                                                                              igst: productresp
-                                                                                  .gst,
-                                                                              cgst: productresp
-                                                                                  .gst! /
-                                                                                  2,
-                                                                              sgst: productresp
-                                                                                  .gst! /
-                                                                                  2,
-                                                                              numInSale: productresp
-                                                                                  .numInSale
-                                                                          );
+                                                                      // orderItem =OrderItemXrefType(
+                                                                      //         id: 1,
+                                                                      //         orderId: 1001,
+                                                                      //         itemGrpCod: itemGrpCod,
+                                                                      //         itemGrpName: productresp
+                                                                      //             .itmsGrpNam,
+                                                                      //         itemCode: productresp
+                                                                      //             .itemCode,
+                                                                      //         itemName: productresp
+                                                                      //             .itemName,
+                                                                      //         noOfPcs: '10',
+                                                                      //         orderQty: quantities[index],
+                                                                      //         price: productresp
+                                                                      //             .price,
+                                                                      //         igst: productresp
+                                                                      //             .gst,
+                                                                      //         cgst: productresp
+                                                                      //             .gst! /
+                                                                      //             2,
+                                                                      //         sgst: productresp
+                                                                      //             .gst! /
+                                                                      //             2,
+                                                                      //         numInSale: productresp
+                                                                      //             .numInSale
+                                                                      //     );
 
                                                                       await cartProvider
                                                                           .addToCart(

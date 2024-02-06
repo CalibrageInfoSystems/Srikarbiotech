@@ -513,7 +513,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
           textEditingControllers = List.generate(cartItems.length,
                   (index) => TextEditingController());
         }
-        double orderQty = cartItem.orderQty.toDouble();
+        double orderQty = cartItem.orderQty?.toDouble() ?? 0.0 ;
         double price = cartItem.price ?? 0.0;
         double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
         double totalPrice = orderQty * price * numInSale;
@@ -534,7 +534,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
   double calculateTotalSum(List<OrderItemXrefType> cartItems) {
     double sum = 0.0;
     for (OrderItemXrefType cartItem in cartItems) {
-      double orderQty = cartItem.orderQty.toDouble();
+      double orderQty = cartItem.orderQty?.toDouble() ?? 0.0 ;
       double price = cartItem.price ?? 0.0;
       double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
       sum += orderQty * price * numInSale;
@@ -551,111 +551,111 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
   void Addreturnorder() async {
 
     DateTime currentDate = DateTime.now();
-
-    // Format the date as 'yyyy-MM-dd'
-    String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
-    print('Formatted Date: $formattedcurrentDate');
-    final String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/AddOrder';
-    List<Map<String, dynamic>> returnorderItemList = cartItems.map((cartItem) {
-
-      return {
-
-        "Id": 1,
-        "ReturnOrderId": 2,
-        "itemGrpCod": cartItem.itemGrpCod,
-        "itemGrpName":  cartItem.itemGrpName,
-        "itemCode": cartItem.itemCode,
-        "itemName":  cartItem.itemName,
-        "StatusTypeId": 1,
-        "OrderQty": cartItem.orderQty,
-        "Price":  cartItem.price,
-        "IGST":cartItem.igst,
-        "CGST": cartItem.cgst,
-        "SGST":  cartItem.cgst,
-        "Remarks": "test"
-
-      };
-    }).toList();
-
-    Map<String, dynamic> orderData = {
-
-
-      "ReturnOrderItemXrefList": returnorderItemList,
-      "LRFileString":  '${widget.LRAttachment}',
-      "LRFileName": "",
-      "LRFileExtension": ".jpg",
-      "LRFileLocation": "",
-      "OrderFileString":  '${widget.ReturnOrderReceipt}',
-      "OrderFileName": "",
-      "OrderFileExtension": ".jpg",
-      "OrderFileLocation": "",
-      "OtherFileString":  '${widget.addlattchments}',
-      "OtherFileName": ".jpg",
-      "OtherFileExtension": "",
-      "OtherFileLocation": "",
-
-      "Id": 1,
-      "CompanyId": CompneyId,
-      "ReturnOrderNumber": "",
-      "ReturnOrderDate": formattedcurrentDate,
-      "partyCode": '${widget.cardCode}',
-      "PartyName": '${widget.cardName}',
-      "PartyAddress": '${widget.address}',
-      "PartyState": '${widget.state}',
-      "PartyPhoneNumber": '${widget.phone}',
-      "PartyGSTNumber": '${widget.gstRegnNo}',
-      "ProprietorName": '${widget.proprietorName}',
-      "PartyOutStandingAmount": '${widget.balance}',
-      "LRNumber": '${widget.LrNumber}',
-      "LRDate": '$LrDate2',
-      "StatusTypeId": 1,
-      "Discount": 1.1,
-      "IGST": 1.1,
-      "CGST": 1.1,
-      "SGST": 1.1,
-      "TotalCost": totalSum,
-      "Remarks": "test",
-      "IsActive": true,
-      "CreatedBy": userId,
-      "CreatedDate": formattedcurrentDate,
-      "UpdatedBy": userId,
-      "UpdatedDate": formattedcurrentDate
-    };
-    print(jsonEncode(orderData));
-
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(orderData),
-      );
-
-      if (response.statusCode == 200) {
-        // Successful request
-        final responseData = jsonDecode(response.body);
-        print(responseData);
-
-        final cartProvider = context.read<CartProvider>();
-
-        clearCartData(cartProvider);
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => orderStatusScreen(responseData: responseData),
-          ),
-        );
-
-      } else {
-        // Handle errors
-        print('Error: ${response.reasonPhrase}');
-      }
-    } catch (e) {
-      // Handle exceptions
-      print('Exception: $e');
-    }
+    //
+    // // Format the date as 'yyyy-MM-dd'
+    // String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
+    // print('Formatted Date: $formattedcurrentDate');
+    // final String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/AddOrder';
+    // List<Map<String, dynamic>> returnorderItemList = cartItems.map((cartItem) {
+    //
+    //   return {
+    //
+    //     "Id": 1,
+    //     "ReturnOrderId": 2,
+    //     "itemGrpCod": cartItem.itemGrpCod,
+    //     "itemGrpName":  cartItem.itemGrpName,
+    //     "itemCode": cartItem.itemCode,
+    //     "itemName":  cartItem.itemName,
+    //     "StatusTypeId": 1,
+    //     "OrderQty": cartItem.orderQty,
+    //     "Price":  cartItem.price,
+    //     "IGST":1.1,
+    //     "CGST" ,
+    //     "SGST":  1.1,
+    //     "Remarks": "test"
+    //
+    //   };
+    // }).toList();
+    //
+    // Map<String, dynamic> orderData = {
+    //
+    //
+    //   "ReturnOrderItemXrefList": returnorderItemList,
+    //   "LRFileString":  '${widget.LRAttachment}',
+    //   "LRFileName": "",
+    //   "LRFileExtension": ".jpg",
+    //   "LRFileLocation": "",
+    //   "OrderFileString":  '${widget.ReturnOrderReceipt}',
+    //   "OrderFileName": "",
+    //   "OrderFileExtension": ".jpg",
+    //   "OrderFileLocation": "",
+    //   "OtherFileString":  '${widget.addlattchments}',
+    //   "OtherFileName": ".jpg",
+    //   "OtherFileExtension": "",
+    //   "OtherFileLocation": "",
+    //
+    //   "Id": 1,
+    //   "CompanyId": CompneyId,
+    //   "ReturnOrderNumber": "",
+    //   "ReturnOrderDate": formattedcurrentDate,
+    //   "partyCode": '${widget.cardCode}',
+    //   "PartyName": '${widget.cardName}',
+    //   "PartyAddress": '${widget.address}',
+    //   "PartyState": '${widget.state}',
+    //   "PartyPhoneNumber": '${widget.phone}',
+    //   "PartyGSTNumber": '${widget.gstRegnNo}',
+    //   "ProprietorName": '${widget.proprietorName}',
+    //   "PartyOutStandingAmount": '${widget.balance}',
+    //   "LRNumber": '${widget.LrNumber}',
+    //   "LRDate": '$LrDate2',
+    //   "StatusTypeId": 1,
+    //   "Discount": 1.1,
+    //   "IGST": 1.1,
+    //   "CGST": 1.1,
+    //   "SGST": 1.1,
+    //   "TotalCost": totalSum,
+    //   "Remarks": "test",
+    //   "IsActive": true,
+    //   "CreatedBy": userId,
+    //   "CreatedDate": formattedcurrentDate,
+    //   "UpdatedBy": userId,
+    //   "UpdatedDate": formattedcurrentDate
+    // };
+    // print(jsonEncode(orderData));
+    //
+    // try {
+    //   final response = await http.post(
+    //     Uri.parse(apiUrl),
+    //     headers: {
+    //       'Content-Type': 'application/json',
+    //     },
+    //     body: jsonEncode(orderData),
+    //   );
+    //
+    //   if (response.statusCode == 200) {
+    //     // Successful request
+    //     final responseData = jsonDecode(response.body);
+    //     print(responseData);
+    //
+    //     final cartProvider = context.read<CartProvider>();
+    //
+    //     clearCartData(cartProvider);
+    //
+    //     Navigator.push(
+    //       context,
+    //       MaterialPageRoute(
+    //         builder: (context) => orderStatusScreen(responseData: responseData),
+    //       ),
+    //     );
+    //
+    //   } else {
+    //     // Handle errors
+    //     print('Error: ${response.reasonPhrase}');
+    //   }
+    // } catch (e) {
+    //   // Handle exceptions
+    //   print('Exception: $e');
+    // }
   }
 
   void printRemainingCartItems() async {
@@ -706,7 +706,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   @override
   void initState() {
     super.initState();
-    _orderQty = widget.cartItem.orderQty;
+    //todo
+  //  _orderQty = widget.cartItem.orderQty;
     _textController = TextEditingController(text: _orderQty.toString());
 
   }

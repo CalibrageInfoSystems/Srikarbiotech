@@ -40,70 +40,81 @@ class OrderItemXrefType {
   String? itemCode;
   String? itemName;
   String? noOfPcs;
-  int orderQty;
+  int? orderQty;
   double? price;
-  double? igst;
-  double? cgst;
-  double? sgst;
+  String? ugpName;
   int? numInSale;
+  String? salUnitMsr;
+  double? gst;
+  double? totalPrice;
+  double? totalPriceWithGST;
+
   OrderItemXrefType({
     required this.id,
     required this.orderId,
     required this.itemGrpCod,
-    this.itemGrpName,
-    this.itemCode,
-    required  this.itemName,
+    required this.itemGrpName,
+    required this.itemCode,
+    required this.itemName,
     required this.noOfPcs,
     required this.orderQty,
-    this.price,
-    this.igst,
-    this.cgst,
-    this.sgst,
-    this.numInSale,
+    required this.price,
+    required this.ugpName,
+    required this.numInSale,
+    required this.salUnitMsr,
+    required this.gst,
+    required this.totalPrice,
+    required this.totalPriceWithGST,
   });
 
   // Factory constructor to create an instance from a JSON map
-  factory OrderItemXrefType.fromJson(Map<String, dynamic> json) {
+  factory OrderItemXrefType.fromJson(Map<String, dynamic>? json) {
     return OrderItemXrefType(
-      id: json['id'],
-      orderId: json['orderId'],
-      itemGrpCod: json['itemGrpCod'],
-      itemGrpName: json['itemGrpName'],
-      itemCode: json['itemCode'],
-      itemName: json['itemName'],
-      noOfPcs: json['noOfPcs'],
-      orderQty: json['orderQty'],
-      price: json['price'],
-      igst: json['igst'],
-      cgst: json['cgst'],
-      sgst: json['sgst'],
-        numInSale :json['numInSale'],
+      id: json?['Id'],
+      orderId: json?['OrderId'],
+      itemGrpCod: json?['ItemGrpCod'],
+      itemGrpName: json?['ItemGrpName'],
+      itemCode: json?['ItemCode'],
+      itemName: json?['ItemName'],
+      noOfPcs: json?['NoOfPcs'],
+      orderQty: json?['OrderQty'],
+      price: json?['Price'],
+      ugpName: json?['UgpName'],
+      numInSale: json?['NumInSale'],
+      salUnitMsr: json?['SalUnitMsr'],
+      gst: json?['GST'],
+      totalPrice: json?['TotalPrice'],
+      totalPriceWithGST: json?['TotalPriceWithGST'],
     );
   }
 
   // Method to convert the object to a JSON map
   Map<String, dynamic> toJson() {
     return {
-      'id': id,
-      'orderId': orderId,
-      'itemGrpCod': itemGrpCod,
-      'itemGrpName': itemGrpName,
-      'itemCode': itemCode,
-      'itemName': itemName,
-      'noOfPcs': noOfPcs,
-      'orderQty': orderQty,
-      'price': price,
-      'igst': igst,
-      'cgst': cgst,
-      'sgst': sgst,
+      'Id': id,
+      'OrderId': orderId,
+      'ItemGrpCod': itemGrpCod,
+      'ItemGrpName': itemGrpName,
+      'ItemCode': itemCode,
+      'ItemName': itemName,
+      'NoOfPcs': noOfPcs,
+      'OrderQty': orderQty,
+      'Price': price,
+      'UgpName': ugpName,
+      'NumInSale': numInSale,
+      'SalUnitMsr': salUnitMsr,
+      'GST': gst,
+      'TotalPrice': totalPrice,
+      'TotalPriceWithGST': totalPriceWithGST,
     };
   }
 
-// Method to update quantity
+  // Method to update quantity
   void updateQuantity(int newQuantity) {
     orderQty = newQuantity;
   }
 }
+
 
 //     return OrderItemXrefType(
 //       id: json['Id'] as int?,

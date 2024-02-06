@@ -1,9 +1,11 @@
 import 'dart:convert';
 
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
+import 'package:intl/intl.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'package:srikarbiotech/Model/returnorderimagedata_model.dart';
 import 'package:srikarbiotech/Model/viewreturnorders_model.dart';
@@ -34,7 +36,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
     fontSize: 14,
   );
 
-  late Future<List<ReturnOrderDetailsResult>> apiData;
+  late Future<Map<String, dynamic>> apiData;
 
   late List<ReturnOrderDetailsResult> returnOrderDetailsResultList = [];
   late List<ReturnOrderItemXrefList> returnOrderItemXrefList = [];
@@ -42,17 +44,15 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
   @override
   void initState() {
     super.initState();
-    apiData = tempApi();
-    apiDataInitialization();
+    apiData = getApiData();
+    apiData.then((value) => test(value));
   }
 
-  Future<void> apiDataInitialization() async {
+  void test(Map<String, dynamic> apiData) {
     try {
-      Map<String, dynamic> apiResult = await getApiData();
-
       List<Map<String, dynamic>> returnOrderDetailsResultListData =
       List<Map<String, dynamic>>.from(
-          apiResult['response']['returnOrderDetailsResult']);
+          apiData['response']['returnOrderDetailsResult']);
 
       returnOrderDetailsResultList = returnOrderDetailsResultListData
           .map((item) => ReturnOrderDetailsResult.fromJson(item))
@@ -60,7 +60,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
 
       List<Map<String, dynamic>> returnOrderItemXrefListData =
       List<Map<String, dynamic>>.from(
-          apiResult['response']['returnOrderItemXrefList']);
+          apiData['response']['returnOrderItemXrefList']);
       returnOrderItemXrefList = returnOrderItemXrefListData
           .map((item) => ReturnOrderItemXrefList.fromJson(item))
           .toList();
@@ -80,27 +80,6 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
     }
   }
 
-  Future<List<ReturnOrderDetailsResult>> tempApi() async {
-    String apiUrl =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderDetailsById/${widget.orderId}';
-    final response = await http.get(Uri.parse(apiUrl));
-    if (response.statusCode == 200) {
-      Map<String, dynamic> jsonResponse = json.decode(response.body);
-      if (jsonResponse['isSuccess']) {
-        List<dynamic> data =
-        jsonResponse['response']['returnOrderDetailsResult'];
-        List<ReturnOrderDetailsResult> result = data
-            .map((item) => ReturnOrderDetailsResult.fromJson(item))
-            .toList();
-        return result;
-      } else {
-        throw Exception('Failed to load data');
-      }
-    } else {
-      throw Exception('unsuccess api call');
-    }
-  }
-
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -109,7 +88,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
         future: apiData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const CircularProgressIndicator.adaptive();
+            return const Center(child: CircularProgressIndicator.adaptive());
           } else if (snapshot.hasError) {
             return const Center(
               child: Text(
@@ -119,90 +98,111 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
             );
           } else {
             if (snapshot.hasData) {
-              List<ReturnOrderDetailsResult> data =
+              List<ReturnOrderDetailsResult> result =
               List.from(returnOrderDetailsResultList);
+              if (result.isNotEmpty) {
+                ReturnOrderDetailsResult data = result[0];
+                return SingleChildScrollView(
+                  child: Padding(
+                    padding: const EdgeInsets.all(12),
+                    child: Column(
+                      children: [
+                        // card 1
+                        CommonUtils.buildCard(
+                          data.partyName,
+                          data.partyCode,
+                          data.proprietorName,
+                          data.partyGstNumber,
+                          data.partyAddress,
+                          Colors.white,
+                          BorderRadius.circular(20.0),
+                        ),
+                        const SizedBox(
+                          height: 10,
+                        ),
+                        // Card(
+                        //   elevation: 5,
+                        //   child: Container(
+                        //     decoration: BoxDecoration(
+                        //       color: Colors.white,
+                        //       borderRadius: BorderRadius.circular(10),
+                        //     ),
+                        //     width: double.infinity,
+                        //     padding: const EdgeInsets.all(12),
+                        //     child: Column(
+                        //       crossAxisAlignment: CrossAxisAlignment.start,
+                        //       children: <Widget>[
+                        //         Text(
+                        //           'Party Details',
+                        //           style: _titleTextStyle,
+                        //         ),
+                        //         Text(
+                        //           data[0].partyName,
+                        //           style: _dataTextStyle,
+                        //         ),
+                        //         Text(
+                        //           data[0].partyCode,
+                        //           style: _dataTextStyle,
+                        //         ),
+                        //         const SizedBox(
+                        //           height: 10,
+                        //         ),
+                        //         Text(
+                        //           'Address',
+                        //           style: _titleTextStyle,
+                        //         ),
+                        //         Text(
+                        //           data[0].partyAddress,
+                        //           style: _dataTextStyle,
+                        //         ),
+                        //       ],
+                        //     ),
+                        //   ),
+                        // ),
 
-              print('....................');
-              print(data[0].partyName);
-              return SingleChildScrollView(
-                child: Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    children: [
-                      Card(
-                        elevation: 5,
-                        child: Container(
-                          decoration: BoxDecoration(
-                            color: Colors.white,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          width: double.infinity,
-                          padding: const EdgeInsets.all(12),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: <Widget>[
-                              Text(
-                                'Party Details',
-                                style: _titleTextStyle,
-                              ),
-                              Text(
-                                data[0].partyName,
-                                style: _dataTextStyle,
-                              ),
-                              Text(
-                                data[0].partyCode,
-                                style: _dataTextStyle,
-                              ),
-                              const SizedBox(
-                                height: 10,
-                              ),
-                              Text(
-                                'Address',
-                                style: _titleTextStyle,
-                              ),
-                              Text(
-                                data[0].partyAddress,
-                                style: _dataTextStyle,
-                              ),
-                            ],
+                        // card 2
+                        // shipment details card
+                        ListView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(
+                            returnOrderDetailsResultList.length,
+                                (index) => ShipmentDetailsCard(
+                                orderId: widget.orderId, data: result[index]),
                           ),
                         ),
-                      ),
 
-                      // shipment details card
-                      ShipmentDetailsCard(orderId: widget.orderId, data: data),
-
-                      // item card
-                      ListView(
-                        physics: const NeverScrollableScrollPhysics(),
-                        shrinkWrap: true,
-                        children: List.generate(
-                          returnOrderItemXrefList.length,
-                              (index) =>
-                              ItemCard(data: returnOrderItemXrefList[index]),
+                        const SizedBox(
+                          height: 10,
                         ),
-                      ),
-                      // Expanded(
-                      //   child: ListView.builder(
-                      //     physics: const NeverScrollableScrollPhysics(),
-                      //     shrinkWrap: true,
-                      //     itemCount: 2, // Provide the itemCount here
-                      //     itemBuilder: (context, index) {
-                      //       return const ItemCard(); // ItemCard should not be const if it needs to be built dynamically
-                      //     },
-                      //   ),
-                      // ),
 
-                      const SizedBox(
-                        height: 20,
-                      ),
+                        // card 3
+                        // item card
+                        ListView(
+                          physics: const NeverScrollableScrollPhysics(),
+                          shrinkWrap: true,
+                          children: List.generate(
+                            returnOrderItemXrefList.length,
+                                (index) =>
+                                ItemCard(data: returnOrderItemXrefList[index]),
+                          ),
+                        ),
+                        const SizedBox(
+                          height: 20,
+                        ),
 
-                      // payment details card
-                      const PaymentDetailsCard(),
-                    ],
+                        // card 4
+                        // payment details card
+                        PaymentDetailsCard(data: data),
+                      ],
+                    ),
                   ),
-                ),
-              );
+                );
+              } else {
+                return const Center(
+                  child: Text('No data present'),
+                );
+              }
             } else {
               return const Center(
                 child: Text('No Collection'),
@@ -256,10 +256,10 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                 MaterialPageRoute(builder: (context) => HomeScreen()),
               );
             },
-            child: const Icon(
-              Icons.home,
-              size: 30,
-              color: Colors.white,
+            child: Image.asset(
+              'assets/srikar-home-icon.png',
+              width: 30,
+              height: 30,
             ),
           ),
         ],
@@ -270,7 +270,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
 
 class ShipmentDetailsCard extends StatefulWidget {
   final int orderId;
-  final List<ReturnOrderDetailsResult> data;
+  final ReturnOrderDetailsResult data;
   const ShipmentDetailsCard(
       {super.key, required this.orderId, required this.data});
 
@@ -297,16 +297,27 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
 
   final dividerForHorizontal = Container(
     width: double.infinity,
-    height: 1,
+    height: 0.2,
+    color: Colors.grey,
+  );
+  final dividerForHorizontal1 = Container(
+    width: double.infinity,
+    height: 0.2,
+    color: Colors.grey,
+  );
+  final dividerForHorizontal2 = Container(
+    width: double.infinity,
+    height: 0.2,
     color: Colors.grey,
   );
   final dividerForVertical = Container(
-    width: 1,
+    width: 0.2,
     height: 60,
     color: Colors.grey,
   );
 
   late Future<List<ReturnOrdersImageList>> imageApiData;
+  late List<ReturnOrdersImageList> attchmentImageData;
 
   @override
   void initState() {
@@ -314,7 +325,6 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
     imageApiData = getReturnOrderImagesById();
   }
 
-// here
   Future<List<ReturnOrdersImageList>> getReturnOrderImagesById() async {
     String apiUrl =
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderImagesById/${widget.orderId}';
@@ -337,6 +347,11 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
 
   @override
   Widget build(BuildContext context) {
+    String dateString = widget.data.lrDate;
+    DateTime date = DateTime.parse(dateString);
+    String formattedDate = DateFormat('dd MMM, yyyy').format(date);
+    int currentIndex = 0;
+
     return FutureBuilder(
       future: imageApiData,
       builder: (context, snapshot) {
@@ -349,31 +364,34 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
             List<ReturnOrdersImageList> data = snapshot.data!;
             return Card(
               elevation: 5,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(20),
+              ),
               child: Container(
                 decoration: BoxDecoration(
                   color: Colors.white,
-                  borderRadius: BorderRadius.circular(10),
+                  borderRadius: BorderRadius.circular(20),
                 ),
-                width: double.infinity, // remove padding here
+                width: double.infinity,
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: <Widget>[
                     // row one
                     Padding(
                       padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 10),
+                          horizontal: 15, vertical: 12),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
                           Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Text(
+                              const Text(
                                 'LR Number',
-                                style: _titleTextStyle,
+                                style: CommonUtils.txSty_13B_Fb,
                               ),
                               Text(
-                                widget.data[0].lrNumber,
+                                widget.data.lrNumber,
                                 style: _dataTextStyle,
                               ),
                             ],
@@ -414,7 +432,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                       ),
                     ),
 
-                    dividerForHorizontal,
+                    dividerForHorizontal1,
 
                     // row two
                     Row(
@@ -427,12 +445,12 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'LR Date',
-                                  style: _titleTextStyle,
+                                  style: CommonUtils.txSty_13B_Fb,
                                 ),
                                 Text(
-                                  widget.data[0].lrDate.toString(),
+                                  formattedDate,
                                   style: _dataTextStyle,
                                 ),
                               ],
@@ -447,12 +465,12 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Text(
+                                const Text(
                                   'Total',
-                                  style: _titleTextStyle,
+                                  style: CommonUtils.txSty_13B_Fb,
                                 ),
                                 Text(
-                                  widget.data[0].totalCost.toString(),
+                                  widget.data.totalCost.toString(),
                                   style: _dataTextStyle,
                                 ),
                               ],
@@ -462,82 +480,83 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                       ],
                     ),
 
-                    dividerForHorizontal,
-
-                    // row three
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Transport Mode',
-                                  style: _titleTextStyle,
-                                ),
-                                Text(
-                                  'xxxxx',
-                                  style: _dataTextStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        dividerForVertical,
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Transport Name',
-                                  style: _titleTextStyle,
-                                ),
-                                Text(
-                                  'Railway Parcel Service',
-                                  style: _dataTextStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ],
-                    ),
-
-                    dividerForHorizontal,
-
-                    // row four
+                    dividerForHorizontal1,
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 10),
                       child: Container(
                         padding: const EdgeInsets.symmetric(
-                            horizontal: 10, vertical: 4),
+                            horizontal: 6, vertical: 2),
                         decoration: BoxDecoration(
-                          color: Colors.orange.shade100,
+                          color: const Color.fromARGB(255, 247, 232, 211),
                           border: Border.all(
                             color: _orangeColor,
                           ),
                           borderRadius: BorderRadius.circular(10),
                         ),
-                        child: Row(
-                          mainAxisSize: MainAxisSize.min,
-                          children: [
-                            const Icon(Icons.link),
-                            const SizedBox(
-                              width: 5,
-                            ),
-                            Text(
-                              'Attachment',
-                              style: _titleTextStyle,
-                            ),
-                          ],
+                        child: GestureDetector(
+                          onTap: () {
+                            showDialog(
+                              context: context,
+                              builder: (context) {
+                                return AlertDialog(
+                                  title: const Text('Attachments'),
+                                  elevation: 5.0,
+                                  contentPadding: const EdgeInsets.all(10.0),
+                                  content: SizedBox(
+                                    height: 120,
+                                    width: 300,
+                                    child: CarouselSlider(
+                                      items: data.map((imageUrl) {
+                                        return Image.network(
+                                          imageUrl.imageString,
+                                          fit: BoxFit.cover,
+                                        );
+                                      }).toList(),
+                                      options: CarouselOptions(
+                                        scrollPhysics:
+                                        const BouncingScrollPhysics(),
+                                        autoPlay: true,
+                                        height:
+                                        MediaQuery.of(context).size.height,
+                                        aspectRatio: 23 / 9,
+                                        viewportFraction: 1,
+                                        onPageChanged: (index, reason) {
+                                          setState(() {
+                                            currentIndex = index;
+                                          });
+                                        },
+                                      ),
+                                    ),
+                                  ),
+                                  actions: [
+                                    TextButton(
+                                      onPressed: () {
+                                        Navigator.pop(context);
+                                      },
+                                      child: const Text('Close'),
+                                    ),
+                                  ],
+                                );
+                              },
+                            );
+                          },
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.link,
+                                size: 18,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                'Attachments',
+                                style: CommonUtils.txSty_13B_Fb,
+                              ),
+                            ],
+                          ),
                         ),
                       ),
                     )
@@ -550,6 +569,21 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
           }
         }
       },
+    );
+  }
+}
+
+class AttachmentImages extends StatelessWidget {
+  final String imageUrl;
+
+  const AttachmentImages({super.key, required this.imageUrl});
+
+  @override
+  Widget build(BuildContext context) {
+    return Image.network(
+      imageUrl,
+      fit: BoxFit.cover,
+      width: MediaQuery.of(context).size.width,
     );
   }
 }
@@ -637,27 +671,17 @@ class ItemCard extends StatelessWidget {
   final ReturnOrderItemXrefList data;
   const ItemCard({super.key, required this.data});
 
-  final _titleTextStyle = const TextStyle(
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.w700,
-    color: Colors.black,
-    fontSize: 15,
-  );
-  final _dataTextStyle = const TextStyle(
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.w600,
-    color: Color.fromARGB(255, 185, 105, 0),
-    fontSize: 14,
-  );
-
   @override
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(12),
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(12),
         ),
         width: double.infinity,
         padding: const EdgeInsets.all(12),
@@ -665,18 +689,21 @@ class ItemCard extends StatelessWidget {
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
-              data.itemCode,
-              style: _titleTextStyle,
+              data.itemName,
+              style: CommonUtils.txSty_13B_Fb,
+            ),
+            const SizedBox(
+              height: 5,
             ),
             Row(
               children: [
-                Text(
+                const Text(
                   'Qty: ',
-                  style: _titleTextStyle,
+                  style: CommonUtils.txSty_13B_Fb,
                 ),
                 Text(
                   data.orderQty.toString(),
-                  style: _dataTextStyle,
+                  style: CommonUtils.txSty_13O_F6,
                 ),
               ],
             ),
@@ -685,21 +712,26 @@ class ItemCard extends StatelessWidget {
             ),
             Row(
               children: [
-                Text(
-                  '\$${data.price.toString()} ',
-                  style: _dataTextStyle,
-                ),
-                const SizedBox(
-                  width: 10,
+                Icon(
+                  Icons.currency_rupee,
+                  size: 12,
+                  color: HexColor('#e58338'),
                 ),
                 Text(
-                  '\$${data.price.toString()} ',
-                  style: const TextStyle(
-                    fontSize: 12,
-                    fontFamily: 'Roboto',
-                    fontWeight: FontWeight.bold,
-                  ),
+                  data.price.toString(),
+                  style: CommonUtils.txSty_13O_F6,
                 ),
+                // const SizedBox(
+                //   width: 10,
+                // ),
+                // Text(
+                //   '\$${data.price.toString()} ',
+                //   style: const TextStyle(
+                //     fontSize: 12,
+                //     fontFamily: 'Roboto',
+                //     fontWeight: FontWeight.bold,
+                //   ),
+                // ),
               ],
             ),
           ],
@@ -710,7 +742,8 @@ class ItemCard extends StatelessWidget {
 }
 
 class PaymentDetailsCard extends StatefulWidget {
-  const PaymentDetailsCard({super.key});
+  final ReturnOrderDetailsResult data;
+  const PaymentDetailsCard({super.key, required this.data});
 
   @override
   State<PaymentDetailsCard> createState() => _PaymentDetailsCardState();
@@ -742,10 +775,13 @@ class _PaymentDetailsCardState extends State<PaymentDetailsCard> {
   Widget build(BuildContext context) {
     return Card(
       elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(20),
+      ),
       child: Container(
         decoration: BoxDecoration(
           color: Colors.white,
-          borderRadius: BorderRadius.circular(10),
+          borderRadius: BorderRadius.circular(20),
         ),
         width: double.infinity, // remove padding here
         child: Column(
@@ -761,7 +797,7 @@ class _PaymentDetailsCardState extends State<PaymentDetailsCard> {
                     style: _titleTextStyle,
                   ),
                   Text(
-                    'xxxxx',
+                    widget.data.totalCost.toString(),
                     style: _dataTextStyle,
                   ),
                 ],

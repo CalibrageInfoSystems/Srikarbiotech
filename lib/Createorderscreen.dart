@@ -772,42 +772,25 @@ class _ProductListState extends State<Createorderscreen> {
                                                                       .itmsGrpCod!;
                                                             }
 
-                                                            if (cartProvider
-                                                                .isSameItemGroup(
-                                                                    itemGrpCod)) {
+                                                            if (cartProvider.isSameItemGroup(itemGrpCod)) {
                                                               orderItem = OrderItemXrefType(
-                                                                  id: 1,
-                                                                  orderId: 1001,
-                                                                  itemGrpCod:
-                                                                      itemGrpCod,
-                                                                  itemGrpName:
-                                                                      productresp
-                                                                          .itmsGrpNam,
-                                                                  itemCode:
-                                                                      productresp
-                                                                          .itemCode,
-                                                                  itemName:
-                                                                      productresp
-                                                                          .itemName,
-                                                                  noOfPcs: '10',
-                                                                  orderQty:
-                                                                      quantities[
-                                                                          index],
-                                                                  price:
-                                                                      productresp
-                                                                          .price,
-                                                                  igst:
-                                                                      productresp
-                                                                          .gst,
-                                                                  cgst: productresp
-                                                                          .gst! /
-                                                                      2,
-                                                                  sgst: productresp
-                                                                          .gst! /
-                                                                      2,
-                                                                  numInSale:
-                                                                      productresp
-                                                                          .numInSale);
+                                                                id: 1,
+                                                                orderId: 1001,
+                                                                itemGrpCod: itemGrpCod,
+                                                                itemGrpName: productresp.itmsGrpNam,
+                                                                itemCode: productresp.itemCode,
+                                                                itemName: productresp.itemName,
+                                                                noOfPcs: '10',
+                                                                orderQty: quantities[index],
+                                                                price: productresp.price,
+                                                                ugpName: productresp.ugpName,
+                                                                numInSale : productresp.numInSale,
+                                                                salUnitMsr: productresp.salUnitMsr,
+                                                                gst: productresp.gst,
+                                                                totalPrice :1.1,
+                                                                totalPriceWithGST :1.1,
+
+                                                              );
 
                                                               await cartProvider
                                                                   .addToCart(
@@ -1190,7 +1173,7 @@ class ProductResponse {
   String? ugpCode;
   String? ugpName;
   int? numInSale;
-
+  String? salUnitMsr;
   ProductResponse({
     required this.itemCode,
     required this.itemName,
@@ -1204,6 +1187,7 @@ class ProductResponse {
     required this.ugpCode,
     required this.ugpName,
     required this.numInSale,
+    required this.salUnitMsr,
   });
 
   factory ProductResponse.fromJson(Map<String, dynamic> json) {
@@ -1220,6 +1204,7 @@ class ProductResponse {
       ugpCode: json['ugpCode'] ?? '',
       ugpName: json['ugpName'] ?? '',
       numInSale: json['numInSale'] ?? 0,
+        salUnitMsr: json['salUnitMsr'] ?? '',
     );
   }
 }

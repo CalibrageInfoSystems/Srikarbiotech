@@ -7,13 +7,12 @@ import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
 import 'package:provider/provider.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
+import 'package:srikarbiotech/Model/returnorders_model.dart';
 import 'package:srikarbiotech/OrctResponse.dart';
 import 'package:srikarbiotech/Payment_model.dart';
 import 'package:srikarbiotech/viewreturnorders_provider.dart';
 
-
 import 'HomeScreen.dart';
-import 'Model/returnorders_model.dart';
 import 'ReturnOrderDetailsPage.dart';
 import 'ViewOrders.dart';
 
@@ -119,7 +118,6 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
     }
   }
 
-// search
   filterRecordsBasedOnPartyName(String input) {
     apiData.then((data) {
       setState(() {
@@ -204,15 +202,15 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                     // Handle the click event for the back button
                     Navigator.of(context).pop();
                   },
-                  child: Icon(
+                  child: const Icon(
                     Icons.chevron_left,
                     size: 30.0,
                     color: Colors.white,
                   ),
                 ),
               ),
-              SizedBox(width: 8.0),
-              Text(
+              const SizedBox(width: 8.0),
+              const Text(
                 'My Return Orders',
                 style: TextStyle(
                   color: Colors.white,
@@ -223,16 +221,15 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
           ),
           GestureDetector(
             onTap: () {
-              // Handle the click event for the home icon
               Navigator.pushReplacement(
                 context,
                 MaterialPageRoute(builder: (context) => HomeScreen()),
               );
             },
-            child: Icon(
-              Icons.home,
-              size: 30,
-              color: Colors.white,
+            child: Image.asset(
+              'assets/srikar-home-icon.png',
+              width: 30,
+              height: 30,
             ),
           ),
         ],
@@ -254,7 +251,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                 onChanged: (input) =>
                     filterRecordsBasedOnPartyName(input), // search
                 decoration: InputDecoration(
-                  hintText: 'Collection Search',
+                  hintText: 'Order Search',
                   hintStyle: _hintTextStyle,
                   suffixIcon: const Icon(Icons.search),
                   border: CommonUtils.searchBarOutPutInlineBorder,
@@ -325,20 +322,8 @@ class ReturnCarditem extends StatefulWidget {
 class _ReturnCarditemState extends State<ReturnCarditem> {
   final _iconBoxBorder = BoxDecoration(
     borderRadius: BorderRadius.circular(10),
-    color: Colors.white30,
+    color: Colors.white,
   );
-
-  final _textStyle = const TextStyle(
-      fontFamily: 'Roboto',
-      fontSize: 13,
-      color: Colors.black,
-      fontWeight: FontWeight.bold);
-
-  final _orangeTextStyle = TextStyle(
-      fontFamily: 'Roboto',
-      fontSize: 13,
-      color: HexColor('#e58338'),
-      fontWeight: FontWeight.w600);
 
   late Color statusColor;
   late Color statusBgColor;
@@ -346,17 +331,17 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
     String assetPath;
     late Color iconColor;
     switch (status) {
-      case "Pending":
-        assetPath = 'assets/shipping-timed.svg';
+      case "Shipped":
+        assetPath = 'assets/shipping-fast.svg';
         iconColor = const Color(0xFFe58338);
         statusColor = const Color(0xFFe58338);
         statusBgColor = const Color.fromARGB(255, 250, 214, 187);
         break;
-      case 'Shipped':
-        assetPath = 'assets/shipping-fast.svg';
-        iconColor = Colors.blue;
-        statusColor = Colors.blue;
-        statusBgColor = Colors.blue.shade100;
+      case 'Pending':
+        assetPath = 'assets/shipping-timed.svg';
+        iconColor = const Color(0xFFc04f51);
+        statusColor = const Color(0xFFc04f51);
+        statusBgColor = const Color.fromARGB(255, 241, 183, 184);
         break;
       case 'Delivered':
         assetPath = 'assets/box-circle-check.svg';
@@ -394,6 +379,10 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
 
   @override
   Widget build(BuildContext context) {
+    String dateString = widget.data.lrDate;
+    DateTime date = DateTime.parse(dateString);
+    String formattedDate = DateFormat('dd MMM, yyyy').format(date);
+
     return GestureDetector(
       onTap: () {
         Navigator.of(context).push(
@@ -426,21 +415,24 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                       // top card icon
                       Card(
                         elevation: 5,
-                        color: Colors.white,
                         child: Container(
-                          height: 80,
-                          width: 75,
+                          //here
+                          // height: 80,
+                          // width: 75,
+                          padding: const EdgeInsets.all(12),
                           decoration: _iconBoxBorder,
                           child: Center(
                             child: getSvgAsset(widget.data.statusName),
                           ),
                         ),
                       ),
-
+                      const SizedBox(
+                        height: 3,
+                      ),
                       // bottom status name
                       Container(
                         padding: const EdgeInsets.symmetric(
-                            vertical: 2, horizontal: 11),
+                            vertical: 3, horizontal: 11),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(15),
                           color: statusBgColor,
@@ -469,44 +461,43 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                       children: [
                         Text(
                           widget.data.partyName,
-                          style: _textStyle,
+                          style: CommonUtils.txSty_13B_Fb,
                         ),
                         Column(
                           children: [
                             Row(
                               children: [
-                                Text(
-                                  'Order ID: ',
-                                  style: _textStyle,
+                                const Text(
+                                  'Order ID :  ',
+                                  style: CommonUtils.txSty_13B_Fb,
                                 ),
                                 Text(
                                   widget.data.returnOrderNumber,
-                                  style: _orangeTextStyle,
+                                  style: CommonUtils.txSty_13O_F6,
                                 ),
                               ],
                             ),
                             Row(
                               children: [
-                                Text(
-                                  'LR No: ',
-                                  style: _textStyle,
+                                const Text(
+                                  'LR No :  ',
+                                  style: CommonUtils.txSty_13B_Fb,
                                 ),
                                 Text(
                                   widget.data.lrNumber,
-                                  style: _orangeTextStyle,
+                                  style: CommonUtils.txSty_13O_F6,
                                 ),
                               ],
                             ),
                             Row(
                               children: [
-                                Text(
-                                  'No of items: ',
-                                  style: _textStyle,
+                                const Text(
+                                  'No of items :  ',
+                                  style: CommonUtils.txSty_13B_Fb,
                                 ),
                                 Text(
-                                  widget.data.noOfItems
-                                      .toString(), // widget.data.noOfItems.toString()
-                                  style: _orangeTextStyle,
+                                  widget.data.noOfItems.toString(),
+                                  style: CommonUtils.txSty_13O_F6,
                                 ),
                               ],
                             ),
@@ -517,25 +508,18 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                           children: [
                             Row(
                               children: [
-                                // Text(
-                                //   'Date: ',
-                                //   style: _textStyle,
-                                // ),
                                 Text(
-                                  widget.data.lrDate.toString(),
-                                  style: _orangeTextStyle,
+                                  // here
+                                  formattedDate, //widget.data.lrDate.toString()
+                                  style: CommonUtils.txSty_13O_F6,
                                 ),
                               ],
                             ),
                             Row(
                               children: [
-                                // Text(
-                                //   'Total Amount: ',
-                                //   style: _textStyle,
-                                // ),
                                 Text(
                                   widget.data.totalCost.toString(),
-                                  style: _orangeTextStyle,
+                                  style: CommonUtils.txSty_13O_F6,
                                 ),
                               ],
                             ),
@@ -596,7 +580,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   late String selectedName;
   ApiResponse? apiResponse;
   int indexselected = -1;
-  String? Selected_PaymentMode = "";
+  String? selectedPaymentMode = "";
   TextEditingController todateController = TextEditingController();
   TextEditingController fromdateController = TextEditingController();
   DateTime selectedDate = DateTime.now();
@@ -747,9 +731,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           fontWeight: FontWeight.w600,
                           color: Color(0xFFe78337),
                         ),
-                        decoration: InputDecoration(
-                          hintText: labelText,
-                          hintStyle: const TextStyle(
+                        decoration: const InputDecoration(
+                          hintText: 'Select to date',
+                          hintStyle: TextStyle(
                             fontSize: 14,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w500,
@@ -875,9 +859,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           fontWeight: FontWeight.w600,
                           color: Color(0xFFe78337),
                         ),
-                        decoration: InputDecoration(
-                          hintText: labelText,
-                          hintStyle: const TextStyle(
+                        decoration: const InputDecoration(
+                          hintText: 'Select from date',
+                          hintStyle: TextStyle(
                             fontSize: 14,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w500,
@@ -1032,45 +1016,46 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               const SizedBox(
                 height: 10.0,
               ),
-              Container(
+
+              SizedBox(
                 height: 40,
-                //  child: Expanded(
                 child: apiResponse == null
                     ? const Center(child: CircularProgressIndicator.adaptive())
                     : ListView.builder(
                   scrollDirection: Axis.horizontal,
                   shrinkWrap: true,
-                  itemCount: apiResponse!.listResult.length,
+                  itemCount: apiResponse!.listResult.length +
+                      1, // Add 1 for the "All" option
                   itemBuilder: (BuildContext context, int index) {
                     bool isSelected = index == indexselected;
-                    PaymentMode currentPaymode = apiResponse!.listResult[
-                    index]; // Store the current paymode in a local variable
+                    PaymentMode currentPaymode;
 
-                    switch (currentPaymode.desc) {
-                      case 'Cheque':
-                      // iconData = Icons.payment;
-                        break;
-                      case 'Online':
-                      //   iconData = Icons.access_alarm;
-                        break;
-                      case 'UPI':
-                      //   iconData = Icons.payment;
-                        break;
-                    // Add more cases as needed
-                      default:
-                      //   iconData = Icons.payment; // Default icon
-                        break;
+                    // Handle the "All" option
+                    if (index == 0) {
+                      currentPaymode = PaymentMode(
+                        // Provide default values or handle the null case as needed
+                        typeCdId: 1, // typeCdId: null,
+                        classTypeId: 3,
+                        name: 'All',
+                        desc: 'All',
+                        tableName: 'all',
+                        columnName: 'all',
+                        sortOrder: 0,
+                        isActive: true,
+                      );
+                    } else {
+                      currentPaymode = apiResponse!.listResult[
+                      index - 1]; // Adjust index for actual data
                     }
 
                     return GestureDetector(
                       onTap: () {
                         setState(() {
                           indexselected = index;
-                          selectedPaymode =
-                              currentPaymode; // Update the selectedPaymode outside the build method
+                          selectedPaymode = currentPaymode;
                         });
                         payid = currentPaymode.typeCdId;
-                        Selected_PaymentMode = currentPaymode.desc;
+                        selectedPaymentMode = currentPaymode.desc;
                         print('payid:$payid');
                       },
                       child: Container(
@@ -1096,15 +1081,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                                     horizontal: 10.0),
                                 child: Row(
                                   children: [
-                                    // Icon(
-                                    //   iconData, // Use the dynamically determined icon
-                                    //   color: isSelected
-                                    //       ? Colors.white
-                                    //       : Colors.black,
-                                    // ),
-                                    // SizedBox(
-                                    //     width:
-                                    //         8.0), // Add some spacing between icon and text
                                     Text(
                                       currentPaymode.desc.toString(),
                                       style: TextStyle(
@@ -1124,10 +1100,28 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   },
                 ),
               ),
+              const SizedBox(
+                height: 10.0,
+              ),
+
+              // From date
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildDateInputfromdate(
+                    context,
+                    'From Date',
+                    fromdateController,
+                        () => _selectfromDate(context, fromdateController),
+                  ),
+                ],
+              ),
 
               const SizedBox(
                 height: 10.0,
-              ), // From date
+              ),
+
+              // To Date
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1142,26 +1136,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
               const SizedBox(
                 height: 10.0,
               ),
-              // To Date
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildDateInputfromdate(
-                    context,
-                    'From Date',
-                    fromdateController,
-                        () => _selectfromDate(context, fromdateController),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
               Row(
                 children: [
                   Expanded(
                     child: ElevatedButton(
-                      onPressed: () {},
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
                       style: ElevatedButton.styleFrom(
                         textStyle: const TextStyle(
                           color: Colors.red,

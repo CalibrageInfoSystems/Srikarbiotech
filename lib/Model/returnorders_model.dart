@@ -84,7 +84,7 @@ class ReturnOrdersList {
   final String proprietorName;
   final double partyOutStandingAmount;
   final String lrNumber;
-  final DateTime lrDate;
+  final String lrDate;
   final int statusTypeId;
   final String statusName;
   final double discount;
@@ -146,7 +146,7 @@ class ReturnOrdersList {
         proprietorName: json["proprietorName"],
         partyOutStandingAmount: json["partyOutStandingAmount"]?.toDouble(),
         lrNumber: json["lrNumber"],
-        lrDate: DateTime.parse(json["lrDate"]),
+        lrDate: json["lrDate"],
         statusTypeId: json["statusTypeId"],
         statusName: json["statusName"],
         discount: json["discount"]?.toDouble(),
@@ -177,7 +177,7 @@ class ReturnOrdersList {
         "proprietorName": proprietorName,
         "partyOutStandingAmount": partyOutStandingAmount,
         "lrNumber": lrNumber,
-        "lrDate": lrDate.toIso8601String(),
+        "lrDate": lrDate,
         "statusTypeId": statusTypeId,
         "statusName": statusName,
         "discount": discount,
