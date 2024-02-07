@@ -5,10 +5,12 @@ import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
+
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
+import 'package:quantity_input/quantity_input.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
@@ -31,8 +33,7 @@ class Ordersubmit_screen extends StatefulWidget {
   final String gstRegnNo;
   final String state;
   final String phone;
-  final String BookingPlace;
-  final String TransportName;
+
   final double creditLine;
   final double balance;
 
@@ -44,8 +45,6 @@ class Ordersubmit_screen extends StatefulWidget {
       required this.phone,
       required this.proprietorName,
       required this.gstRegnNo,
-      required this.BookingPlace,
-      required this.TransportName,
       required this.creditLine,
       required this.balance});
   @override
@@ -60,7 +59,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
   List<int> quantities = [];
   int globalCartLength = 0;
   TextEditingController quantityController = TextEditingController();
-
+  TextEditingController bookingplacecontroller = TextEditingController();
+  TextEditingController Parcelservicecontroller = TextEditingController();
   int CompneyId = 0;
   String? userId = "";
   String? slpCode = "";
@@ -68,7 +68,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
   ValueNotifier<double> totalSumNotifier = ValueNotifier<double>(0.0);
   ValueNotifier<double> totalGstAmountNotifier = ValueNotifier<double>(0.0);
   ValueNotifier<double> totalAmountWithGst = ValueNotifier<double>(0.0);
-   ValueNotifier<double> totalSumIncludingGst = ValueNotifier<double>(0.0);
+  ValueNotifier<double> totalSumIncludingGst = ValueNotifier<double>(0.0);
 
   // double totalSumIncludingGst = 0.0;
   @override
@@ -87,7 +87,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     updateTotalSumIncludingGst();
     // totalAmountWithGst = calculateTotalAmountWithGst();
     // print('totalAmountWithGst $totalAmountWithGst');
-   // totalSumNotifier = ValueNotifier<double>(calculateTotalSum(cartItems));
+    // totalSumNotifier = ValueNotifier<double>(calculateTotalSum(cartItems));
   }
 
   @override
@@ -95,11 +95,13 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     cartItems = Provider.of<CartProvider>(context).getCartItems();
 
     totalSumNotifier = ValueNotifier<double>(calculateTotalSum(cartItems));
-    totalGstAmountNotifier = ValueNotifier<double>(calculateTotalGstAmount(cartItems));
+    totalGstAmountNotifier =
+        ValueNotifier<double>(calculateTotalGstAmount(cartItems));
 
-        print('totalGstAmountNotifier $totalGstAmountNotifier');
+    print('totalGstAmountNotifier $totalGstAmountNotifier');
 
-    double newTotalSumIncludingGst = calculateTotalSum(cartItems) + calculateTotalGstAmount(cartItems);
+    double newTotalSumIncludingGst =
+        calculateTotalSum(cartItems) + calculateTotalGstAmount(cartItems);
     print('totalSumIncludingGst: $newTotalSumIncludingGst');
 
     // Only update the state if the new value is different from the current value
@@ -231,8 +233,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                   List<OrderItemXrefType> cartItems =
                       Provider.of<CartProvider>(context).getCartItems();
 
-
-
                   return buildListView(cartItems);
                 } else {
                   return Text('Error: Unable to fetch cart data');
@@ -241,195 +241,506 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
             ),
 
             SizedBox(height: 10),
+            // Container(
+            //   width: MediaQuery.of(context).size.width,
+            //   padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+            //   child: IntrinsicHeight(
+            //     child: Card(
+            //       // color: Colors.white,
+            //       shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(5.0),
+            //       ),
+            //       child: Container(
+            //         width: MediaQuery.of(context).size.width,
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(5.0),
+            //           color: Colors.white,
+            //
+            //           // color: Colors.white
+            //         ),
+            //         //  color: Colors.white,
+            //         padding: EdgeInsets.all(8.0),
+            //         child: Column(
+            //           children: [
+            //             Column(
+            //               crossAxisAlignment: CrossAxisAlignment.start,
+            //               mainAxisAlignment: MainAxisAlignment.start,
+            //               children: [
+            //                 Row(
+            //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //                   children: [
+            //                     Padding(
+            //                       padding: EdgeInsets.only(left: 0.0, top: 8.0),
+            //                       child: Text(
+            //                         'Transport  Details',
+            //                         style: TextStyle(
+            //                           fontSize: 13.0,
+            //                           color: Color(0xFF414141),
+            //                           fontWeight: FontWeight.bold,
+            //                         ),
+            //                         textAlign: TextAlign.start,
+            //                       ),
+            //                     ),
+            //                     Padding(
+            //                       padding:
+            //                           EdgeInsets.only(right: 5.0, top: 8.0),
+            //                       child: GestureDetector(
+            //                         onTap: () {
+            //                           Navigator.pushReplacement(
+            //                             context,
+            //                             MaterialPageRoute(
+            //                                 builder: (context) =>
+            //                                     transport_payment(
+            //                                       cardName: widget.cardName,
+            //                                       cardCode: widget.cardCode,
+            //                                       address: widget.address,
+            //                                       state: widget.state,
+            //                                       phone: widget.phone,
+            //                                       proprietorName:
+            //                                           widget.proprietorName,
+            //                                       gstRegnNo: widget.gstRegnNo,
+            //                                       preferabletransport:
+            //                                           widget.TransportName,
+            //                                       bookingplace:
+            //                                           widget.BookingPlace,
+            //                                       creditLine: 0.0,
+            //                                       balance: 0.0,
+            //                                     )),
+            //                           );
+            //                         },
+            //                         child: SvgPicture.asset(
+            //                           'assets/edit.svg',
+            //                           width: 20.0,
+            //                           height: 20.0,
+            //                           color: Color(0xFFe78337),
+            //                         ),
+            //                       ),
+            //                     ),
+            //                   ],
+            //                 ),
+            //                 SizedBox(
+            //                   height: 10.0,
+            //                 ),
+            //               ],
+            //             ),
+            //             Container(
+            //               decoration: BoxDecoration(
+            //                 border: Border.all(
+            //                   color:
+            //                       Colors.grey, // specify your border color here
+            //                   width: 1.0, // specify the border width
+            //                 ),
+            //                 borderRadius: BorderRadius.circular(
+            //                     8.0), // specify the border radius
+            //               ),
+            //               width: MediaQuery.of(context).size.width,
+            //               child: Column(
+            //                 children: [
+            //                   Row(
+            //                     children: [
+            //                       Container(
+            //                         width:
+            //                             MediaQuery.of(context).size.width / 2.2,
+            //                         padding: EdgeInsets.all(8.0),
+            //                         child: Column(
+            //                           crossAxisAlignment:
+            //                               CrossAxisAlignment.start,
+            //                           children: [
+            //                             Padding(
+            //                               padding: EdgeInsets.only(
+            //                                 top: 0.0,
+            //                                 left: 10.0,
+            //                                 right: 0.0,
+            //                               ),
+            //                               child: Text(
+            //                                 'Booking Place',
+            //                                 style: TextStyle(
+            //                                   fontSize: 13.0,
+            //                                   color: Color(0xFF414141),
+            //                                   fontWeight: FontWeight.bold,
+            //                                 ),
+            //                                 textAlign: TextAlign.start,
+            //                               ),
+            //                             ),
+            //                             SizedBox(
+            //                               height: 4.0,
+            //                             ),
+            //                             Padding(
+            //                               padding: EdgeInsets.only(
+            //                                   top: 0.0, left: 10.0, right: 0.0),
+            //                               child: Text(
+            //                                 '${widget.BookingPlace}',
+            //                                 style: TextStyle(
+            //                                   fontSize: 13.0,
+            //                                   color: Color(0xFFe78337),
+            //                                   fontWeight: FontWeight.bold,
+            //                                 ),
+            //                                 textAlign: TextAlign.start,
+            //                               ),
+            //                             ),
+            //                           ],
+            //                         ),
+            //                       ),
+            //                       Container(
+            //                         width:
+            //                             MediaQuery.of(context).size.width / 2.9,
+            //                         padding: EdgeInsets.all(10.0),
+            //                         child: Column(
+            //                           crossAxisAlignment:
+            //                               CrossAxisAlignment.start,
+            //                           mainAxisAlignment:
+            //                               MainAxisAlignment.start,
+            //                           children: [
+            //                             Padding(
+            //                               padding: EdgeInsets.only(
+            //                                   top: 0.0, left: 0.0, right: 0.0),
+            //                               child: Text(
+            //                                 'Transport Name',
+            //                                 style: TextStyle(
+            //                                   fontSize: 13.0,
+            //                                   color: Color(0xFF414141),
+            //                                   fontWeight: FontWeight.bold,
+            //                                 ),
+            //                                 textAlign: TextAlign.start,
+            //                               ),
+            //                             ),
+            //                             SizedBox(
+            //                               height: 4.0,
+            //                             ),
+            //                             Padding(
+            //                               padding: EdgeInsets.only(
+            //                                   top: 0.0, left: 0.0, right: 0.0),
+            //                               child: Text(
+            //                                 '${widget.TransportName}',
+            //                                 style: TextStyle(
+            //                                   fontSize: 13.0,
+            //                                   color: Color(0xFFe78337),
+            //                                   fontWeight: FontWeight.bold,
+            //                                 ),
+            //                                 textAlign: TextAlign.start,
+            //                               ),
+            //                             ),
+            //                           ],
+            //                         ),
+            //                       )
+            //                     ],
+            //                   ),
+            //                 ],
+            //               ),
+            //             ),
+            //             SizedBox(
+            //               height: 10.0,
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     ),
+            //   ),
+            // ),
+            Column(
+              children: [
+                // Padding(
+                //   // height: screenHeight / 2.8,
+                //   // width: screenWidth,
+                //   // alignment: Alignment.center,
+                //
+                //   padding:
+                //       EdgeInsets.only(top: 10.0, left: 10, right: 10, bottom: 10),
+                //   child:
+                Container(
+                  padding: EdgeInsets.only(
+                      top: 10.0, left: 10, right: 10, bottom: 20),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(5.0),
+                    color: Colors.white,
+                  ),
+                  child: Card(
+                    // color: Colors.white,
+                    elevation: 5.0,
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    // You can adjust the elevation as needed
+                    // Other card properties go here
+
+                    child: Container(
+                        padding: EdgeInsets.only(
+                            top: 0.0, left: 0, right: 0, bottom: 20),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5.0),
+                          color: Colors.white,
+                        ),
+                        child: IntrinsicHeight(
+                            child: Column(
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              color: Colors.white,
+                              padding: EdgeInsets.only(
+                                  top: 15.0, left: 15.0, right: 15.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 0.0, left: 0.0, right: 0.0),
+                                    child: Text(
+                                      'Booking Place * ',
+                                      style: TextStyle(
+                                          color: Color(0xFF5f5f5f),
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.w600,
+                                          fontSize: 14),
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ),
+                                  SizedBox(height: 2.0),
+                                  //  SizedBox(height: 8.0),
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Handle the click event for the second text view
+                                      print('first textview clicked');
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        border: Border.all(
+                                          color: Color(0xFFe78337),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 10.0, top: 0.0),
+                                                child: TextFormField(
+                                                  controller:
+                                                      bookingplacecontroller,
+                                                  keyboardType:
+                                                      TextInputType.name,
+                                                  maxLength: 50,
+                                                  style: TextStyle(
+                                                      color: Color(0xFFe78337),
+                                                      fontFamily: 'Roboto',
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 14),
+                                                  decoration: InputDecoration(
+                                                    counterText: '',
+                                                    hintText:
+                                                        'Enter Booking Place',
+                                                    hintStyle: TextStyle(
+                                                      fontSize: 14,
+                                                      fontFamily: 'Roboto',
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: Color(0xa0e78337),
+                                                    ),
+                                                    border: InputBorder.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              color: Colors.white,
+                              padding: EdgeInsets.only(
+                                  top: 15.0,
+                                  left: 15.0,
+                                  right: 15.0,
+                                  bottom: 20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(
+                                        top: 0.0, left: 0.0, right: 0.0),
+                                    child: Text(
+                                      'Transport Name * ',
+                                      style: TextStyle(
+                                        color: Color(0xFF5f5f5f),
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ),
+                                  SizedBox(height: 2.0),
+                                  GestureDetector(
+                                    onTap: () {
+                                      print('first textview clicked');
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                            BorderRadius.circular(5.0),
+                                        border: Border.all(
+                                          color: Color(0xFFe78337),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Padding(
+                                                padding: EdgeInsets.only(
+                                                    left: 10.0, top: 0.0),
+                                                child: TextFormField(
+                                                  controller:
+                                                      Parcelservicecontroller,
+                                                  keyboardType:
+                                                      TextInputType.name,
+                                                  maxLength: 50,
+                                                  style: TextStyle(
+                                                      color: Color(0xFFe78337),
+                                                      fontFamily: 'Roboto',
+                                                      fontWeight:
+                                                          FontWeight.w600,
+                                                      fontSize: 14),
+                                                  decoration: InputDecoration(
+                                                    counterText: '',
+                                                    hintText:
+                                                        'Enter Transport Name',
+                                                    hintStyle: TextStyle(
+                                                      fontSize: 14,
+                                                      fontFamily: 'Roboto',
+                                                      fontWeight:
+                                                          FontWeight.w700,
+                                                      color: Color(0xa0e78337),
+                                                    ),
+                                                    border: InputBorder.none,
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ))),
+                  ),
+                ),
+              ],
+            ),
             Container(
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+              padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
               child: IntrinsicHeight(
                 child: Card(
-                  // color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   child: Container(
-                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
                       color: Colors.white,
-
-                      // color: Colors.white
                     ),
-                    //  color: Colors.white,
-                    padding: EdgeInsets.all(8.0),
+                    width: MediaQuery.of(context).size.width,
                     child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(left: 0.0, top: 8.0),
-                                  child: Text(
-                                    'Transport  Details',
-                                    style: TextStyle(
-                                      fontSize: 13.0,
-                                      color: Color(0xFF414141),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ),
-                                Padding(
-                                  padding:
-                                      EdgeInsets.only(right: 5.0, top: 8.0),
-                                  child: GestureDetector(
-                                    onTap: () {
-                                      Navigator.pushReplacement(
-                                        context,
-                                        MaterialPageRoute(
-                                            builder: (context) =>
-                                                transport_payment(
-                                                  cardName: widget.cardName,
-                                                  cardCode: widget.cardCode,
-                                                  address: widget.address,
-                                                  state: widget.state,
-                                                  phone: widget.phone,
-                                                  proprietorName:
-                                                      widget.proprietorName,
-                                                  gstRegnNo: widget.gstRegnNo,
-                                                  preferabletransport:
-                                                      widget.TransportName,
-                                                  bookingplace:
-                                                      widget.BookingPlace,
-                                                  creditLine: 0.0,
-                                                  balance: 0.0,
-                                                )),
-                                      );
-                                    },
-                                    child: SvgPicture.asset(
-                                      'assets/edit.svg',
-                                      width: 20.0,
-                                      height: 20.0,
-                                      color: Color(0xFFe78337),
-                                    ),
-                                  ),
-                                ),
-                              ],
+                            Text(
+                              'Total',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.0,
+                              ),
                             ),
-                            SizedBox(
-                              height: 10.0,
+                            ValueListenableBuilder<double>(
+                              valueListenable: totalSumNotifier,
+                              builder: (context, totalSum, child) {
+                                return Text(
+                                  '₹${totalSum.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    color: Color(0xFFe78337),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                );
+                              },
                             ),
                           ],
                         ),
-                        Container(
-                          decoration: BoxDecoration(
-                            border: Border.all(
-                              color:
-                                  Colors.grey, // specify your border color here
-                              width: 1.0, // specify the border width
-                            ),
-                            borderRadius: BorderRadius.circular(
-                                8.0), // specify the border radius
-                          ),
-                          width: MediaQuery.of(context).size.width,
-                          child: Column(
-                            children: [
-                              Row(
-                                children: [
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 2.2,
-                                    padding: EdgeInsets.all(8.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                            top: 0.0,
-                                            left: 10.0,
-                                            right: 0.0,
-                                          ),
-                                          child: Text(
-                                            'Booking Place',
-                                            style: TextStyle(
-                                              fontSize: 13.0,
-                                              color: Color(0xFF414141),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 4.0,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              top: 0.0, left: 10.0, right: 0.0),
-                                          child: Text(
-                                            '${widget.BookingPlace}',
-                                            style: TextStyle(
-                                              fontSize: 13.0,
-                                              color: Color(0xFFe78337),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                  Container(
-                                    width:
-                                        MediaQuery.of(context).size.width / 2.9,
-                                    padding: EdgeInsets.all(10.0),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.start,
-                                      children: [
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              top: 0.0, left: 0.0, right: 0.0),
-                                          child: Text(
-                                            'Transport Name',
-                                            style: TextStyle(
-                                              fontSize: 13.0,
-                                              color: Color(0xFF414141),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 4.0,
-                                        ),
-                                        Padding(
-                                          padding: EdgeInsets.only(
-                                              top: 0.0, left: 0.0, right: 0.0),
-                                          child: Text(
-                                            '${widget.TransportName}',
-                                            style: TextStyle(
-                                              fontSize: 13.0,
-                                              color: Color(0xFFe78337),
-                                              fontWeight: FontWeight.bold,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  )
-                                ],
+                        SizedBox(height: 8.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Total GST',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.0,
                               ),
-                            ],
-                          ),
+                            ),
+                            ValueListenableBuilder<double>(
+                              valueListenable: totalGstAmountNotifier,
+                              builder: (context, totalGstAmount, _) {
+                                return Text(
+                                  '₹${totalGstAmount.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    color: Color(0xFFe78337),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
-                        SizedBox(
-                          height: 10.0,
+                        SizedBox(height: 8.0),
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Text(
+                              'Total Amount with GST',
+                              style: TextStyle(
+                                color: Colors.black,
+                                fontWeight: FontWeight.bold,
+                                fontSize: 14.0,
+                              ),
+                            ),
+                            ValueListenableBuilder<double>(
+                              valueListenable: totalSumIncludingGst,
+                              builder: (context, totalsumGstAmount, _) {
+                                return Text(
+                                  '₹${totalsumGstAmount.toStringAsFixed(2)}',
+                                  style: TextStyle(
+                                    color: Color(0xFFe78337),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                );
+                              },
+                            ),
+                          ],
                         ),
                       ],
                     ),
@@ -437,115 +748,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                 ),
               ),
             ),
-
-
-    Container(
-    width: MediaQuery.of(context).size.width,
-    padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-    child: IntrinsicHeight(
-    child: Card(
-    shape: RoundedRectangleBorder(
-    borderRadius: BorderRadius.circular(5.0),
-    ),
-    child: Container(
-    padding: EdgeInsets.all(10.0),
-    decoration: BoxDecoration(
-    borderRadius: BorderRadius.circular(5.0),
-    color: Colors.white,
-    ),
-    width: MediaQuery.of(context).size.width,
-    child: Column(
-    crossAxisAlignment: CrossAxisAlignment.start,
-    children: [
-    Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-    Text(
-    'Total',
-    style: TextStyle(
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-    fontSize: 14.0,
-    ),
-    ),
-    ValueListenableBuilder<double>(
-    valueListenable: totalSumNotifier,
-    builder: (context, totalSum, child) {
-    return Text(
-    '₹${totalSum.toStringAsFixed(2)}',
-    style: TextStyle(
-    color: Color(0xFFe78337),
-    fontWeight: FontWeight.bold,
-    fontSize: 14.0,
-    ),
-    );
-    },
-    ),
-    ],
-    ),
-    SizedBox(height: 8.0),
-    Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-    Text(
-    'Total GST',
-    style: TextStyle(
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-    fontSize: 14.0,
-    ),
-    ),
-    ValueListenableBuilder<double>(
-    valueListenable: totalGstAmountNotifier,
-    builder: (context, totalGstAmount, _) {
-    return Text(
-    '₹${totalGstAmount.toStringAsFixed(2)}',
-    style: TextStyle(
-    color: Color(0xFFe78337),
-    fontWeight: FontWeight.bold,
-    fontSize: 14.0,
-    ),
-    );
-    },
-    ),
-    ],
-    ),
-    SizedBox(height: 8.0),
-    Row(
-    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-    children: [
-    Text(
-    'Total Amount with GST',
-    style: TextStyle(
-    color: Colors.black,
-    fontWeight: FontWeight.bold,
-    fontSize: 14.0,
-    ),
-    ),
-      ValueListenableBuilder<double>(
-        valueListenable: totalSumIncludingGst,
-        builder: (context, totalsumGstAmount, _) {
-          return Text(
-            '₹${totalsumGstAmount.toStringAsFixed(2)}',
-            style: TextStyle(
-              color: Color(0xFFe78337),
-              fontWeight: FontWeight.bold,
-              fontSize: 14.0,
-            ),
-          );
-        },
-      ),
-
-    ],
-    ),
-    ],
-    ),
-    ),
-    ),
-    ),
-    ),
-
-    ],
+          ],
         ),
       ),
 
@@ -609,7 +812,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
 
       double totalPrice = orderQty * price * numInSale;
       double totalgstPrice = (totalPrice * cartItem.gst! / 100);
-      double totalPriceWithGST = totalPrice + (totalPrice * cartItem.gst! / 100);
+      double totalPriceWithGST =
+          totalPrice + (totalPrice * cartItem.gst! / 100);
 
       print('Order Quantity: $orderQty');
       print('Price: $price');
@@ -640,11 +844,31 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       };
     }).toList();
     // Calculate the sum of prices for the entire order
-    double totalCost = orderItemList.fold(0.0, (sum, item) => sum + (item['TotalPrice'] ?? 0.0));
-    double totalCostWithGST = orderItemList.fold(0.0, (sum, item) => sum + (item['TotalPriceWithGST'] ?? 0.0));
-    double totalGSTCost = orderItemList.fold(0.0, (sum, item) => sum + (item['GSTPrice'] ?? 0.0));
+    double totalCost = orderItemList.fold(
+        0.0, (sum, item) => sum + (item['TotalPrice'] ?? 0.0));
+    double totalCostWithGST = orderItemList.fold(
+        0.0, (sum, item) => sum + (item['TotalPriceWithGST'] ?? 0.0));
+    double totalGSTCost =
+        orderItemList.fold(0.0, (sum, item) => sum + (item['GSTPrice'] ?? 0.0));
     print('Total Price: $totalCostWithGST');
     print('Total Price With GST: $totalGSTCost');
+    bool isValid = true;
+    bool hasValidationFailed = false;
+    if (isValid && bookingplacecontroller.text.isEmpty) {
+      CommonUtils.showCustomToastMessageLong(
+          'Please Enter Booking Place', context, 1, 4);
+      isValid = false;
+      hasValidationFailed = true;
+    }
+
+    if (isValid && Parcelservicecontroller.text.isEmpty) {
+      CommonUtils.showCustomToastMessageLong(
+          'Please Enter Transport Name', context, 1, 4);
+
+      isValid = false;
+      hasValidationFailed = true;
+    }
+
     Map<String, dynamic> orderData = {
       "OrderItemXrefTypeList": orderItemList,
       "Id": 1,
@@ -659,8 +883,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       "PartyGSTNumber": '${widget.gstRegnNo}',
       "ProprietorName": '${widget.proprietorName}',
       "PartyOutStandingAmount": '${widget.balance}',
-      "BookingPlace": '${widget.BookingPlace}',
-      "TransportName": '${widget.TransportName}',
+      "BookingPlace": '${bookingplacecontroller.text}',
+      "TransportName": '${Parcelservicecontroller.text}',
       "FileName": "",
       "FileLocation": "",
       "FileExtension": "",
@@ -677,40 +901,44 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       "GSTCost": totalGSTCost
     };
     print(jsonEncode(orderData));
-
-    try {
-      final response = await http.post(
-        Uri.parse(apiUrl),
-        headers: {
-          'Content-Type': 'application/json',
-        },
-        body: jsonEncode(orderData),
-      );
-
-      if (response.statusCode == 200) {
-        // Successful request
-        final responseData = jsonDecode(response.body);
-        print(responseData);
-
-        final cartProvider = context.read<CartProvider>();
-
-        clearCartData(cartProvider);
-
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => orderStatusScreen(responseData: responseData, Compneyname: Compneyname,),
-          ),
+    if (isValid) {
+      try {
+        final response = await http.post(
+          Uri.parse(apiUrl),
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: jsonEncode(orderData),
         );
-        clearCartItems();
-        printRemainingCartItems();
-      } else {
-        // Handle errors
-        print('Error: ${response.reasonPhrase}');
+
+        if (response.statusCode == 200) {
+          // Successful request
+          final responseData = jsonDecode(response.body);
+          print(responseData);
+
+          final cartProvider = context.read<CartProvider>();
+
+          clearCartData(cartProvider);
+
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+              builder: (context) => orderStatusScreen(
+                responseData: responseData,
+                Compneyname: Compneyname,
+              ),
+            ),
+          );
+          clearCartItems();
+          printRemainingCartItems();
+        } else {
+          // Handle errors
+          print('Error: ${response.reasonPhrase}');
+        }
+      } catch (e) {
+        // Handle exceptions
+        print('Exception: $e');
       }
-    } catch (e) {
-      // Handle exceptions
-      print('Exception: $e');
     }
   }
 
@@ -736,8 +964,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     print('Company ID: $CompneyId');
   }
 
-
-
   Widget buildListView(List<OrderItemXrefType> cartItems) {
     updateTotalSum(cartItems);
 
@@ -760,9 +986,9 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
 
         // Update totalSumNotifier with the correct value
         totalSumNotifier.value = calculateTotalSum(cartItems);
-        totalGstAmountNotifier.value =calculateTotalGstAmount(cartItems);
+        totalGstAmountNotifier.value = calculateTotalGstAmount(cartItems);
 
-      double  totalSumForProduct = calculateTotalSumForProduct(cartItem);
+        double totalSumForProduct = calculateTotalSumForProduct(cartItem);
         // Print totalSumNotifier
         print('totalSumNotifier: ${totalSumNotifier.value}');
 
@@ -782,12 +1008,9 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
             updateTotalSumIncludingGst(); // Update totalSumIncludingGst when quantity changes
           },
         );
-
-
       },
     );
   }
-
 
   double calculateTotalSum(List<OrderItemXrefType> cartItems) {
     double sum = 0.0;
@@ -832,7 +1055,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
 
   void updateTotalSumIncludingGst() {
     // Recalculate totalSumIncludingGst without triggering a rebuild
-    double newTotalSumIncludingGst = calculateTotalSum(cartItems) + calculateTotalGstAmount(cartItems);
+    double newTotalSumIncludingGst =
+        calculateTotalSum(cartItems) + calculateTotalGstAmount(cartItems);
     print('totalSumIncludingGst: $newTotalSumIncludingGst');
 
     // Only update the state if the new value is different from the current value
@@ -840,7 +1064,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       totalSumIncludingGst.value = newTotalSumIncludingGst;
     }
   }
-
 }
 
 // In CartItemWidget
@@ -854,7 +1077,8 @@ class CartItemWidget extends StatefulWidget {
   final List<OrderItemXrefType> cartItems;
   final ValueNotifier<double> totalSumNotifier;
   final ValueNotifier<double> totalGstAmountNotifier;
-  final VoidCallback onQuantityChanged; // Callback function to notify when quantity changes
+  final VoidCallback
+      onQuantityChanged; // Callback function to notify when quantity changes
 
   CartItemWidget({
     required this.cartItem,
@@ -882,13 +1106,13 @@ class _CartItemWidgetState extends State<CartItemWidget> {
     _orderQty = widget.cartItem.orderQty ?? 0;
     _textController = TextEditingController(text: _orderQty.toString());
     widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
-    widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
+    widget.totalGstAmountNotifier.value =
+        calculateTotalGstAmount(widget.cartItems);
     // Initialize totalSumNotifier in initState
   }
 
   @override
   Widget build(BuildContext context) {
-
     double totalWidth = MediaQuery.of(context).size.width;
 
     // Calculate totalSum for all products
@@ -900,17 +1124,15 @@ class _CartItemWidgetState extends State<CartItemWidget> {
     gstPrice = calculateGstPrice(totalSumForProduct, widget.cartItem.gst);
 
     // Calculate total sum including GST
-    double totalSumIncludingGst = totalSum + widget.totalGstAmountNotifier.value;
+    double totalSumIncludingGst =
+        totalSum + widget.totalGstAmountNotifier.value;
     print('totalSumIncludingGst==$totalSumIncludingGst');
-
-
 
     int? Quantity = widget.cartItem.orderQty;
     print('Quantity==$Quantity');
 
     return Padding(
-      padding:
-      const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
       child: Card(
         elevation: 5.0,
         color: Colors.white,
@@ -920,109 +1142,111 @@ class _CartItemWidgetState extends State<CartItemWidget> {
         child: Container(
           color: Colors.white,
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${widget.cartItem.itemName}',
-                style: CommonUtils.Mediumtext_14,
-              ),
-              SizedBox(height: 8.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      '₹${totalSumForProduct.toStringAsFixed(2)}',
-                      style: CommonUtils.Mediumtext_o_14,
-                    ),
-                  ),
-                  Text(
-                    '$Quantity ${widget.cartItem.salUnitMsr} = ${Quantity! * widget.cartItem.numInSale!}  Nos', // Display totalSumForProduct for the single product
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+              '${widget.cartItem.itemName}',
+              style: CommonUtils.Mediumtext_14,
+            ),
+            SizedBox(height: 8.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Expanded(
+                  child: Text(
+                    '₹${totalSumForProduct.toStringAsFixed(2)}',
                     style: CommonUtils.Mediumtext_o_14,
                   ),
-                ],
-              ),
-              SizedBox(height: 8.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
+                ),
+                Text(
+                  '$Quantity ${widget.cartItem.salUnitMsr} = ${Quantity! * widget.cartItem.numInSale!}  Nos', // Display totalSumForProduct for the single product
+                  style: CommonUtils.Mediumtext_o_14,
+                ),
+              ],
+            ),
+            SizedBox(height: 8.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: (totalWidth - 40) / 2,
+                  child: Container(
                     width: (totalWidth - 40) / 2,
-                    child:
-                    Container(
-                      width: (totalWidth - 40) / 2,
-                      child: PlusMinusButtons(
-                        addQuantity: () {
-                          setState(() {
-                            _orderQty = (_orderQty ?? 0) + 1;
+                    child: PlusMinusButtons(
+                      addQuantity: () {
+                        setState(() {
+                          _orderQty = (_orderQty ?? 0) + 1;
+                          _textController.text = _orderQty.toString();
+                          widget.cartItem.updateQuantity(_orderQty);
+                          widget.totalSumNotifier.value =
+                              calculateTotalSum(widget.cartItems);
+                          widget.totalGstAmountNotifier.value =
+                              calculateTotalGstAmount(widget.cartItems);
+                          widget
+                              .onQuantityChanged(); // Notify main widget when quantity changes
+                        });
+                      },
+                      deleteQuantity: () {
+                        setState(() {
+                          if (_orderQty! > 1) {
+                            _orderQty = (_orderQty ?? 0) - 1;
                             _textController.text = _orderQty.toString();
                             widget.cartItem.updateQuantity(_orderQty);
-                            widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
-                            widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
-                            widget.onQuantityChanged(); // Notify main widget when quantity changes
-                          });
-                        },
-                        deleteQuantity: () {
-                          setState(() {
-                            if (_orderQty! > 1) {
-                              _orderQty = (_orderQty ?? 0) - 1;
-                              _textController.text = _orderQty.toString();
-                              widget.cartItem.updateQuantity(_orderQty);
-                              widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
-                              widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
-                              widget.onQuantityChanged(); // Notify main widget when quantity changes
-                            }
-                          });
-                        },
-                        textController: _textController,
-                        initialValue: _orderQty ?? 0, // Provide the initial value here
-                        onQuantityChanged: (int value) {},
-                        updateTotalPrice: () {},
-                      ),
+                            widget.totalSumNotifier.value =
+                                calculateTotalSum(widget.cartItems);
+                            widget.totalGstAmountNotifier.value =
+                                calculateTotalGstAmount(widget.cartItems);
+                            widget
+                                .onQuantityChanged(); // Notify main widget when quantity changes
+                          }
+                        });
+                      },
+                      textController: _textController,
+                      initialValue:
+                          _orderQty ?? 0, // Provide the initial value here
+                      onQuantityChanged: (int value) {},
+                      updateTotalPrice: () {},
                     ),
-
                   ),
-                  SizedBox(width: 8.0),
-                  GestureDetector(
-                    onTap: () {
-                      widget.onDelete();
-                    },
-                    child: Container(
-                      height: 36,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFF8dac2),
-                        border: Border.all(
-                          color: Color(0xFFe78337),
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(8.0),
+                ),
+                SizedBox(width: 8.0),
+                GestureDetector(
+                  onTap: () {
+                    widget.onDelete();
+                  },
+                  child: Container(
+                    height: 36,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF8dac2),
+                      border: Border.all(
+                        color: Color(0xFFe78337),
+                        width: 1.0,
                       ),
-                      child: Padding(
-                        padding:
-                        const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.delete,
-                                size: 18.0,
-                                color: Colors.red,
-                              ),
-                            ],
-                          ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.delete,
+                              size: 18.0,
+                              color: Colors.red,
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
-          SizedBox(height: 8.0),
-         
-          ] ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8.0),
+          ]),
         ),
       ),
     );
@@ -1042,10 +1266,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
     }
     return totalGstAmount;
   }
-
-
 }
-
 
 // In PlusMinusButtons widget
 
@@ -1062,7 +1283,8 @@ class PlusMinusButtons extends StatefulWidget {
     required this.deleteQuantity,
     required this.initialValue,
     required this.onQuantityChanged,
-    required this.updateTotalPrice, required TextEditingController textController,
+    required this.updateTotalPrice,
+    required TextEditingController textController,
   }) : super(key: key);
 
   @override
@@ -1075,9 +1297,11 @@ class _PlusMinusButtonsState extends State<PlusMinusButtons> {
   @override
   void initState() {
     super.initState();
-    _textController = TextEditingController(text: widget.initialValue.toString());
+    _textController =
+        TextEditingController(text: widget.initialValue.toString());
   }
 
+  int simpleIntInput = 0;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1172,7 +1396,6 @@ class _PlusMinusButtonsState extends State<PlusMinusButtons> {
     super.dispose();
   }
 }
-
 
 double calculateTotalSumForProduct(OrderItemXrefType cartItem) {
   return cartItem.orderQty! *

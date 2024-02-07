@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:badges/src/badge.dart' as badge;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:srikarbiotech/Ordersubmit_screen.dart';
 import 'package:srikarbiotech/transport_payment.dart';
 
 import '../CartProvider.dart';
@@ -1010,7 +1011,7 @@ class _ProductListState extends State<Createorderscreen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                            builder: (context) => transport_payment(
+                            builder: (context) => Ordersubmit_screen(
                               cardName: '${widget.cardName}',
                               cardCode: '${widget.cardCode}',
                               address: '${widget.address}',
@@ -1018,8 +1019,7 @@ class _ProductListState extends State<Createorderscreen> {
                               phone: '${widget.phone}',
                               proprietorName: '${widget.proprietorName}',
                               gstRegnNo: '${widget.gstRegnNo}',
-                              bookingplace: '',
-                              preferabletransport: '',
+
                               creditLine: double.parse(
                                   '${widget.creditLine}'), // Convert to double
                               balance: double.parse(
