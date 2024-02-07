@@ -25,6 +25,7 @@ class _home_Screen extends State<HomeScreen> {
   int currentIndex = 0;
   int CompneyId = 0;
   String? userId = "";
+  String? companyName = "";
   String? slpCode = "";
   @override
   void initState() {
@@ -98,7 +99,7 @@ class _home_Screen extends State<HomeScreen> {
                       width: 2.0,
                     ),
                     Text(
-                      CompneyId == 1 ? 'Srikar Bio Tech' : 'Srikar Seeds ',
+                     '$companyName',
                       style: TextStyle(
                         color: Color(0xFF414141),
                         fontWeight: FontWeight.w600,
@@ -152,10 +153,13 @@ class _home_Screen extends State<HomeScreen> {
   Future<void> getshareddata() async {
     userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
     slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
+    companyName = await SharedPrefsData.getStringFromSharedPrefs("companyName");
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     print('User ID: $userId');
     print('SLP Code: $slpCode');
     print('Company ID: $CompneyId');
+    print('companyName: $companyName');
+
   }
 
   void logOutDialog() {

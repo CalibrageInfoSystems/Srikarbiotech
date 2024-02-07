@@ -15,15 +15,16 @@ import 'HomeScreen.dart';
 class orderStatusScreen extends StatelessWidget {
   final Map<String, dynamic> responseData;
   String orderId = "";
-  // Constructor to receive responseData
-  orderStatusScreen({required this.responseData});
+  final String? Compneyname;
+
+  orderStatusScreen({required this.responseData, required this.Compneyname});
+
   @override
   Widget build(BuildContext context) {
-    // final arguments = ModalRoute.of(context)?.settings.arguments as ListResult;
-    // Print the response data for debugging purposes
     print('Response Data: $responseData');
-     orderId = responseData['response']['orderNumber'] ?? 'xxxxxxxxxx';
+    orderId = responseData['response']['orderNumber'] ?? 'xxxxxxxxxx';
     print('orderId: $orderId');
+    print('Compneyname: $Compneyname');
     // Create a formatted string with remaining data
 
     // String formattedData = _formatData(responseData);
@@ -35,9 +36,13 @@ class orderStatusScreen extends StatelessWidget {
     final primaryGreen = HexColor('#11872f');
     final primaryOrange = HexColor('#dc762b');
 
+    return WillPopScope(
+        onWillPop: () async {
+          // Disable the back button functionality
+          return false;
+        },
 
-
-    return Scaffold(
+        child:   Scaffold(
 
       body: Center(
         child: Column(
@@ -70,11 +75,12 @@ class orderStatusScreen extends StatelessWidget {
                 color: primaryGreen,
               ),
             ),
-            const Text(
-              'Thank you for shopping with Srikar Bio Tech',
+            Text(
+              'Thank you for shopping with $Compneyname',
               style: TextStyle(
-                fontSize: 18,
-                letterSpacing: 0,
+                  fontSize: 18,
+                  letterSpacing: 0,
+                  height: 1.5
               ),
             ),
             const SizedBox(
@@ -215,6 +221,7 @@ class orderStatusScreen extends StatelessWidget {
           ],
         ),
       ),
+    ),
     );
   }
 

@@ -75,7 +75,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
       setState(() {
         viewProvider.storeIntoProvider(data
             .where((item) =>
-                item.partyName.toLowerCase().contains(input.toLowerCase()))
+            item.partyName.toLowerCase().contains(input.toLowerCase()))
             .toList());
       });
     });
@@ -86,7 +86,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
     DateTime oneWeekBackDate = currentDate.subtract(Duration(days: 7));
     String formattedCurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
     String formattedOneWeekBackDate =
-        DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
+    DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
 
     try {
@@ -174,21 +174,21 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                       else
                         Expanded(
                             child: SizedBox(
-                          width: double.infinity,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: const EdgeInsets.all(5.0),
-                                child: Text(
-                                  'No collection found!',
-                                  style: _customTextStyle,
-                                ),
+                              width: double.infinity,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: const EdgeInsets.all(5.0),
+                                    child: Text(
+                                      'No collection found!',
+                                      style: _customTextStyle,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        )),
+                            )),
                     ],
                   ),
                 );
@@ -219,7 +219,10 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                 child: GestureDetector(
                   onTap: () {
                     // Handle the click event for the back button
-                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                    );
                   },
                   child: const Icon(
                     Icons.chevron_left,
@@ -441,9 +444,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> _selectDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
@@ -483,11 +486,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Widget buildDateInput(
-    BuildContext context,
-    String labelText,
-    TextEditingController controller,
-    VoidCallback onTap,
-  ) {
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      VoidCallback onTap,
+      ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -566,9 +569,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> _selectfromDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
@@ -609,11 +612,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Widget buildDateInputfromdate(
-    BuildContext context,
-    String labelText,
-    TextEditingController controller,
-    VoidCallback onTap,
-  ) {
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      VoidCallback onTap,
+      ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -720,369 +723,369 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   Widget build(BuildContext context) {
     return SingleChildScrollView(
         child: Padding(
-      padding: const EdgeInsets.all(20),
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        mainAxisSize: MainAxisSize.min,
-        children: <Widget>[
-          Row(
-            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            children: <Widget>[
-              Text(
-                'Filter By',
-                style: _titleTextStyle,
-              ),
-              GestureDetector(
-                onTap: () {
-                  // Call the function to clear all filters
-                  clearAllFilters();
-                },
-                child: Text(
-                  'Clear all filters',
-                  style: _clearTextStyle,
-                ),
-              ),
-            ],
-          ),
-          Container(
-            margin: const EdgeInsets.only(top: 5, bottom: 12),
-            child: const Divider(
-              height: 5,
-            ),
-          ),
-          Column(
+          padding: const EdgeInsets.all(20),
+          child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0),
-                child: Text(
-                  'Party',
-                  style: _labelTextStyle,
-                ),
-              ),
-              Padding(
-                padding: const EdgeInsets.only(left: 0, top: 5.0, right: 0),
-                child: Container(
-                  // width: double.infinity,
-                  height: 40.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    border: Border.all(
-                      color: const Color(0xFFe58338),
+            mainAxisSize: MainAxisSize.min,
+            children: <Widget>[
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: <Widget>[
+                  Text(
+                    'Filter By',
+                    style: _titleTextStyle,
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      // Call the function to clear all filters
+                      clearAllFilters();
+                    },
+                    child: Text(
+                      'Clear all filters',
+                      style: _clearTextStyle,
                     ),
                   ),
-                  child: DropdownButtonHideUnderline(
-                    child: ButtonTheme(
-                      alignedDropdown: true,
-                      child: DropdownButton<int>(
-                          value: selectedCardCode,
-                          iconSize: 20,
-                          icon: null,
-                          isExpanded: true,
-                          underline: const SizedBox(),
-                          style: const TextStyle(
-                            color: Color(0xFFe58338),
-                          ),
-                          onChanged: (value) {
-                            setState(() {
-                              selectedCardCode = value!;
-                              if (selectedCardCode != -1) {
-                                selectedValue =
+                ],
+              ),
+              Container(
+                margin: const EdgeInsets.only(top: 5, bottom: 12),
+                child: const Divider(
+                  height: 5,
+                ),
+              ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: Text(
+                      'Party',
+                      style: _labelTextStyle,
+                    ),
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 0, top: 5.0, right: 0),
+                    child: Container(
+                      // width: double.infinity,
+                      height: 40.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        border: Border.all(
+                          color: const Color(0xFFe58338),
+                        ),
+                      ),
+                      child: DropdownButtonHideUnderline(
+                        child: ButtonTheme(
+                          alignedDropdown: true,
+                          child: DropdownButton<int>(
+                              value: selectedCardCode,
+                              iconSize: 20,
+                              icon: null,
+                              isExpanded: true,
+                              underline: const SizedBox(),
+                              style: const TextStyle(
+                                color: Color(0xFFe58338),
+                              ),
+                              onChanged: (value) {
+                                setState(() {
+                                  selectedCardCode = value!;
+                                  if (selectedCardCode != -1) {
+                                    selectedValue =
                                     dropdownItems[selectedCardCode]['cardCode'];
-                                selectedName =
+                                    selectedName =
                                     dropdownItems[selectedCardCode]['cardName'];
 
-                                print("selectedValue:$selectedValue");
-                                print("selectedName:$selectedName");
-                              } else {
-                                print("==========");
-                                print(selectedValue);
-                                print(selectedName);
-                              }
-                              // isDropdownValid = selectedTypeCdId != -1;
-                            });
-                          },
-                          items: [
-                            const DropdownMenuItem<int>(
-                              value: -1,
-                              child: Text('Select Party'), // here
-                            ),
-                            ...dropdownItems.asMap().entries.map((entry) {
-                              final index = entry.key;
-                              final item = entry.value;
-                              return DropdownMenuItem<int>(
-                                  value: index,
-                                  child: Text(
-                                    item['cardName'],
-                                    overflow: TextOverflow.visible,
-                                    // wrapText: true,
-                                  ));
-                            }).toList(),
-                          ]),
+                                    print("selectedValue:$selectedValue");
+                                    print("selectedName:$selectedName");
+                                  } else {
+                                    print("==========");
+                                    print(selectedValue);
+                                    print(selectedName);
+                                  }
+                                  // isDropdownValid = selectedTypeCdId != -1;
+                                });
+                              },
+                              items: [
+                                const DropdownMenuItem<int>(
+                                  value: -1,
+                                  child: Text('Select Party'), // here
+                                ),
+                                ...dropdownItems.asMap().entries.map((entry) {
+                                  final index = entry.key;
+                                  final item = entry.value;
+                                  return DropdownMenuItem<int>(
+                                      value: index,
+                                      child: Text(
+                                        item['cardName'],
+                                        overflow: TextOverflow.visible,
+                                        // wrapText: true,
+                                      ));
+                                }).toList(),
+                              ]),
+                        ),
+                      ),
                     ),
                   ),
+                  const SizedBox(
+                    height: 10.0,
+                  ),
+                  Padding(
+                    padding: const EdgeInsets.only(left: 5.0),
+                    child: Text(
+                      'Purpose',
+                      style: _labelTextStyle,
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 4.0,
+                  ),
+                  Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 40.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(12.0),
+                        border: Border.all(
+                          color: const Color(0xFFe78337),
+                          width: 1.0,
+                        ),
+                      ),
+                      child: Padding(
+                        padding: const EdgeInsets.all(8.0),
+                        child: purposeList.isEmpty
+                            ? LoadingAnimationWidget.newtonCradle(
+                          color: Colors.blue, // Set the color as needed
+                          size: 40.0,
+                        ) // S // Show a loading indicator
+                            : DropdownButton<String>(
+                          hint: const Text(
+                            'Select Purpose',
+                            style: TextStyle(
+                              fontSize: 14,
+                              fontFamily: 'Roboto',
+                              //    fontWeight: FontWeight.w600,
+                              color: Color(0xFFe78337),
+                            ),
+                          ),
+                          value: selectedPurpose,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedPurpose = newValue;
+
+                              // Find the selected Purpose object
+                              selectedPurposeObj = purposeList.firstWhere(
+                                    (purpose) => purpose.fldValue == newValue,
+                                orElse: () => Purpose(
+                                    fldValue: '', descr: '', purposeName: ''),
+                              );
+                              purposename = selectedPurposeObj!.fldValue;
+                              print(
+                                  'selectpurposeName: ${selectedPurposeObj?.fldValue}');
+                            });
+                          },
+                          items: purposeList.map((Purpose purpose) {
+                            return DropdownMenuItem<String>(
+                              value: purpose.fldValue,
+                              child: Text(
+                                purpose.purposeName,
+                                style: const TextStyle(
+                                  fontSize: 14,
+                                  fontFamily: 'Roboto',
+                                  fontWeight: FontWeight.w600,
+                                  color: Color(0xFFe78337),
+                                ),
+                              ),
+                            );
+                          }).toList(),
+                          icon: const Icon(Icons.arrow_drop_down),
+                          iconSize: 24,
+                          isExpanded: true,
+                          underline: const SizedBox(),
+                        ),
+                      ))
+                ],
+              ),
+
+              const SizedBox(
+                height: 10.0,
+              ),
+              Container(
+                height: 40,
+                child: apiResponse == null
+                    ? Center(child: CircularProgressIndicator.adaptive())
+                    : ListView.builder(
+                  scrollDirection: Axis.horizontal,
+                  shrinkWrap: true,
+                  itemCount: apiResponse!.listResult.length +
+                      1, // Add 1 for the "All" option
+                  itemBuilder: (BuildContext context, int index) {
+                    bool isSelected = index == indexselected;
+                    PaymentMode currentPaymode;
+
+                    // Handle the "All" option
+                    if (index == 0) {
+                      currentPaymode = PaymentMode(
+                        // Provide default values or handle the null case as needed
+                        typeCdId: null,
+                        classTypeId: 3,
+                        name: 'All',
+                        desc: 'All',
+                        tableName: 'all',
+                        columnName: 'all',
+                        sortOrder: 0,
+                        isActive: true,
+                      );
+                    } else {
+                      currentPaymode = apiResponse!.listResult[
+                      index - 1]; // Adjust index for actual data
+                    }
+
+                    return GestureDetector(
+                      onTap: () {
+                        setState(() {
+                          indexselected = index;
+                          selectedPaymode = currentPaymode;
+                        });
+                        payid = currentPaymode.typeCdId;
+                        Selected_PaymentMode = currentPaymode.desc;
+                        print('payid:$payid');
+                      },
+                      child: Container(
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          color: isSelected
+                              ? Color(0xFFe78337)
+                              : Color(0xFFe78337).withOpacity(0.1),
+                          border: Border.all(
+                            color: isSelected
+                                ? Color(0xFFe78337)
+                                : Color(0xFFe78337),
+                            width: 1.0,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: IntrinsicWidth(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Row(
+                                  children: [
+                                    Text(
+                                      '${currentPaymode.desc.toString()}',
+                                      style: TextStyle(
+                                        color: isSelected
+                                            ? Colors.white
+                                            : Colors.black,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    );
+                  },
                 ),
+              ),
+
+              const SizedBox(
+                height: 10.0,
+              ), // From date
+
+              // To Date
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildDateInputfromdate(
+                    context,
+                    'From Date',
+                    fromdateController,
+                        () => _selectfromDate(context, fromdateController),
+                  ),
+                ],
               ),
               const SizedBox(
                 height: 10.0,
               ),
-              Padding(
-                padding: const EdgeInsets.only(left: 5.0),
-                child: Text(
-                  'Purpose',
-                  style: _labelTextStyle,
-                ),
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  buildDateInput(
+                    context,
+                    'To Date',
+                    todateController,
+                        () => _selectDate(context, todateController),
+                  ),
+                ],
               ),
               const SizedBox(
-                height: 4.0,
+                height: 10.0,
               ),
-              Container(
-                  width: MediaQuery.of(context).size.width,
-                  height: 40.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(12.0),
-                    border: Border.all(
-                      color: const Color(0xFFe78337),
-                      width: 1.0,
-                    ),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(8.0),
-                    child: purposeList.isEmpty
-                        ? LoadingAnimationWidget.newtonCradle(
-                            color: Colors.blue, // Set the color as needed
-                            size: 40.0,
-                          ) // S // Show a loading indicator
-                        : DropdownButton<String>(
-                            hint: const Text(
-                              'Select Purpose',
-                              style: TextStyle(
-                                fontSize: 14,
-                                fontFamily: 'Roboto',
-                                //    fontWeight: FontWeight.w600,
-                                color: Color(0xFFe78337),
-                              ),
-                            ),
-                            value: selectedPurpose,
-                            onChanged: (String? newValue) {
-                              setState(() {
-                                selectedPurpose = newValue;
-
-                                // Find the selected Purpose object
-                                selectedPurposeObj = purposeList.firstWhere(
-                                  (purpose) => purpose.fldValue == newValue,
-                                  orElse: () => Purpose(
-                                      fldValue: '', descr: '', purposeName: ''),
-                                );
-                                purposename = selectedPurposeObj!.fldValue;
-                                print(
-                                    'selectpurposeName: ${selectedPurposeObj?.fldValue}');
-                              });
-                            },
-                            items: purposeList.map((Purpose purpose) {
-                              return DropdownMenuItem<String>(
-                                value: purpose.fldValue,
-                                child: Text(
-                                  purpose.purposeName,
-                                  style: const TextStyle(
-                                    fontSize: 14,
-                                    fontFamily: 'Roboto',
-                                    fontWeight: FontWeight.w600,
-                                    color: Color(0xFFe78337),
-                                  ),
-                                ),
-                              );
-                            }).toList(),
-                            icon: const Icon(Icons.arrow_drop_down),
-                            iconSize: 24,
-                            isExpanded: true,
-                            underline: const SizedBox(),
-                          ),
-                  ))
-            ],
-          ),
-
-          const SizedBox(
-            height: 10.0,
-          ),
-          Container(
-            height: 40,
-            child: apiResponse == null
-                ? Center(child: CircularProgressIndicator.adaptive())
-                : ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: apiResponse!.listResult.length +
-                        1, // Add 1 for the "All" option
-                    itemBuilder: (BuildContext context, int index) {
-                      bool isSelected = index == indexselected;
-                      PaymentMode currentPaymode;
-
-                      // Handle the "All" option
-                      if (index == 0) {
-                        currentPaymode = PaymentMode(
-                          // Provide default values or handle the null case as needed
-                          typeCdId: null,
-                          classTypeId: 3,
-                          name: 'All',
-                          desc: 'All',
-                          tableName: 'all',
-                          columnName: 'all',
-                          sortOrder: 0,
-                          isActive: true,
-                        );
-                      } else {
-                        currentPaymode = apiResponse!.listResult[
-                            index - 1]; // Adjust index for actual data
-                      }
-
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            indexselected = index;
-                            selectedPaymode = currentPaymode;
-                          });
-                          payid = currentPaymode.typeCdId;
-                          Selected_PaymentMode = currentPaymode.desc;
-                          print('payid:$payid');
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? Color(0xFFe78337)
-                                : Color(0xFFe78337).withOpacity(0.1),
-                            border: Border.all(
-                              color: isSelected
-                                  ? Color(0xFFe78337)
-                                  : Color(0xFFe78337),
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: IntrinsicWidth(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        '${currentPaymode.desc.toString()}',
-                                        style: TextStyle(
-                                          color: isSelected
-                                              ? Colors.white
-                                              : Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
+              Row(
+                children: [
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        Navigator.of(context).pop();
+                      },
+                      style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(
+                          color: Colors.red,
+                        ),
+                        side: const BorderSide(
+                          color: Colors.red,
+                        ),
+                        backgroundColor: Colors.white,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
                           ),
                         ),
-                      );
-                    },
-                  ),
-          ),
-
-          const SizedBox(
-            height: 10.0,
-          ), // From date
-
-          // To Date
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buildDateInputfromdate(
-                context,
-                'From Date',
-                fromdateController,
-                () => _selectfromDate(context, fromdateController),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              buildDateInput(
-                context,
-                'To Date',
-                todateController,
-                () => _selectDate(context, todateController),
-              ),
-            ],
-          ),
-          const SizedBox(
-            height: 10.0,
-          ),
-          Row(
-            children: [
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    Navigator.of(context).pop();
-                  },
-                  style: ElevatedButton.styleFrom(
-                    textStyle: const TextStyle(
-                      color: Colors.red,
-                    ),
-                    side: const BorderSide(
-                      color: Colors.red,
-                    ),
-                    backgroundColor: Colors.white,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+                      ),
+                      child: const Text(
+                        'Cancel',
+                        style: TextStyle(
+                          color: Colors.red,
+                        ),
                       ),
                     ),
                   ),
-                  child: const Text(
-                    'Cancel',
-                    style: TextStyle(
-                      color: Colors.red,
-                    ),
+                  const SizedBox(
+                    width: 20,
                   ),
-                ),
-              ),
-              const SizedBox(
-                width: 20,
-              ),
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {
-                    getappliedflitters(context);
-                  },
-                  style: ElevatedButton.styleFrom(
-                    textStyle: const TextStyle(
-                      color: Colors.white,
-                    ),
-                    backgroundColor: _primaryOrange,
-                    shape: const RoundedRectangleBorder(
-                      borderRadius: BorderRadius.all(
-                        Radius.circular(10),
+                  Expanded(
+                    child: ElevatedButton(
+                      onPressed: () {
+                        getappliedflitters(context);
+                      },
+                      style: ElevatedButton.styleFrom(
+                        textStyle: const TextStyle(
+                          color: Colors.white,
+                        ),
+                        backgroundColor: _primaryOrange,
+                        shape: const RoundedRectangleBorder(
+                          borderRadius: BorderRadius.all(
+                            Radius.circular(10),
+                          ),
+                        ),
+                      ),
+                      child: const Text(
+                        'Apply',
+                        style: TextStyle(
+                          color: Colors.white,
+                        ),
                       ),
                     ),
                   ),
-                  child: const Text(
-                    'Apply',
-                    style: TextStyle(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
+                ],
               ),
             ],
           ),
-        ],
-      ),
-    ));
+        ));
   }
 
   late ViewCollectionProvider viewProvider;
@@ -1100,7 +1103,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
 // Convert the fromdateController text to 'yyyy-MM-dd'
     DateTime pickedFromDate =
-        DateFormat('dd-MM-yyyy').parse(fromdateController.text);
+    DateFormat('dd-MM-yyyy').parse(fromdateController.text);
     selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
     print('Converted to date: $selectformattedtodate');
     print('Converted from date: $selectformattedfromdate');
@@ -1133,7 +1136,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
           if (data != null) {
             List<ListResult> result =
-                data.map((item) => ListResult.fromJson(item)).toList();
+            data.map((item) => ListResult.fromJson(item)).toList();
             viewProvider.storeIntoProvider(result);
           } else {
             print('listResult is null');
@@ -1253,8 +1256,8 @@ class _MyCardState extends State<MyCard> {
           elevation: 5,
           child: Container(
             padding:
-                // const EdgeInsets.only(left: 12, right: 5, top: 12, bottom: 12),
-                const EdgeInsets.all(12),
+            // const EdgeInsets.only(left: 12, right: 5, top: 12, bottom: 12),
+            const EdgeInsets.all(12),
             //   width: double.infinity,
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
@@ -1316,7 +1319,7 @@ class _MyCardState extends State<MyCard> {
                               ),
                               Row(
                                 mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -1393,7 +1396,7 @@ class _MyCardState extends State<MyCard> {
                           Text(
                             widget.listResult.statusName,
                             style: TextStyle(
-                              fontSize: 11,
+                              fontSize: 12,
                               color: getStatusTypeTextColor(
                                   widget.listResult.statusTypeId),
                               // Add other text styles as needed
@@ -1457,15 +1460,15 @@ class _MyCardState extends State<MyCard> {
       case 7:
         return Colors.green.withOpacity(0.1);
       case 8:
-        // Set background color for statusTypeId 8
+      // Set background color for statusTypeId 8
         return const Color(0xFFE58338).withOpacity(0.1);
       case 9:
-        // Set background color for statusTypeId 9
+      // Set background color for statusTypeId 9
         return Colors.red.withOpacity(0.1);
-      // Add more cases as needed for other statusTypeId values
+    // Add more cases as needed for other statusTypeId values
 
       default:
-        // Default background color or handle other cases if needed
+      // Default background color or handle other cases if needed
         return Colors.white;
     }
   }
@@ -1475,15 +1478,15 @@ class _MyCardState extends State<MyCard> {
       case 7:
         return Colors.green;
       case 8:
-        // Set text color for statusTypeId 8
+      // Set text color for statusTypeId 8
         return const Color(0xFFE58338);
       case 9:
-        // Set text color for statusTypeId 9
+      // Set text color for statusTypeId 9
         return Colors.red;
-      // Add more cases as needed for other statusTypeId values
+    // Add more cases as needed for other statusTypeId values
 
       default:
-        // Default text color or handle other cases if needed
+      // Default text color or handle other cases if needed
         return Colors.black;
     }
   }
@@ -1508,11 +1511,11 @@ class _MyCardState extends State<MyCard> {
         iconColor = Colors.red;
         // Set color filter or other customization as needed
         break;
-      // Add more cases as needed for other statusTypeId values
+    // Add more cases as needed for other statusTypeId values
 
       default:
         assetPath = 'assets/sb_home.svg';
-      // Set default image or handle other cases if needed
+    // Set default image or handle other cases if needed
     }
 
     return SvgPicture.asset(

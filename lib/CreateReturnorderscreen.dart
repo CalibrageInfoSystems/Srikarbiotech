@@ -787,9 +787,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                                       .itmsGrpCod!;
                                                             }
 
-                                                            if (cartProvider
-                                                                .isSameItemGroup(
-                                                                    itemGrpCod)) {
+                                                            if (cartProvider.isSameItemGroup(itemGrpCod)) {
                                                               // orderItem =OrderItemXrefType(
                                                               //         id: 1,
                                                               //         orderId: 1001,
@@ -993,7 +991,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                   child: InkWell(
                     onTap: () {
                       // Add logic for the download button
-                      if (globalCartLength > 0) {
+                      // if (globalCartLength > 0) {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
@@ -1012,10 +1010,11 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                         );
 
                         print('Download button clicked');
-                      } else {
-                        CommonUtils.showCustomToastMessageLong(
-                            'Please Select Atleast One Product', context, 1, 4);
-                      }
+                  //    }
+                      // else {
+                      //   CommonUtils.showCustomToastMessageLong(
+                      //       'Please Select Atleast One Product', context, 1, 4);
+                      // }
                     },
                     child: Container(
                       padding: const EdgeInsets.all(10),

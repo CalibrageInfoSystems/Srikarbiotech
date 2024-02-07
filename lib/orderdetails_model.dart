@@ -73,6 +73,7 @@ class Response {
             List<dynamic>.from(orderItemXrefList.map((x) => x.toJson())),
       };
 }
+
 class GetOrderDetailsResult {
   final int id;
   final int companyId;
@@ -83,7 +84,7 @@ class GetOrderDetailsResult {
   final String partyAddress;
   final String partyState;
   final String partyPhoneNumber;
-  final String partyGstNumber;
+  final String partyGSTNumber;
   final String proprietorName;
   final double partyOutStandingAmount;
   final String bookingPlace;
@@ -92,15 +93,14 @@ class GetOrderDetailsResult {
   final String fileName;
   final String fileLocation;
   final String fileExtension;
-  final dynamic fileUrl;
+  final String? fileUrl;
   final String statusName;
   final double discount;
-  final double igst;
-  final double cgst;
-  final double sgst;
   final double totalCost;
+  final double totalCostWithGST;
+  final double gstCost;
   final int noOfItems;
-  final String remarks;
+  final String? remarks;
   final bool isActive;
   final String createdBy;
   final DateTime createdDate;
@@ -117,7 +117,7 @@ class GetOrderDetailsResult {
     required this.partyAddress,
     required this.partyState,
     required this.partyPhoneNumber,
-    required this.partyGstNumber,
+    required this.partyGSTNumber,
     required this.proprietorName,
     required this.partyOutStandingAmount,
     required this.bookingPlace,
@@ -129,10 +129,9 @@ class GetOrderDetailsResult {
     required this.fileUrl,
     required this.statusName,
     required this.discount,
-    required this.igst,
-    required this.cgst,
-    required this.sgst,
     required this.totalCost,
+    required this.totalCostWithGST,
+    required this.gstCost,
     required this.noOfItems,
     required this.remarks,
     required this.isActive,
@@ -142,76 +141,77 @@ class GetOrderDetailsResult {
     required this.updatedDate,
   });
 
-  factory GetOrderDetailsResult.fromJson(Map<String, dynamic> json) =>
-      GetOrderDetailsResult(
-        id: json["id"] ?? 0,
-        companyId: json["companyId"] ?? 0,
-        orderNumber: json["orderNumber"] ?? "",
-        orderDate: json["orderDate"] != null ? DateTime.parse(json["orderDate"]) : DateTime.now(),
-        partyCode: json["partyCode"] ?? "",
-        partyName: json["partyName"] ?? "",
-        partyAddress: json["partyAddress"] ?? "",
-        partyState: json["partyState"] ?? "",
-        partyPhoneNumber: json["partyPhoneNumber"] ?? "",
-        partyGstNumber: json["partyGSTNumber"] ?? "",
-        proprietorName: json["proprietorName"] ?? "",
-        partyOutStandingAmount: json["partyOutStandingAmount"]?.toDouble() ?? 0.0,
-        bookingPlace: json["bookingPlace"] ?? "",
-        transportName: json["transportName"] ?? "",
-        statusTypeId: json["statusTypeId"] ?? 0,
-        fileName: json["fileName"] ?? "",
-        fileLocation: json["fileLocation"] ?? "",
-        fileExtension: json["fileExtension"] ?? "",
-        fileUrl: json["fileUrl"],
-        statusName: json["statusName"] ?? "",
-        discount: json["discount"]?.toDouble() ?? 0.0,
-        igst: json["igst"]?.toDouble() ?? 0.0,
-        cgst: json["cgst"]?.toDouble() ?? 0.0,
-        sgst: json["sgst"]?.toDouble() ?? 0.0,
-        totalCost: json["totalCost"]?.toDouble() ?? 0.0,
-        noOfItems: json["noOfItems"] ?? 0,
-        remarks: json["remarks"] ?? "",
-        isActive: json["isActive"] ?? false,
-        createdBy: json["createdBy"] ?? "",
-        createdDate: json["createdDate"] != null ? DateTime.parse(json["createdDate"]) : DateTime.now(),
-        updatedBy: json["updatedBy"] ?? "",
-        updatedDate: json["updatedDate"] != null ? DateTime.parse(json["updatedDate"]) : DateTime.now(),
-      );
+  factory GetOrderDetailsResult.fromJson(Map<String, dynamic> json) {
+    return GetOrderDetailsResult(
+      id: json['id'],
+      companyId: json['companyId'],
+      orderNumber: json['orderNumber'],
+      orderDate: DateTime.parse(json['orderDate']),
+      partyCode: json['partyCode'],
+      partyName: json['partyName'],
+      partyAddress: json['partyAddress'],
+      partyState: json['partyState'],
+      partyPhoneNumber: json['partyPhoneNumber'],
+      partyGSTNumber: json['partyGSTNumber'],
+      proprietorName: json['proprietorName'],
+      partyOutStandingAmount: json['partyOutStandingAmount'].toDouble(),
+      bookingPlace: json['bookingPlace'],
+      transportName: json['transportName'],
+      statusTypeId: json['statusTypeId'],
+      fileName: json['fileName'],
+      fileLocation: json['fileLocation'],
+      fileExtension: json['fileExtension'],
+      fileUrl: json['fileUrl'],
+      statusName: json['statusName'],
+      discount: json['discount'].toDouble(),
+      totalCost: json['totalCost'].toDouble(),
+      totalCostWithGST: json['totalCostWithGST'].toDouble(),
+      gstCost: json['gstCost'].toDouble(),
+      noOfItems: json['noOfItems'],
+      remarks: json['remarks'],
+      isActive: json['isActive'],
+      createdBy: json['createdBy'],
+      createdDate: DateTime.parse(json['createdDate']),
+      updatedBy: json['updatedBy'],
+      updatedDate: DateTime.parse(json['updatedDate']),
+    );
+  }
 
-  Map<String, dynamic> toJson() => {
-    "id": id,
-    "companyId": companyId,
-    "orderNumber": orderNumber,
-    "orderDate": orderDate.toIso8601String(),
-    "partyCode": partyCode,
-    "partyName": partyName,
-    "partyAddress": partyAddress,
-    "partyState": partyState,
-    "partyPhoneNumber": partyPhoneNumber,
-    "partyGSTNumber": partyGstNumber,
-    "proprietorName": proprietorName,
-    "partyOutStandingAmount": partyOutStandingAmount,
-    "bookingPlace": bookingPlace,
-    "transportName": transportName,
-    "statusTypeId": statusTypeId,
-    "fileName": fileName,
-    "fileLocation": fileLocation,
-    "fileExtension": fileExtension,
-    "fileUrl": fileUrl,
-    "statusName": statusName,
-    "discount": discount,
-    "igst": igst,
-    "cgst": cgst,
-    "sgst": sgst,
-    "totalCost": totalCost,
-    "noOfItems": noOfItems,
-    "remarks": remarks,
-    "isActive": isActive,
-    "createdBy": createdBy,
-    "createdDate": createdDate.toIso8601String(),
-    "updatedBy": updatedBy,
-    "updatedDate": updatedDate.toIso8601String(),
-  };
+  Map<String, dynamic> toJson() {
+    return {
+      'id': id,
+      'companyId': companyId,
+      'orderNumber': orderNumber,
+      'orderDate': orderDate.toIso8601String(),
+      'partyCode': partyCode,
+      'partyName': partyName,
+      'partyAddress': partyAddress,
+      'partyState': partyState,
+      'partyPhoneNumber': partyPhoneNumber,
+      'partyGSTNumber': partyGSTNumber,
+      'proprietorName': proprietorName,
+      'partyOutStandingAmount': partyOutStandingAmount,
+      'bookingPlace': bookingPlace,
+      'transportName': transportName,
+      'statusTypeId': statusTypeId,
+      'fileName': fileName,
+      'fileLocation': fileLocation,
+      'fileExtension': fileExtension,
+      'fileUrl': fileUrl,
+      'statusName': statusName,
+      'discount': discount,
+      'totalCost': totalCost,
+      'totalCostWithGST': totalCostWithGST,
+      'gstCost': gstCost,
+      'noOfItems': noOfItems,
+      'remarks': remarks,
+      'isActive': isActive,
+      'createdBy': createdBy,
+      'createdDate': createdDate.toIso8601String(),
+      'updatedBy': updatedBy,
+      'updatedDate': updatedDate.toIso8601String(),
+    };
+  }
 }
 
 class OrderItemXrefList {
@@ -224,9 +224,13 @@ class OrderItemXrefList {
   final String noOfPcs;
   final int orderQty;
   final double price;
-  final double igst;
-  final double cgst;
-  final double sgst;
+  final String ugpName;
+  final double numInSale;
+  final String salUnitMsr;
+  final double gst;
+  final double totalPrice;
+  final double totalPriceWithGST;
+  final double gstPrice;
 
   OrderItemXrefList({
     required this.id,
@@ -238,39 +242,51 @@ class OrderItemXrefList {
     required this.noOfPcs,
     required this.orderQty,
     required this.price,
-    required this.igst,
-    required this.cgst,
-    required this.sgst,
+    required this.ugpName,
+    required this.numInSale,
+    required this.salUnitMsr,
+    required this.gst,
+    required this.totalPrice,
+    required this.totalPriceWithGST,
+    required this.gstPrice,
   });
 
   factory OrderItemXrefList.fromJson(Map<String, dynamic> json) =>
       OrderItemXrefList(
-        id: json["id"] ?? 0,
-        orderId: json["orderId"] ?? 0,
-        itemGrpCod: json["itemGrpCod"] ?? "",
-        itemGrpName: json["itemGrpName"] ?? "",
-        itemCode: json["itemCode"] ?? "",
-        itemName: json["itemName"] ?? "",
-        noOfPcs: json["noOfPcs"] ?? "",
-        orderQty: json["orderQty"] ?? 0,
-        price: json["price"]?.toDouble() ?? 0.0,
-        igst: json["igst"]?.toDouble() ?? 0.0,
-        cgst: json["cgst"]?.toDouble() ?? 0.0,
-        sgst: json["sgst"]?.toDouble() ?? 0.0,
+        id: json['id'],
+        orderId: json['orderId'],
+        itemGrpCod: json['itemGrpCod'],
+        itemGrpName: json['itemGrpName'],
+        itemCode: json['itemCode'],
+        itemName: json['itemName'],
+        noOfPcs: json['noOfPcs'],
+        orderQty: json['orderQty'],
+        price: json['price'].toDouble(),
+        ugpName: json['ugpName'],
+        numInSale: json['numInSale'].toDouble(),
+        salUnitMsr: json['salUnitMsr'],
+        gst: json['gst'].toDouble(),
+        totalPrice: json['totalPrice'].toDouble(),
+        totalPriceWithGST: json['totalPriceWithGST'].toDouble(),
+        gstPrice: json['gstPrice'].toDouble(),
       );
 
   Map<String, dynamic> toJson() => {
-    "id": id,
-    "orderId": orderId,
-    "itemGrpCod": itemGrpCod,
-    "itemGrpName": itemGrpName,
-    "itemCode": itemCode,
-    "itemName": itemName,
-    "noOfPcs": noOfPcs,
-    "orderQty": orderQty,
-    "price": price,
-    "igst": igst,
-    "cgst": cgst,
-    "sgst": sgst,
+    'id': id,
+    'orderId': orderId,
+    'itemGrpCod': itemGrpCod,
+    'itemGrpName': itemGrpName,
+    'itemCode': itemCode,
+    'itemName': itemName,
+    'noOfPcs': noOfPcs,
+    'orderQty': orderQty,
+    'price': price,
+    'ugpName': ugpName,
+    'numInSale': numInSale,
+    'salUnitMsr': salUnitMsr,
+    'gst': gst,
+    'totalPrice': totalPrice,
+    'totalPriceWithGST': totalPriceWithGST,
+    'gstPrice': gstPrice,
   };
 }

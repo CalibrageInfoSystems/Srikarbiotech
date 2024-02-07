@@ -71,7 +71,10 @@ class _transportstate extends State<transport_payment> {
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
-                      Navigator.of(context).pop();
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                      );
                     },
                     child: const Icon(
                       Icons.chevron_left,
@@ -170,7 +173,7 @@ class _transportstate extends State<transport_payment> {
                                 padding: EdgeInsets.only(
                                     top: 0.0, left: 0.0, right: 0.0),
                                 child: Text(
-                                  'Booking Place',
+                                  'Booking Place * ',
                                   style: TextStyle(
                                       color: Color(0xFF5f5f5f),
                                       fontFamily: 'Roboto',
@@ -246,7 +249,7 @@ class _transportstate extends State<transport_payment> {
                                 padding: EdgeInsets.only(
                                     top: 0.0, left: 0.0, right: 0.0),
                                 child: Text(
-                                  'Transport Name',
+                                  'Transport Name * ',
                                   style: TextStyle(
                                     color: Color(0xFF5f5f5f),
                                     fontFamily: 'Roboto',

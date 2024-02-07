@@ -129,7 +129,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
@@ -186,7 +186,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
         ),
       ),
       body: Padding(
-        padding: const EdgeInsets.all(20),
+        padding: const EdgeInsets.all(10),
         // adject padding as you want
         child: SingleChildScrollView(
           child: Column(
@@ -208,7 +208,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
               Card(
                 elevation: 7,
                 child: Container(
-                  padding: const EdgeInsets.all(20),
+                  padding: const EdgeInsets.all(10),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -217,11 +217,12 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                   child: Column(
                     children: [
                       // Table
+
                       if (payment_mode == "Online")
                         Table(
                           border: TableBorder.all(
                             width: 1,
-                            color: Colors.grey.shade500,
+                            color: Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           children: List.generate(5, (index) {
@@ -232,7 +233,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                     padding: _tableCellPadding,
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles[0][index],
@@ -252,7 +253,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                     padding: _tableCellPadding,
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles[1][index],
@@ -277,7 +278,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                         Table(
                           border: TableBorder.all(
                             width: 1,
-                            color: Colors.grey.shade500,
+                            color: Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(10),
                           ),
                           children: List.generate(5, (index) {
@@ -288,7 +289,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                     padding: _tableCellPadding,
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles2[0][index],
@@ -308,7 +309,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                     padding: _tableCellPadding,
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles2[1][index],
@@ -350,13 +351,13 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                 onTap: _showZoomedDialog,
                                 child: widget.listResult.fileUrl != null
                                     ? Image.network(
-                                        widget.listResult.fileUrl,
-                                        fit: BoxFit.fill,
-                                      )
+                                  widget.listResult.fileUrl,
+                                  fit: BoxFit.fill,
+                                )
                                     : Image.asset(
-                                        'assets/sreekar_seeds.png',
-                                        fit: BoxFit.fill,
-                                      ),
+                                  'assets/sreekar_seeds.png',
+                                  fit: BoxFit.fill,
+                                ),
                               ),
                             ),
                           ),
@@ -407,27 +408,27 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                 // Adjust the height as needed
                 child: IntrinsicHeight(
                     child: PhotoViewGallery.builder(
-                  itemCount: 1, // Only one image in the gallery
-                  builder: (context, index) {
-                    return PhotoViewGalleryPageOptions(
-                      imageProvider:
+                      itemCount: 1, // Only one image in the gallery
+                      builder: (context, index) {
+                        return PhotoViewGalleryPageOptions(
+                          imageProvider:
                           NetworkImage(widget.listResult.fileUrl ?? ''),
-                      minScale: PhotoViewComputedScale.contained,
-                      maxScale: PhotoViewComputedScale.covered * 2,
-                    );
-                  },
-                  scrollDirection: Axis.vertical,
-                  scrollPhysics: PageScrollPhysics(),
-                  allowImplicitScrolling: true,
-                  //   scrollPhysics: PageScrollPhysics(),
-                  backgroundDecoration: BoxDecoration(
-                    color: Colors.black,
-                  ),
-                  // pageController: PageController(),
-                  // onPageChanged: (index) {
-                  //   // Handle page change if needed
-                  // },
-                )),
+                          minScale: PhotoViewComputedScale.contained,
+                          maxScale: PhotoViewComputedScale.covered * 2,
+                        );
+                      },
+                      scrollDirection: Axis.vertical,
+                      scrollPhysics: PageScrollPhysics(),
+                      allowImplicitScrolling: true,
+                      //   scrollPhysics: PageScrollPhysics(),
+                      backgroundDecoration: BoxDecoration(
+                        color: Colors.black,
+                      ),
+                      // pageController: PageController(),
+                      // onPageChanged: (index) {
+                      //   // Handle page change if needed
+                      // },
+                    )),
               ),
             ],
           ),

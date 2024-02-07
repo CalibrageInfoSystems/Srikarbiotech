@@ -65,6 +65,7 @@ print('===>$Compneyname');
               style: TextStyle(
                 fontSize: 18,
                 letterSpacing: 0,
+                height: 1.5
               ),
             ),
 
