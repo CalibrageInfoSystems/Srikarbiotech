@@ -20,6 +20,7 @@ import 'CartProvider.dart';
 import 'Common/SharedPrefsData.dart';
 import 'HomeScreen.dart';
 import 'Model/OrderItemXrefType.dart';
+import 'Model/ReturnOrderItemXrefType.dart';
 import 'ReturnorderStatusScreen.dart';
 import 'orderStatusScreen.dart';
 
@@ -86,7 +87,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     height: 60,
     color: Colors.grey,
   );
-  List<OrderItemXrefType> cartItems = [];
+  List<ReturnOrderItemXrefType> cartItems = [];
   List<String> cartlistItems = [];
   List<TextEditingController> textEditingControllers = [];
   List<int> quantities = [];
@@ -116,7 +117,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
 
   @override
   Widget build(BuildContext context) {
-    cartItems = Provider.of<CartProvider>(context).getCartItems();
+    cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
     totalSum = calculateTotalSum(cartItems);
 
     String dateString = widget.Lrdate;
@@ -167,7 +168,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       // Access the cart data from the provider
-                      cartItems = Provider.of<CartProvider>(context).getCartItems();
+                      cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
                       // Update the globalCartLength
                       globalCartLength = cartItems.length;
                     }
@@ -217,233 +218,224 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       ),
 
       body:  SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CommonUtils.buildCard(
-                    widget.cardName,
-                    widget.cardCode,
-                    widget.proprietorName,
-                    widget.gstRegnNo,
-                    widget.address,
-                    Colors.white,
-                    BorderRadius.circular(10.0),
-                  ),
-                  SizedBox(height: 16.0),
-                ],
-              ),
-            ),
-            //           }
-            //         },
-            //       ),
+        child:
 
-            FutureBuilder(
-              future: Future.value(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.connectionState == ConnectionState.done) {
-                  cartItems = Provider.of<CartProvider>(context).getCartItems();
-
-
-                  // Print the total sum
-                  print('Total Sum of Product Prices: $totalSum');
-
-                  return buildListView();
-                } else {
-                  return Text('Error: Unable to fetch cart data');
-                }
-              },
-            ),
-
-
-
-            SizedBox(height: 10),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-              child: IntrinsicHeight(
-                child:
-                Card(
-                  elevation: 5,
-                  child: Container(
-                    decoration: BoxDecoration(
-                      color: Colors.white10,
-                      borderRadius: BorderRadius.circular(10),
-                    ),
-                    width: double.infinity, // remove padding here
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: <Widget>[
-                        // row one
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Text(
-                                'Trasport Details',
-                                style: _titleTextStyle,
-                              ),
-                              const Icon(Icons.home),
-                            ],
-                          ),
-                        ),
-
-                        dividerForHorizontal,
-
-                        // row two
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: <Widget>[
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'LR Number',
-                                      style: _titleTextStyle,
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      '${widget.LrNumber}',
-                                      style: _dataTextStyle,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                            dividerForVertical,
-                            Expanded(
-                              child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 10),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Text(
-                                      'LR Date',
-                                      style: _titleTextStyle,
-                                    ),
-                                    SizedBox(height: 4),
-                                    Text(
-                                      LrDate1,
-                                      style: _dataTextStyle,
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          ],
-                        ),
-
-
-
-                        dividerForHorizontal,
-
-                        // row four
-                        Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
-                          child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.orange.shade100,
-                              border: Border.all(
-                                color: _orangeColor,
-                              ),
-                              borderRadius: BorderRadius.circular(10),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.link),
-                                const SizedBox(
-                                  width: 5,
-                                ),
-                                Text(
-                                  'Attachment',
-                                  style: _titleTextStyle,
-                                ),
-                              ],
-                            ),
-                          ),
-                        )
-                      ],
-                    ),
+            Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CommonUtils.buildCard(
+                        widget.cardName,
+                        widget.cardCode,
+                        widget.proprietorName,
+                        widget.gstRegnNo,
+                        widget.address,
+                        Colors.white,
+                        BorderRadius.circular(10.0),
+                      ),
+                      SizedBox(height: 16.0),
+                    ],
                   ),
                 ),
-              ),
-            ),
-            Container(
-
-                width: MediaQuery.of(context).size.width,
-
-                padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-                child: IntrinsicHeight(
+                FutureBuilder(
+                  future: Future.value(),
+                  builder: (context, snapshot) {
+                    if (snapshot.connectionState == ConnectionState.waiting) {
+                      return CircularProgressIndicator();
+                    } else if (snapshot.connectionState == ConnectionState.done) {
+                      // Assuming `buildListView` is defined elsewhere
+                      cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
+                      return buildListView(); // Assuming this function returns a widget
+                    } else {
+                      return Text('Error: Unable to fetch cart data');
+                    }
+                  },
+                ),
+                SizedBox(height: 10),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+                  child: IntrinsicHeight(
                     child: Card(
-                      color: Colors.white,
+                      elevation: 5,
                       child: Container(
-                        padding: EdgeInsets.all(10.0),
-                        width: MediaQuery.of(context).size.width,
+                        decoration: BoxDecoration(
+                          color: Colors.white10,
+                          borderRadius: BorderRadius.circular(10),
+                        ),
+                        width: double.infinity, // remove padding here
                         child: Column(
-                          children: [
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: <Widget>[
+                            // row one
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Text(
+                                    'Trasport Details',
+                                    style: _titleTextStyle,
+                                  ),
+                                  const Icon(Icons.home),
+                                ],
+                              ),
+                            ),
+
+                            dividerForHorizontal,
+
+                            // row two
                             Row(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              children: [
-                                Container(
-                                  padding: EdgeInsets.only(top: 10.0),
-                                  child: Text(
-                                    'Total',
-                                    style: TextStyle(
-                                      color: Colors.black,
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 14.0,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 10),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'LR Number',
+                                          style: _titleTextStyle,
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          '${widget.LrNumber}',
+                                          style: _dataTextStyle,
+                                        ),
+                                      ],
                                     ),
                                   ),
                                 ),
-                                Spacer(),
+                                dividerForVertical,
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 10),
+                                    child: Column(
+                                      crossAxisAlignment: CrossAxisAlignment.start,
+                                      children: [
+                                        Text(
+                                          'LR Date',
+                                          style: _titleTextStyle,
+                                        ),
+                                        SizedBox(height: 4),
+                                        Text(
+                                          LrDate1,
+                                          style: _dataTextStyle,
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ],
+                            ),
+
+
+
+                            dividerForHorizontal,
+
+                            // row four
+                            Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10, vertical: 4),
+                                decoration: BoxDecoration(
+                                  color: Colors.orange.shade100,
+                                  border: Border.all(
+                                    color: _orangeColor,
+                                  ),
+                                  borderRadius: BorderRadius.circular(10),
+                                ),
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.link),
+                                    const SizedBox(
+                                      width: 5,
+                                    ),
+                                    Text(
+                                      'Attachment',
+                                      style: _titleTextStyle,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+                Container(
+
+                    width: MediaQuery.of(context).size.width,
+
+                    padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+                    child: IntrinsicHeight(
+                        child: Card(
+                          color: Colors.white,
+                          child: Container(
+                            padding: EdgeInsets.all(10.0),
+                            width: MediaQuery.of(context).size.width,
+                            child: Column(
+                              children: [
                                 Row(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  mainAxisAlignment: MainAxisAlignment.end,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
                                     Container(
-                                      //   width: MediaQuery.of(context).size.width / 1.8,
                                       padding: EdgeInsets.only(top: 10.0),
-                                      child: Row(
-                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                        mainAxisAlignment: MainAxisAlignment.end,
-                                        children: [
-                                          Text(
-                                            '₹${totalSum.toStringAsFixed(2)}',
-                                            style: TextStyle(
-                                              color: Color(0xFFe78337),
-                                              fontWeight: FontWeight.bold,
-                                              fontSize: 16.0,
-                                            ),
-                                          ),
-                                        ],
+                                      child: Text(
+                                        'Total',
+                                        style: TextStyle(
+                                          color: Colors.black,
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 14.0,
+                                        ),
                                       ),
-                                    )
+                                    ),
+                                    Spacer(),
+                                    Row(
+                                      crossAxisAlignment: CrossAxisAlignment.end,
+                                      mainAxisAlignment: MainAxisAlignment.end,
+                                      children: [
+                                        Container(
+                                          //   width: MediaQuery.of(context).size.width / 1.8,
+                                          padding: EdgeInsets.only(top: 10.0),
+                                          child: Row(
+                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                            mainAxisAlignment: MainAxisAlignment.end,
+                                            children: [
+                                              Text(
+                                                '₹${totalSum.toStringAsFixed(2)}',
+                                                style: TextStyle(
+                                                  color: Color(0xFFe78337),
+                                                  fontWeight: FontWeight.bold,
+                                                  fontSize: 16.0,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ],
                             ),
-                          ],
-                        ),
-                      ),
-                    )))
-          ],
+                          ),
+                        )))
+              ],
+
         ),
       ),
 
@@ -508,15 +500,15 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       scrollDirection: Axis.vertical,
       itemCount: cartItems.length,
       itemBuilder: (context, index) {
-        OrderItemXrefType cartItem = cartItems[index];
+        ReturnOrderItemXrefType cartItem = cartItems[index];
         if (cartItems.length != textEditingControllers.length) {
           textEditingControllers = List.generate(cartItems.length,
                   (index) => TextEditingController());
         }
         double orderQty = cartItem.orderQty?.toDouble() ?? 0.0 ;
         double price = cartItem.price ?? 0.0;
-        double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
-        double totalPrice = orderQty * price * numInSale;
+        // double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
+        double totalPrice = orderQty * price ;
 
         return CartItemWidget(
           cartItem: cartItem,
@@ -531,13 +523,13 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     );
   }
 
-  double calculateTotalSum(List<OrderItemXrefType> cartItems) {
+  double calculateTotalSum(List<ReturnOrderItemXrefType> cartItems) {
     double sum = 0.0;
-    for (OrderItemXrefType cartItem in cartItems) {
+    for (ReturnOrderItemXrefType cartItem in cartItems) {
       double orderQty = cartItem.orderQty?.toDouble() ?? 0.0 ;
       double price = cartItem.price ?? 0.0;
-      double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
-      sum += orderQty * price * numInSale;
+    //  double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
+      sum += orderQty * price ;
     }
     return sum;
   }
@@ -684,7 +676,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
 }
 
 class CartItemWidget extends StatefulWidget {
-  final OrderItemXrefType cartItem;
+  final ReturnOrderItemXrefType cartItem;
   final Function onDelete;
   final double totalPrice;
 
@@ -707,7 +699,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   void initState() {
     super.initState();
     //todo
-  //  _orderQty = widget.cartItem.orderQty;
+  _orderQty = widget.cartItem.orderQty!;
     _textController = TextEditingController(text: _orderQty.toString());
 
   }

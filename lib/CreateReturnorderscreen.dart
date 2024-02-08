@@ -19,6 +19,7 @@ import '../Model/OrderItemXrefType.dart';
 import 'Common/SharedPrefsData.dart';
 import 'Createorderscreen.dart';
 import 'HomeScreen.dart';
+import 'Model/ReturnOrderItemXrefType.dart';
 import 'Returntransportdetails.dart';
 
 class CreateReturnorderscreen extends StatefulWidget {
@@ -73,12 +74,12 @@ class _ProductListState extends State<CreateReturnorderscreen> {
   String parts = "";
 
   List<String>? cartItemsJson = [];
-  List<OrderItemXrefType> savedDataList = [];
+  List<ReturnOrderItemXrefType> savedDataList = [];
   int cartitemslength = 0;
   int CompneyId = 0;
   String? userId = "";
   String? slpCode = "";
-  OrderItemXrefType? orderItem; // Initialize orderItem to null
+  ReturnOrderItemXrefType? returnorderItem; // Initialize orderItem to null
   late SharedPreferences prefs;
 
 // Declare ApiResponse globally
@@ -440,8 +441,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                           ))
                     : Consumer<CartProvider>(
                         builder: (context, cartProvider, _) {
-                        List<OrderItemXrefType> cartItems =
-                            cartProvider.getCartItems();
+                        List<ReturnOrderItemXrefType> cartItems = cartProvider.getReturnCartItems();
                         // Set the global cart length
                         globalCartLength = cartItems.length;
                         print('Added cart: ${globalCartLength}');
@@ -513,76 +513,76 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                               ),
                                             ),
                                             Spacer(),
-                                            Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Container(
-                                                  child: Row(
-                                                    crossAxisAlignment:
-                                                        CrossAxisAlignment.end,
-                                                    mainAxisAlignment:
-                                                        MainAxisAlignment.end,
-                                                    children: [
-                                                      Text(
-                                                        '${productresp.ugpCode.toString()}',
-                                                        style: TextStyle(
-                                                          color:
-                                                              Color(0xFFe78337),
-                                                          fontFamily: "Roboto",
-                                                          fontWeight:
-                                                              FontWeight.w600,
-                                                          fontSize: 12.0,
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                )
-                                              ],
-                                            ),
+                                            // Row(
+                                            //   crossAxisAlignment:
+                                            //       CrossAxisAlignment.end,
+                                            //   mainAxisAlignment:
+                                            //       MainAxisAlignment.end,
+                                            //   children: [
+                                            //     Container(
+                                            //       child: Row(
+                                            //         crossAxisAlignment:
+                                            //             CrossAxisAlignment.end,
+                                            //         mainAxisAlignment:
+                                            //             MainAxisAlignment.end,
+                                            //         children: [
+                                            //           Text(
+                                            //             '${productresp.ugpCode.toString()}',
+                                            //             style: TextStyle(
+                                            //               color:
+                                            //                   Color(0xFFe78337),
+                                            //               fontFamily: "Roboto",
+                                            //               fontWeight:
+                                            //                   FontWeight.w600,
+                                            //               fontSize: 12.0,
+                                            //             ),
+                                            //           )
+                                            //         ],
+                                            //       ),
+                                            //     )
+                                            //   ],
+                                            // ),
                                           ],
                                         ),
                                         SizedBox(
                                           height: 5.0,
                                         ),
-                                        RichText(
-                                          maxLines: 1,
-                                          text: TextSpan(
-                                            text:
-                                                '₹${productresp.price.toString()}',
-                                            style: TextStyle(
-                                              color: Color(0xFFe78337),
-                                              fontFamily: "Roboto",
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 16.0,
-                                            ),
-                                            children: [
-                                              TextSpan(
-                                                text: '/ Item',
-                                                style: TextStyle(
-                                                  color: Color(0xFF8b8b8b),
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 13.0,
-                                                  // decoration: TextDecoration.lineThrough,
-                                                ),
-                                              ),
-                                              // TextSpan(
-                                              //   text: '${productresp.}',
-                                              //   style: TextStyle(
-                                              //     color: Color(0xFFa6a6a6),
-                                              //     fontFamily: "Roboto",
-                                              //     fontWeight: FontWeight.w600,
-                                              //     fontSize: 12.0,
-                                              //   ),
-                                              // ),
-                                            ],
-                                          ),
-                                        ),
-                                        SizedBox(
-                                          height: 5.0,
-                                        ),
+                                        // RichText(
+                                        //   maxLines: 1,
+                                        //   text: TextSpan(
+                                        //     text:
+                                        //         '₹${productresp.price.toString()}',
+                                        //     style: TextStyle(
+                                        //       color: Color(0xFFe78337),
+                                        //       fontFamily: "Roboto",
+                                        //       fontWeight: FontWeight.w600,
+                                        //       fontSize: 16.0,
+                                        //     ),
+                                        //     children: [
+                                        //       TextSpan(
+                                        //         text: '/ Item',
+                                        //         style: TextStyle(
+                                        //           color: Color(0xFF8b8b8b),
+                                        //           fontWeight: FontWeight.bold,
+                                        //           fontSize: 13.0,
+                                        //           // decoration: TextDecoration.lineThrough,
+                                        //         ),
+                                        //       ),
+                                        //       // TextSpan(
+                                        //       //   text: '${productresp.}',
+                                        //       //   style: TextStyle(
+                                        //       //     color: Color(0xFFa6a6a6),
+                                        //       //     fontFamily: "Roboto",
+                                        //       //     fontWeight: FontWeight.w600,
+                                        //       //     fontSize: 12.0,
+                                        //       //   ),
+                                        //       // ),
+                                        //     ],
+                                        //   ),
+                                        // ),
+                                        // SizedBox(
+                                        //   height: 5.0,
+                                        // ),
                                         Row(
                                           crossAxisAlignment:
                                               CrossAxisAlignment.start,
@@ -788,43 +788,29 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                             }
 
                                                             if (cartProvider.isSameItemGroup(itemGrpCod)) {
-                                                              // orderItem =OrderItemXrefType(
-                                                              //         id: 1,
-                                                              //         orderId: 1001,
-                                                              //         itemGrpCod: itemGrpCod,
-                                                              //         itemGrpName: productresp
-                                                              //             .itmsGrpNam,
-                                                              //         itemCode: productresp
-                                                              //             .itemCode,
-                                                              //         itemName: productresp
-                                                              //             .itemName,
-                                                              //         noOfPcs: '10',
-                                                              //         orderQty: quantities[index],
-                                                              //         price: productresp
-                                                              //             .price,
-                                                              //         igst: productresp
-                                                              //             .gst,
-                                                              //         cgst: productresp
-                                                              //             .gst! /
-                                                              //             2,
-                                                              //         sgst: productresp
-                                                              //             .gst! /
-                                                              //             2,
-                                                              //         numInSale: productresp
-                                                              //             .numInSale
-                                                              //     );
+                                                              returnorderItem =ReturnOrderItemXrefType(
+                                                                  id: 1,
+                                                                  returnOrderId: 1001,
+                                                                  itemGrpCod: itemGrpCod,
+                                                                  itemGrpName: productresp.itmsGrpNam,
+                                                                  itemCode: productresp.itemCode,
+                                                                  itemName: productresp.itemName,
+                                                                  statusTypeId: 13,
+                                                                  orderQty: quantities[index],
+                                                                      price: productresp.price,
+                                                                  remarks : "",
+                                                                totalPrice: null
+                                                                  );
 
                                                               await cartProvider
-                                                                  .addToCart(
-                                                                      orderItem!);
+                                                                  .addToreturnorderCart(returnorderItem!);
                                                               await prefs.setBool(
                                                                   'isItemAddedToCart_$index',
                                                                   true);
                                                               // Get the total number of items in the cart
-                                                              List<OrderItemXrefType>
-                                                                  cartItems =
-                                                                  cartProvider
-                                                                      .getCartItems();
+                                                              List<ReturnOrderItemXrefType>
+                                                                  cartItems = cartProvider
+                                                                  .getReturnCartItems();
 
                                                               print(
                                                                   'Added items length: ${cartItems.length}');

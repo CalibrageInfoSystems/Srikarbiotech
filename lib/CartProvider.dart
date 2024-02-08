@@ -4,9 +4,11 @@ import 'package:flutter/material.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 import 'Model/OrderItemXrefType.dart';
+import 'Model/ReturnOrderItemXrefType.dart';
 
 class CartProvider extends ChangeNotifier {
   List<OrderItemXrefType> cartItems = [];
+  List<ReturnOrderItemXrefType> retuncartItems = [];
   static const String cartKey = 'cart';
   List<String>? cartItemsJson = [];
   // Method to add items to the cart
@@ -17,6 +19,7 @@ class CartProvider extends ChangeNotifier {
     // Save the cartItems to SharedPreferences
     await saveCartItemsToSharedPreferences(cartItems);
   }
+
   Future<void> saveToSharedPreferences(OrderItemXrefType orderItem) async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String> cartItemsJson = prefs.getStringList('cartItems') ?? [];
@@ -78,7 +81,9 @@ class CartProvider extends ChangeNotifier {
   List<OrderItemXrefType> getCartItems() {
     return cartItems;
   }
-
+  List<ReturnOrderItemXrefType> getReturnCartItems() {
+    return retuncartItems;
+  }
   // Method to remove an item from the cart
   Future<void> removeFromCart(OrderItemXrefType item) async {
     cartItems.remove(item);
@@ -119,4 +124,37 @@ class CartProvider extends ChangeNotifier {
     cartItems.clear();
   }
 
+
+  Future<void> addToreturnorderCart(ReturnOrderItemXrefType item) async {
+    retuncartItems.add(item);
+    notifyListeners();
+
+    // Save the cartItems to SharedPreferences
+    await savereturnCartItemsToSharedPreferences(retuncartItems);
+  }
+
+  Future<void> savereturnCartItemsToSharedPreferences(
+      List<ReturnOrderItemXrefType> cartItems) async {
+
+    SharedPreferences prefs = await SharedPreferences.getInstance();
+
+    // Retrieve existing cart items from SharedPreferences
+    cartItemsJson = prefs.getStringList('cart_items') ?? [];
+
+    // Convert the selected products to a JSON string
+    List<String> selectedProductStrings =
+    cartItems.map((product) => jsonEncode(product.toJson())).toList();
+
+    // Add the selected products to the existing cart items
+    cartItemsJson!.addAll(selectedProductStrings);
+
+    // Save the updated cart items back to SharedPreferences
+    prefs.setStringList('cart_items', cartItemsJson!);
+
+    // Log the cart items
+    print('Cart Items: $cartItemsJson');
+    // cartitemslength = '${cartItemsJson.length}';
+    print('Cart Items Length: ${cartItemsJson!.length}');
+
+  }
 }
