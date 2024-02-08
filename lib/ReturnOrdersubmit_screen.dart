@@ -14,6 +14,7 @@ import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'package:http/http.dart' as http;
+import 'package:srikarbiotech/Returntransportdetails.dart';
 import 'package:srikarbiotech/sb_status.dart';
 
 import 'CartProvider.dart';
@@ -26,14 +27,14 @@ import 'orderStatusScreen.dart';
 
 class ReturnOrdersubmit_screen extends StatefulWidget {
   final String cardName;
-  final String  cardCode;
-  final String  address;
+  final String cardCode;
+  final String address;
   final String proprietorName;
   final String gstRegnNo;
   final String state;
   final String phone;
-  final String  LrNumber;
-  final String  Lrdate;
+  final String LrNumber;
+  final String Lrdate;
   final String Remarks;
   final String LRAttachment;
   final String ReturnOrderReceipt;
@@ -42,32 +43,33 @@ class ReturnOrdersubmit_screen extends StatefulWidget {
   final double balance;
 
   ReturnOrdersubmit_screen(
-      {required this.cardName, required this.cardCode,
-        required this.address,
-        required  this.state,
-        required  this.phone,
-        required  this.proprietorName,
-        required  this.gstRegnNo,
-        required this.LrNumber,
-        required this.Lrdate,
-        required  this.Remarks,
-        required  this.LRAttachment,
-        required  this.ReturnOrderReceipt,
-        required  this.addlattchments,   required this.creditLine,
-        required this.balance});
+      {required this.cardName,
+      required this.cardCode,
+      required this.address,
+      required this.state,
+      required this.phone,
+      required this.proprietorName,
+      required this.gstRegnNo,
+      required this.LrNumber,
+      required this.Lrdate,
+      required this.Remarks,
+      required this.LRAttachment,
+      required this.ReturnOrderReceipt,
+      required this.addlattchments,
+      required this.creditLine,
+      required this.balance});
   @override
   returnOrder_submit_screen createState() => returnOrder_submit_screen();
 }
 
 class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
-
   final _orangeColor = HexColor('#e58338');
 
   final _titleTextStyle = const TextStyle(
     fontFamily: 'Roboto',
     fontWeight: FontWeight.w700,
     color: Colors.black,
-    fontSize: 14,
+    fontSize: 16,
   );
 
   final _dataTextStyle = TextStyle(
@@ -123,7 +125,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     String dateString = widget.Lrdate;
     print('dateString==>$dateString');
     // Format: dd MMM, yyyy
-    LrDate1= formatDate(dateString, "dd MMM, yyyy");
+    LrDate1 = formatDate(dateString, "dd MMM, yyyy");
     print("Formatted Date 1: $LrDate1");
 
     // Format: yyyy-MM-dd
@@ -132,8 +134,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     // DateTime date = DateTime.parse(dateString);
     // String formattedDate = DateFormat('dd MMM, yyyy').format(date);
     return Scaffold(
-      appBar:
-      AppBar(
+      appBar: AppBar(
         backgroundColor: Color(0xFFe78337),
         automaticallyImplyLeading: false,
         title: Row(
@@ -142,7 +143,8 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  padding:
+                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
@@ -168,7 +170,8 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       // Access the cart data from the provider
-                      cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
+                      cartItems = Provider.of<CartProvider>(context)
+                          .getReturnCartItems();
                       // Update the globalCartLength
                       globalCartLength = cartItems.length;
                     }
@@ -190,7 +193,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                 if (snapshot.connectionState == ConnectionState.done) {
                   // Access the companyId after shared data is retrieved
 
-                  return   GestureDetector(
+                  return GestureDetector(
                     onTap: () {
                       // Handle the click event for the home icon
                       Navigator.pushReplacement(
@@ -206,7 +209,6 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                       height: 30,
                     ),
                   );
-
                 } else {
                   // Return a placeholder or loading indicator
                   return SizedBox.shrink();
@@ -217,279 +219,357 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         ),
       ),
 
-      body:  SingleChildScrollView(
-        child:
-
-            Column(
-              children: [
-                Padding(
-                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      CommonUtils.buildCard(
-                        widget.cardName,
-                        widget.cardCode,
-                        widget.proprietorName,
-                        widget.gstRegnNo,
-                        widget.address,
-                        Colors.white,
-                        BorderRadius.circular(10.0),
-                      ),
-                      SizedBox(height: 16.0),
-                    ],
+      body: SingleChildScrollView(
+        child: Column(
+          children: [
+            Padding(
+              padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonUtils.buildCard(
+                    widget.cardName,
+                    widget.cardCode,
+                    widget.proprietorName,
+                    widget.gstRegnNo,
+                    widget.address,
+                    Colors.white,
+                    BorderRadius.circular(5.0),
                   ),
-                ),
-                FutureBuilder(
-                  future: Future.value(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.waiting) {
-                      return CircularProgressIndicator();
-                    } else if (snapshot.connectionState == ConnectionState.done) {
-                      // Assuming `buildListView` is defined elsewhere
-                      cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
-                      return buildListView(); // Assuming this function returns a widget
-                    } else {
-                      return Text('Error: Unable to fetch cart data');
-                    }
-                  },
-                ),
-                SizedBox(height: 10),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-                  child: IntrinsicHeight(
-                    child: Card(
-                      elevation: 5,
-                      child: Container(
-                        decoration: BoxDecoration(
-                          color: Colors.white10,
-                          borderRadius: BorderRadius.circular(10),
-                        ),
-                        width: double.infinity, // remove padding here
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: <Widget>[
-                            // row one
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 10),
-                              child: Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                children: <Widget>[
-                                  Text(
-                                    'Trasport Details',
-                                    style: _titleTextStyle,
-                                  ),
-                                  const Icon(Icons.home),
-                                ],
+                  SizedBox(height: 16.0),
+                ],
+              ),
+            ),
+            FutureBuilder(
+              future: Future.value(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return CircularProgressIndicator();
+                } else if (snapshot.connectionState == ConnectionState.done) {
+                  // Assuming `buildListView` is defined elsewhere
+                  cartItems =
+                      Provider.of<CartProvider>(context).getReturnCartItems();
+                  return buildListView(); // Assuming this function returns a widget
+                } else {
+                  return Text('Error: Unable to fetch cart data');
+                }
+              },
+            ),
+            SizedBox(height: 10),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+              child: IntrinsicHeight(
+                child: Card(
+                  elevation: 5,
+                  child: Container(
+                    decoration: BoxDecoration(
+                      color: Colors.white,
+                      borderRadius: BorderRadius.circular(5),
+                    ),
+                    width: double.infinity, // remove padding here
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        // row one
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
+                          child: Row(
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Text(
+                                'Transport Details',
+                                style: _titleTextStyle,
                               ),
-                            ),
-
-                            dividerForHorizontal,
-
-                            // row two
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 10),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'LR Number',
-                                          style: _titleTextStyle,
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          '${widget.LrNumber}',
-                                          style: _dataTextStyle,
-                                        ),
-                                      ],
-                                    ),
+                              InkWell(
+                                onTap: () {
+                                  // Your click listener logic here
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                        builder: (context) =>
+                                            Returntransportdetails(
+                                              cardName: '${widget.cardName}',
+                                              cardCode: '${widget.cardCode}',
+                                              address: '${widget.address}',
+                                              state: '${widget.state}',
+                                              phone: '${widget.phone}',
+                                              proprietorName:
+                                                  '${widget.proprietorName}',
+                                              gstRegnNo: '${widget.gstRegnNo}',
+                                              lrnumber: '${widget.LrNumber}',
+                                              lrdate: '${widget.Lrdate}',
+                                              remarks: '${widget.Remarks}',
+                                              creditLine: double.parse(
+                                                  '${widget.creditLine}'), // Convert to double
+                                              balance: double.parse(
+                                                  '${widget.balance}'),
+                                            )),
+                                  );
+                                },
+                                child: Container(
+                                  padding: EdgeInsets.all(
+                                      8), // Adjust padding as needed
+                                  child: SvgPicture.asset(
+                                    'assets/edit.svg', // Replace 'your_icon.svg' with your SVG asset path
+                                    width: 20, // Adjust width as needed
+                                    height: 22, // Adjust height as needed
                                   ),
                                 ),
-                                dividerForVertical,
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 10),
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: [
-                                        Text(
-                                          'LR Date',
-                                          style: _titleTextStyle,
-                                        ),
-                                        SizedBox(height: 4),
-                                        Text(
-                                          LrDate1,
-                                          style: _dataTextStyle,
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ],
-                            ),
+                              ),
+                            ],
+                          ),
+                        ),
 
+                        dividerForHorizontal,
 
-
-                            dividerForHorizontal,
-
-                            // row four
-                            Padding(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 12, vertical: 10),
-                              child: Container(
+                        // row two
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
                                 padding: const EdgeInsets.symmetric(
-                                    horizontal: 10, vertical: 4),
-                                decoration: BoxDecoration(
-                                  color: Colors.orange.shade100,
-                                  border: Border.all(
-                                    color: _orangeColor,
-                                  ),
-                                  borderRadius: BorderRadius.circular(10),
-                                ),
-                                child: Row(
-                                  mainAxisSize: MainAxisSize.min,
+                                    horizontal: 12, vertical: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    const Icon(Icons.link),
-                                    const SizedBox(
-                                      width: 5,
-                                    ),
                                     Text(
-                                      'Attachment',
+                                      'LR Number',
                                       style: _titleTextStyle,
                                     ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      '${widget.LrNumber}',
+                                      style: _dataTextStyle,
+                                    ),
                                   ],
                                 ),
                               ),
-                            )
-                          ],
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-                Container(
-
-                    width: MediaQuery.of(context).size.width,
-
-                    padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-                    child: IntrinsicHeight(
-                        child: Card(
-                          color: Colors.white,
-                          child: Container(
-                            padding: EdgeInsets.all(10.0),
-                            width: MediaQuery.of(context).size.width,
-                            child: Column(
-                              children: [
-                                Row(
+                            ),
+                            dividerForVertical,
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
+                                child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
-                                  mainAxisAlignment: MainAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      padding: EdgeInsets.only(top: 10.0),
-                                      child: Text(
-                                        'Total',
-                                        style: TextStyle(
-                                          color: Colors.black,
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 14.0,
-                                        ),
-                                      ),
+                                    Text(
+                                      'LR Date',
+                                      style: _titleTextStyle,
                                     ),
-                                    Spacer(),
-                                    Row(
-                                      crossAxisAlignment: CrossAxisAlignment.end,
-                                      mainAxisAlignment: MainAxisAlignment.end,
-                                      children: [
-                                        Container(
-                                          //   width: MediaQuery.of(context).size.width / 1.8,
-                                          padding: EdgeInsets.only(top: 10.0),
-                                          child: Row(
-                                            crossAxisAlignment: CrossAxisAlignment.end,
-                                            mainAxisAlignment: MainAxisAlignment.end,
-                                            children: [
-                                              Text(
-                                                '₹${totalSum.toStringAsFixed(2)}',
-                                                style: TextStyle(
-                                                  color: Color(0xFFe78337),
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 16.0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
+                                    SizedBox(height: 4),
+                                    Text(
+                                      LrDate1,
+                                      style: _dataTextStyle,
                                     ),
                                   ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        dividerForHorizontal,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Remarks',
+                                      style: _titleTextStyle,
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      '${widget.Remarks}',
+                                      style: _dataTextStyle,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        dividerForHorizontal,
+
+                        // row four
+                        Padding(
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 10, vertical: 4),
+                            decoration: BoxDecoration(
+                              color: Colors.orange.shade100,
+                              border: Border.all(
+                                color: _orangeColor,
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: Row(
+                              mainAxisSize: MainAxisSize.min,
+                              children: [
+                                const Icon(Icons.link),
+                                const SizedBox(
+                                  width: 5,
+                                ),
+                                Text(
+                                  'Attachment',
+                                  style: _titleTextStyle,
                                 ),
                               ],
                             ),
                           ),
-                        )))
-              ],
-
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+                child: IntrinsicHeight(
+                    child: Card(
+                  color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Container(
+                    padding: EdgeInsets.all(10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      color: Colors.white,
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      children: [
+                        Row(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          mainAxisAlignment: MainAxisAlignment.start,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.only(top: 5.0),
+                              child: Text(
+                                'Total',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontWeight: FontWeight.bold,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ),
+                            Spacer(),
+                            Row(
+                              crossAxisAlignment: CrossAxisAlignment.end,
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                Container(
+                                  //   width: MediaQuery.of(context).size.width / 1.8,
+                                  padding: EdgeInsets.only(top: 5.0),
+                                  child: Row(
+                                    crossAxisAlignment: CrossAxisAlignment.end,
+                                    mainAxisAlignment: MainAxisAlignment.end,
+                                    children: [
+                                      Text(
+                                        '₹${totalSum.toStringAsFixed(2)}',
+                                        style: TextStyle(
+                                          color: Color(0xFFe78337),
+                                          fontWeight: FontWeight.bold,
+                                          fontSize: 16.0,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            ),
+                          ],
+                        ),
+                      ],
+                    ),
+                  ),
+                )))
+          ],
         ),
       ),
 
-
-
-
-
-
-      bottomNavigationBar: Padding(
-        padding: const EdgeInsets.all(10.0),
-        child: ElevatedButton(
-          onPressed: () {
-            Addreturnorder();
-            Navigator.push(
-              context,
-              MaterialPageRoute(builder: (context) => ReturnorderStatusScreen()),
-            );
-          },
-          style: ElevatedButton.styleFrom(
-            primary: Color(0xFFe78337), // Set your desired background color
-          ),
-          child: Text(
-            'Place Your Order',
-            style: TextStyle(
-              color: Colors.white, // Set your desired text color
+      bottomNavigationBar: InkWell(
+        onTap: () {
+          // ScaffoldMessenger.of(context).showSnackBar(
+          //   const SnackBar(
+          //     content: Text('Payment Successful'),
+          //     duration: Duration(seconds: 2),
+          //   ),
+          // );
+          print('clicked ');
+        },
+        child: Padding(
+          padding:
+              EdgeInsets.only(top: 0.0, left: 14.0, right: 14.0, bottom: 10.0),
+          child: Container(
+            alignment: Alignment.bottomCenter,
+            width: MediaQuery.of(context).size.width,
+            height: 55.0,
+            child: Center(
+              child: GestureDetector(
+                onTap: () {
+                  Addreturnorder();
+                  Navigator.push(
+                    context,
+                    MaterialPageRoute(
+                        builder: (context) => ReturnorderStatusScreen()),
+                  );
+                },
+                child: Container(
+                  // width: desiredWidth * 0.9,
+                  width: MediaQuery.of(context).size.width,
+                  height: 55.0,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(6.0),
+                    color: Color(0xFFe78337),
+                  ),
+                  child: Row(
+                      crossAxisAlignment: CrossAxisAlignment.center,
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: [
+                        Text(
+                          'Place Your Order',
+                          style: TextStyle(
+                            fontFamily: 'Roboto',
+                            fontWeight: FontWeight.w700,
+                            fontSize: 14,
+                            color: Colors.white,
+                          ),
+                        ),
+                      ]),
+                ),
+              ),
             ),
           ),
         ),
       ),
-
       //    ),
     );
-
-
-
-
   }
 
-
-
-
-
-
-
   Future<void> getshareddata() async {
-
     userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
     slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     print('User ID: $userId');
     print('SLP Code: $slpCode');
     print('Company ID: $CompneyId');
-
-
   }
 
   Widget buildListView() {
@@ -502,13 +582,13 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       itemBuilder: (context, index) {
         ReturnOrderItemXrefType cartItem = cartItems[index];
         if (cartItems.length != textEditingControllers.length) {
-          textEditingControllers = List.generate(cartItems.length,
-                  (index) => TextEditingController());
+          textEditingControllers = List.generate(
+              cartItems.length, (index) => TextEditingController());
         }
-        double orderQty = cartItem.orderQty?.toDouble() ?? 0.0 ;
+        double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
         double price = cartItem.price ?? 0.0;
         // double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
-        double totalPrice = orderQty * price ;
+        double totalPrice = orderQty * price;
 
         return CartItemWidget(
           cartItem: cartItem,
@@ -526,10 +606,10 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
   double calculateTotalSum(List<ReturnOrderItemXrefType> cartItems) {
     double sum = 0.0;
     for (ReturnOrderItemXrefType cartItem in cartItems) {
-      double orderQty = cartItem.orderQty?.toDouble() ?? 0.0 ;
+      double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
       double price = cartItem.price ?? 0.0;
-    //  double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
-      sum += orderQty * price ;
+      //  double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
+      sum += orderQty * price;
     }
     return sum;
   }
@@ -538,10 +618,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     cartProvider.clearCart();
   }
 
-
-
   void Addreturnorder() async {
-
     DateTime currentDate = DateTime.now();
     //
     // // Format the date as 'yyyy-MM-dd'
@@ -671,8 +748,6 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
 
     return formattedDate;
   }
-
-
 }
 
 class CartItemWidget extends StatefulWidget {
@@ -694,30 +769,31 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   late TextEditingController _textController;
   late int _orderQty;
 
-
   @override
   void initState() {
     super.initState();
     //todo
-  _orderQty = widget.cartItem.orderQty!;
+    _orderQty = widget.cartItem.orderQty!;
     _textController = TextEditingController(text: _orderQty.toString());
-
   }
-
-
 
   @override
   Widget build(BuildContext context) {
     double totalWidth = MediaQuery.of(context).size.width;
 
-    return Padding(
-      padding: const EdgeInsets.only(left: 16.0, right: 16.0, bottom: 10.0),
+    return Container(
+      padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
       child: Card(
         elevation: 5.0,
+        color: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(5.0),
         ),
-        child: Padding(
+        child: Container(
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5.0),
+            color: Colors.white,
+          ),
           padding: const EdgeInsets.all(8.0),
           child: Column(
             crossAxisAlignment: CrossAxisAlignment.start,
@@ -756,7 +832,6 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                           // Call the updateQuantity method in your model class
                           widget.cartItem.updateQuantity(_orderQty);
                         });
-
                       },
                       deleteQuantity: () {
                         setState(() {
@@ -766,7 +841,6 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                             widget.cartItem.updateQuantity(_orderQty);
                           }
                         });
-
                       },
                       textController: _textController,
                     ),
@@ -813,9 +887,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
       ),
     );
   }
-
-
 }
+
 class PlusMinusButtons extends StatelessWidget {
   final VoidCallback deleteQuantity;
   final VoidCallback addQuantity;
@@ -835,14 +908,10 @@ class PlusMinusButtons extends StatelessWidget {
       height: 38,
       decoration: BoxDecoration(
         color: Color(0xFFe78337),
-        borderRadius:
-        BorderRadius.circular(
-            8.0),
+        borderRadius: BorderRadius.circular(8.0),
       ),
-      child:
-      Card(
+      child: Card(
         color: Color(0xFFe78337),
-
         margin: EdgeInsets.symmetric(horizontal: 0.0),
         child: Row(
           children: [
@@ -851,8 +920,8 @@ class PlusMinusButtons extends StatelessWidget {
                 deleteQuantity();
                 _updateTextController();
               },
-              icon:  SvgPicture.asset(
-                'assets/minus-small.svg',  // Replace with the correct path to your SVG icon
+              icon: SvgPicture.asset(
+                'assets/minus-small.svg', // Replace with the correct path to your SVG icon
                 color: Colors.white,
                 width: 20.0,
                 height: 20.0,
@@ -898,14 +967,13 @@ class PlusMinusButtons extends StatelessWidget {
                 _updateTextController();
               },
               icon: SvgPicture.asset(
-                'assets/plus-small.svg',  // Replace with the correct path to your SVG icon
+                'assets/plus-small.svg', // Replace with the correct path to your SVG icon
                 color: Colors.white,
                 width: 20.0,
                 height: 20.0,
               ),
             ),
           ],
-
         ),
       ),
     );
@@ -919,11 +987,3 @@ class PlusMinusButtons extends StatelessWidget {
     print('Current Value: ${textController.text}');
   }
 }
-
-
-
-
-
-
-
-

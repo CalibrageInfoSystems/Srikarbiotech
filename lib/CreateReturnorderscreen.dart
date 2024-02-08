@@ -183,7 +183,10 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                       //   ),
                       // );
                     },
-                    icon: Icon(Icons.shopping_cart),
+                    icon: Icon(
+                      Icons.shopping_cart,
+                      size: 30.0,
+                    ),
                   ),
                   Positioned(
                     right: 5,
@@ -441,7 +444,8 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                           ))
                     : Consumer<CartProvider>(
                         builder: (context, cartProvider, _) {
-                        List<ReturnOrderItemXrefType> cartItems = cartProvider.getReturnCartItems();
+                        List<ReturnOrderItemXrefType> cartItems =
+                            cartProvider.getReturnCartItems();
                         // Set the global cart length
                         globalCartLength = cartItems.length;
                         print('Added cart: ${globalCartLength}');
@@ -787,30 +791,47 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                                       .itmsGrpCod!;
                                                             }
 
-                                                            if (cartProvider.isSameItemGroup(itemGrpCod)) {
-                                                              returnorderItem =ReturnOrderItemXrefType(
+                                                            if (cartProvider
+                                                                .isSameItemGroup(
+                                                                    itemGrpCod)) {
+                                                              returnorderItem = ReturnOrderItemXrefType(
                                                                   id: 1,
-                                                                  returnOrderId: 1001,
-                                                                  itemGrpCod: itemGrpCod,
-                                                                  itemGrpName: productresp.itmsGrpNam,
-                                                                  itemCode: productresp.itemCode,
-                                                                  itemName: productresp.itemName,
-                                                                  statusTypeId: 13,
-                                                                  orderQty: quantities[index],
-                                                                      price: productresp.price,
-                                                                  remarks : "",
-                                                                totalPrice: null
-                                                                  );
+                                                                  returnOrderId:
+                                                                      1001,
+                                                                  itemGrpCod:
+                                                                      itemGrpCod,
+                                                                  itemGrpName:
+                                                                      productresp
+                                                                          .itmsGrpNam,
+                                                                  itemCode:
+                                                                      productresp
+                                                                          .itemCode,
+                                                                  itemName:
+                                                                      productresp
+                                                                          .itemName,
+                                                                  statusTypeId:
+                                                                      13,
+                                                                  orderQty:
+                                                                      quantities[
+                                                                          index],
+                                                                  price:
+                                                                      productresp
+                                                                          .price,
+                                                                  remarks: "",
+                                                                  totalPrice:
+                                                                      null);
 
                                                               await cartProvider
-                                                                  .addToreturnorderCart(returnorderItem!);
+                                                                  .addToreturnorderCart(
+                                                                      returnorderItem!);
                                                               await prefs.setBool(
                                                                   'isItemAddedToCart_$index',
                                                                   true);
                                                               // Get the total number of items in the cart
                                                               List<ReturnOrderItemXrefType>
-                                                                  cartItems = cartProvider
-                                                                  .getReturnCartItems();
+                                                                  cartItems =
+                                                                  cartProvider
+                                                                      .getReturnCartItems();
 
                                                               print(
                                                                   'Added items length: ${cartItems.length}');
@@ -978,25 +999,28 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                     onTap: () {
                       // Add logic for the download button
                       // if (globalCartLength > 0) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Returntransportdetails(
-                              cardName: '${widget.cardName}',
-                              cardCode: '${widget.cardCode}',
-                              address: '${widget.address}',
-                              state: '${widget.state}',
-                              phone: '${widget.phone}',
-                              proprietorName: '${widget.proprietorName}',
-                              gstRegnNo: '${widget.gstRegnNo}',
-                              creditLine: double.parse('${widget.creditLine}'),
-                              balance: double.parse('${widget.balance}'),
-                            ),
+                      Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => Returntransportdetails(
+                            cardName: '${widget.cardName}',
+                            cardCode: '${widget.cardCode}',
+                            address: '${widget.address}',
+                            state: '${widget.state}',
+                            phone: '${widget.phone}',
+                            proprietorName: '${widget.proprietorName}',
+                            gstRegnNo: '${widget.gstRegnNo}',
+                            creditLine: double.parse('${widget.creditLine}'),
+                            balance: double.parse('${widget.balance}'),
+                            lrnumber: '',
+                            lrdate: '',
+                            remarks: '',
                           ),
-                        );
+                        ),
+                      );
 
-                        print('Download button clicked');
-                  //    }
+                      print('Download button clicked');
+                      //    }
                       // else {
                       //   CommonUtils.showCustomToastMessageLong(
                       //       'Please Select Atleast One Product', context, 1, 4);
