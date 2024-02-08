@@ -768,6 +768,42 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                         height: 0.2,
                                         color: Colors.grey,
                                       ),
+                                      Row(
+                                        mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                        children: <Widget>[
+                                          Expanded(
+                                            child: Padding(
+                                              padding:
+                                                  const EdgeInsets.symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 10),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                    CrossAxisAlignment.start,
+                                                children: [
+                                                  const Text(
+                                                    'Remarks',
+                                                    style: CommonUtils
+                                                        .txSty_13B_Fb,
+                                                  ),
+                                                  Text(
+                                                    '',
+                                                    style: TextStyle(
+                                                      fontFamily: 'Roboto',
+                                                      fontWeight:
+                                                          FontWeight.bold,
+                                                      color:
+                                                          HexColor('#e58338'),
+                                                      fontSize: 13,
+                                                    ),
+                                                  ),
+                                                ],
+                                              ),
+                                            ),
+                                          ),
+                                        ],
+                                      ),
                                     ],
                                   ),
                                   // Table(

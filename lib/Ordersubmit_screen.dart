@@ -1,3 +1,4 @@
+import 'dart:async';
 import 'dart:convert';
 import 'dart:io';
 
@@ -133,21 +134,21 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                         Navigator.push(
                           context,
                           MaterialPageRoute(
-                      builder: (context) => Createorderscreen(
-                      cardName:widget.cardName,
-                      cardCode: widget.cardCode,
-                      address: widget.address,
-                      state: widget.state,
-                      phone: widget.phone,
-                      proprietorName:widget.proprietorName,
-                      gstRegnNo:widget.gstRegnNo,
-                      creditLine:widget.creditLine,
-                      balance:widget.balance),
-                      ),
-    );
-    } catch (e) {
-    print("Error navigating: $e");
-    }
+                            builder: (context) => Createorderscreen(
+                                cardName: widget.cardName,
+                                cardCode: widget.cardCode,
+                                address: widget.address,
+                                state: widget.state,
+                                phone: widget.phone,
+                                proprietorName: widget.proprietorName,
+                                gstRegnNo: widget.gstRegnNo,
+                                creditLine: widget.creditLine,
+                                balance: widget.balance),
+                          ),
+                        );
+                      } catch (e) {
+                        print("Error navigating: $e");
+                      }
                     },
                     child: Icon(
                       Icons.chevron_left,
@@ -169,7 +170,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       // Access the cart data from the provider
-                      cartItems = Provider.of<CartProvider>(context).getCartItems();
+                      cartItems =
+                          Provider.of<CartProvider>(context).getCartItems();
                       // Update the globalCartLength
                       globalCartLength = cartItems.length;
                     }
@@ -288,7 +290,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                               ),
                               SizedBox(
                                   width:
-                                  5.0), // Add some space between balance and credit line
+                                      5.0), // Add some space between balance and credit line
                               Text(
                                 '(${widget.creditLine})',
                                 style: TextStyle(
@@ -311,18 +313,30 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
             FutureBuilder(
               future: Future.value(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.connectionState == ConnectionState.done) {
-                  List<OrderItemXrefType> cartItems =
-                      Provider.of<CartProvider>(context).getCartItems();
+                // if (snapshot.connectionState == ConnectionState.waiting) {
+                //   return CircularProgressIndicator();
+                // } else
+                // if (snapshot.connectionState == ConnectionState.done) {
+                List<OrderItemXrefType> cartItems =
+                    Provider.of<CartProvider>(context).getCartItems();
 
-                  return buildListView(cartItems);
-                } else {
-                  return Text('Error: Unable to fetch cart data');
-                }
+                return buildListView(cartItems, ValueKey(cartItems));
+
+                // }
+                // else {
+                //   return Text('Error: Unable to fetch cart data');
+                // }
               },
             ),
+            // ListView.builder(
+            //     //  key: UniqueKey(),
+            //     shrinkWrap: true,
+            //     physics: PageScrollPhysics(),
+            //     scrollDirection: Axis.vertical,
+            //     itemCount: cartItems.length,
+            //     itemBuilder: (context, index) {
+            //       return buildListView(cartItems, ValueKey(cartItems[index]));
+            //     }),
 
             SizedBox(height: 5),
 
@@ -853,11 +867,12 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     print('Company ID: $CompneyId');
   }
 
-  Widget buildListView(List<OrderItemXrefType> cartItems) {
+  Widget buildListView(List<OrderItemXrefType> cartItems, Key key) {
     updateTotalSum(cartItems);
 
     return ListView.builder(
-      key: UniqueKey(),
+      // key: UniqueKey(),
+      key: key,
       shrinkWrap: true,
       physics: PageScrollPhysics(),
       scrollDirection: Axis.vertical,
@@ -954,13 +969,11 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     }
   }
 
-
-    String formatNumber(double number) {
-      NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
-      return formatter.format(number);
-    }
+  String formatNumber(double number) {
+    NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+    return formatter.format(number);
   }
-
+}
 
 // In CartItemWidget
 
@@ -999,12 +1012,17 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   @override
   void initState() {
     super.initState();
-    _orderQty = widget.cartItem.orderQty ?? 0;
+    // _orderQty = widget.cartItem.orderQty ?? 0;
+    _orderQty = widget.cartItem.orderQty ?? 1;
     _textController = TextEditingController(text: _orderQty.toString());
     widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
     widget.totalGstAmountNotifier.value =
         calculateTotalGstAmount(widget.cartItems);
     // Initialize totalSumNotifier in initState
+  }
+
+  void _updateTextController(int value) {
+    _textController.text = value.toString();
   }
 
   @override
@@ -1024,7 +1042,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
         totalSum + widget.totalGstAmountNotifier.value;
     print('totalSumIncludingGst==$totalSumIncludingGst');
 
-    int? Quantity = widget.cartItem.orderQty;
+    late int Quantity = 0;
+    Quantity = widget.cartItem.orderQty!;
     print('Quantity==$Quantity');
 
     return Padding(
@@ -1055,7 +1074,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                   ),
                 ),
                 Text(
-                  '$Quantity ${widget.cartItem.salUnitMsr} = ${Quantity! * widget.cartItem.numInSale!}  Nos', // Display totalSumForProduct for the single product
+                  '$Quantity ${widget.cartItem.salUnitMsr} = ${Quantity * widget.cartItem.numInSale!}  Nos', // Display totalSumForProduct for the single product
                   style: CommonUtils.Mediumtext_o_14,
                 ),
               ],
@@ -1070,39 +1089,83 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                     width: (totalWidth - 40) / 2,
                     child: PlusMinusButtons(
                       addQuantity: () {
-                        _textController.text =Quantity.toString();
+                        _textController.text = Quantity.toString();
+                        print('plusclickedtext:-${_textController.text}');
+                        _updateTextController(_orderQty);
                         setState(() {
+                          // _orderQty++;
+                          _updateTextController(_orderQty);
+                          print('clickedonPlusbtn:-$_orderQty');
+
                           _orderQty = (_orderQty ?? 0) + 1;
                           _textController.text = Quantity.toString();
                           widget.cartItem.updateQuantity(_orderQty);
-                          widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
-                          widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
-                          widget.onQuantityChanged(); // Notify main widget when quantity changes
+                          widget.totalSumNotifier.value =
+                              calculateTotalSum(widget.cartItems);
+                          widget.totalGstAmountNotifier.value =
+                              calculateTotalGstAmount(widget.cartItems);
+                          widget.onQuantityChanged();
                         });
                       },
+                      // addQuantity: () {
+                      //   setState(() {
+                      //     // Increase the order quantity
+                      //     _orderQty++;
+                      //
+                      //     // Update the text controller with the new order quantity
+                      //     _textController.text = _orderQty.toString();
+                      //
+                      //     // Update the displayed quantity to match the order quantity
+                      //     Quantity = _orderQty;
+                      //
+                      //     // Update other state variables and notify listeners
+                      //     widget.cartItem.updateQuantity(_orderQty);
+                      //     widget.totalSumNotifier.value =
+                      //         calculateTotalSum(widget.cartItems);
+                      //     widget.totalGstAmountNotifier.value =
+                      //         calculateTotalGstAmount(widget.cartItems);
+                      //     widget.onQuantityChanged();
+                      //   });
+                      // },
+
                       deleteQuantity: () {
-                        _textController.text = Quantity.toString();
                         setState(() {
-                          if (_orderQty! > 1) {
-                            _orderQty = (_orderQty ?? 0) - 1;
-                            _textController.text = Quantity.toString();
+                          if (_orderQty > 1) {
+                            _orderQty--;
+                            //  _orderQty = (_orderQty ?? 0) - 1;
+                            print('clickedonminusbtn:-$_orderQty');
+                            _updateTextController(_orderQty);
+                            //  _textController.text = _orderQty.toString();
                             widget.cartItem.updateQuantity(_orderQty);
                             widget.totalSumNotifier.value =
                                 calculateTotalSum(widget.cartItems);
                             widget.totalGstAmountNotifier.value =
                                 calculateTotalGstAmount(widget.cartItems);
-                            widget.onQuantityChanged(); // Notify main widget when quantity changes
+                            // Update the text controller
+                            widget.onQuantityChanged();
+                            // Notify main widget when quantity changes
                           }
                         });
                       },
                       textController: _textController,
                       initialValue:
-                          _orderQty ?? 0, // Provide the initial value here
+                          _orderQty ?? 1, // Provide the initial value here
                       onQuantityChanged: (int value) {
-                        print('value==$value');
-                        _textController.text = _orderQty.toString();
+                        setState(() {
+                          _textController.text = _orderQty.toString();
+                          _orderQty = value;
+                          print('value==$value');
+                          _updateTextController(
+                              _orderQty); // Update the text controller
+                        });
                       },
-                      updateTotalPrice: () {},
+                      updateTotalPrice: (int value) {
+                        setState(() {
+                          _orderQty = value;
+                          _updateTextController(
+                              _orderQty); // Update the text controller
+                        });
+                      },
                     ),
                   ),
                 ),
@@ -1177,7 +1240,7 @@ class PlusMinusButtons extends StatefulWidget {
   final VoidCallback addQuantity;
   final int initialValue;
   final ValueChanged<int> onQuantityChanged;
-  final VoidCallback updateTotalPrice;
+  final ValueChanged<int> updateTotalPrice;
 
   PlusMinusButtons({
     Key? key,
@@ -1260,7 +1323,8 @@ class _PlusMinusButtonsState extends State<PlusMinusButtons> {
                         style: CommonUtils.Mediumtext_o_14,
                         onChanged: (value) {
                           widget.onQuantityChanged(int.parse(value));
-                          widget.updateTotalPrice();
+                          // widget.updateTotalPrice();
+                          widget.updateTotalPrice(int.parse(value));
                         },
                       ),
                     ),
