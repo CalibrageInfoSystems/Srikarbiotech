@@ -1,3 +1,8 @@
+// To parse this JSON data, do
+//
+//     final returnOrdersModel = returnOrdersModelFromJson(jsonString);
+
+import 'package:meta/meta.dart';
 import 'dart:convert';
 
 ReturnOrdersModel returnOrdersModelFromJson(String str) =>
@@ -30,18 +35,18 @@ class ReturnOrdersModel {
         endUserMessage: json["endUserMessage"],
         links: json["links"],
         validationErrors:
-            List<dynamic>.from(json["validationErrors"].map((x) => x)),
+        List<dynamic>.from(json["validationErrors"].map((x) => x)),
         exception: json["exception"],
       );
 
   Map<String, dynamic> toJson() => {
-        "response": response.toJson(),
-        "isSuccess": isSuccess,
-        "endUserMessage": endUserMessage,
-        "links": links,
-        "validationErrors": List<dynamic>.from(validationErrors.map((x) => x)),
-        "exception": exception,
-      };
+    "response": response.toJson(),
+    "isSuccess": isSuccess,
+    "endUserMessage": endUserMessage,
+    "links": links,
+    "validationErrors": List<dynamic>.from(validationErrors.map((x) => x)),
+    "exception": exception,
+  };
 }
 
 class Response {
@@ -56,25 +61,25 @@ class Response {
   });
 
   factory Response.fromJson(Map<String, dynamic> json) => Response(
-        returnOrdersList: List<ReturnOrdersList>.from(
-            json["returnOrdersList"].map((x) => ReturnOrdersList.fromJson(x))),
-        count: json["count"],
-        affectedRecords: json["affectedRecords"],
-      );
+    returnOrdersList: List<ReturnOrdersList>.from(
+        json["returnOrdersList"].map((x) => ReturnOrdersList.fromJson(x))),
+    count: json["count"],
+    affectedRecords: json["affectedRecords"],
+  );
 
   Map<String, dynamic> toJson() => {
-        "returnOrdersList":
-            List<dynamic>.from(returnOrdersList.map((x) => x.toJson())),
-        "count": count,
-        "affectedRecords": affectedRecords,
-      };
+    "returnOrdersList":
+    List<dynamic>.from(returnOrdersList.map((x) => x.toJson())),
+    "count": count,
+    "affectedRecords": affectedRecords,
+  };
 }
 
 class ReturnOrdersList {
   final int id;
   final int companyId;
   final String returnOrderNumber;
-  final DateTime returnOrderDate;
+  final String returnOrderDate;
   final String partyCode;
   final String partyName;
   final String partyAddress;
@@ -83,14 +88,11 @@ class ReturnOrdersList {
   final String partyGstNumber;
   final String proprietorName;
   final double partyOutStandingAmount;
-  final String lrNumber;
   final String lrDate;
+  final String lrNumber;
   final int statusTypeId;
   final String statusName;
   final double discount;
-  final double igst;
-  final double cgst;
-  final double sgst;
   final double totalCost;
   final int noOfItems;
   final String remarks;
@@ -113,14 +115,11 @@ class ReturnOrdersList {
     required this.partyGstNumber,
     required this.proprietorName,
     required this.partyOutStandingAmount,
-    required this.lrNumber,
     required this.lrDate,
+    required this.lrNumber,
     required this.statusTypeId,
     required this.statusName,
     required this.discount,
-    required this.igst,
-    required this.cgst,
-    required this.sgst,
     required this.totalCost,
     required this.noOfItems,
     required this.remarks,
@@ -136,7 +135,7 @@ class ReturnOrdersList {
         id: json["id"],
         companyId: json["companyId"],
         returnOrderNumber: json["returnOrderNumber"],
-        returnOrderDate: DateTime.parse(json["returnOrderDate"]),
+        returnOrderDate: json["returnOrderDate"],
         partyCode: json["partyCode"],
         partyName: json["partyName"],
         partyAddress: json["partyAddress"],
@@ -145,14 +144,11 @@ class ReturnOrdersList {
         partyGstNumber: json["partyGSTNumber"],
         proprietorName: json["proprietorName"],
         partyOutStandingAmount: json["partyOutStandingAmount"]?.toDouble(),
-        lrNumber: json["lrNumber"],
         lrDate: json["lrDate"],
+        lrNumber: json["lrNumber"],
         statusTypeId: json["statusTypeId"],
         statusName: json["statusName"],
         discount: json["discount"]?.toDouble(),
-        igst: json["igst"]?.toDouble(),
-        cgst: json["cgst"]?.toDouble(),
-        sgst: json["sgst"]?.toDouble(),
         totalCost: json["totalCost"]?.toDouble(),
         noOfItems: json["noOfItems"],
         remarks: json["remarks"],
@@ -164,33 +160,30 @@ class ReturnOrdersList {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "companyId": companyId,
-        "returnOrderNumber": returnOrderNumber,
-        "returnOrderDate": returnOrderDate.toIso8601String(),
-        "partyCode": partyCode,
-        "partyName": partyName,
-        "partyAddress": partyAddress,
-        "partyState": partyState,
-        "partyPhoneNumber": partyPhoneNumber,
-        "partyGSTNumber": partyGstNumber,
-        "proprietorName": proprietorName,
-        "partyOutStandingAmount": partyOutStandingAmount,
-        "lrNumber": lrNumber,
-        "lrDate": lrDate,
-        "statusTypeId": statusTypeId,
-        "statusName": statusName,
-        "discount": discount,
-        "igst": igst,
-        "cgst": cgst,
-        "sgst": sgst,
-        "totalCost": totalCost,
-        "noOfItems": noOfItems,
-        "remarks": remarks,
-        "isActive": isActive,
-        "createdBy": createdBy,
-        "createdDate": createdDate.toIso8601String(),
-        "updatedBy": updatedBy,
-        "updatedDate": updatedDate.toIso8601String(),
-      };
+    "id": id,
+    "companyId": companyId,
+    "returnOrderNumber": returnOrderNumber,
+    "returnOrderDate": returnOrderDate,
+    "partyCode": partyCode,
+    "partyName": partyName,
+    "partyAddress": partyAddress,
+    "partyState": partyState,
+    "partyPhoneNumber": partyPhoneNumber,
+    "partyGSTNumber": partyGstNumber,
+    "proprietorName": proprietorName,
+    "partyOutStandingAmount": partyOutStandingAmount,
+    "lrDate": lrDate,
+    "lrNumber": lrNumber,
+    "statusTypeId": statusTypeId,
+    "statusName": statusName,
+    "discount": discount,
+    "totalCost": totalCost,
+    "noOfItems": noOfItems,
+    "remarks": remarks,
+    "isActive": isActive,
+    "createdBy": createdBy,
+    "createdDate": createdDate.toIso8601String(),
+    "updatedBy": updatedBy,
+    "updatedDate": updatedDate.toIso8601String(),
+  };
 }

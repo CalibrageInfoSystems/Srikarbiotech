@@ -150,7 +150,20 @@ class CommonUtils {
       ),
     );
   }
+  static final borderForAppliedFilter = BoxDecoration(
+    borderRadius: BorderRadius.circular(10),
+    color: const Color.fromARGB(255, 250, 214, 152),
+    border: Border.all(
+      color: HexColor('#e58338'),
+    ),
+  );
 
+  static final borderForFilter = BoxDecoration(
+    borderRadius: BorderRadius.circular(10),
+    border: Border.all(
+      color: HexColor('#e58338'),
+    ),
+  );
   static final searchBarOutPutInlineBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(10),
     borderSide: const BorderSide(color: Colors.black38),

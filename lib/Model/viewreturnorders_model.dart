@@ -33,19 +33,19 @@ class ViewReturnOrdersModel {
         endUserMessage: json["endUserMessage"],
         links: json["links"],
         validationErrors:
-            List<dynamic>.from(json["validationErrors"].map((x) => x)),
+        List<dynamic>.from(json["validationErrors"].map((x) => x)),
         exception: json["exception"],
       );
 
   Map<String, dynamic> toJson() => {
-        "response": response.toJson(),
-        "isSuccess": isSuccess,
-        "affectedRecords": affectedRecords,
-        "endUserMessage": endUserMessage,
-        "links": links,
-        "validationErrors": List<dynamic>.from(validationErrors.map((x) => x)),
-        "exception": exception,
-      };
+    "response": response.toJson(),
+    "isSuccess": isSuccess,
+    "affectedRecords": affectedRecords,
+    "endUserMessage": endUserMessage,
+    "links": links,
+    "validationErrors": List<dynamic>.from(validationErrors.map((x) => x)),
+    "exception": exception,
+  };
 }
 
 class Response {
@@ -58,27 +58,27 @@ class Response {
   });
 
   factory Response.fromJson(Map<String, dynamic> json) => Response(
-        returnOrderDetailsResult: List<ReturnOrderDetailsResult>.from(
-            json["returnOrderDetailsResult"]
-                .map((x) => ReturnOrderDetailsResult.fromJson(x))),
-        returnOrderItemXrefList: List<ReturnOrderItemXrefList>.from(
-            json["returnOrderItemXrefList"]
-                .map((x) => ReturnOrderItemXrefList.fromJson(x))),
-      );
+    returnOrderDetailsResult: List<ReturnOrderDetailsResult>.from(
+        json["returnOrderDetailsResult"]
+            .map((x) => ReturnOrderDetailsResult.fromJson(x))),
+    returnOrderItemXrefList: List<ReturnOrderItemXrefList>.from(
+        json["returnOrderItemXrefList"]
+            .map((x) => ReturnOrderItemXrefList.fromJson(x))),
+  );
 
   Map<String, dynamic> toJson() => {
-        "returnOrderDetailsResult":
-            List<dynamic>.from(returnOrderDetailsResult.map((x) => x.toJson())),
-        "returnOrderItemXrefList":
-            List<dynamic>.from(returnOrderItemXrefList.map((x) => x.toJson())),
-      };
+    "returnOrderDetailsResult":
+    List<dynamic>.from(returnOrderDetailsResult.map((x) => x.toJson())),
+    "returnOrderItemXrefList":
+    List<dynamic>.from(returnOrderItemXrefList.map((x) => x.toJson())),
+  };
 }
 
 class ReturnOrderDetailsResult {
   final int id;
   final int companyId;
   final String returnOrderNumber;
-  final DateTime returnOrderDate;
+  final String returnOrderDate;
   final String partyCode;
   final String partyName;
   final String partyAddress;
@@ -96,17 +96,14 @@ class ReturnOrderDetailsResult {
   final String fileUrl;
   final String statusName;
   final double discount;
-  final double igst;
-  final double cgst;
-  final double sgst;
   final double totalCost;
   final int noOfItems;
   final String dealerRemarks;
   final bool isActive;
   final String createdBy;
-  final DateTime createdDate;
+  final String createdDate;
   final String updatedBy;
-  final DateTime updatedDate;
+  final String updatedDate;
 
   ReturnOrderDetailsResult({
     required this.id,
@@ -130,9 +127,6 @@ class ReturnOrderDetailsResult {
     required this.fileUrl,
     required this.statusName,
     required this.discount,
-    required this.igst,
-    required this.cgst,
-    required this.sgst,
     required this.totalCost,
     required this.noOfItems,
     required this.dealerRemarks,
@@ -148,7 +142,7 @@ class ReturnOrderDetailsResult {
         id: json["id"],
         companyId: json["companyId"],
         returnOrderNumber: json["returnOrderNumber"],
-        returnOrderDate: DateTime.parse(json["returnOrderDate"]),
+        returnOrderDate: json["returnOrderDate"],
         partyCode: json["partyCode"],
         partyName: json["partyName"],
         partyAddress: json["partyAddress"],
@@ -158,7 +152,7 @@ class ReturnOrderDetailsResult {
         proprietorName: json["proprietorName"],
         partyOutStandingAmount: json["partyOutStandingAmount"]?.toDouble(),
         lrNumber: json["lrNumber"],
-        lrDate:(json["lrDate"]),
+        lrDate: json["lrDate"],
         statusTypeId: json["statusTypeId"],
         fileName: json["fileName"],
         fileLocation: json["fileLocation"],
@@ -166,53 +160,47 @@ class ReturnOrderDetailsResult {
         fileUrl: json["fileUrl"],
         statusName: json["statusName"],
         discount: json["discount"]?.toDouble(),
-        igst: json["igst"]?.toDouble(),
-        cgst: json["cgst"]?.toDouble(),
-        sgst: json["sgst"]?.toDouble(),
         totalCost: json["totalCost"]?.toDouble(),
         noOfItems: json["noOfItems"],
         dealerRemarks: json["dealerRemarks"],
         isActive: json["isActive"],
         createdBy: json["createdBy"],
-        createdDate: DateTime.parse(json["createdDate"]),
+        createdDate: json["createdDate"],
         updatedBy: json["updatedBy"],
-        updatedDate: DateTime.parse(json["updatedDate"]),
+        updatedDate: json["updatedDate"],
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "companyId": companyId,
-        "returnOrderNumber": returnOrderNumber,
-        "returnOrderDate": returnOrderDate.toIso8601String(),
-        "partyCode": partyCode,
-        "partyName": partyName,
-        "partyAddress": partyAddress,
-        "partyState": partyState,
-        "partyPhoneNumber": partyPhoneNumber,
-        "partyGSTNumber": partyGstNumber,
-        "proprietorName": proprietorName,
-        "partyOutStandingAmount": partyOutStandingAmount,
-        "lrNumber": lrNumber,
-        "lrDate": lrDate,
-        "statusTypeId": statusTypeId,
-        "fileName": fileName,
-        "fileLocation": fileLocation,
-        "fileExtension": fileExtension,
-        "fileUrl": fileUrl,
-        "statusName": statusName,
-        "discount": discount,
-        "igst": igst,
-        "cgst": cgst,
-        "sgst": sgst,
-        "totalCost": totalCost,
-        "noOfItems": noOfItems,
-        "dealerRemarks": dealerRemarks,
-        "isActive": isActive,
-        "createdBy": createdBy,
-        "createdDate": createdDate.toIso8601String(),
-        "updatedBy": updatedBy,
-        "updatedDate": updatedDate.toIso8601String(),
-      };
+    "id": id,
+    "companyId": companyId,
+    "returnOrderNumber": returnOrderNumber,
+    "returnOrderDate": returnOrderDate,
+    "partyCode": partyCode,
+    "partyName": partyName,
+    "partyAddress": partyAddress,
+    "partyState": partyState,
+    "partyPhoneNumber": partyPhoneNumber,
+    "partyGSTNumber": partyGstNumber,
+    "proprietorName": proprietorName,
+    "partyOutStandingAmount": partyOutStandingAmount,
+    "lrNumber": lrNumber,
+    "lrDate": lrDate,
+    "statusTypeId": statusTypeId,
+    "fileName": fileName,
+    "fileLocation": fileLocation,
+    "fileExtension": fileExtension,
+    "fileUrl": fileUrl,
+    "statusName": statusName,
+    "discount": discount,
+    "totalCost": totalCost,
+    "noOfItems": noOfItems,
+    "dealerRemarks": dealerRemarks,
+    "isActive": isActive,
+    "createdBy": createdBy,
+    "createdDate": createdDate,
+    "updatedBy": updatedBy,
+    "updatedDate": updatedDate,
+  };
 }
 
 class ReturnOrderItemXrefList {
@@ -226,10 +214,8 @@ class ReturnOrderItemXrefList {
   final int statusTypeId;
   final int orderQty;
   final double price;
-  final double igst;
-  final double cgst;
-  final double sgst;
   final String remarks;
+  final dynamic totalPrice;
 
   ReturnOrderItemXrefList({
     required this.statusName,
@@ -242,10 +228,8 @@ class ReturnOrderItemXrefList {
     required this.statusTypeId,
     required this.orderQty,
     required this.price,
-    required this.igst,
-    required this.cgst,
-    required this.sgst,
     required this.remarks,
+    required this.totalPrice,
   });
 
   factory ReturnOrderItemXrefList.fromJson(Map<String, dynamic> json) =>
@@ -260,26 +244,22 @@ class ReturnOrderItemXrefList {
         statusTypeId: json["statusTypeId"],
         orderQty: json["orderQty"],
         price: json["price"]?.toDouble(),
-        igst: json["igst"]?.toDouble(),
-        cgst: json["cgst"]?.toDouble(),
-        sgst: json["sgst"]?.toDouble(),
         remarks: json["remarks"],
+        totalPrice: json["totalPrice"],
       );
 
   Map<String, dynamic> toJson() => {
-        "statusName": statusName,
-        "id": id,
-        "returnOrderId": returnOrderId,
-        "itemGrpCod": itemGrpCod,
-        "itemGrpName": itemGrpName,
-        "itemCode": itemCode,
-        "itemName": itemName,
-        "statusTypeId": statusTypeId,
-        "orderQty": orderQty,
-        "price": price,
-        "igst": igst,
-        "cgst": cgst,
-        "sgst": sgst,
-        "remarks": remarks,
-      };
+    "statusName": statusName,
+    "id": id,
+    "returnOrderId": returnOrderId,
+    "itemGrpCod": itemGrpCod,
+    "itemGrpName": itemGrpName,
+    "itemCode": itemCode,
+    "itemName": itemName,
+    "statusTypeId": statusTypeId,
+    "orderQty": orderQty,
+    "price": price,
+    "remarks": remarks,
+    "totalPrice": totalPrice,
+  };
 }

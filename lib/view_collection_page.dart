@@ -32,22 +32,8 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   // String url = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollections/null';
 
   final _orangeColor = HexColor('#e58338');
-  final _borderForFilter = BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      border: Border.all(
-        color: HexColor('#e58338'),
-      ));
-
-  final _borderForAppliedFilter = BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      color: const Color.fromARGB(255, 250, 214, 152),
-      border: Border.all(
-        color: HexColor('#e58338'),
-      ));
-
   final _hintTextStyle = const TextStyle(
       fontSize: 14, color: Colors.black38, fontWeight: FontWeight.bold);
-
   final _customTextStyle = const TextStyle(
       fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold);
   final _searchBarOutPutInlineBorder = OutlineInputBorder(
@@ -62,7 +48,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   late Future<List<ListResult>> apiData;
   List<ListResult> filteredData = [];
   late ViewCollectionProvider viewProvider;
-  int CompneyId = 0;
+  int companyId = 0;
   String? slpCode = "";
   String? userId = "";
 
@@ -92,7 +78,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
 
   Future<List<ListResult>> getCollection() async {
     userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
-    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     DateTime currentDate = DateTime.now();
     DateTime oneWeekBackDate = currentDate.subtract(const Duration(days: 7));
     String formattedCurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
@@ -106,12 +92,13 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
         "PurposeName": null,
         "StatusId": null,
         "PartyCode": null,
-        "FormDate": formattedOneWeekBackDate,
-        "ToDate": formattedCurrentDate,
-        "CompanyId": CompneyId,
+        "FormDate": viewProvider.fromDateValue,
+        "ToDate": viewProvider.toDateValue,
+        "CompanyId": companyId,
         "UserId": userId
       };
-      print('===========>${jsonEncode(requestBodyObj)}');
+
+      debugPrint('_______view collection____2___${jsonEncode(requestBodyObj)}');
       final response = await http.post(
         url,
         body: json.encode(requestBodyObj),
@@ -130,7 +117,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
               .toList();
           return result;
         } else {
-          print('listResult is null.');
+          debugPrint('listResult is null.');
           // Handle the case where "listResult" is null.
           // You can return an empty list or handle it based on your application's requirements.
           return [];
@@ -154,8 +141,8 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
             if (snapshot.connectionState == ConnectionState.waiting) {
               return const Center(child: CircularProgressIndicator.adaptive());
             } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Error occurred: ${snapshot.error}'),
+              return const Center(
+                child: Text('Collection is empty'),
               );
             } else {
               if (snapshot.hasData) {
@@ -183,22 +170,23 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                       // no results
                       else
                         Expanded(
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: const EdgeInsets.all(5.0),
-                                    child: Text(
-                                      'No collection found!',
-                                      style: _customTextStyle,
-                                    ),
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: const EdgeInsets.all(5.0),
+                                  child: Text(
+                                    'No collection found!',
+                                    style: _customTextStyle,
                                   ),
-                                ],
-                              ),
-                            )),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
                     ],
                   ),
                 );
@@ -218,7 +206,6 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
     return AppBar(
       backgroundColor: const Color(0xFFe78337),
       automaticallyImplyLeading: false,
-      // This line removes the default back arrow
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
@@ -267,7 +254,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                     );
                   },
                   child: Image.asset(
-                    CompneyId == 1
+                    companyId == 1
                         ? 'assets/srikar-home-icon.png'
                         : 'assets/seeds-home-icon.png',
                     width: 30,
@@ -317,14 +304,13 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                 context: context,
                 builder: (context) => const FilterBottomSheet(),
               );
-              // Add your specific logic or navigation here
             },
             child: Container(
               height: 45,
               width: 45,
               decoration: viewProvider.filterStatus
-                  ? _borderForAppliedFilter
-                  : _borderForFilter,
+                  ? CommonUtils.borderForAppliedFilter
+                  : CommonUtils.borderForFilter,
               child: Center(
                 child: SvgPicture.asset(
                   'assets/apps-sort.svg',
@@ -339,10 +325,10 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   }
 
   Future<void> getshareddata() async {
-    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
 
-    print('Company ID: $CompneyId');
+    debugPrint('Company ID: $companyId');
   }
 
   void initializeData() {
@@ -353,7 +339,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
         viewProvider.storeIntoProvider(data);
       });
     }).catchError((error) {
-      // print('Error initializing data: $error');
+      debugPrint('catchError: $error');
     });
   }
 }
@@ -365,14 +351,8 @@ class FilterBottomSheet extends StatefulWidget {
   State<FilterBottomSheet> createState() => _FilterBottomSheetState();
 }
 
-// X000
 class _FilterBottomSheetState extends State<FilterBottomSheet> {
-  final _labelTextStyle = const TextStyle(
-      color: Colors.black, fontSize: 14, fontWeight: FontWeight.bold);
-  // List<Dealer> dealers = [];
   int selectedCardCode = -1;
-
-  // ... Other variables and methods
   final _primaryOrange = const Color(0xFFe58338);
   int selectedChipIndex = 1;
 
@@ -451,7 +431,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         throw Exception('Failed to load data');
       }
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
     }
   }
 
@@ -462,7 +442,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     if (response.statusCode == 200) {
       setState(() {
         apiResponse = ApiResponse.fromJson(jsonDecode(response.body));
-        print('========>apiResponse$apiResponse');
+        debugPrint('========>apiResponse$apiResponse');
       });
     } else {
       throw Exception('Failed to load data');
@@ -480,7 +460,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       try {
         initialDate = DateTime.parse(controller.text);
       } catch (e) {
-        print("Invalid date format: $e");
+        debugPrint("Invalid date format: $e");
         initialDate = currentDate;
       }
     } else {
@@ -502,12 +482,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         // Save selected dates as DateTime objects
         selectedDate = picked;
 
-        // Print formatted date
+        // debugPrint formatted date
         selectformattedtodate = DateFormat('yyyy-MM-dd').format(picked);
-        print("selectformatted_todate: $selectformattedtodate");
+        debugPrint("selectformatted_todate: $selectformattedtodate");
       }
     } catch (e) {
-      print("Error selecting date: $e");
+      debugPrint("Error selecting date: $e");
     }
   }
 
@@ -588,11 +568,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     DateTime initialDate;
 
     if (controller.text.isNotEmpty) {
-      print('###########controller.text: ${controller.text}');
+      debugPrint('###########controller.text: ${controller.text}');
       try {
         initialDate = DateTime.parse(controller.text);
       } catch (e) {
-        print("Invalid date format: $e");
+        debugPrint("Invalid date format: $e");
         initialDate = currentDate;
       }
     } else {
@@ -614,12 +594,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         // Save selected dates as DateTime objects
         selectedfromdateDate = picked;
 
-        // Print formatted date
-        // print("fromattedfromdate: ${DateFormat('yyyy-MM-dd').format(picked)}");
+        // debugPrint formatted date
+        // debugPrint("fromattedfromdate: ${DateFormat('yyyy-MM-dd').format(picked)}");
         selectformattedfromdate = DateFormat('yyyy-MM-dd').format(picked);
       }
     } catch (e) {
-      print("Error selecting date: $e");
+      debugPrint("Error selecting date: ${e.toString()}");
     }
   }
 
@@ -702,7 +682,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         "/" +
         '$slpCode'));
 
-    // print("apiUrl: ${apiUrl}");
+    // debugPrint("apiUrl: ${apiUrl}");
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body);
 
@@ -767,8 +747,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     ),
                     Container(
                       height: 40.0,
-                   //todo
-                decoration: CommonUtils.decorationO_R10W1,
+                      decoration: CommonUtils.decorationO_R10W1,
                       child: DropdownButtonHideUnderline(
                         child: ButtonTheme(
                           alignedDropdown: true,
@@ -789,12 +768,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                                   dropdownItems[selectedCardCode]['cardName'];
                                   provider.getApiPartyCode =
                                   dropdownItems[selectedCardCode]['cardCode'];
-                                  print("selectedValue:$selectedValue");
-                                  print("selectedName:$selectedName");
+                                  debugPrint("selectedValue:$selectedValue");
+                                  debugPrint("selectedName:$selectedName");
                                 } else {
-                                  print("==========");
-                                  print(selectedValue);
-                                  print(selectedName);
+                                  debugPrint("==========");
+                                  debugPrint(selectedValue);
+                                  debugPrint(selectedName);
                                 }
                                 // isDropdownValid = selectedTypeCdId != -1;
                               });
@@ -807,16 +786,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                                   child: Text(
                                     item['cardName'],
                                     overflow: TextOverflow.visible,
-                                    // wrapText: true,
                                   ));
                             }).toList(),
+                            style: CommonUtils.txSty_13O_F6,
                             iconSize: 20,
                             icon: null,
                             isExpanded: true,
                             underline: const SizedBox(),
-                            style: const TextStyle(
-                              color: Color(0xFFe58338),
-                            ),
                           ),
                         ),
                       ),
@@ -837,8 +813,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     Container(
                         height: 40.0,
                         padding: const EdgeInsets.only(left: 15, right: 5),
-                      //TODO
-                     decoration: CommonUtils.decorationO_R10W1,
+                        decoration: CommonUtils.decorationO_R10W1,
                         child: purposeList.isEmpty
                             ? LoadingAnimationWidget.newtonCradle(
                           color: Colors.blue,
@@ -846,7 +821,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         )
                             : DropdownButton<String>(
                           hint: Text(
-                            'Select Purpose', // Purpose
+                            'Select Purpose',
                             style: CommonUtils.txSty_13O_F6,
                           ),
                           value: provider.dropDownPurpose,
@@ -868,12 +843,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                               value: purpose.fldValue,
                               child: Text(
                                 purpose.purposeName,
-                                style: const TextStyle(
-                                  fontSize: 14,
-                                  fontFamily: 'Roboto',
-                                  fontWeight: FontWeight.w600,
-                                  color: Color(0xFFe78337),
-                                ),
+                                style: CommonUtils.txSty_13O_F6,
                               ),
                             );
                           }).toList(),
@@ -904,7 +874,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       // Handle the "All" option
                       if (index == 0) {
                         currentPaymode = PaymentMode(
-                          // Provide default values or handle the null case as needed
                           typeCdId: null,
                           classTypeId: 3,
                           name: 'All',
@@ -915,12 +884,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           isActive: true,
                         );
                       } else {
-                        currentPaymode = apiResponse!.listResult[
-                        index - 1]; // Adjust index for actual data
+                        currentPaymode = apiResponse!.listResult[index - 1];
                       }
                       return GestureDetector(
                         onTap: () {
-                          // ###
                           setState(() {
                             provider.dropDownStatus = index;
                             selectedPaymode = currentPaymode;
@@ -928,7 +895,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           payid = currentPaymode.typeCdId;
                           provider.getApiStatusId = currentPaymode.typeCdId;
                           Selected_PaymentMode = currentPaymode.desc;
-                          print('payid:$payid');
+                          debugPrint('payid:$payid');
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -1045,7 +1012,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       child: ElevatedButton(
                         onPressed: () {
                           //apply
-                          getappliedflitters(context);
+                          getAppliedFilterData(context);
                         },
                         style: ElevatedButton.styleFrom(
                           textStyle: const TextStyle(
@@ -1074,9 +1041,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     );
   }
 
-// x000
-  Future<void> getappliedflitters(BuildContext context) async {
-    print('_____________getappliedflitters___________');
+  Future<void> getAppliedFilterData(BuildContext context) async {
     viewProvider.filterStatus = true;
 
     int companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
@@ -1088,8 +1053,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     DateTime pickedFromDate =
     DateFormat('dd-MM-yyyy').parse(fromdateController.text);
     selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
-    print('Converted to date: $selectformattedtodate');
-    print('Converted from date: $selectformattedfromdate');
+    debugPrint('Converted to date: $selectformattedtodate');
+    debugPrint('Converted from date: $selectformattedfromdate');
     try {
       final url = Uri.parse(
           'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollectionsbyMobileSearch');
@@ -1102,7 +1067,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         "CompanyId": companyId,
         "UserId": userId
       };
-      print('###########${jsonEncode(requestBodyObj)}');
+
+      debugPrint('_______view collection____1___${jsonEncode(requestBodyObj)}');
       final response = await http.post(
         url,
         body: json.encode(requestBodyObj),
@@ -1122,53 +1088,29 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             data.map((item) => ListResult.fromJson(item)).toList();
             viewProvider.storeIntoProvider(result);
           } else {
-            print('listResult is null');
+            debugPrint('listResult is null');
             List<ListResult> emptyList = [];
             viewProvider.storeIntoProvider(emptyList);
             CommonUtils.showCustomToastMessageLong(
                 'No collection found!', context, 2, 2);
           }
         } else {
-          print('Request failed: ${jsonResponse['endUserMessage']}');
+          debugPrint('Request failed: ${jsonResponse['endUserMessage']}');
           List<ListResult> emptyList = [];
           viewProvider.storeIntoProvider(emptyList);
           CommonUtils.showCustomToastMessageLong(
               'No collection found!', context, 2, 2);
         }
       } else {
-        print('Failed to fetch data: ${response.statusCode}');
+        debugPrint('Failed to fetch data: ${response.statusCode}');
       }
     } catch (e) {
-      print('Error: $e');
+      debugPrint('Error: $e');
       CommonUtils.showCustomToastMessageLong(
           'Something went wrong', context, 2, 2);
     }
     Navigator.of(context).pop();
   }
-
-// void clearAllFilters() {
-//   setState(() {
-//     // Reset the selected values to their initial state or default values
-//     selectedCardCode = -1;
-//     selectedValue = null;
-//     selectedName = "";
-
-//     selectedPurpose = null;
-//     selectedPurposeObj = null;
-//     purposename = "";
-
-//     selectedPaymode = null;
-//     payid = null;
-//     Selected_PaymentMode = null;
-
-//     // Add similar reset logic for other filter options
-
-//     // Clear date controllers if you have date filters
-//     todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
-//     DateTime oneWeekAgo = DateTime.now().subtract(const Duration(days: 7));
-//     fromdateController.text = DateFormat('dd-MM-yyyy').format(oneWeekAgo);
-//   });
-// }
 }
 
 class MyCard extends StatefulWidget {
@@ -1202,11 +1144,6 @@ class _MyCardState extends State<MyCard> {
       color: Colors.black,
       fontWeight: FontWeight.bold);
 
-  final _orangeTextStyle = TextStyle(
-      fontFamily: 'Roboto',
-      fontSize: 13,
-      color: HexColor('#e58338'),
-      fontWeight: FontWeight.w600);
   late ViewCollectionProvider viewProvider;
   @override
   void didChangeDependencies() {
@@ -1342,35 +1279,14 @@ class _MyCardState extends State<MyCard> {
                 const SizedBox(
                   height: 5.0,
                 ),
-                //bottom date and amount in card
                 Row(
-                  // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: [
-                    // Container(
-                    //   height: 30,
-                    //   width: 65,
-                    //   decoration: BoxDecoration(
-                    //       borderRadius: BorderRadius.circular(10),
-                    //       color: HexColor('#e58338').withOpacity(0.1)),
-                    //   child: Row(
-                    //     mainAxisAlignment: MainAxisAlignment.center,
-                    //     children: [
-                    //       Text(
-                    //         widget.listResult.statusName,
-                    //         style: CommonUtils.,
-                    //       ),
-                    //     ],
-                    //   ),
-                    // ),
-
-                    // 202
                     Container(
                       width: 65,
                       padding: const EdgeInsets.symmetric(vertical: 3),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
-                        color: getStatusTypeBackgroundColor(
-                            widget.listResult.statusTypeId),
+                        color: statusBgColor,
                       ),
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -1378,16 +1294,14 @@ class _MyCardState extends State<MyCard> {
                           Text(
                             widget.listResult.statusName,
                             style: TextStyle(
-                              fontSize: 12,
-                              color: getStatusTypeTextColor(
-                                  widget.listResult.statusTypeId),
+                              fontSize: 11,
+                              color: statusColor,
                               // Add other text styles as needed
                             ),
                           ),
                         ],
                       ),
                     ),
-
                     const SizedBox(
                       width: 10.0,
                     ),
@@ -1437,66 +1351,41 @@ class _MyCardState extends State<MyCard> {
     );
   }
 
-  Color getStatusTypeBackgroundColor(int statusTypeId) {
-    switch (statusTypeId) {
-      case 7:
-        return Colors.green.withOpacity(0.1);
-      case 8:
-      // Set background color for statusTypeId 8
-        return const Color(0xFFE58338).withOpacity(0.1);
-      case 9:
-      // Set background color for statusTypeId 9
-        return Colors.red.withOpacity(0.1);
-    // Add more cases as needed for other statusTypeId values
-
-      default:
-      // Default background color or handle other cases if needed
-        return Colors.white;
-    }
-  }
-
-  Color getStatusTypeTextColor(int statusTypeId) {
-    switch (statusTypeId) {
-      case 7:
-        return Colors.green;
-      case 8:
-      // Set text color for statusTypeId 8
-        return const Color(0xFFE58338);
-      case 9:
-      // Set text color for statusTypeId 9
-        return Colors.red;
-    // Add more cases as needed for other statusTypeId values
-
-      default:
-      // Default text color or handle other cases if needed
-        return Colors.black;
-    }
-  }
-
+  late Color statusColor;
+  late Color statusBgColor;
   Widget getStatusTypeImage(int statusTypeId) {
     String assetPath;
     late Color iconColor;
 
     switch (statusTypeId) {
-      case 7:
+      case 7: // pending
         assetPath = 'assets/hourglass-start.svg';
-        iconColor = const Color.fromARGB(255, 0, 146, 5);
+        iconColor = const Color(0xFFE58338);
+        statusColor = const Color(0xFFe58338);
+        statusBgColor = const Color.fromARGB(255, 252, 229, 213);
         break;
-      case 8:
+      case 8: // received
         assetPath = 'assets/sb_money-bill-wave.svg';
-        iconColor = const Color(0xFFE58338); // Color for statusTypeId 8
+        iconColor = const Color.fromARGB(255, 0, 146, 5);
+        statusColor = const Color.fromARGB(255, 0, 146, 5);
+        statusBgColor = const Color.fromARGB(255, 229, 253, 230);
 
         // Set color filter or other customization as needed
         break;
-      case 9:
+      case 9: // rejected
         assetPath = 'assets/sensor-alert.svg';
         iconColor = Colors.red;
+        statusColor = Colors.red;
+        statusBgColor = const Color.fromARGB(255, 247, 210, 208);
         // Set color filter or other customization as needed
         break;
     // Add more cases as needed for other statusTypeId values
 
       default:
         assetPath = 'assets/sb_home.svg';
+        iconColor = Colors.yellow;
+        statusColor = Colors.yellow;
+        statusBgColor = Colors.yellow.shade100;
     // Set default image or handle other cases if needed
     }
 

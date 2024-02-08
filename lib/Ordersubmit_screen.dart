@@ -986,8 +986,7 @@ class CartItemWidget extends StatefulWidget {
   final List<OrderItemXrefType> cartItems;
   final ValueNotifier<double> totalSumNotifier;
   final ValueNotifier<double> totalGstAmountNotifier;
-  final VoidCallback
-      onQuantityChanged; // Callback function to notify when quantity changes
+  final VoidCallback onQuantityChanged; // Callback function to notify when quantity changes
 
   CartItemWidget({
     required this.cartItem,
@@ -1021,9 +1020,6 @@ class _CartItemWidgetState extends State<CartItemWidget> {
     // Initialize totalSumNotifier in initState
   }
 
-  void _updateTextController(int value) {
-    _textController.text = value.toString();
-  }
 
   @override
   Widget build(BuildContext context) {
@@ -1087,86 +1083,43 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                   width: (totalWidth - 40) / 2,
                   child: Container(
                     width: (totalWidth - 40) / 2,
-                    child: PlusMinusButtons(
+                    child:
+                    PlusMinusButtons(
                       addQuantity: () {
-                        _textController.text = Quantity.toString();
-                        print('plusclickedtext:-${_textController.text}');
-                        _updateTextController(_orderQty);
                         setState(() {
-                          // _orderQty++;
-                          _updateTextController(_orderQty);
-                          print('clickedonPlusbtn:-$_orderQty');
-
                           _orderQty = (_orderQty ?? 0) + 1;
-                          _textController.text = Quantity.toString();
+                          _textController.text = _orderQty.toString();
+                          // Call the updateQuantity method in your model class
                           widget.cartItem.updateQuantity(_orderQty);
-                          widget.totalSumNotifier.value =
-                              calculateTotalSum(widget.cartItems);
-                          widget.totalGstAmountNotifier.value =
-                              calculateTotalGstAmount(widget.cartItems);
-                          widget.onQuantityChanged();
+                          widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
+                          widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
+                          widget.onQuantityChanged(); // Call onQuantityChanged callback
                         });
                       },
-                      // addQuantity: () {
-                      //   setState(() {
-                      //     // Increase the order quantity
-                      //     _orderQty++;
-                      //
-                      //     // Update the text controller with the new order quantity
-                      //     _textController.text = _orderQty.toString();
-                      //
-                      //     // Update the displayed quantity to match the order quantity
-                      //     Quantity = _orderQty;
-                      //
-                      //     // Update other state variables and notify listeners
-                      //     widget.cartItem.updateQuantity(_orderQty);
-                      //     widget.totalSumNotifier.value =
-                      //         calculateTotalSum(widget.cartItems);
-                      //     widget.totalGstAmountNotifier.value =
-                      //         calculateTotalGstAmount(widget.cartItems);
-                      //     widget.onQuantityChanged();
-                      //   });
-                      // },
-
                       deleteQuantity: () {
                         setState(() {
-                          if (_orderQty > 1) {
-                            _orderQty--;
-                            //  _orderQty = (_orderQty ?? 0) - 1;
-                            print('clickedonminusbtn:-$_orderQty');
-                            _updateTextController(_orderQty);
-                            //  _textController.text = _orderQty.toString();
+                          if (_orderQty! > 1) {
+                            _orderQty = (_orderQty ?? 0) - 1;
+                            _textController.text = _orderQty.toString();
                             widget.cartItem.updateQuantity(_orderQty);
-                            widget.totalSumNotifier.value =
-                                calculateTotalSum(widget.cartItems);
-                            widget.totalGstAmountNotifier.value =
-                                calculateTotalGstAmount(widget.cartItems);
-                            // Update the text controller
-                            widget.onQuantityChanged();
-                            // Notify main widget when quantity changes
+                            widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
+                            widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
+                            widget.onQuantityChanged(); // Call onQuantityChanged callback
                           }
                         });
                       },
                       textController: _textController,
-                      initialValue:
-                          _orderQty ?? 1, // Provide the initial value here
-                      onQuantityChanged: (int value) {
-                        setState(() {
-                          _textController.text = _orderQty.toString();
-                          _orderQty = value;
-                          print('value==$value');
-                          _updateTextController(
-                              _orderQty); // Update the text controller
-                        });
-                      },
+                      orderQuantity: _orderQty, // Pass _orderQty as orderQuantity
+                     // Pass the onQuantityChanged callback function
                       updateTotalPrice: (int value) {
-                        setState(() {
-                          _orderQty = value;
-                          _updateTextController(
-                              _orderQty); // Update the text controller
-                        });
-                      },
+                        // Your updateTotalPrice logic, if any
+                      }, onQuantityChanged: (int value) {  },
                     ),
+
+
+
+
+
                   ),
                 ),
                 SizedBox(width: 8.0),
@@ -1235,10 +1188,12 @@ class _CartItemWidgetState extends State<CartItemWidget> {
 
 // In PlusMinusButtons widget
 
-class PlusMinusButtons extends StatefulWidget {
+
+class PlusMinusButtons extends StatelessWidget {
   final VoidCallback deleteQuantity;
   final VoidCallback addQuantity;
-  final int initialValue;
+  final TextEditingController textController;
+  final int orderQuantity; // Add orderQuantity parameter
   final ValueChanged<int> onQuantityChanged;
   final ValueChanged<int> updateTotalPrice;
 
@@ -1246,27 +1201,12 @@ class PlusMinusButtons extends StatefulWidget {
     Key? key,
     required this.addQuantity,
     required this.deleteQuantity,
-    required this.initialValue,
+    required this.textController,
+    required this.orderQuantity, // Include orderQuantity parameter
     required this.onQuantityChanged,
     required this.updateTotalPrice,
-    required TextEditingController textController,
   }) : super(key: key);
 
-  @override
-  _PlusMinusButtonsState createState() => _PlusMinusButtonsState();
-}
-
-class _PlusMinusButtonsState extends State<PlusMinusButtons> {
-  late TextEditingController _textController;
-
-  @override
-  void initState() {
-    super.initState();
-    _textController =
-        TextEditingController(text: widget.initialValue.toString());
-  }
-
-  int simpleIntInput = 0;
   @override
   Widget build(BuildContext context) {
     return Container(
@@ -1283,11 +1223,11 @@ class _PlusMinusButtonsState extends State<PlusMinusButtons> {
           children: [
             IconButton(
               onPressed: () {
-                widget.deleteQuantity();
+                deleteQuantity();
                 _updateTextController();
               },
               icon: SvgPicture.asset(
-                'assets/minus-small.svg',
+                'assets/minus-small.svg', // Replace with the correct path to your SVG icon
                 color: Colors.white,
                 width: 20.0,
                 height: 20.0,
@@ -1307,7 +1247,7 @@ class _PlusMinusButtonsState extends State<PlusMinusButtons> {
                         color: Colors.white,
                       ),
                       child: TextField(
-                        controller: _textController,
+                        controller: textController,
                         keyboardType: TextInputType.number,
                         inputFormatters: <TextInputFormatter>[
                           FilteringTextInputFormatter.digitsOnly,
@@ -1321,10 +1261,11 @@ class _PlusMinusButtonsState extends State<PlusMinusButtons> {
                         ),
                         textAlign: TextAlign.center,
                         style: CommonUtils.Mediumtext_o_14,
-                        onChanged: (value) {
-                          widget.onQuantityChanged(int.parse(value));
-                          // widget.updateTotalPrice();
-                          widget.updateTotalPrice(int.parse(value));
+                        onChanged: (newValue) {
+                          if (newValue.isNotEmpty) {
+                            int newOrderQuantity = int.tryParse(newValue) ?? 0;
+                            onQuantityChanged(newOrderQuantity);
+                          }
                         },
                       ),
                     ),
@@ -1334,11 +1275,11 @@ class _PlusMinusButtonsState extends State<PlusMinusButtons> {
             ),
             IconButton(
               onPressed: () {
-                widget.addQuantity();
+                addQuantity();
                 _updateTextController();
               },
               icon: SvgPicture.asset(
-                'assets/plus-small.svg',
+                'assets/plus-small.svg', // Replace with the correct path to your SVG icon
                 color: Colors.white,
                 width: 20.0,
                 height: 20.0,
@@ -1351,17 +1292,161 @@ class _PlusMinusButtonsState extends State<PlusMinusButtons> {
   }
 
   void _updateTextController() {
-    setState(() {
-      _textController.text = widget.initialValue.toString();
-    });
-  }
-
-  @override
-  void dispose() {
-    _textController.dispose();
-    super.dispose();
+    print('Current Value: ${textController.text}');
   }
 }
+
+// class PlusMinusButtons extends StatefulWidget {
+//   final VoidCallback deleteQuantity;
+//   final VoidCallback addQuantity;
+//   final int initialValue;
+//   final ValueChanged<int> onQuantityChanged;
+//   final ValueChanged<int> updateTotalPrice;
+//
+//   PlusMinusButtons({
+//     Key? key,
+//     required this.addQuantity,
+//     required this.deleteQuantity,
+//     required this.initialValue,
+//     required this.onQuantityChanged,
+//     required this.updateTotalPrice,
+//     required TextEditingController textController,
+//   }) : super(key: key);
+//
+//   @override
+//   _PlusMinusButtonsState createState() => _PlusMinusButtonsState();
+// }
+
+// class _PlusMinusButtonsState extends State<PlusMinusButtons> {
+//   late TextEditingController _textController;
+//
+//   @override
+//   void initState() {
+//     super.initState();
+//     _textController =
+//         TextEditingController(text: widget.initialValue.toString());
+//   }
+//
+//   int simpleIntInput = 0;
+//   @override
+//   Widget build(BuildContext context) {
+//     return Container(
+//       width: MediaQuery.of(context).size.width / 2.3,
+//       height: 38,
+//       decoration: BoxDecoration(
+//         color: Color(0xFFe78337),
+//         borderRadius: BorderRadius.circular(8.0),
+//       ),
+//       child: Card(
+//         color: Color(0xFFe78337),
+//         margin: EdgeInsets.symmetric(horizontal: 0.0),
+//         child: Row(
+//           children: [
+//             IconButton(
+//               onPressed: () {
+//                 widget.deleteQuantity();
+//                 _updateTextController();
+//               },
+//               icon: SvgPicture.asset(
+//                 'assets/minus-small.svg',
+//                 color: Colors.white,
+//                 width: 20.0,
+//                 height: 20.0,
+//               ),
+//             ),
+//             Expanded(
+//               child: Align(
+//                 alignment: Alignment.center,
+//                 child: Container(
+//                   height: 36,
+//                   child: Padding(
+//                     padding: const EdgeInsets.all(2.0),
+//                     child: Container(
+//                       alignment: Alignment.center,
+//                       width: MediaQuery.of(context).size.width / 5,
+//                       decoration: BoxDecoration(
+//                         color: Colors.white,
+//                       ),
+//                       child:TextField(
+//                         controller: _textController,
+//                         keyboardType: TextInputType.number,
+//                         inputFormatters: <TextInputFormatter>[
+//                           FilteringTextInputFormatter.digitsOnly,
+//                           LengthLimitingTextInputFormatter(5),
+//                         ],
+//                         decoration: InputDecoration(
+//                           border: InputBorder.none,
+//                           focusedBorder: InputBorder.none,
+//                           enabledBorder: InputBorder.none,
+//                           contentPadding: EdgeInsets.only(bottom: 10.0),
+//                         ),
+//                         textAlign: TextAlign.center,
+//                         style: CommonUtils.Mediumtext_o_14,
+//                         onChanged: (value) {
+//                           widget.onQuantityChanged(int.parse(value));
+//                           widget.updateTotalPrice(int.parse(value));
+//                           // Update the text controller when the value changes
+//                           _textController.text = value;
+//                         },
+//                       ),
+//
+//
+//                       // TextField(
+//                       //   controller: _textController,
+//                       //   keyboardType: TextInputType.number,
+//                       //   inputFormatters: <TextInputFormatter>[
+//                       //     FilteringTextInputFormatter.digitsOnly,
+//                       //     LengthLimitingTextInputFormatter(5),
+//                       //   ],
+//                       //   decoration: InputDecoration(
+//                       //     border: InputBorder.none,
+//                       //     focusedBorder: InputBorder.none,
+//                       //     enabledBorder: InputBorder.none,
+//                       //     contentPadding: EdgeInsets.only(bottom: 10.0),
+//                       //   ),
+//                       //   textAlign: TextAlign.center,
+//                       //   style: CommonUtils.Mediumtext_o_14,
+//                       //   onChanged: (value) {
+//                       //     widget.onQuantityChanged(int.parse(value));
+//                       //     // widget.updateTotalPrice();
+//                       //     widget.updateTotalPrice(int.parse(value));
+//                       //   },
+//                       // ),
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             ),
+//             IconButton(
+//               onPressed: () {
+//                 widget.addQuantity();
+//                 _updateTextController();
+//               },
+//               icon: SvgPicture.asset(
+//                 'assets/plus-small.svg',
+//                 color: Colors.white,
+//                 width: 20.0,
+//                 height: 20.0,
+//               ),
+//             ),
+//           ],
+//         ),
+//       ),
+//     );
+//   }
+//
+//   void _updateTextController() {
+//     setState(() {
+//       _textController.text = widget.initialValue.toString();
+//     });
+//   }
+//
+//   @override
+//   void dispose() {
+//     _textController.dispose();
+//     super.dispose();
+//   }
+// }
 
 double calculateTotalSumForProduct(OrderItemXrefType cartItem) {
   return cartItem.orderQty! *

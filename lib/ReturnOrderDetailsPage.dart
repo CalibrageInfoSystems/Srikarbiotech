@@ -45,27 +45,26 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
   void initState() {
     super.initState();
     apiData = getApiData();
-    apiData.then((value) => test(value));
+    apiData.then((value) => initializingApiData(value));
   }
 
-  void test(Map<String, dynamic> apiData) {
+  void initializingApiData(Map<String, dynamic> apiData) {
     try {
       List<Map<String, dynamic>> returnOrderDetailsResultListData =
-          List<Map<String, dynamic>>.from(
-              apiData['response']['returnOrderDetailsResult']);
+      List<Map<String, dynamic>>.from(
+          apiData['response']['returnOrderDetailsResult']);
 
       returnOrderDetailsResultList = returnOrderDetailsResultListData
           .map((item) => ReturnOrderDetailsResult.fromJson(item))
           .toList();
-
       List<Map<String, dynamic>> returnOrderItemXrefListData =
-          List<Map<String, dynamic>>.from(
-              apiData['response']['returnOrderItemXrefList']);
+      List<Map<String, dynamic>>.from(
+          apiData['response']['returnOrderItemXrefList']);
       returnOrderItemXrefList = returnOrderItemXrefListData
           .map((item) => ReturnOrderItemXrefList.fromJson(item))
           .toList();
     } catch (e) {
-      print('Error initializing data: $e');
+      debugPrint('Error initializing data: $e');
     }
   }
 
@@ -99,7 +98,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
           } else {
             if (snapshot.hasData) {
               List<ReturnOrderDetailsResult> result =
-                  List.from(returnOrderDetailsResultList);
+              List.from(returnOrderDetailsResultList);
               if (result.isNotEmpty) {
                 ReturnOrderDetailsResult data = result[0];
                 return SingleChildScrollView(
@@ -167,7 +166,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                           shrinkWrap: true,
                           children: List.generate(
                             returnOrderDetailsResultList.length,
-                            (index) => ShipmentDetailsCard(
+                                (index) => ShipmentDetailsCard(
                                 orderId: widget.orderId, data: result[index]),
                           ),
                         ),
@@ -183,7 +182,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                           shrinkWrap: true,
                           children: List.generate(
                             returnOrderItemXrefList.length,
-                            (index) =>
+                                (index) =>
                                 ItemCard(data: returnOrderItemXrefList[index]),
                           ),
                         ),
@@ -515,10 +514,10 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                                       }).toList(),
                                       options: CarouselOptions(
                                         scrollPhysics:
-                                            const BouncingScrollPhysics(),
+                                        const BouncingScrollPhysics(),
                                         autoPlay: true,
                                         height:
-                                            MediaQuery.of(context).size.height,
+                                        MediaQuery.of(context).size.height,
                                         aspectRatio: 23 / 9,
                                         viewportFraction: 1,
                                         onPageChanged: (index, reason) {
