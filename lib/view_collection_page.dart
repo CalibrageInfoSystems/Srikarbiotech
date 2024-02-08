@@ -32,8 +32,15 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   // String url = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollections/null';
 
   final _orangeColor = HexColor('#e58338');
-  final _borderforContainer = BoxDecoration(
+  final _borderForFilter = BoxDecoration(
       borderRadius: BorderRadius.circular(10),
+      border: Border.all(
+        color: HexColor('#e58338'),
+      ));
+
+  final _borderForAppliedFilter = BoxDecoration(
+      borderRadius: BorderRadius.circular(10),
+      color: const Color.fromARGB(255, 250, 214, 152),
       border: Border.all(
         color: HexColor('#e58338'),
       ));
@@ -57,6 +64,8 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   late ViewCollectionProvider viewProvider;
   int CompneyId = 0;
   String? slpCode = "";
+  String? userId = "";
+
   @override
   void initState() {
     super.initState();
@@ -82,12 +91,13 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   }
 
   Future<List<ListResult>> getCollection() async {
+    userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
+    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     DateTime currentDate = DateTime.now();
-    DateTime oneWeekBackDate = currentDate.subtract(Duration(days: 7));
+    DateTime oneWeekBackDate = currentDate.subtract(const Duration(days: 7));
     String formattedCurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
     String formattedOneWeekBackDate =
     DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
-    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
 
     try {
       final url = Uri.parse(
@@ -98,10 +108,10 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
         "PartyCode": null,
         "FormDate": formattedOneWeekBackDate,
         "ToDate": formattedCurrentDate,
-        "CompanyId": CompneyId
+        "CompanyId": CompneyId,
+        "UserId": userId
       };
-      print(jsonEncode(requestBodyObj));
-
+      print('===========>${jsonEncode(requestBodyObj)}');
       final response = await http.post(
         url,
         body: json.encode(requestBodyObj),
@@ -204,7 +214,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
     );
   }
 
-  PreferredSizeWidget _viewCollectionAppBar() {
+  AppBar _viewCollectionAppBar() {
     return AppBar(
       backgroundColor: const Color(0xFFe78337),
       automaticallyImplyLeading: false,
@@ -218,7 +228,8 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                 padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: GestureDetector(
                   onTap: () {
-                    // Handle the click event for the back button
+                    // call clear filter method to clear the data
+                    viewProvider.clearFilter();
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -265,7 +276,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                 );
               } else {
                 // Return a placeholder or loading indicator
-                return SizedBox.shrink();
+                return const SizedBox.shrink();
               }
             },
           ),
@@ -311,7 +322,9 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
             child: Container(
               height: 45,
               width: 45,
-              decoration: _borderforContainer,
+              decoration: viewProvider.filterStatus
+                  ? _borderForAppliedFilter
+                  : _borderForFilter,
               child: Center(
                 child: SvgPicture.asset(
                   'assets/apps-sort.svg',
@@ -327,6 +340,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
 
   Future<void> getshareddata() async {
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
 
     print('Company ID: $CompneyId');
   }
@@ -361,7 +375,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   // ... Other variables and methods
   final _primaryOrange = const Color(0xFFe58338);
   int selectedChipIndex = 1;
-  final GlobalKey<FormState> _filterFormKey = GlobalKey<FormState>();
 
   final _titleTextStyle = const TextStyle(
       color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold);
@@ -381,7 +394,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   int? payid;
   late String selectedName;
   ApiResponse? apiResponse;
-  int indexselected = 0;
   String? Selected_PaymentMode = "";
   TextEditingController todateController = TextEditingController();
   TextEditingController fromdateController = TextEditingController();
@@ -395,20 +407,34 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   String? slpCode = "";
   @override
   void initState() {
-    todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    DateTime oneWeekAgo = DateTime.now().subtract(Duration(days: 7));
-    fromdateController.text = DateFormat('dd-MM-yyyy').format(oneWeekAgo);
+    // todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    // DateTime oneWeekAgo = DateTime.now().subtract(const Duration(days: 7));
+    // fromdateController.text = DateFormat('dd-MM-yyyy').format(oneWeekAgo);
     fetchData();
     getpaymentmethods();
     fetchdropdownitems();
     super.initState();
   }
 
+  late ViewCollectionProvider viewProvider;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+
+    viewProvider = Provider.of<ViewCollectionProvider>(context);
+    initializeFromAndToDates();
+  }
+
+  void initializeFromAndToDates() {
+    fromdateController.text = viewProvider.fromDateValue;
+    todateController.text = viewProvider.toDateValue;
+  }
+
   Future<void> fetchdropdownitems() async {
     savedCompanyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     final apiUrl =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/' +
-            '$savedCompanyId';
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'
+        '$savedCompanyId';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -472,7 +498,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       if (picked != null) {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         controller.text = formattedDate;
-
+        viewProvider.toDateValue = formattedDate;
         // Save selected dates as DateTime objects
         selectedDate = picked;
 
@@ -485,7 +511,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     }
   }
 
-  Widget buildDateInput(
+  Widget buildDateToInput(
       BuildContext context,
       String labelText,
       TextEditingController controller,
@@ -498,11 +524,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           padding: const EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
           child: Text(
             labelText,
-            style: const TextStyle(
-              fontSize: 16.0,
-              color: Color(0xFF5f5f5f),
-              fontWeight: FontWeight.bold,
-            ),
+            style: CommonUtils.txSty_13O_F6,
             textAlign: TextAlign.start,
           ),
         ),
@@ -526,24 +548,14 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 10.0, top: 0.0),
+                      padding: const EdgeInsets.only(left: 15, right: 5),
                       child: TextFormField(
                         controller: controller,
                         enabled: false,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFFe78337),
-                        ),
+                        style: CommonUtils.txSty_13O_F6,
                         decoration: InputDecoration(
                           hintText: labelText,
-                          hintStyle: const TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFFe78337),
-                          ),
+                          hintStyle: CommonUtils.txSty_13O_F6,
                           border: InputBorder.none,
                         ),
                       ),
@@ -576,6 +588,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     DateTime initialDate;
 
     if (controller.text.isNotEmpty) {
+      print('###########controller.text: ${controller.text}');
       try {
         initialDate = DateTime.parse(controller.text);
       } catch (e) {
@@ -597,14 +610,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       if (picked != null) {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         controller.text = formattedDate;
-
+        viewProvider.fromDateValue = formattedDate;
         // Save selected dates as DateTime objects
         selectedfromdateDate = picked;
 
         // Print formatted date
         // print("fromattedfromdate: ${DateFormat('yyyy-MM-dd').format(picked)}");
         selectformattedfromdate = DateFormat('yyyy-MM-dd').format(picked);
-        print("selectformatted_fromdate: $selectformattedfromdate");
       }
     } catch (e) {
       print("Error selecting date: $e");
@@ -624,11 +636,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           padding: const EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
           child: Text(
             labelText,
-            style: const TextStyle(
-              fontSize: 16.0,
-              color: Color(0xFF5f5f5f),
-              fontWeight: FontWeight.bold,
-            ),
+            style: CommonUtils.txSty_13O_F6,
             textAlign: TextAlign.start,
           ),
         ),
@@ -640,7 +648,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             width: MediaQuery.of(context).size.width,
             height: 40.0,
             decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(12.0),
+              borderRadius: BorderRadius.circular(10.0),
               border: Border.all(
                 color: const Color(0xFFe78337),
                 width: 1.0,
@@ -652,24 +660,15 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
-                      padding: const EdgeInsets.only(left: 10.0, top: 0.0),
+                      padding: const EdgeInsets.only(left: 15, right: 5),
                       child: TextFormField(
                         controller: controller,
+                        // initialValue: viewProvider.fromDateValue,
                         enabled: false,
-                        style: const TextStyle(
-                          fontSize: 14,
-                          fontFamily: 'Roboto',
-                          fontWeight: FontWeight.w600,
-                          color: Color(0xFFe78337),
-                        ),
+                        style: CommonUtils.txSty_13O_F6,
                         decoration: InputDecoration(
                           hintText: labelText,
-                          hintStyle: const TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w500,
-                            color: Color(0xFFe78337),
-                          ),
+                          hintStyle: CommonUtils.txSty_13O_F6,
                           border: InputBorder.none,
                         ),
                       ),
@@ -721,165 +720,147 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
   @override
   Widget build(BuildContext context) {
-    return SingleChildScrollView(
-        child: Padding(
-          padding: const EdgeInsets.all(20),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            mainAxisSize: MainAxisSize.min,
-            children: <Widget>[
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: <Widget>[
-                  Text(
-                    'Filter By',
-                    style: _titleTextStyle,
-                  ),
-                  GestureDetector(
-                    onTap: () {
-                      // Call the function to clear all filters
-                      clearAllFilters();
-                    },
-                    child: Text(
-                      'Clear all filters',
-                      style: _clearTextStyle,
+    return Consumer<ViewCollectionProvider>(
+      builder: (context, provider, _) => SingleChildScrollView(
+          child: Padding(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Filter By',
+                      style: _titleTextStyle,
                     ),
-                  ),
-                ],
-              ),
-              Container(
-                margin: const EdgeInsets.only(top: 5, bottom: 12),
-                child: const Divider(
-                  height: 5,
-                ),
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: Text(
-                      'Party',
-                      style: _labelTextStyle,
-                    ),
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 0, top: 5.0, right: 0),
-                    child: Container(
-                      // width: double.infinity,
-                      height: 40.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        border: Border.all(
-                          color: const Color(0xFFe58338),
-                        ),
+                    GestureDetector(
+                      onTap: () {
+                        provider.clearFilter();
+                      },
+                      child: Text(
+                        'Clear all filters',
+                        style: _clearTextStyle,
                       ),
+                    ),
+                  ],
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 5, bottom: 12),
+                  child: const Divider(
+                    height: 5,
+                  ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: Text(
+                        'Party',
+                        style: CommonUtils.txSty_13O_F6,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 4.0,
+                    ),
+                    Container(
+                      height: 40.0,
+                   //todo
+                decoration: CommonUtils.decorationO_R10W1,
                       child: DropdownButtonHideUnderline(
                         child: ButtonTheme(
                           alignedDropdown: true,
                           child: DropdownButton<int>(
-                              value: selectedCardCode,
-                              iconSize: 20,
-                              icon: null,
-                              isExpanded: true,
-                              underline: const SizedBox(),
-                              style: const TextStyle(
-                                color: Color(0xFFe58338),
-                              ),
-                              onChanged: (value) {
-                                setState(() {
-                                  selectedCardCode = value!;
-                                  if (selectedCardCode != -1) {
-                                    selectedValue =
-                                    dropdownItems[selectedCardCode]['cardCode'];
-                                    selectedName =
-                                    dropdownItems[selectedCardCode]['cardName'];
-
-                                    print("selectedValue:$selectedValue");
-                                    print("selectedName:$selectedName");
-                                  } else {
-                                    print("==========");
-                                    print(selectedValue);
-                                    print(selectedName);
-                                  }
-                                  // isDropdownValid = selectedTypeCdId != -1;
-                                });
-                              },
-                              items: [
-                                const DropdownMenuItem<int>(
-                                  value: -1,
-                                  child: Text('Select Party'), // here
-                                ),
-                                ...dropdownItems.asMap().entries.map((entry) {
-                                  final index = entry.key;
-                                  final item = entry.value;
-                                  return DropdownMenuItem<int>(
-                                      value: index,
-                                      child: Text(
-                                        item['cardName'],
-                                        overflow: TextOverflow.visible,
-                                        // wrapText: true,
-                                      ));
-                                }).toList(),
-                              ]),
-                        ),
-                      ),
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 10.0,
-                  ),
-                  Padding(
-                    padding: const EdgeInsets.only(left: 5.0),
-                    child: Text(
-                      'Purpose',
-                      style: _labelTextStyle,
-                    ),
-                  ),
-                  const SizedBox(
-                    height: 4.0,
-                  ),
-                  Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 40.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(12.0),
-                        border: Border.all(
-                          color: const Color(0xFFe78337),
-                          width: 1.0,
-                        ),
-                      ),
-                      child: Padding(
-                        padding: const EdgeInsets.all(8.0),
-                        child: purposeList.isEmpty
-                            ? LoadingAnimationWidget.newtonCradle(
-                          color: Colors.blue, // Set the color as needed
-                          size: 40.0,
-                        ) // S // Show a loading indicator
-                            : DropdownButton<String>(
-                          hint: const Text(
-                            'Select Purpose',
-                            style: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Roboto',
-                              //    fontWeight: FontWeight.w600,
-                              color: Color(0xFFe78337),
+                            hint: Text(
+                              'Select Party',
+                              style: CommonUtils.txSty_13O_F6,
+                            ),
+                            value: provider.dropDownParty,
+                            onChanged: (int? value) {
+                              setState(() {
+                                selectedCardCode = value!;
+                                provider.dropDownParty = value;
+                                if (selectedCardCode != -1) {
+                                  selectedValue =
+                                  dropdownItems[selectedCardCode]['cardCode'];
+                                  selectedName =
+                                  dropdownItems[selectedCardCode]['cardName'];
+                                  provider.getApiPartyCode =
+                                  dropdownItems[selectedCardCode]['cardCode'];
+                                  print("selectedValue:$selectedValue");
+                                  print("selectedName:$selectedName");
+                                } else {
+                                  print("==========");
+                                  print(selectedValue);
+                                  print(selectedName);
+                                }
+                                // isDropdownValid = selectedTypeCdId != -1;
+                              });
+                            },
+                            items: dropdownItems.asMap().entries.map((entry) {
+                              final index = entry.key;
+                              final item = entry.value;
+                              return DropdownMenuItem<int>(
+                                  value: index,
+                                  child: Text(
+                                    item['cardName'],
+                                    overflow: TextOverflow.visible,
+                                    // wrapText: true,
+                                  ));
+                            }).toList(),
+                            iconSize: 20,
+                            icon: null,
+                            isExpanded: true,
+                            underline: const SizedBox(),
+                            style: const TextStyle(
+                              color: Color(0xFFe58338),
                             ),
                           ),
-                          value: selectedPurpose,
+                        ),
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: Text(
+                        'Purpose',
+                        style: CommonUtils.txSty_13O_F6,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 4.0,
+                    ),
+                    Container(
+                        height: 40.0,
+                        padding: const EdgeInsets.only(left: 15, right: 5),
+                      //TODO
+                     decoration: CommonUtils.decorationO_R10W1,
+                        child: purposeList.isEmpty
+                            ? LoadingAnimationWidget.newtonCradle(
+                          color: Colors.blue,
+                          size: 40.0,
+                        )
+                            : DropdownButton<String>(
+                          hint: Text(
+                            'Select Purpose', // Purpose
+                            style: CommonUtils.txSty_13O_F6,
+                          ),
+                          value: provider.dropDownPurpose,
                           onChanged: (String? newValue) {
                             setState(() {
                               selectedPurpose = newValue;
-
-                              // Find the selected Purpose object
+                              provider.dropDownPurpose = newValue;
                               selectedPurposeObj = purposeList.firstWhere(
                                     (purpose) => purpose.fldValue == newValue,
                                 orElse: () => Purpose(
                                     fldValue: '', descr: '', purposeName: ''),
                               );
                               purposename = selectedPurposeObj!.fldValue;
-                              print(
-                                  'selectpurposeName: ${selectedPurposeObj?.fldValue}');
+                              provider.getApiPurpose = newValue;
                             });
                           },
                           items: purposeList.map((Purpose purpose) {
@@ -897,207 +878,209 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                             );
                           }).toList(),
                           icon: const Icon(Icons.arrow_drop_down),
-                          iconSize: 24,
+                          iconSize: 20,
                           isExpanded: true,
                           underline: const SizedBox(),
-                        ),
-                      ))
-                ],
-              ),
-
-              const SizedBox(
-                height: 10.0,
-              ),
-              Container(
-                height: 40,
-                child: apiResponse == null
-                    ? Center(child: CircularProgressIndicator.adaptive())
-                    : ListView.builder(
-                  scrollDirection: Axis.horizontal,
-                  shrinkWrap: true,
-                  itemCount: apiResponse!.listResult.length +
-                      1, // Add 1 for the "All" option
-                  itemBuilder: (BuildContext context, int index) {
-                    bool isSelected = index == indexselected;
-                    PaymentMode currentPaymode;
-
-                    // Handle the "All" option
-                    if (index == 0) {
-                      currentPaymode = PaymentMode(
-                        // Provide default values or handle the null case as needed
-                        typeCdId: null,
-                        classTypeId: 3,
-                        name: 'All',
-                        desc: 'All',
-                        tableName: 'all',
-                        columnName: 'all',
-                        sortOrder: 0,
-                        isActive: true,
-                      );
-                    } else {
-                      currentPaymode = apiResponse!.listResult[
-                      index - 1]; // Adjust index for actual data
-                    }
-
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          indexselected = index;
-                          selectedPaymode = currentPaymode;
-                        });
-                        payid = currentPaymode.typeCdId;
-                        Selected_PaymentMode = currentPaymode.desc;
-                        print('payid:$payid');
-                      },
-                      child: Container(
-                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                        decoration: BoxDecoration(
-                          color: isSelected
-                              ? Color(0xFFe78337)
-                              : Color(0xFFe78337).withOpacity(0.1),
-                          border: Border.all(
-                            color: isSelected
-                                ? Color(0xFFe78337)
-                                : Color(0xFFe78337),
-                            width: 1.0,
-                          ),
-                          borderRadius: BorderRadius.circular(8.0),
-                        ),
-                        child: IntrinsicWidth(
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child: Row(
-                                  children: [
-                                    Text(
-                                      '${currentPaymode.desc.toString()}',
-                                      style: TextStyle(
-                                        color: isSelected
-                                            ? Colors.white
-                                            : Colors.black,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ],
-                          ),
-                        ),
-                      ),
-                    );
-                  },
+                        ))
+                  ],
                 ),
-              ),
 
-              const SizedBox(
-                height: 10.0,
-              ), // From date
+                const SizedBox(
+                  height: 10.0,
+                ),
+                SizedBox(
+                  height: 40,
+                  child: apiResponse == null
+                      ? const Center(child: CircularProgressIndicator.adaptive())
+                      : ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: apiResponse!.listResult.length +
+                        1, // Add 1 for the "All" option
+                    itemBuilder: (BuildContext context, int index) {
+                      bool isSelected = index == provider.dropDownStatus;
+                      PaymentMode currentPaymode;
 
-              // To Date
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildDateInputfromdate(
-                    context,
-                    'From Date',
-                    fromdateController,
-                        () => _selectfromDate(context, fromdateController),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  buildDateInput(
-                    context,
-                    'To Date',
-                    todateController,
-                        () => _selectDate(context, todateController),
-                  ),
-                ],
-              ),
-              const SizedBox(
-                height: 10.0,
-              ),
-              Row(
-                children: [
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        Navigator.of(context).pop();
-                      },
-                      style: ElevatedButton.styleFrom(
-                        textStyle: const TextStyle(
-                          color: Colors.red,
+                      // Handle the "All" option
+                      if (index == 0) {
+                        currentPaymode = PaymentMode(
+                          // Provide default values or handle the null case as needed
+                          typeCdId: null,
+                          classTypeId: 3,
+                          name: 'All',
+                          desc: 'All',
+                          tableName: 'all',
+                          columnName: 'all',
+                          sortOrder: 0,
+                          isActive: true,
+                        );
+                      } else {
+                        currentPaymode = apiResponse!.listResult[
+                        index - 1]; // Adjust index for actual data
+                      }
+                      return GestureDetector(
+                        onTap: () {
+                          // ###
+                          setState(() {
+                            provider.dropDownStatus = index;
+                            selectedPaymode = currentPaymode;
+                          });
+                          payid = currentPaymode.typeCdId;
+                          provider.getApiStatusId = currentPaymode.typeCdId;
+                          Selected_PaymentMode = currentPaymode.desc;
+                          print('payid:$payid');
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFFe78337)
+                                : const Color(0xFFe78337).withOpacity(0.1),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFFe78337)
+                                  : const Color(0xFFe78337),
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: IntrinsicWidth(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        currentPaymode.desc.toString(),
+                                        style: TextStyle(
+                                          color: isSelected
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
                         ),
-                        side: const BorderSide(
-                          color: Colors.red,
+                      );
+                    },
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 10.0,
+                ),
+
+                // From date
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildDateInputfromdate(
+                      context,
+                      'From Date',
+                      fromdateController,
+                          () => _selectfromDate(context, fromdateController),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+
+                // To Date
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //333
+                    buildDateToInput(
+                      context,
+                      'To Date',
+                      todateController,
+                          () => _selectDate(context, todateController),
+                    ),
+                  ],
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          textStyle: const TextStyle(
+                            color: Colors.red,
+                          ),
+                          side: const BorderSide(
+                            color: Colors.red,
+                          ),
+                          backgroundColor: Colors.white,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
                         ),
-                        backgroundColor: Colors.white,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(
+                            color: Colors.red,
                           ),
                         ),
                       ),
-                      child: const Text(
-                        'Cancel',
-                        style: TextStyle(
-                          color: Colors.red,
-                        ),
-                      ),
                     ),
-                  ),
-                  const SizedBox(
-                    width: 20,
-                  ),
-                  Expanded(
-                    child: ElevatedButton(
-                      onPressed: () {
-                        getappliedflitters(context);
-                      },
-                      style: ElevatedButton.styleFrom(
-                        textStyle: const TextStyle(
-                          color: Colors.white,
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          //apply
+                          getappliedflitters(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          textStyle: const TextStyle(
+                            color: Colors.white,
+                          ),
+                          backgroundColor: _primaryOrange,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
                         ),
-                        backgroundColor: _primaryOrange,
-                        shape: const RoundedRectangleBorder(
-                          borderRadius: BorderRadius.all(
-                            Radius.circular(10),
+                        child: const Text(
+                          'Apply',
+                          style: TextStyle(
+                            color: Colors.white,
                           ),
                         ),
                       ),
-                      child: const Text(
-                        'Apply',
-                        style: TextStyle(
-                          color: Colors.white,
-                        ),
-                      ),
                     ),
-                  ),
-                ],
-              ),
-            ],
-          ),
-        ));
-  }
-
-  late ViewCollectionProvider viewProvider;
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-
-    viewProvider = Provider.of<ViewCollectionProvider>(context);
+                  ],
+                ),
+              ],
+            ),
+          )),
+    );
   }
 
 // x000
   Future<void> getappliedflitters(BuildContext context) async {
+    print('_____________getappliedflitters___________');
+    viewProvider.filterStatus = true;
+
+    int companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
     DateTime todate = DateFormat('dd-MM-yyyy').parse(todateController.text);
     selectformattedtodate = DateFormat('yyyy-MM-dd').format(todate);
 
@@ -1107,19 +1090,19 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
     print('Converted to date: $selectformattedtodate');
     print('Converted from date: $selectformattedfromdate');
-
     try {
       final url = Uri.parse(
           'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollectionsbyMobileSearch');
       final requestBodyObj = {
-        "PurposeName": purposename,
-        "StatusId": payid,
-        "PartyCode": selectedValue,
+        "PurposeName": viewProvider.getApiPurpose,
+        "StatusId": viewProvider.getApiStatusId,
+        "PartyCode": viewProvider.getApiPartyCode,
         "FormDate": selectformattedfromdate,
         "ToDate": selectformattedtodate,
-        "CompanyId": savedCompanyId
+        "CompanyId": companyId,
+        "UserId": userId
       };
-      print('===========>${jsonEncode(requestBodyObj)}');
+      print('###########${jsonEncode(requestBodyObj)}');
       final response = await http.post(
         url,
         body: json.encode(requestBodyObj),
@@ -1163,30 +1146,29 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     Navigator.of(context).pop();
   }
 
-  void clearAllFilters() {
-    setState(() {
-      // Reset the selected values to their initial state or default values
-      selectedCardCode = -1;
-      selectedValue = null;
-      selectedName = "";
+// void clearAllFilters() {
+//   setState(() {
+//     // Reset the selected values to their initial state or default values
+//     selectedCardCode = -1;
+//     selectedValue = null;
+//     selectedName = "";
 
-      selectedPurpose = null;
-      selectedPurposeObj = null;
-      purposename = "";
+//     selectedPurpose = null;
+//     selectedPurposeObj = null;
+//     purposename = "";
 
-      indexselected = 0;
-      selectedPaymode = null;
-      payid = null;
-      Selected_PaymentMode = null;
+//     selectedPaymode = null;
+//     payid = null;
+//     Selected_PaymentMode = null;
 
-      // Add similar reset logic for other filter options
+//     // Add similar reset logic for other filter options
 
-      // Clear date controllers if you have date filters
-      todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
-      DateTime oneWeekAgo = DateTime.now().subtract(Duration(days: 7));
-      fromdateController.text = DateFormat('dd-MM-yyyy').format(oneWeekAgo);
-    });
-  }
+//     // Clear date controllers if you have date filters
+//     todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
+//     DateTime oneWeekAgo = DateTime.now().subtract(const Duration(days: 7));
+//     fromdateController.text = DateFormat('dd-MM-yyyy').format(oneWeekAgo);
+//   });
+// }
 }
 
 class MyCard extends StatefulWidget {
@@ -1225,6 +1207,12 @@ class _MyCardState extends State<MyCard> {
       fontSize: 13,
       color: HexColor('#e58338'),
       fontWeight: FontWeight.w600);
+  late ViewCollectionProvider viewProvider;
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    viewProvider = Provider.of<ViewCollectionProvider>(context);
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -1233,21 +1221,15 @@ class _MyCardState extends State<MyCard> {
     String formattedDate = DateFormat('dd MMM, yyyy').format(date);
     return GestureDetector(
       onTap: () {
-        // Navigator.of(context)
-        //     .pushNamed('/statusScreen', arguments: widget.listResult);
+        viewProvider.clearFilter();
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => ViewCollectionCheckOut(
-              //
               listResult: widget.listResult,
               position: widget.index, // Assuming you have the index available
             ),
           ),
         );
-
-        // Navigator.of(context).pushReplacement(
-        //   MaterialPageRoute(builder: (context) => ViewCollectionCheckOut()),
-        // );
       },
       child: Container(
         margin: const EdgeInsets.only(bottom: 10),
@@ -1329,7 +1311,7 @@ class _MyCardState extends State<MyCard> {
                                       ),
                                       Text(
                                         widget.listResult.purposeName,
-                                        style: _orangeTextStyle,
+                                        style: CommonUtils.txSty_13O_F6,
                                       ),
                                     ],
                                   ),
@@ -1346,7 +1328,7 @@ class _MyCardState extends State<MyCard> {
                                   ),
                                   Text(
                                     widget.listResult.paymentTypeName,
-                                    style: _orangeTextStyle,
+                                    style: CommonUtils.txSty_13O_F6,
                                   ),
                                 ],
                               )
@@ -1375,7 +1357,7 @@ class _MyCardState extends State<MyCard> {
                     //     children: [
                     //       Text(
                     //         widget.listResult.statusName,
-                    //         style: _orangeTextStyle,
+                    //         style: CommonUtils.,
                     //       ),
                     //     ],
                     //   ),
@@ -1421,7 +1403,7 @@ class _MyCardState extends State<MyCard> {
                               // ),
                               Text(
                                 formattedDate,
-                                style: _orangeTextStyle,
+                                style: CommonUtils.txSty_13O_F6,
                               ),
                             ],
                           ),
@@ -1438,7 +1420,7 @@ class _MyCardState extends State<MyCard> {
                               ),
                               Text(
                                 '${widget.listResult.amount}',
-                                style: _orangeTextStyle,
+                                style: CommonUtils.txSty_13O_F6,
                               ),
                             ],
                           )

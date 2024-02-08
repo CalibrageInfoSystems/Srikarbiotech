@@ -42,6 +42,7 @@ class _VieworderPageState extends State<ViewOrders> {
 
   late ViewOrdersProvider viewOrdersProvider;
   int CompneyId = 0;
+  String? userId = "";
   @override
   void initState() {
     super.initState();
@@ -70,6 +71,7 @@ class _VieworderPageState extends State<ViewOrders> {
   }
 
   Future<List<OrderResult>> getorder() async {
+    userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
     DateTime currentDate = DateTime.now();
     DateTime oneWeekBackDate = currentDate.subtract(Duration(days: 7));
     String formattedCurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
@@ -84,7 +86,9 @@ class _VieworderPageState extends State<ViewOrders> {
       "StatusId": null,
       "FormDate": formattedOneWeekBackDate,
       "ToDate": formattedCurrentDate,
-      "CompanyId": CompneyId // passing 0
+      "CompanyId": CompneyId ,
+      "UserId": userId// passing 0
+
     };
     print('===========>${jsonEncode(requestBody)}');
 

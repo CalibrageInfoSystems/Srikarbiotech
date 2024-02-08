@@ -10,7 +10,7 @@ import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
-import 'package:quantity_input/quantity_input.dart';
+
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
@@ -20,6 +20,7 @@ import 'package:srikarbiotech/transport_payment.dart';
 
 import 'CartProvider.dart';
 import 'Common/SharedPrefsData.dart';
+import 'Createorderscreen.dart';
 import 'HomeScreen.dart';
 import 'Model/CartHelper.dart';
 import 'Model/OrderItemXrefType.dart';
@@ -128,7 +129,25 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
-                      Navigator.of(context).pop();
+                      try {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                      builder: (context) => Createorderscreen(
+                      cardName:widget.cardName,
+                      cardCode: widget.cardCode,
+                      address: widget.address,
+                      state: widget.state,
+                      phone: widget.phone,
+                      proprietorName:widget.proprietorName,
+                      gstRegnNo:widget.gstRegnNo,
+                      creditLine:widget.creditLine,
+                      balance:widget.balance),
+                      ),
+    );
+    } catch (e) {
+    print("Error navigating: $e");
+    }
                     },
                     child: Icon(
                       Icons.chevron_left,
@@ -150,8 +169,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       // Access the cart data from the provider
-                      cartItems =
-                          Provider.of<CartProvider>(context).getCartItems();
+                      cartItems = Provider.of<CartProvider>(context).getCartItems();
                       // Update the globalCartLength
                       globalCartLength = cartItems.length;
                     }
@@ -241,202 +259,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
             ),
 
             SizedBox(height: 10),
-            // Container(
-            //   width: MediaQuery.of(context).size.width,
-            //   padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-            //   child: IntrinsicHeight(
-            //     child: Card(
-            //       // color: Colors.white,
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(5.0),
-            //       ),
-            //       child: Container(
-            //         width: MediaQuery.of(context).size.width,
-            //         decoration: BoxDecoration(
-            //           borderRadius: BorderRadius.circular(5.0),
-            //           color: Colors.white,
-            //
-            //           // color: Colors.white
-            //         ),
-            //         //  color: Colors.white,
-            //         padding: EdgeInsets.all(8.0),
-            //         child: Column(
-            //           children: [
-            //             Column(
-            //               crossAxisAlignment: CrossAxisAlignment.start,
-            //               mainAxisAlignment: MainAxisAlignment.start,
-            //               children: [
-            //                 Row(
-            //                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-            //                   children: [
-            //                     Padding(
-            //                       padding: EdgeInsets.only(left: 0.0, top: 8.0),
-            //                       child: Text(
-            //                         'Transport  Details',
-            //                         style: TextStyle(
-            //                           fontSize: 13.0,
-            //                           color: Color(0xFF414141),
-            //                           fontWeight: FontWeight.bold,
-            //                         ),
-            //                         textAlign: TextAlign.start,
-            //                       ),
-            //                     ),
-            //                     Padding(
-            //                       padding:
-            //                           EdgeInsets.only(right: 5.0, top: 8.0),
-            //                       child: GestureDetector(
-            //                         onTap: () {
-            //                           Navigator.pushReplacement(
-            //                             context,
-            //                             MaterialPageRoute(
-            //                                 builder: (context) =>
-            //                                     transport_payment(
-            //                                       cardName: widget.cardName,
-            //                                       cardCode: widget.cardCode,
-            //                                       address: widget.address,
-            //                                       state: widget.state,
-            //                                       phone: widget.phone,
-            //                                       proprietorName:
-            //                                           widget.proprietorName,
-            //                                       gstRegnNo: widget.gstRegnNo,
-            //                                       preferabletransport:
-            //                                           widget.TransportName,
-            //                                       bookingplace:
-            //                                           widget.BookingPlace,
-            //                                       creditLine: 0.0,
-            //                                       balance: 0.0,
-            //                                     )),
-            //                           );
-            //                         },
-            //                         child: SvgPicture.asset(
-            //                           'assets/edit.svg',
-            //                           width: 20.0,
-            //                           height: 20.0,
-            //                           color: Color(0xFFe78337),
-            //                         ),
-            //                       ),
-            //                     ),
-            //                   ],
-            //                 ),
-            //                 SizedBox(
-            //                   height: 10.0,
-            //                 ),
-            //               ],
-            //             ),
-            //             Container(
-            //               decoration: BoxDecoration(
-            //                 border: Border.all(
-            //                   color:
-            //                       Colors.grey, // specify your border color here
-            //                   width: 1.0, // specify the border width
-            //                 ),
-            //                 borderRadius: BorderRadius.circular(
-            //                     8.0), // specify the border radius
-            //               ),
-            //               width: MediaQuery.of(context).size.width,
-            //               child: Column(
-            //                 children: [
-            //                   Row(
-            //                     children: [
-            //                       Container(
-            //                         width:
-            //                             MediaQuery.of(context).size.width / 2.2,
-            //                         padding: EdgeInsets.all(8.0),
-            //                         child: Column(
-            //                           crossAxisAlignment:
-            //                               CrossAxisAlignment.start,
-            //                           children: [
-            //                             Padding(
-            //                               padding: EdgeInsets.only(
-            //                                 top: 0.0,
-            //                                 left: 10.0,
-            //                                 right: 0.0,
-            //                               ),
-            //                               child: Text(
-            //                                 'Booking Place',
-            //                                 style: TextStyle(
-            //                                   fontSize: 13.0,
-            //                                   color: Color(0xFF414141),
-            //                                   fontWeight: FontWeight.bold,
-            //                                 ),
-            //                                 textAlign: TextAlign.start,
-            //                               ),
-            //                             ),
-            //                             SizedBox(
-            //                               height: 4.0,
-            //                             ),
-            //                             Padding(
-            //                               padding: EdgeInsets.only(
-            //                                   top: 0.0, left: 10.0, right: 0.0),
-            //                               child: Text(
-            //                                 '${widget.BookingPlace}',
-            //                                 style: TextStyle(
-            //                                   fontSize: 13.0,
-            //                                   color: Color(0xFFe78337),
-            //                                   fontWeight: FontWeight.bold,
-            //                                 ),
-            //                                 textAlign: TextAlign.start,
-            //                               ),
-            //                             ),
-            //                           ],
-            //                         ),
-            //                       ),
-            //                       Container(
-            //                         width:
-            //                             MediaQuery.of(context).size.width / 2.9,
-            //                         padding: EdgeInsets.all(10.0),
-            //                         child: Column(
-            //                           crossAxisAlignment:
-            //                               CrossAxisAlignment.start,
-            //                           mainAxisAlignment:
-            //                               MainAxisAlignment.start,
-            //                           children: [
-            //                             Padding(
-            //                               padding: EdgeInsets.only(
-            //                                   top: 0.0, left: 0.0, right: 0.0),
-            //                               child: Text(
-            //                                 'Transport Name',
-            //                                 style: TextStyle(
-            //                                   fontSize: 13.0,
-            //                                   color: Color(0xFF414141),
-            //                                   fontWeight: FontWeight.bold,
-            //                                 ),
-            //                                 textAlign: TextAlign.start,
-            //                               ),
-            //                             ),
-            //                             SizedBox(
-            //                               height: 4.0,
-            //                             ),
-            //                             Padding(
-            //                               padding: EdgeInsets.only(
-            //                                   top: 0.0, left: 0.0, right: 0.0),
-            //                               child: Text(
-            //                                 '${widget.TransportName}',
-            //                                 style: TextStyle(
-            //                                   fontSize: 13.0,
-            //                                   color: Color(0xFFe78337),
-            //                                   fontWeight: FontWeight.bold,
-            //                                 ),
-            //                                 textAlign: TextAlign.start,
-            //                               ),
-            //                             ),
-            //                           ],
-            //                         ),
-            //                       )
-            //                     ],
-            //                   ),
-            //                 ],
-            //               ),
-            //             ),
-            //             SizedBox(
-            //               height: 10.0,
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //     ),
-            //   ),
-            // ),
+
             Column(
               children: [
                 // Padding(
@@ -666,7 +489,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Total',
+                              'Sub Total',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -677,7 +500,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                               valueListenable: totalSumNotifier,
                               builder: (context, totalSum, child) {
                                 return Text(
-                                  '₹${totalSum.toStringAsFixed(2)}',
+                                  '₹${formatNumber(totalSum)}',
                                   style: TextStyle(
                                     color: Color(0xFFe78337),
                                     fontWeight: FontWeight.bold,
@@ -693,7 +516,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Total GST',
+                              'GST',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -704,7 +527,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                               valueListenable: totalGstAmountNotifier,
                               builder: (context, totalGstAmount, _) {
                                 return Text(
-                                  '₹${totalGstAmount.toStringAsFixed(2)}',
+                                  '₹${formatNumber(totalGstAmount)}',
                                   style: TextStyle(
                                     color: Color(0xFFe78337),
                                     fontWeight: FontWeight.bold,
@@ -720,7 +543,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             Text(
-                              'Total Amount with GST',
+                              'Total Amount',
                               style: TextStyle(
                                 color: Colors.black,
                                 fontWeight: FontWeight.bold,
@@ -731,7 +554,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                               valueListenable: totalSumIncludingGst,
                               builder: (context, totalsumGstAmount, _) {
                                 return Text(
-                                  '₹${totalsumGstAmount.toStringAsFixed(2)}',
+                                  '₹${formatNumber(totalsumGstAmount)}',
                                   style: TextStyle(
                                     color: Color(0xFFe78337),
                                     fontWeight: FontWeight.bold,
@@ -1064,7 +887,14 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       totalSumIncludingGst.value = newTotalSumIncludingGst;
     }
   }
-}
+
+
+    String formatNumber(double number) {
+      NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+      return formatter.format(number);
+    }
+  }
+
 
 // In CartItemWidget
 
@@ -1154,7 +984,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
               children: [
                 Expanded(
                   child: Text(
-                    '₹${totalSumForProduct.toStringAsFixed(2)}',
+                    '₹${formatNumber(totalSumForProduct)}',
                     style: CommonUtils.Mediumtext_o_14,
                   ),
                 ),
@@ -1174,37 +1004,38 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                     width: (totalWidth - 40) / 2,
                     child: PlusMinusButtons(
                       addQuantity: () {
+                        _textController.text =Quantity.toString();
                         setState(() {
                           _orderQty = (_orderQty ?? 0) + 1;
-                          _textController.text = _orderQty.toString();
+                          _textController.text = Quantity.toString();
                           widget.cartItem.updateQuantity(_orderQty);
-                          widget.totalSumNotifier.value =
-                              calculateTotalSum(widget.cartItems);
-                          widget.totalGstAmountNotifier.value =
-                              calculateTotalGstAmount(widget.cartItems);
-                          widget
-                              .onQuantityChanged(); // Notify main widget when quantity changes
+                          widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
+                          widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
+                          widget.onQuantityChanged(); // Notify main widget when quantity changes
                         });
                       },
                       deleteQuantity: () {
+                        _textController.text = Quantity.toString();
                         setState(() {
                           if (_orderQty! > 1) {
                             _orderQty = (_orderQty ?? 0) - 1;
-                            _textController.text = _orderQty.toString();
+                            _textController.text = Quantity.toString();
                             widget.cartItem.updateQuantity(_orderQty);
                             widget.totalSumNotifier.value =
                                 calculateTotalSum(widget.cartItems);
                             widget.totalGstAmountNotifier.value =
                                 calculateTotalGstAmount(widget.cartItems);
-                            widget
-                                .onQuantityChanged(); // Notify main widget when quantity changes
+                            widget.onQuantityChanged(); // Notify main widget when quantity changes
                           }
                         });
                       },
                       textController: _textController,
                       initialValue:
                           _orderQty ?? 0, // Provide the initial value here
-                      onQuantityChanged: (int value) {},
+                      onQuantityChanged: (int value) {
+                        print('value==$value');
+                        _textController.text = _orderQty.toString();
+                      },
                       updateTotalPrice: () {},
                     ),
                   ),
@@ -1265,6 +1096,11 @@ class _CartItemWidgetState extends State<CartItemWidget> {
       );
     }
     return totalGstAmount;
+  }
+
+  String formatNumber(double number) {
+    NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+    return formatter.format(number);
   }
 }
 

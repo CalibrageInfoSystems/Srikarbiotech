@@ -391,8 +391,8 @@ class _transportstate extends State<transport_payment> {
             phone: '${widget.phone}',
             proprietorName: '${widget.proprietorName}',
             gstRegnNo: '${widget.gstRegnNo}',
-            BookingPlace: bookingplacecontroller.text,
-            TransportName: Parcelservicecontroller.text,
+            // BookingPlace: bookingplacecontroller.text,
+            // TransportName: Parcelservicecontroller.text,
             creditLine:
                 double.parse('${widget.creditLine}'), // Convert to double
             balance: double.parse('${widget.balance}'), // Convert to double

@@ -69,7 +69,11 @@ class CommonUtils {
       return false; // Not connected to the internet
     }
   }
-
+  static final decorationO_R10W1 = BoxDecoration(
+      borderRadius: BorderRadius.circular(10),
+      border: Border.all(
+        color: const Color(0xFFe58338),
+      ));
   static void myCommonMethod() {
     // Your common method logic here
     print('This is a common method');

@@ -71,6 +71,7 @@ class _ProductListState extends State<Createorderscreen> {
 
   List<String>? cartItemsJson = [];
   List<OrderItemXrefType> savedDataList = [];
+
   int cartitemslength = 0;
   int CompneyId = 0;
   String? userId = "";
@@ -116,6 +117,10 @@ class _ProductListState extends State<Createorderscreen> {
 
   @override
   Widget build(BuildContext context) {
+    savedDataList = Provider.of<CartProvider>(context).getCartItems();
+
+    // Update the globalCartLength
+    globalCartLength = savedDataList.length;
     return WillPopScope(
         onWillPop: () async {
           // Clear the cart data here
@@ -125,6 +130,8 @@ class _ProductListState extends State<Createorderscreen> {
 
           return true; // Allow the back navigation
         },
+
+
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Color(0xFFe78337),
@@ -171,13 +178,32 @@ class _ProductListState extends State<Createorderscreen> {
                 children: [
                   IconButton(
                     onPressed: () {
-                      // Navigate to the CartScreen
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const CartScreen(),
-                      //   ),
-                      // );
+                      if (globalCartLength > 0) {
+                        Navigator.push(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => Ordersubmit_screen(
+                              cardName: '${widget.cardName}',
+                              cardCode: '${widget.cardCode}',
+                              address: '${widget.address}',
+                              state: '${widget.state}',
+                              phone: '${widget.phone}',
+                              proprietorName: '${widget.proprietorName}',
+                              gstRegnNo: '${widget.gstRegnNo}',
+
+                              creditLine: double.parse(
+                                  '${widget.creditLine}'), // Convert to double
+                              balance: double.parse(
+                                  '${widget.balance}'), // Convert to double
+                            ),
+                          ),
+                        );
+
+                        print('Download button clicked');
+                      } else {
+                        CommonUtils.showCustomToastMessageLong(
+                            'Please Select Atleast One Product', context, 1, 4);
+                      }
                     },
                     icon: Icon(Icons.shopping_cart),
                   ),
@@ -441,8 +467,7 @@ class _ProductListState extends State<Createorderscreen> {
                           ))
                     : Consumer<CartProvider>(
                         builder: (context, cartProvider, _) {
-                        List<OrderItemXrefType> cartItems =
-                            cartProvider.getCartItems();
+                        List<OrderItemXrefType> cartItems = cartProvider.getCartItems();
                         // Set the global cart length
                         globalCartLength = cartItems.length;
                         print('Added cart: ${globalCartLength}');
@@ -454,8 +479,20 @@ class _ProductListState extends State<Createorderscreen> {
                                 child: Text('Error: Index out of bounds'),
                               );
                             }
-
                             final productresp = filteredproducts[index];
+                            if (globalCartLength > 0) {
+                              String itemcode = productresp.itemCode!;
+
+// Check if the current item is already added to the cart
+                              for (var cartItem in cartProvider
+                                  .getCartItems()) {
+                                if (cartItem.itemCode == itemcode) {
+                                  isItemAddedToCart[index] = true;
+                                  textEditingControllers[index].text =cartItem.orderQty.toString();
+                                  break; // Exit the loop once the item is found in the cart
+                                }
+                              }
+                            }
 
                             return GestureDetector(
                                 onTap: () {
@@ -564,7 +601,7 @@ class _ProductListState extends State<Createorderscreen> {
                                             ),
                                             children: [
                                               TextSpan(
-                                                text: '/ Pcs',
+                                                text: '',
                                                 style: TextStyle(
                                                   color: Color(0xFF8b8b8b),
                                                   fontWeight: FontWeight.bold,
@@ -572,15 +609,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                   // decoration: TextDecoration.lineThrough,
                                                 ),
                                               ),
-                                              // TextSpan(
-                                              //   text: '${productresp.}',
-                                              //   style: TextStyle(
-                                              //     color: Color(0xFFa6a6a6),
-                                              //     fontFamily: "Roboto",
-                                              //     fontWeight: FontWeight.w600,
-                                              //     fontSize: 12.0,
-                                              //   ),
-                                              // ),
+
                                             ],
                                           ),
                                         ),
@@ -619,26 +648,26 @@ class _ProductListState extends State<Createorderscreen> {
                                                       children: [
                                                         IconButton(
                                                           icon:
-                                                              SvgPicture.asset(
-                                                            'assets/minus-small.svg', // Replace with the correct path to your SVG icon
-                                                            color: Colors.white,
-                                                            width: 20.0,
-                                                            height: 20.0,
+                                                              SvgPicture.asset('assets/minus-small.svg',
+                                                                color: Colors.white, // Replace with the correct path to your SVG iconcolor: Colors.white,width: 20.0,height: 20.0,
                                                           ),
                                                           onPressed: () {
-                                                            if (quantities[
-                                                                    index] >
-                                                                1) {
-                                                              setState(() {
-                                                                quantities[
-                                                                    index]--;
+                                                            if (quantities[index] > 1) {
+                                                              setState(() {quantities[index]--;
+                                                              if (globalCartLength > 1) {
+                                                                String itemcode = productresp.itemCode!;
+
+// Check if the current item is already added to the cart
+                                                                for (var cartItem in cartProvider
+                                                                    .getCartItems()) {
+                                                                  if (cartItem.itemCode == itemcode) {
+                                                                  cartItem.updateQuantity(quantities[index]);
+                                                                  }
+                                                                }
+                                                              }
+
                                                               });
-                                                              textEditingControllers[
-                                                                          index]
-                                                                      .text =
-                                                                  quantities[
-                                                                          index]
-                                                                      .toString();
+                                                              textEditingControllers[index].text = quantities[index].toString();
                                                             }
                                                           },
                                                           iconSize: 30.0,
@@ -687,11 +716,18 @@ class _ProductListState extends State<Createorderscreen> {
                                                                         (value) {
                                                                       setState(
                                                                           () {
-                                                                        quantities[
-                                                                            index] = int.parse(value
-                                                                                .isEmpty
-                                                                            ? '1'
-                                                                            : value);
+                                                                        quantities[index] = int.parse(value.isEmpty ? '1' : value);
+                                                                        if (globalCartLength > 1) {
+                                                                          String itemcode = productresp.itemCode!;
+
+// Check if the current item is already added to the cart
+                                                                          for (var cartItem in cartProvider
+                                                                              .getCartItems()) {
+                                                                            if (cartItem.itemCode == itemcode) {
+                                                                              cartItem.updateQuantity(quantities[index]);
+                                                                            }
+                                                                          }
+                                                                        }
                                                                       });
                                                                     },
                                                                     decoration:
@@ -736,6 +772,18 @@ class _ProductListState extends State<Createorderscreen> {
                                                             setState(() {
                                                               quantities[
                                                                   index]++;
+                                                              if (globalCartLength > 1) {
+                                                                String itemcode = productresp.itemCode!;
+
+// Check if the current item is already added to the cart
+                                                                for (var cartItem in cartProvider
+                                                                    .getCartItems()) {
+                                                                  if (cartItem.itemCode == itemcode) {
+                                                                    cartItem.updateQuantity(quantities[index]);
+                                                                  }
+                                                                }
+                                                              }
+                                                            //  updateQuantity(quantities[index]);
                                                             });
                                                             textEditingControllers[
                                                                         index]
@@ -758,118 +806,62 @@ class _ProductListState extends State<Createorderscreen> {
                                                     padding: const EdgeInsets
                                                         .symmetric(
                                                         horizontal: 4.0),
-                                                    child: GestureDetector(
+                                                    child:
+
+                                                    GestureDetector(
                                                       onTap: () async {
-                                                        if (!isItemAddedToCart[
-                                                            index]) {
+                                                        if (!isItemAddedToCart[index]) {
                                                           setState(() {
-                                                            isSelectedList[
-                                                                    index] =
-                                                                !isSelectedList[
-                                                                    index];
+                                                            isSelectedList[index] = !isSelectedList[index];
                                                           });
 
-                                                          if (isSelectedList[
-                                                              index]) {
-                                                            print(
-                                                                'Adding ${quantities[index]} of ${filteredproducts[index].itemName} to the cart');
+                                                          if (isSelectedList[index]) {
+                                                            print('Adding ${quantities[index]} of ${filteredproducts[index].itemName} to the cart');
 
                                                             String itemGrpCod;
 
-                                                            if (CompneyId ==
-                                                                    1 ||
-                                                                globalCartLength >
-                                                                    1) {
-                                                              itemGrpCod =
-                                                                  productresp
-                                                                      .itmsGrpCod!;
+                                                            if (CompneyId == 1 || globalCartLength > 1) {
+                                                              itemGrpCod = productresp.itmsGrpCod!;
                                                             } else {
-                                                              itemGrpCod =
-                                                                  productresp
-                                                                      .itmsGrpCod!;
+                                                              itemGrpCod = productresp.itmsGrpCod!;
                                                             }
 
-                                                            if (cartProvider
-                                                                .isSameItemGroup(
-                                                                    itemGrpCod)) {
-                                                              orderItem =
-                                                                  OrderItemXrefType(
+                                                            if (cartProvider.isSameItemGroup(itemGrpCod)) {
+                                                              orderItem = OrderItemXrefType(
                                                                 id: 1,
                                                                 orderId: 1001,
-                                                                itemGrpCod:
-                                                                    itemGrpCod,
-                                                                itemGrpName:
-                                                                    productresp
-                                                                        .itmsGrpNam,
-                                                                itemCode:
-                                                                    productresp
-                                                                        .itemCode,
-                                                                itemName:
-                                                                    productresp
-                                                                        .itemName,
+                                                                itemGrpCod: itemGrpCod,
+                                                                itemGrpName: productresp.itmsGrpNam,
+                                                                itemCode: productresp.itemCode,
+                                                                itemName: productresp.itemName,
                                                                 noOfPcs: '10',
-                                                                orderQty:
-                                                                    quantities[
-                                                                        index],
-                                                                price:
-                                                                    productresp
-                                                                        .price,
-                                                                ugpName:
-                                                                    productresp
-                                                                        .ugpName,
-                                                                numInSale:
-                                                                    productresp
-                                                                        .numInSale,
-                                                                salUnitMsr:
-                                                                    productresp
-                                                                        .salUnitMsr,
-                                                                gst: productresp
-                                                                    .gst,
+                                                                orderQty: quantities[index],
+                                                                price: productresp.price,
+                                                                ugpName: productresp.ugpName,
+                                                                numInSale: productresp.numInSale,
+                                                                salUnitMsr: productresp.salUnitMsr,
+                                                                gst: productresp.gst,
                                                                 totalPrice: 1.1,
-                                                                totalPriceWithGST:
-                                                                    1.1,
+                                                                totalPriceWithGST: 1.1,
                                                               );
 
-                                                              await cartProvider
-                                                                  .addToCart(
-                                                                      orderItem!);
-                                                              await prefs.setBool(
-                                                                  'isItemAddedToCart_$index',
-                                                                  true);
-                                                              // Get the total number of items in the cart
-                                                              List<OrderItemXrefType>
-                                                                  cartItems =
-                                                                  cartProvider
-                                                                      .getCartItems();
+                                                              await cartProvider.addToCart(orderItem!);
+                                                              await prefs.setBool('isItemAddedToCart_$index', true);
+                                                              List<OrderItemXrefType> cartItems = cartProvider.getCartItems();
 
-                                                              print(
-                                                                  'Added items length: ${cartItems.length}');
-                                                              globalCartLength =
-                                                                  cartItems
-                                                                      .length;
+                                                              print('Added items length: ${cartItems.length}');
+                                                              globalCartLength = cartItems.length;
 
-                                                              print(
-                                                                  'Item added successfully');
+                                                              print('Item added successfully');
                                                               setState(() {
-                                                                isItemAddedToCart[
-                                                                        index] =
-                                                                    true;
+                                                                isItemAddedToCart[index] = true;
                                                               });
                                                             } else {
                                                               // Display an error message, as itemGrpCod is not the same
-                                                              print(
-                                                                  'Error: Cannot add items with different itemGrpCod to the cart');
-                                                              CommonUtils
-                                                                  .showCustomToastMessageLong(
-                                                                      ' You can only add items with the Category ',
-                                                                      context,
-                                                                      1,
-                                                                      4);
-                                                              // Optionally reset isSelectedList[index] to false to keep UI in sync with cart state
+                                                              print('Error: Cannot add items with different itemGrpCod to the cart');
+                                                              CommonUtils.showCustomToastMessageLong(' You can only add items with the Category ', context, 1, 4);
                                                               setState(() {
-                                                                isSelectedList[
-                                                                        index] =
-                                                                    false;
+                                                                isSelectedList[index] = false;
                                                               });
                                                             }
                                                           }
@@ -877,107 +869,44 @@ class _ProductListState extends State<Createorderscreen> {
                                                       },
                                                       child: Container(
                                                         height: 36,
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color: isItemAddedToCart[
-                                                                  index]
-                                                              ? Color(
-                                                                  0xFFe78337)
-                                                              : Color(
-                                                                  0xFFffefdf),
+                                                        decoration: BoxDecoration(
+                                                          color: isItemAddedToCart[index] ? Color(0xFFe78337) : Color(0xFFffefdf),
                                                           border: Border.all(
-                                                            color: Color(
-                                                                0xFFe78337),
+                                                            color: Color(0xFFe78337),
                                                             width: 1.0,
                                                           ),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      8.0),
+                                                          borderRadius: BorderRadius.circular(8.0),
                                                         ),
                                                         child: Padding(
-                                                          padding:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal:
-                                                                      6.0),
+                                                          padding: const EdgeInsets.symmetric(horizontal: 6.0),
                                                           child: Row(
                                                             children: [
                                                               Icon(
-                                                                Icons
-                                                                    .add_shopping_cart,
+                                                                Icons.add_shopping_cart,
                                                                 size: 18.0,
-                                                                color: isItemAddedToCart[
-                                                                        index]
-                                                                    ? Color(
-                                                                        0xFFffefdf)
-                                                                    : Color(
-                                                                        0xFFe78337),
+                                                                color: isItemAddedToCart[index] ? Color(0xFFffefdf) : Color(0xFFe78337),
                                                               ),
-                                                              SizedBox(
-                                                                  width: 8.0),
+                                                              SizedBox(width: 8.0),
+                                                              // Display "Added" if the item is already added to the cart
                                                               Text(
-                                                                isItemAddedToCart[
-                                                                        index]
-                                                                    ? 'Added'
-                                                                    : 'Add',
-                                                                style:
-                                                                    TextStyle(
-                                                                  color: isItemAddedToCart[
-                                                                          index]
-                                                                      ? Color(
-                                                                          0xFFffefdf)
-                                                                      : Color(
-                                                                          0xFFe78337),
+                                                                isItemAddedToCart[index] ? 'Added' : 'Add',
+                                                                style: TextStyle(
+                                                                  color: isItemAddedToCart[index] ? Color(0xFFffefdf) : Color(0xFFe78337),
                                                                   fontSize: 14,
-                                                                  fontFamily:
-                                                                      "Roboto",
-                                                                  fontWeight:
-                                                                      FontWeight
-                                                                          .w600,
+                                                                  fontFamily: "Roboto",
+                                                                  fontWeight: FontWeight.w600,
                                                                 ),
                                                               ),
-                                                              SizedBox(
-                                                                  width: 6.0),
+                                                              SizedBox(width: 6.0),
                                                             ],
                                                           ),
                                                         ),
                                                       ),
-                                                      // child: Container(
-                                                      //                height: 36,
-                                                      //                decoration: BoxDecoration(
-                                                      //                  color: isSelectedList[index] ? Color(0xFFe78337) : Color(0xFFffefdf),
-                                                      //                  border: Border.all(
-                                                      //                    color: Color(0xFFe78337),
-                                                      //                    width: 1.0,
-                                                      //                  ),
-                                                      //                  borderRadius: BorderRadius.circular(8.0),
-                                                      //                ),
-                                                      //                child: Padding(
-                                                      //                  padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                                                      //                  child: Row(
-                                                      //                    children: [
-                                                      //                      Icon(
-                                                      //                        Icons.add_shopping_cart,
-                                                      //                        size: 18.0,
-                                                      //                        color: isSelectedList[index] ? Color(0xFFffefdf) : Color(0xFFe78337),
-                                                      //                      ),
-                                                      //                      SizedBox(width: 8.0),
-                                                      //                      Text(
-                                                      //                        isItemAddedToCart[index] ? 'Added' : 'Add',
-                                                      //                        style: TextStyle(
-                                                      //                          color: isItemAddedToCart[index] ? Color(0xFFffefdf) : Color(0xFFe78337),
-                                                      //                          fontSize: 14,
-                                                      //                          fontFamily: "Roboto",
-                                                      //                          fontWeight: FontWeight.w600,
-                                                      //                        ),
-                                                      //                      ),
-                                                      //                      SizedBox(width: 6.0),
-                                                      //                    ],
-                                                      //                  ),
-                                                      //                ),
-                                                      //              ),
                                                     ),
+
+
+
+
                                                   ),
                                                 ],
                                               ),
@@ -1196,7 +1125,11 @@ class _ProductListState extends State<Createorderscreen> {
   void clearCartData(CartProvider cartProvider) {
     cartProvider.clearCart();
   }
+
+
 }
+
+
 
 // Static product details
 class ProductResponse {
