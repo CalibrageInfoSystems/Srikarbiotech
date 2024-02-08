@@ -234,14 +234,80 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                     Colors.white,
                     BorderRadius.circular(5.0),
                   ),
-                  SizedBox(height: 16.0),
+                  SizedBox(height: 15.0),
                 ],
               ),
             ),
             //           }
             //         },
             //       ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.only(top: 2.0, left: 8.0, right: 10.0),
+              child: IntrinsicHeight(
+                child: Card(
+                  //color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(5.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      color: Colors.white,
 
+                      // color: Colors.white
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(top: 1.0),
+                          child: Text(
+                            '${widget.cardName}',
+                            style: CommonUtils.header_Styles16,
+                            maxLines: 2, // Display in 2 lines
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                '₹${widget.balance}',
+                                style: TextStyle(
+                                  color: Color(0xFFe78337),
+                                  fontFamily: "Roboto",
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                              SizedBox(
+                                  width:
+                                  5.0), // Add some space between balance and credit line
+                              Text(
+                                '(${widget.creditLine})',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: "Roboto",
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 5),
             FutureBuilder(
               future: Future.value(),
               builder: (context, snapshot) {
@@ -258,7 +324,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
               },
             ),
 
-            SizedBox(height: 10),
+            SizedBox(height: 5),
 
             Column(
               children: [
