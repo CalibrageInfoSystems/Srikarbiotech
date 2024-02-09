@@ -649,6 +649,9 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                             alignment: Alignment
                                                                 .center,
                                                             child: Container(
+                                                              alignment:
+                                                                  Alignment
+                                                                      .center,
                                                               height: 35,
                                                               child: Padding(
                                                                 padding:
@@ -712,7 +715,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                                               .none,
                                                                       contentPadding:
                                                                           EdgeInsets.only(
-                                                                              bottom: 15.0),
+                                                                              bottom: 10.0),
                                                                     ),
                                                                     textAlign:
                                                                         TextAlign

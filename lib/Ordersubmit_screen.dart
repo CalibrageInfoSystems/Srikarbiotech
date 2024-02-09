@@ -81,7 +81,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       DeviceOrientation.portraitUp,
     ]);
     getshareddata();
-
     print('Cart Items globalCartLength: $globalCartLength');
     print('cardName: ${widget.cardName}');
     print('cardCode: ${widget.cardCode}');
@@ -95,6 +94,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
   @override
   Widget build(BuildContext context) {
     cartItems = Provider.of<CartProvider>(context).getCartItems();
+    // print('quantityinordersubmitscreen: ${cartItems.}');
 
     totalSumNotifier = ValueNotifier<double>(calculateTotalSum(cartItems));
     totalGstAmountNotifier =
@@ -338,8 +338,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
             //       return buildListView(cartItems, ValueKey(cartItems[index]));
             //     }),
 
-            SizedBox(height: 5),
-
             Column(
               children: [
                 // Padding(
@@ -352,10 +350,10 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                 //   child:
                 Container(
                   padding: EdgeInsets.only(
-                      top: 10.0, left: 10, right: 10, bottom: 20),
+                      top: 5.0, left: 10, right: 10, bottom: 15),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
-                    color: Colors.white,
+                    // color: Colors.white,
                   ),
                   child: Card(
                     // color: Colors.white,
@@ -368,7 +366,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
 
                     child: Container(
                         padding: EdgeInsets.only(
-                            top: 0.0, left: 0, right: 0, bottom: 20),
+                            top: 0.0, left: 0, right: 0, bottom: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5.0),
                           color: Colors.white,
@@ -986,7 +984,8 @@ class CartItemWidget extends StatefulWidget {
   final List<OrderItemXrefType> cartItems;
   final ValueNotifier<double> totalSumNotifier;
   final ValueNotifier<double> totalGstAmountNotifier;
-  final VoidCallback onQuantityChanged; // Callback function to notify when quantity changes
+  final VoidCallback
+      onQuantityChanged; // Callback function to notify when quantity changes
 
   CartItemWidget({
     required this.cartItem,
@@ -1007,12 +1006,17 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   late int _orderQty;
   double gstPrice = 0.0;
   double totalGstAmount = 0.0;
+  late int Quantity = 0;
+  double totalSumForProduct = 0.0;
   double totalSum = 0.0;
   @override
   void initState() {
     super.initState();
     // _orderQty = widget.cartItem.orderQty ?? 0;
     _orderQty = widget.cartItem.orderQty ?? 1;
+    Quantity = widget.cartItem.orderQty!;
+    print('Quantity==$Quantity');
+
     _textController = TextEditingController(text: _orderQty.toString());
     widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
     widget.totalGstAmountNotifier.value =
@@ -1020,27 +1024,27 @@ class _CartItemWidgetState extends State<CartItemWidget> {
     // Initialize totalSumNotifier in initState
   }
 
-
   @override
   Widget build(BuildContext context) {
     double totalWidth = MediaQuery.of(context).size.width;
 
     // Calculate totalSum for all products
     // Calculate totalSum for all products
-    totalSum = calculateTotalSum(widget.cartItems);
 
     // Calculate totalSumForProduct for the single product
-    double totalSumForProduct = calculateTotalSumForProduct(widget.cartItem);
-    gstPrice = calculateGstPrice(totalSumForProduct, widget.cartItem.gst);
+    // double totalSumForProduct = calculateTotalSumForProduct(widget.cartItem);
+    // gstPrice = calculateGstPrice(totalSumForProduct, widget.cartItem.gst);
 
     // Calculate total sum including GST
+    totalSum = calculateTotalSum(widget.cartItems);
+    gstPrice = calculateGstPrice(totalSumForProduct, widget.cartItem.gst);
+    totalSumForProduct = calculateTotalSumForProduct(widget.cartItem);
+    print('totalSumForProduct==$totalSumForProduct');
+
+    widget.onQuantityChanged();
     double totalSumIncludingGst =
         totalSum + widget.totalGstAmountNotifier.value;
     print('totalSumIncludingGst==$totalSumIncludingGst');
-
-    late int Quantity = 0;
-    Quantity = widget.cartItem.orderQty!;
-    print('Quantity==$Quantity');
 
     return Padding(
       padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
@@ -1083,43 +1087,78 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                   width: (totalWidth - 40) / 2,
                   child: Container(
                     width: (totalWidth - 40) / 2,
-                    child:
-                    PlusMinusButtons(
+                    child: PlusMinusButtons(
                       addQuantity: () {
                         setState(() {
+                          Quantity++;
+                          // totalSumForProduct =
+                          //     calculateTotalSumForProduct(widget.cartItem);
+                          // print('totalSumForProductplus==$totalSumForProduct');
+                          formatNumber(totalSumForProduct);
                           _orderQty = (_orderQty ?? 0) + 1;
                           _textController.text = _orderQty.toString();
                           // Call the updateQuantity method in your model class
                           widget.cartItem.updateQuantity(_orderQty);
-                          widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
-                          widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
-                          widget.onQuantityChanged(); // Call onQuantityChanged callback
+                          widget.totalSumNotifier.value =
+                              calculateTotalSum(widget.cartItems);
+                          widget.totalGstAmountNotifier.value =
+                              calculateTotalGstAmount(widget.cartItems);
+                          widget
+                              .onQuantityChanged(); // Call onQuantityChanged callback
                         });
                       },
                       deleteQuantity: () {
                         setState(() {
-                          if (_orderQty! > 1) {
+                          if (_orderQty > 1) {
+                            Quantity--;
+                            // totalSumForProduct =
+                            //     calculateTotalSumForProduct(widget.cartItem);
+                            formatNumber(totalSumForProduct);
+                            print(
+                                'totalSumForProductminus==$totalSumForProduct');
+                            formatNumber(totalSumForProduct);
                             _orderQty = (_orderQty ?? 0) - 1;
                             _textController.text = _orderQty.toString();
                             widget.cartItem.updateQuantity(_orderQty);
-                            widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
-                            widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
-                            widget.onQuantityChanged(); // Call onQuantityChanged callback
+                            widget.totalSumNotifier.value =
+                                calculateTotalSum(widget.cartItems);
+                            widget.totalGstAmountNotifier.value =
+                                calculateTotalGstAmount(widget.cartItems);
+                            widget
+                                .onQuantityChanged(); // Call onQuantityChanged callback
                           }
                         });
                       },
                       textController: _textController,
-                      orderQuantity: _orderQty, // Pass _orderQty as orderQuantity
-                     // Pass the onQuantityChanged callback function
+                      orderQuantity:
+                          _orderQty, // Pass _orderQty as orderQuantity
+                      // Pass the onQuantityChanged callback function
                       updateTotalPrice: (int value) {
                         // Your updateTotalPrice logic, if any
-                      }, onQuantityChanged: (int value) {  },
+                        setState(() {
+                          Quantity = value;
+                          _orderQty = value;
+                          widget.cartItem.updateQuantity(_orderQty);
+                          widget.totalSumNotifier.value =
+                              calculateTotalSum(widget.cartItems);
+                          widget.totalGstAmountNotifier.value =
+                              calculateTotalGstAmount(widget.cartItems);
+                          widget.onQuantityChanged();
+                        });
+                      },
+                      onQuantityChanged: (int value) {
+                        setState(() {
+                          _orderQty = value;
+                          Quantity = value;
+                          widget.cartItem.updateQuantity(_orderQty);
+                          widget.totalSumNotifier.value =
+                              calculateTotalSum(widget.cartItems);
+                          widget.totalGstAmountNotifier.value =
+                              calculateTotalGstAmount(widget.cartItems);
+                          widget.onQuantityChanged();
+                        });
+                      },
                     ),
-
-
-
-
-
                   ),
                 ),
                 SizedBox(width: 8.0),
@@ -1187,7 +1226,6 @@ class _CartItemWidgetState extends State<CartItemWidget> {
 }
 
 // In PlusMinusButtons widget
-
 
 class PlusMinusButtons extends StatelessWidget {
   final VoidCallback deleteQuantity;
@@ -1264,6 +1302,7 @@ class PlusMinusButtons extends StatelessWidget {
                         onChanged: (newValue) {
                           if (newValue.isNotEmpty) {
                             int newOrderQuantity = int.tryParse(newValue) ?? 0;
+                            print('textchanged:$newOrderQuantity');
                             onQuantityChanged(newOrderQuantity);
                           }
                         },

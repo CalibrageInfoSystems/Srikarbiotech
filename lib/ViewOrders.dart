@@ -129,7 +129,7 @@ class _VieworderPageState extends State<ViewOrders> {
       setState(() {
         viewOrdersProvider.storeIntoViewOrderProvider(data!
             .where((item) =>
-            item.partyName.toLowerCase().contains(input.toLowerCase()))
+                item.partyName.toLowerCase().contains(input.toLowerCase()))
             .toList());
       });
     });
@@ -184,7 +184,7 @@ class _VieworderPageState extends State<ViewOrders> {
                             String dateString = data[index].orderDate;
                             DateTime date = DateTime.parse(dateString);
                             String formattedDate =
-                            DateFormat('dd MMM, yyyy').format(date);
+                                DateFormat('dd MMM, yyyy').format(date);
 
                             return GestureDetector(
                               onTap: () {
@@ -197,16 +197,16 @@ class _VieworderPageState extends State<ViewOrders> {
                                         totalprice: data[index].totalCost,
                                         bookingplace: data[index].bookingPlace,
                                         transportmode:
-                                        data[index].transportName,
+                                            data[index].transportName,
                                         lrnumber: 12345,
                                         lrdate: "",
                                         statusname: data[index].statusName,
                                         partyname: data[index].partyName,
                                         partycode: data[index].partyCode,
                                         proprietorName:
-                                        data[index].proprietorName!,
+                                            data[index].proprietorName!,
                                         partyGSTNumber:
-                                        data[index].partyGSTNumber!,
+                                            data[index].partyGSTNumber!,
                                         ordernumber: data[index].orderNumber!,
                                         partyAddress: data[index].partyAddress),
                                   ),
@@ -227,14 +227,14 @@ class _VieworderPageState extends State<ViewOrders> {
                                         color: Colors.white),
                                     child: Column(
                                       crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                          CrossAxisAlignment.start,
                                       children: [
                                         Container(
                                           width:
-                                          MediaQuery.of(context).size.width,
+                                              MediaQuery.of(context).size.width,
                                           decoration: BoxDecoration(
                                             borderRadius:
-                                            BorderRadius.circular(10),
+                                                BorderRadius.circular(10),
                                           ),
                                           child: Row(
                                             children: [
@@ -246,11 +246,11 @@ class _VieworderPageState extends State<ViewOrders> {
                                                   height: 65,
                                                   width: 90,
                                                   padding:
-                                                  const EdgeInsets.all(8),
+                                                      const EdgeInsets.all(8),
                                                   decoration: BoxDecoration(
                                                     borderRadius:
-                                                    BorderRadius.circular(
-                                                        10),
+                                                        BorderRadius.circular(
+                                                            10),
                                                     color: Colors.white30,
                                                   ),
                                                   child: Center(
@@ -267,33 +267,33 @@ class _VieworderPageState extends State<ViewOrders> {
                                                 //height: 90,
                                                 // width: ,
                                                 width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
+                                                        .size
+                                                        .width /
                                                     1.8,
                                                 child: Padding(
                                                   padding:
-                                                  const EdgeInsets.only(
-                                                      left: 10,
-                                                      top: 0,
-                                                      bottom: 0),
+                                                      const EdgeInsets.only(
+                                                          left: 10,
+                                                          top: 0,
+                                                          bottom: 0),
                                                   child: Column(
                                                     crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
+                                                        CrossAxisAlignment
+                                                            .start,
                                                     mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
+                                                        MainAxisAlignment
+                                                            .spaceBetween,
                                                     children: [
                                                       Text(
                                                         orderresul.partyName,
                                                         style: const TextStyle(
                                                             fontFamily:
-                                                            'Roboto',
+                                                                'Roboto',
                                                             fontSize: 12,
                                                             color: Colors.black,
                                                             fontWeight:
-                                                            FontWeight
-                                                                .bold),
+                                                                FontWeight
+                                                                    .bold),
                                                         softWrap: true,
                                                         maxLines: 2,
                                                         overflow: TextOverflow
@@ -304,8 +304,8 @@ class _VieworderPageState extends State<ViewOrders> {
                                                       ),
                                                       Row(
                                                         mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
                                                         children: [
                                                           Container(
                                                             child: Row(
@@ -314,27 +314,27 @@ class _VieworderPageState extends State<ViewOrders> {
                                                                   'Order id :',
                                                                   style: TextStyle(
                                                                       fontFamily:
-                                                                      'Roboto',
+                                                                          'Roboto',
                                                                       fontSize:
-                                                                      12,
+                                                                          12,
                                                                       color: Colors
                                                                           .black,
                                                                       fontWeight:
-                                                                      FontWeight
-                                                                          .w400),
+                                                                          FontWeight
+                                                                              .w400),
                                                                 ),
                                                                 Text(
                                                                   ' ${orderresul.orderNumber}',
                                                                   style: const TextStyle(
                                                                       fontFamily:
-                                                                      'Roboto',
+                                                                          'Roboto',
                                                                       fontSize:
-                                                                      13,
+                                                                          13,
                                                                       color: Colors
                                                                           .black,
                                                                       fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
+                                                                          FontWeight
+                                                                              .w600),
                                                                 ),
                                                               ],
                                                             ),
@@ -381,25 +381,25 @@ class _VieworderPageState extends State<ViewOrders> {
                                                               'Total Amount: ',
                                                               style: TextStyle(
                                                                   fontFamily:
-                                                                  'Roboto',
+                                                                      'Roboto',
                                                                   fontSize: 13,
                                                                   color: Colors
                                                                       .black,
                                                                   fontWeight:
-                                                                  FontWeight
-                                                                      .w400),
+                                                                      FontWeight
+                                                                          .w400),
                                                             ),
                                                             Text(
                                                               '₹${orderresul.totalCost}',
                                                               style: const TextStyle(
                                                                   fontFamily:
-                                                                  'Roboto',
+                                                                      'Roboto',
                                                                   fontSize: 13,
                                                                   color: Color(
                                                                       0xFFe58338),
                                                                   fontWeight:
-                                                                  FontWeight
-                                                                      .w600),
+                                                                      FontWeight
+                                                                          .w600),
                                                             ),
                                                           ],
                                                         ),
@@ -448,31 +448,31 @@ class _VieworderPageState extends State<ViewOrders> {
                                               //      height: 30,
 
                                               padding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 4,
-                                                  horizontal: 5),
+                                                  const EdgeInsets.symmetric(
+                                                      vertical: 4,
+                                                      horizontal: 5),
                                               decoration: BoxDecoration(
                                                 borderRadius:
-                                                BorderRadius.circular(10),
+                                                    BorderRadius.circular(10),
                                                 color:
-                                                getStatusTypeBackgroundColor(
-                                                    orderresul.statusName),
+                                                    getStatusTypeBackgroundColor(
+                                                        orderresul.statusName),
                                               ),
-                                              width: 100.0,
+                                              //    width: 100.0,
                                               child: IntrinsicWidth(
-                                                stepWidth: 45.0,
+                                                stepWidth: 50.0,
                                                 child: Row(
                                                   mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                                      MainAxisAlignment.center,
                                                   children: [
                                                     Text(
                                                       orderresul.statusName,
                                                       style: TextStyle(
                                                         fontSize: 12,
                                                         color:
-                                                        getStatusTypeTextColor(
-                                                            orderresul
-                                                                .statusName),
+                                                            getStatusTypeTextColor(
+                                                                orderresul
+                                                                    .statusName),
                                                       ),
                                                     ),
                                                   ],
@@ -485,32 +485,32 @@ class _VieworderPageState extends State<ViewOrders> {
                                             ),
                                             Row(
                                               mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
+                                                  MainAxisAlignment.spaceAround,
                                               children: [
                                                 Container(
                                                     child: Row(
-                                                      children: [
-                                                        // Text(
-                                                        //   'Date: ',
-                                                        //   style: TextStyle(
-                                                        //       fontFamily: 'Roboto',
-                                                        //       fontSize: 12,
-                                                        //       color: Colors.black,
-                                                        //       fontWeight:
-                                                        //           FontWeight.w400),
-                                                        // ),
-                                                        Text(
-                                                          formattedDate,
-                                                          style: const TextStyle(
-                                                              fontFamily: 'Roboto',
-                                                              fontSize: 13,
-                                                              color:
+                                                  children: [
+                                                    // Text(
+                                                    //   'Date: ',
+                                                    //   style: TextStyle(
+                                                    //       fontFamily: 'Roboto',
+                                                    //       fontSize: 12,
+                                                    //       color: Colors.black,
+                                                    //       fontWeight:
+                                                    //           FontWeight.w400),
+                                                    // ),
+                                                    Text(
+                                                      formattedDate,
+                                                      style: const TextStyle(
+                                                          fontFamily: 'Roboto',
+                                                          fontSize: 13,
+                                                          color:
                                                               Color(0xFFe58338),
-                                                              fontWeight:
+                                                          fontWeight:
                                                               FontWeight.w600),
-                                                        ),
-                                                      ],
-                                                    )),
+                                                    ),
+                                                  ],
+                                                )),
                                                 const SizedBox(
                                                   width: 10.0,
                                                 ),
@@ -544,24 +544,24 @@ class _VieworderPageState extends State<ViewOrders> {
                                                         'No.of Items: ',
                                                         style: TextStyle(
                                                             fontFamily:
-                                                            'Roboto',
+                                                                'Roboto',
                                                             fontSize: 12,
                                                             color: Colors.black,
                                                             fontWeight:
-                                                            FontWeight
-                                                                .w400),
+                                                                FontWeight
+                                                                    .w400),
                                                       ),
                                                       Text(
                                                         '${orderresul.noOfItems}',
                                                         style: const TextStyle(
                                                             fontFamily:
-                                                            'Roboto',
+                                                                'Roboto',
                                                             fontSize: 13,
                                                             color: Color(
                                                                 0xFFe58338),
                                                             fontWeight:
-                                                            FontWeight
-                                                                .w600),
+                                                                FontWeight
+                                                                    .w600),
                                                       ),
                                                     ],
                                                   ),
@@ -616,21 +616,21 @@ class _VieworderPageState extends State<ViewOrders> {
       case 'Pending':
         return const Color(0xFFE58338).withOpacity(0.1);
       case 'Shipped':
-      // Set background color for statusTypeId 8
+        // Set background color for statusTypeId 8
         return const Color(0xFF0d6efd).withOpacity(0.1);
       case 'Accept':
-      // Set background color for statusTypeId 9
+        // Set background color for statusTypeId 9
         return const Color(0xFF198754).withOpacity(0.1);
       case 'Partially Shipped':
-      // Set background color for statusTypeId 9
+        // Set background color for statusTypeId 9
         return const Color(0xFF0dcaf0).withOpacity(0.1);
       case 'Reject':
         return const Color(0xFFdc3545).withOpacity(0.1);
         break;
-    // Add more cases as needed for other statusTypeId values
+      // Add more cases as needed for other statusTypeId values
 
       default:
-      // Default background color or handle other cases if needed
+        // Default background color or handle other cases if needed
         return Colors.white;
     }
   }
@@ -640,13 +640,13 @@ class _VieworderPageState extends State<ViewOrders> {
       case 'Pending':
         return const Color(0xFFe58338);
       case 'Shipped':
-      // Set background color for statusTypeId 8
+        // Set background color for statusTypeId 8
         return const Color(0xFF0d6efd);
       case 'Accept':
-      // Set background color for statusTypeId 9
+        // Set background color for statusTypeId 9
         return const Color(0xFF198754);
       case 'Partially Shipped':
-      // Set background color for statusTypeId 9
+        // Set background color for statusTypeId 9
         return const Color(0xFF0dcaf0);
       case 'Reject':
         return const Color(0xFFdc3545);
@@ -681,7 +681,7 @@ class _VieworderPageState extends State<ViewOrders> {
         assetPath = 'assets/shipping-timed.svg';
         iconColor = const Color(0xFFdc3545);
         break;
-    // Add more cases for other statusnames
+      // Add more cases for other statusnames
       default:
         assetPath = 'assets/sb_home.svg';
         iconColor = Colors.black26;
@@ -775,39 +775,39 @@ class _VieworderPageState extends State<ViewOrders> {
         children: [
           Expanded(
               child: Container(
-                // height: 55.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5.0),
-                  border: Border.all(
-                    color: Colors.black26,
-                    width: 2,
-                  ),
-                ),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10.0, top: 0.0),
-                    child: TextFormField(
-                      controller: searchController,
-                      onChanged: (value) {
-                        filterDealers();
-                        filterOrderBasedOnProduct(value);
-                      },
-                      keyboardType: TextInputType.name,
-                      style: CommonUtils.Mediumtext_12,
-                      decoration: const InputDecoration(
-                        suffixIcon: Icon(
-                          Icons.search,
-                          color: Color(0xFFC4C2C2),
-                        ),
-                        hintText: 'Search for Party Name or Id',
-                     //   hintStyle:CommonUtils.Mediumtext_12,
-                        border: InputBorder.none,
-                      ),
+            // height: 55.0,
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(5.0),
+              border: Border.all(
+                color: Colors.black26,
+                width: 2,
+              ),
+            ),
+            child: Align(
+              alignment: Alignment.centerRight,
+              child: Padding(
+                padding: const EdgeInsets.only(left: 10.0, top: 0.0),
+                child: TextFormField(
+                  controller: searchController,
+                  onChanged: (value) {
+                    filterDealers();
+                    filterOrderBasedOnProduct(value);
+                  },
+                  keyboardType: TextInputType.name,
+                  style: CommonUtils.Mediumtext_12,
+                  decoration: const InputDecoration(
+                    suffixIcon: Icon(
+                      Icons.search,
+                      color: Color(0xFFC4C2C2),
                     ),
+                    hintText: 'Search for Party Name or Id',
+                    //   hintStyle:CommonUtils.Mediumtext_12,
+                    border: InputBorder.none,
                   ),
                 ),
-              )),
+              ),
+            ),
+          )),
           const SizedBox(
             width: 10,
           ),
@@ -952,9 +952,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> _selectDate(
-      BuildContext context,
-      TextEditingController controller,
-      ) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
@@ -994,11 +994,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Widget buildDateToInput(
-      BuildContext context,
-      String labelText,
-      TextEditingController controller,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String labelText,
+    TextEditingController controller,
+    VoidCallback onTap,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1063,9 +1063,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> _selectfromDate(
-      BuildContext context,
-      TextEditingController controller,
-      ) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
@@ -1106,11 +1106,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Widget buildDateInputfromdate(
-      BuildContext context,
-      String labelText,
-      TextEditingController controller,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String labelText,
+    TextEditingController controller,
+    VoidCallback onTap,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -1205,345 +1205,345 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     return Consumer<ViewOrdersProvider>(
       builder: (context, provider, _) => SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    Text(
-                      'Filter By',
-                      style: _titleTextStyle,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        provider.clearFilter();
-                      },
-                      child: Text(
-                        'Clear all filters',
-                        style: _clearTextStyle,
-                      ),
-                    ),
-                  ],
+                Text(
+                  'Filter By',
+                  style: _titleTextStyle,
                 ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5, bottom: 12),
-                  child: const Divider(
-                    height: 5,
+                GestureDetector(
+                  onTap: () {
+                    provider.clearFilter();
+                  },
+                  child: Text(
+                    'Clear all filters',
+                    style: _clearTextStyle,
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5.0),
-                      child: Text(
-                        'Party',
-                        style: CommonUtils.txSty_13O_F6,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 4.0,
-                    ),
-                    Container(
-                      height: 40.0,
-                      decoration: CommonUtils.decorationO_R10W1,
-                      child: DropdownButtonHideUnderline(
-                        child: ButtonTheme(
-                          alignedDropdown: true,
-                          child: DropdownButton<int>(
-                            hint: Text(
-                              'Select Party',
-                              style: CommonUtils.txSty_13O_F6,
-                            ),
-                            value: provider.dropDownParty,
-                            onChanged: (int? value) {
-                              setState(() {
-                                selectedCardCode = value!;
-                                provider.dropDownParty = value;
-                                if (selectedCardCode != -1) {
-                                  selectedValue =
-                                  dropdownItems[selectedCardCode]['cardCode'];
-                                  selectedName =
-                                  dropdownItems[selectedCardCode]['cardName'];
-                                  provider.getApiPartyCode =
-                                  dropdownItems[selectedCardCode]['cardCode'];
-                                  print("selectedValue:$selectedValue");
-                                  print("selectedName:$selectedName");
-                                } else {
-                                  print("==========");
-                                  print(selectedValue);
-                                  print(selectedName);
-                                }
-                                // isDropdownValid = selectedTypeCdId != -1;
-                              });
-                            },
-                            items: dropdownItems.asMap().entries.map((entry) {
-                              final index = entry.key;
-                              final item = entry.value;
-                              return DropdownMenuItem<int>(
-                                  value: index,
-                                  child: Text(
-                                    item['cardName'],
-                                    overflow: TextOverflow.visible,
-                                    // wrapText: true,
-                                  ));
-                            }).toList(),
-                            style: CommonUtils.txSty_13O_F6,
-                            iconSize: 20,
-                            icon: null,
-                            isExpanded: true,
-                            underline: const SizedBox(),
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5.0),
-                      child: Text(
-                        'Purpose',
-                        style: CommonUtils.txSty_13O_F6,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 4.0,
-                    ),
-                    Container(
-                        height: 40.0,
-                        padding: const EdgeInsets.only(left: 15, right: 5),
-                        //TODO
-                        decoration: CommonUtils.decorationO_R10W1,
-                        child: purposeList.isEmpty
-                            ? LoadingAnimationWidget.newtonCradle(
-                          color: Colors.blue,
-                          size: 40.0,
-                        )
-                            : DropdownButton<String>(
-                          hint: Text(
-                            'Select Purpose',
-                            style: CommonUtils.txSty_13O_F6,
-                          ),
-                          value: provider.dropDownPurpose,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedPurpose = newValue;
-                              provider.dropDownPurpose = newValue;
-                              selectedPurposeObj = purposeList.firstWhere(
-                                    (purpose) => purpose.fldValue == newValue,
-                                orElse: () => Purpose(
-                                    fldValue: '', descr: '', purposeName: ''),
-                              );
-                              purposename = selectedPurposeObj!.fldValue;
-                              provider.getApiPurpose = newValue;
-                            });
-                          },
-                          items: purposeList.map((Purpose purpose) {
-                            return DropdownMenuItem<String>(
-                              value: purpose.fldValue,
-                              child: Text(
-                                purpose.purposeName,
-                                style: CommonUtils.txSty_13O_F6,
-                              ),
-                            );
-                          }).toList(),
-                          icon: const Icon(Icons.arrow_drop_down),
-                          iconSize: 20,
-                          isExpanded: true,
-                          underline: const SizedBox(),
-                        ))
-                  ],
-                ),
-
-                const SizedBox(
-                  height: 10.0,
-                ),
-                SizedBox(
-                  height: 40,
-                  child: apiResponse == null
-                      ? const Center(child: CircularProgressIndicator.adaptive())
-                      : ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: apiResponse!.listResult.length +
-                        1, // Add 1 for the "All" option
-                    itemBuilder: (BuildContext context, int index) {
-                      bool isSelected = index == provider.dropDownStatus;
-                      PaymentMode currentPaymode;
-
-                      // Handle the "All" option
-                      if (index == 0) {
-                        currentPaymode = PaymentMode(
-                          // Provide default values or handle the null case as needed
-                          typeCdId: null,
-                          classTypeId: 3,
-                          name: 'All',
-                          desc: 'All',
-                          tableName: 'all',
-                          columnName: 'all',
-                          sortOrder: 0,
-                          isActive: true,
-                        );
-                      } else {
-                        currentPaymode = apiResponse!.listResult[
-                        index - 1]; // Adjust index for actual data
-                      }
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            provider.dropDownStatus = index;
-                            selectedPaymode = currentPaymode;
-                          });
-                          payid = currentPaymode.typeCdId;
-                          provider.getApiStatusId = currentPaymode.typeCdId;
-                          Selected_PaymentMode = currentPaymode.desc;
-                          print('payid:$payid');
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? const Color(0xFFe78337)
-                                : const Color(0xFFe78337).withOpacity(0.1),
-                            border: Border.all(
-                              color: isSelected
-                                  ? const Color(0xFFe78337)
-                                  : const Color(0xFFe78337),
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: IntrinsicWidth(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        currentPaymode.desc.toString(),
-                                        style: TextStyle(
-                                          color: isSelected
-                                              ? Colors.white
-                                              : Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 10.0,
-                ),
-
-                // From date
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildDateInputfromdate(
-                      context,
-                      'From Date',
-                      fromdateController,
-                          () => _selectfromDate(context, fromdateController),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-
-                // To Date
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //333
-                    buildDateToInput(
-                      context,
-                      'To Date',
-                      todateController,
-                          () => _selectDate(context, todateController),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          textStyle: const TextStyle(
-                            color: Colors.red,
-                          ),
-                          side: const BorderSide(
-                            color: Colors.red,
-                          ),
-                          backgroundColor: Colors.white,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                        ),
-                        child: const Text(
-                          'Cancel',
-                          style: TextStyle(
-                            color: Colors.red,
-                          ),
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          //apply
-                          getAppliedFilterData(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          textStyle: const TextStyle(
-                            color: Colors.white,
-                          ),
-                          backgroundColor: _primaryOrange,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                        ),
-                        child: const Text(
-                          'Apply',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
-          )),
+            Container(
+              margin: const EdgeInsets.only(top: 5, bottom: 12),
+              child: const Divider(
+                height: 5,
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Padding(
+                  padding: const EdgeInsets.only(left: 5.0),
+                  child: Text(
+                    'Party',
+                    style: CommonUtils.txSty_13O_F6,
+                  ),
+                ),
+                const SizedBox(
+                  height: 4.0,
+                ),
+                Container(
+                  height: 40.0,
+                  decoration: CommonUtils.decorationO_R10W1,
+                  child: DropdownButtonHideUnderline(
+                    child: ButtonTheme(
+                      alignedDropdown: true,
+                      child: DropdownButton<int>(
+                        hint: Text(
+                          'Select Party',
+                          style: CommonUtils.txSty_13O_F6,
+                        ),
+                        value: provider.dropDownParty,
+                        onChanged: (int? value) {
+                          setState(() {
+                            selectedCardCode = value!;
+                            provider.dropDownParty = value;
+                            if (selectedCardCode != -1) {
+                              selectedValue =
+                                  dropdownItems[selectedCardCode]['cardCode'];
+                              selectedName =
+                                  dropdownItems[selectedCardCode]['cardName'];
+                              provider.getApiPartyCode =
+                                  dropdownItems[selectedCardCode]['cardCode'];
+                              print("selectedValue:$selectedValue");
+                              print("selectedName:$selectedName");
+                            } else {
+                              print("==========");
+                              print(selectedValue);
+                              print(selectedName);
+                            }
+                            // isDropdownValid = selectedTypeCdId != -1;
+                          });
+                        },
+                        items: dropdownItems.asMap().entries.map((entry) {
+                          final index = entry.key;
+                          final item = entry.value;
+                          return DropdownMenuItem<int>(
+                              value: index,
+                              child: Text(
+                                item['cardName'],
+                                overflow: TextOverflow.visible,
+                                // wrapText: true,
+                              ));
+                        }).toList(),
+                        style: CommonUtils.txSty_13O_F6,
+                        iconSize: 20,
+                        icon: null,
+                        isExpanded: true,
+                        underline: const SizedBox(),
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                Padding(
+                  padding: const EdgeInsets.only(left: 5.0),
+                  child: Text(
+                    'Purpose',
+                    style: CommonUtils.txSty_13O_F6,
+                  ),
+                ),
+                const SizedBox(
+                  height: 4.0,
+                ),
+                Container(
+                    height: 40.0,
+                    padding: const EdgeInsets.only(left: 15, right: 5),
+                    //TODO
+                    decoration: CommonUtils.decorationO_R10W1,
+                    child: purposeList.isEmpty
+                        ? LoadingAnimationWidget.newtonCradle(
+                            color: Colors.blue,
+                            size: 40.0,
+                          )
+                        : DropdownButton<String>(
+                            hint: Text(
+                              'Select Purpose',
+                              style: CommonUtils.txSty_13O_F6,
+                            ),
+                            value: provider.dropDownPurpose,
+                            onChanged: (String? newValue) {
+                              setState(() {
+                                selectedPurpose = newValue;
+                                provider.dropDownPurpose = newValue;
+                                selectedPurposeObj = purposeList.firstWhere(
+                                  (purpose) => purpose.fldValue == newValue,
+                                  orElse: () => Purpose(
+                                      fldValue: '', descr: '', purposeName: ''),
+                                );
+                                purposename = selectedPurposeObj!.fldValue;
+                                provider.getApiPurpose = newValue;
+                              });
+                            },
+                            items: purposeList.map((Purpose purpose) {
+                              return DropdownMenuItem<String>(
+                                value: purpose.fldValue,
+                                child: Text(
+                                  purpose.purposeName,
+                                  style: CommonUtils.txSty_13O_F6,
+                                ),
+                              );
+                            }).toList(),
+                            icon: const Icon(Icons.arrow_drop_down),
+                            iconSize: 20,
+                            isExpanded: true,
+                            underline: const SizedBox(),
+                          ))
+              ],
+            ),
+
+            const SizedBox(
+              height: 10.0,
+            ),
+            SizedBox(
+              height: 40,
+              child: apiResponse == null
+                  ? const Center(child: CircularProgressIndicator.adaptive())
+                  : ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: apiResponse!.listResult.length +
+                          1, // Add 1 for the "All" option
+                      itemBuilder: (BuildContext context, int index) {
+                        bool isSelected = index == provider.dropDownStatus;
+                        PaymentMode currentPaymode;
+
+                        // Handle the "All" option
+                        if (index == 0) {
+                          currentPaymode = PaymentMode(
+                            // Provide default values or handle the null case as needed
+                            typeCdId: null,
+                            classTypeId: 3,
+                            name: 'All',
+                            desc: 'All',
+                            tableName: 'all',
+                            columnName: 'all',
+                            sortOrder: 0,
+                            isActive: true,
+                          );
+                        } else {
+                          currentPaymode = apiResponse!.listResult[
+                              index - 1]; // Adjust index for actual data
+                        }
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              provider.dropDownStatus = index;
+                              selectedPaymode = currentPaymode;
+                            });
+                            payid = currentPaymode.typeCdId;
+                            provider.getApiStatusId = currentPaymode.typeCdId;
+                            Selected_PaymentMode = currentPaymode.desc;
+                            print('payid:$payid');
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? const Color(0xFFe78337)
+                                  : const Color(0xFFe78337).withOpacity(0.1),
+                              border: Border.all(
+                                color: isSelected
+                                    ? const Color(0xFFe78337)
+                                    : const Color(0xFFe78337),
+                                width: 1.0,
+                              ),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: IntrinsicWidth(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          currentPaymode.desc.toString(),
+                                          style: TextStyle(
+                                            color: isSelected
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+
+            const SizedBox(
+              height: 10.0,
+            ),
+
+            // From date
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildDateInputfromdate(
+                  context,
+                  'From Date',
+                  fromdateController,
+                  () => _selectfromDate(context, fromdateController),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+
+            // To Date
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //333
+                buildDateToInput(
+                  context,
+                  'To Date',
+                  todateController,
+                  () => _selectDate(context, todateController),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      textStyle: const TextStyle(
+                        color: Colors.red,
+                      ),
+                      side: const BorderSide(
+                        color: Colors.red,
+                      ),
+                      backgroundColor: Colors.white,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                    ),
+                    child: const Text(
+                      'Cancel',
+                      style: TextStyle(
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      //apply
+                      getAppliedFilterData(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      textStyle: const TextStyle(
+                        color: Colors.white,
+                      ),
+                      backgroundColor: _primaryOrange,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                    ),
+                    child: const Text(
+                      'Apply',
+                      style: TextStyle(
+                        color: Colors.white,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      )),
     );
   }
 
@@ -1556,7 +1556,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
 // Convert the fromdateController text to 'yyyy-MM-dd'
     DateTime pickedFromDate =
-    DateFormat('dd-MM-yyyy').parse(fromdateController.text);
+        DateFormat('dd-MM-yyyy').parse(fromdateController.text);
     selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
     print('Converted to date: $selectformattedtodate');
     print('Converted from date: $selectformattedfromdate');
@@ -1594,7 +1594,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
           if (data != null) {
             List<OrderResult> result =
-            data.map((item) => OrderResult.fromJson(item)).toList();
+                data.map((item) => OrderResult.fromJson(item)).toList();
             viewOrdersProvider.storeIntoViewOrderProvider(result);
           } else {
             print('listResult is null');

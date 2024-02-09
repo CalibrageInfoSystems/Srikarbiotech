@@ -50,6 +50,7 @@ class _ProductListState extends State<Createorderscreen> {
   // DBHelper dbHelper = DBHelper();
   bool isLoading = false;
   List<bool> isItemAddedToCart = [];
+
   // List<ProductResponse> products = [];
   List<int> quantities = [];
   List<TextEditingController> textEditingControllers = [];
@@ -59,6 +60,7 @@ class _ProductListState extends State<Createorderscreen> {
   TextEditingController searchController = TextEditingController();
   bool isButtonClicked = false;
   int globalCartLength = 0;
+
   // List<int> selectedIndices = [];
   String Groupname = "";
   String ItemCode = "";
@@ -189,8 +191,8 @@ class _ProductListState extends State<Createorderscreen> {
                               proprietorName: '${widget.proprietorName}',
                               gstRegnNo: '${widget.gstRegnNo}',
 
-                              creditLine: double.parse(
-                                  '${widget.creditLine}'), // Convert to double
+                              creditLine: double.parse('${widget.creditLine}'),
+                              // Convert to double
                               balance: double.parse(
                                   '${widget.balance}'), // Convert to double
                             ),
@@ -414,9 +416,8 @@ class _ProductListState extends State<Createorderscreen> {
                                     fontSize: 14.0,
                                   ),
                                 ),
-                                SizedBox(
-                                    width:
-                                        5.0), // Add some space between balance and credit line
+                                SizedBox(width: 5.0),
+                                // Add some space between balance and credit line
                                 Text(
                                   '(${widget.creditLine})',
                                   style: TextStyle(
@@ -492,6 +493,8 @@ class _ProductListState extends State<Createorderscreen> {
                                   isItemAddedToCart[index] = true;
                                   textEditingControllers[index].text =
                                       cartItem.orderQty.toString();
+                                  print(
+                                      'previousscreen:${textEditingControllers[index].text}');
                                   break; // Exit the loop once the item is found in the cart
                                 }
                               }
@@ -821,7 +824,6 @@ class _ProductListState extends State<Createorderscreen> {
                                                                   }
                                                                 }
                                                               }
-                                                              //  updateQuantity(quantities[index]);
                                                             });
                                                             textEditingControllers[
                                                                         index]
@@ -846,38 +848,155 @@ class _ProductListState extends State<Createorderscreen> {
                                                         horizontal: 4.0),
                                                     child: GestureDetector(
                                                       onTap: () async {
-                                                        if (!isItemAddedToCart[
-                                                            index]) {
-                                                          setState(() {
-                                                            isSelectedList[
-                                                                    index] =
-                                                                !isSelectedList[
-                                                                    index];
-                                                          });
-
-                                                          if (isSelectedList[
+                                                        if (CompneyId == 1) {
+                                                          if (!isItemAddedToCart[
                                                               index]) {
-                                                            print(
-                                                                'Adding ${quantities[index]} of ${filteredproducts[index].itemName} to the cart');
+                                                            setState(() {
+                                                              isSelectedList[
+                                                                      index] =
+                                                                  !isSelectedList[
+                                                                      index];
+                                                            });
 
-                                                            String itemGrpCod;
+                                                            if (isSelectedList[
+                                                                index]) {
+                                                              print(
+                                                                  'Adding ${quantities[index]} of ${filteredproducts[index].itemName} to the cart');
 
-                                                            if (CompneyId ==
-                                                                    1 ||
-                                                                globalCartLength >
-                                                                    1) {
-                                                              itemGrpCod =
-                                                                  productresp
-                                                                      .itmsGrpCod!;
-                                                            } else {
-                                                              itemGrpCod =
-                                                                  productresp
-                                                                      .itmsGrpCod!;
+                                                              String itemGrpCod;
+
+                                                              if (CompneyId ==
+                                                                      1 ||
+                                                                  globalCartLength >
+                                                                      1) {
+                                                                itemGrpCod =
+                                                                    productresp
+                                                                        .itmsGrpCod!;
+                                                              } else {
+                                                                itemGrpCod =
+                                                                    productresp
+                                                                        .itmsGrpCod!;
+                                                              }
+
+                                                              if (cartProvider
+                                                                  .isSameItemGroup(
+                                                                      itemGrpCod)) {
+                                                                orderItem =
+                                                                    OrderItemXrefType(
+                                                                  id: 1,
+                                                                  orderId: 1001,
+                                                                  itemGrpCod:
+                                                                      itemGrpCod,
+                                                                  itemGrpName:
+                                                                      productresp
+                                                                          .itmsGrpNam,
+                                                                  itemCode:
+                                                                      productresp
+                                                                          .itemCode,
+                                                                  itemName:
+                                                                      productresp
+                                                                          .itemName,
+                                                                  noOfPcs: '10',
+                                                                  orderQty:
+                                                                      quantities[
+                                                                          index],
+                                                                  price:
+                                                                      productresp
+                                                                          .price,
+                                                                  ugpName:
+                                                                      productresp
+                                                                          .ugpName,
+                                                                  numInSale:
+                                                                      productresp
+                                                                          .numInSale,
+                                                                  salUnitMsr:
+                                                                      productresp
+                                                                          .salUnitMsr,
+                                                                  gst:
+                                                                      productresp
+                                                                          .gst,
+                                                                  totalPrice:
+                                                                      1.1,
+                                                                  totalPriceWithGST:
+                                                                      1.1,
+                                                                );
+
+                                                                await cartProvider
+                                                                    .addToCart(
+                                                                        orderItem!);
+                                                                await prefs.setBool(
+                                                                    'isItemAddedToCart_$index',
+                                                                    true);
+                                                                List<OrderItemXrefType>
+                                                                    cartItems =
+                                                                    cartProvider
+                                                                        .getCartItems();
+
+                                                                print(
+                                                                    'Added items length: ${cartItems.length}');
+                                                                globalCartLength =
+                                                                    cartItems
+                                                                        .length;
+
+                                                                print(
+                                                                    'Item added successfully');
+                                                                setState(() {
+                                                                  isItemAddedToCart[
+                                                                          index] =
+                                                                      true;
+                                                                });
+                                                              } else {
+                                                                // Display an error message, as itemGrpCod is not the same
+                                                                print(
+                                                                    'Error: Cannot add items with different itemGrpCod to the cart');
+                                                                CommonUtils
+                                                                    .showCustomToastMessageLong(
+                                                                        ' You can only add items with the Category ',
+                                                                        context,
+                                                                        1,
+                                                                        4);
+                                                                setState(() {
+                                                                  isSelectedList[
+                                                                          index] =
+                                                                      false;
+                                                                });
+                                                              }
                                                             }
+                                                          }
+                                                        } else if (CompneyId ==
+                                                            2) {
+                                                          if (!isItemAddedToCart[
+                                                              index]) {
+                                                            setState(() {
+                                                              isSelectedList[
+                                                                      index] =
+                                                                  !isSelectedList[
+                                                                      index];
+                                                            });
 
-                                                            if (cartProvider
-                                                                .isSameItemGroup(
-                                                                    itemGrpCod)) {
+                                                            if (isSelectedList[
+                                                                index]) {
+                                                              print(
+                                                                  'Adding ${quantities[index]} of ${filteredproducts[index].itemName} to the cart');
+
+                                                              String itemGrpCod;
+
+                                                              if (CompneyId ==
+                                                                      2 ||
+                                                                  globalCartLength >
+                                                                      1) {
+                                                                itemGrpCod =
+                                                                    productresp
+                                                                        .itmsGrpCod!;
+                                                              } else {
+                                                                itemGrpCod =
+                                                                    productresp
+                                                                        .itmsGrpCod!;
+                                                              }
+
+                                                              // if (cartProvider
+                                                              //     .isSameItemGroup(
+                                                              //     itemGrpCod)) {
                                                               orderItem =
                                                                   OrderItemXrefType(
                                                                 id: 1,
@@ -940,21 +1059,23 @@ class _ProductListState extends State<Createorderscreen> {
                                                                         index] =
                                                                     true;
                                                               });
-                                                            } else {
-                                                              // Display an error message, as itemGrpCod is not the same
-                                                              print(
-                                                                  'Error: Cannot add items with different itemGrpCod to the cart');
-                                                              CommonUtils
-                                                                  .showCustomToastMessageLong(
-                                                                      ' You can only add items with the Category ',
-                                                                      context,
-                                                                      1,
-                                                                      4);
-                                                              setState(() {
-                                                                isSelectedList[
-                                                                        index] =
-                                                                    false;
-                                                              });
+                                                              // }
+                                                              // else {
+                                                              //   // Display an error message, as itemGrpCod is not the same
+                                                              //   print(
+                                                              //       'Error: Cannot add items with different itemGrpCod to the cart');
+                                                              //   CommonUtils
+                                                              //       .showCustomToastMessageLong(
+                                                              //       ' You can only add items with the Category ',
+                                                              //       context,
+                                                              //       1,
+                                                              //       4);
+                                                              //   setState(() {
+                                                              //     isSelectedList[
+                                                              //     index] =
+                                                              //     false;
+                                                              //   });
+                                                              // }
                                                             }
                                                           }
                                                         }
@@ -1071,8 +1192,8 @@ class _ProductListState extends State<Createorderscreen> {
                               proprietorName: '${widget.proprietorName}',
                               gstRegnNo: '${widget.gstRegnNo}',
 
-                              creditLine: double.parse(
-                                  '${widget.creditLine}'), // Convert to double
+                              creditLine: double.parse('${widget.creditLine}'),
+                              // Convert to double
                               balance: double.parse(
                                   '${widget.balance}'), // Convert to double
                             ),
@@ -1093,7 +1214,7 @@ class _ProductListState extends State<Createorderscreen> {
                       ),
                       child: const Center(
                         child: Text(
-                          'Select Transport',
+                          'Save & Proceed',
                           style: TextStyle(
                             color: Colors.white,
                             fontSize: 18,
@@ -1156,7 +1277,7 @@ class _ProductListState extends State<Createorderscreen> {
             product.itemCode!.toLowerCase().contains(searchTerm);
       }).toList();
       print('filteredproducts : ${filteredproducts}');
-      print('filteredproducts : ${filteredproducts!.length}');
+      print('filteredproducts : ${filteredproducts.length}');
     });
   }
 
@@ -1264,6 +1385,7 @@ class ProductResponse {
   String? ugpName;
   int? numInSale;
   String? salUnitMsr;
+
   ProductResponse({
     required this.itemCode,
     required this.itemName,
