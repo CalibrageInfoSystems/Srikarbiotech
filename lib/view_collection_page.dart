@@ -89,11 +89,11 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
       final url = Uri.parse(
           'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollectionsbyMobileSearch');
       final requestBodyObj = {
-        "PurposeName": null,
-        "StatusId": null,
-        "PartyCode": null,
-        "FormDate": viewProvider.fromDateValue,
-        "ToDate": viewProvider.toDateValue,
+        "PurposeName": viewProvider.getApiPurpose,
+        "StatusId": viewProvider.getApiStatusId,
+        "PartyCode": viewProvider.getApiPartyCode,
+        "FormDate": viewProvider.apiFromDate,
+        "ToDate": viewProvider.apiToDate,
         "CompanyId": companyId,
         "UserId": userId
       };
@@ -406,8 +406,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   void initializeFromAndToDates() {
-    fromdateController.text = viewProvider.fromDateValue;
-    todateController.text = viewProvider.toDateValue;
+    fromdateController.text = viewProvider.displayFromDate;
+    todateController.text = viewProvider.displayToDate;
   }
 
   Future<void> fetchdropdownitems() async {
@@ -478,7 +478,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       if (picked != null) {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         controller.text = formattedDate;
-        viewProvider.toDateValue = formattedDate;
+        viewProvider.setToDate = formattedDate;
         // Save selected dates as DateTime objects
         selectedDate = picked;
 
@@ -590,7 +590,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       if (picked != null) {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         controller.text = formattedDate;
-        viewProvider.fromDateValue = formattedDate;
+        viewProvider.setFromDate = formattedDate;
         // Save selected dates as DateTime objects
         selectedfromdateDate = picked;
 
@@ -1062,8 +1062,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         "PurposeName": viewProvider.getApiPurpose,
         "StatusId": viewProvider.getApiStatusId,
         "PartyCode": viewProvider.getApiPartyCode,
-        "FormDate": selectformattedfromdate,
-        "ToDate": selectformattedtodate,
+        "FormDate": viewProvider.apiFromDate,
+        "ToDate": viewProvider.apiToDate,
         "CompanyId": companyId,
         "UserId": userId
       };

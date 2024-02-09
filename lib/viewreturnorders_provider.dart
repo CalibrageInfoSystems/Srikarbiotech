@@ -7,7 +7,7 @@ class ViewReturnOrdersProvider extends ChangeNotifier {
   int? _selectedParty;
   String? _selectedPurpose;
   String? apiPurpose;
-  String? apiPartyCode = '';
+  String? apiPartyCode;
   int? apiStatusId;
   int selectedStatusIndex = 0;
   String fromDate = DateFormat('dd-MM-yyyy')
@@ -20,9 +20,27 @@ class ViewReturnOrdersProvider extends ChangeNotifier {
     filterIconStatus = newStatus;
   }
 
-  String get fromDateValue => fromDate;
-  set fromDateValue(String newFromDate) {
+  String get displayFromDate => fromDate;
+  String get apiFromDate {
+    DateTime parsedDate = DateFormat('dd-MM-yyyy').parse(fromDate);
+    String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+    return formattedDate;
+  }
+
+  set setFromDate(String newFromDate) {
     fromDate = newFromDate;
+    notifyListeners();
+  }
+
+  String get displayToDate => toDate;
+  String get apiToDate {
+    DateTime parsedDate = DateFormat('dd-MM-yyyy').parse(toDate);
+    String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+    return formattedDate;
+  }
+
+  set setToDate(String newToDate) {
+    toDate = newToDate;
     notifyListeners();
   }
 
@@ -41,12 +59,6 @@ class ViewReturnOrdersProvider extends ChangeNotifier {
   int? get getApiStatusId => apiStatusId;
   set getApiStatusId(int? newApiStatusId) {
     apiStatusId = newApiStatusId;
-    notifyListeners();
-  }
-
-  String get toDateValue => toDate;
-  set toDateValue(String newToDate) {
-    toDate = newToDate;
     notifyListeners();
   }
 

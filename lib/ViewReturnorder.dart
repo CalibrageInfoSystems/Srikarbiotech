@@ -38,11 +38,6 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
     borderRadius: BorderRadius.circular(10),
     borderSide: const BorderSide(color: Colors.black),
   );
-  final _borderforContainer = BoxDecoration(
-      borderRadius: BorderRadius.circular(10),
-      border: Border.all(
-        color: HexColor('#e58338'),
-      ));
   final List<String> orderStatusList = [
     'Shipped',
     'Pending',
@@ -87,15 +82,16 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetAppReturnOrdersBySearch');
     try {
       final requestBody = {
-        "PartyCode": returnOrdersProvider.apiPartyCode,
+        "PartyCode": returnOrdersProvider.getApiPartyCode,
         "StatusId": returnOrdersProvider.getApiStatusId,
-        "FormDate": returnOrdersProvider.fromDateValue,
-        "ToDate": returnOrdersProvider.toDateValue,
+        "FormDate": returnOrdersProvider.apiFromDate,
+        "ToDate": returnOrdersProvider.apiToDate,
         "CompanyId": companyId,
         "UserId": userId
       };
 
-      debugPrint('_______Return Orders____1___${jsonEncode(requestBody)}');
+      debugPrint('_______Return Orders____1___');
+      debugPrint(jsonEncode(requestBody));
       final response = await http.post(
         url,
         body: json.encode(requestBody),
@@ -174,6 +170,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                               itemCount: data.length,
                               itemBuilder: (context, index) {
                                 return ReturnCarditem(
+                                  // work
                                   index: index,
                                   data: data[index],
                                 );
@@ -181,25 +178,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                             ),
                           )
                         else
-                        // noCollectionText(),
-                          const Expanded(
-                            child: SizedBox(
-                              width: double.infinity,
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                crossAxisAlignment: CrossAxisAlignment.center,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.all(5.0),
-                                    child: Text(
-                                      'No collection found!',
-                                      style: CommonUtils.txSty_13B,
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                          noCollectionText(),
                       ],
                     ),
                   );
@@ -331,7 +310,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
               padding: EdgeInsets.all(5.0),
               child: Text(
                 'No collection found!',
-                style: CommonUtils.Mediumtext_14_cb,
+                style: CommonUtils.txSty_13B,
               ),
             ),
           ],
@@ -637,8 +616,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   void initializeFromAndToDates() {
-    fromdateController.text = viewReturnOrdersProvider.fromDateValue;
-    todateController.text = viewReturnOrdersProvider.toDateValue;
+    fromdateController.text = viewReturnOrdersProvider.displayFromDate;
+    todateController.text = viewReturnOrdersProvider.displayToDate;
   }
 
   Future<void> fetchdropdownitems() async {
@@ -709,7 +688,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       if (picked != null) {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         controller.text = formattedDate;
-        viewReturnOrdersProvider.toDateValue = formattedDate;
+        viewReturnOrdersProvider.setToDate = formattedDate;
         // Save selected dates as DateTime objects
         selectedDate = picked;
 
@@ -821,7 +800,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       if (picked != null) {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         controller.text = formattedDate;
-        viewReturnOrdersProvider.fromDateValue = formattedDate;
+        viewReturnOrdersProvider.setFromDate = formattedDate;
         // Save selected dates as DateTime objects
         selectedfromdateDate = picked;
 
@@ -1277,6 +1256,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> getappliedfilterData(BuildContext context) async {
+    viewReturnOrdersProvider.filterStatus = true;
     int companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
 
@@ -1286,12 +1266,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       final requestBody = {
         "PartyCode": viewReturnOrdersProvider.getApiPartyCode,
         "StatusId": viewReturnOrdersProvider.getApiStatusId,
-        "FormDate": viewReturnOrdersProvider.fromDateValue,
-        "ToDate": viewReturnOrdersProvider.toDateValue,
-        "CompanyId": 1,
+        "FormDate": viewReturnOrdersProvider.apiFromDate,
+        "ToDate": viewReturnOrdersProvider.apiToDate,
+        "CompanyId": companyId,
         "UserId": userId // "e39536e2-89d3-4cc7-ae79-3dd5291ff156"
       };
-      debugPrint('_______Return Orders____2___${jsonEncode(requestBody)}');
+      debugPrint('_______Return Orders____2___');
+      debugPrint(jsonEncode(requestBody));
 
       final response = await http.post(
         url,
