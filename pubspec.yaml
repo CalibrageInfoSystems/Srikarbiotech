@@ -58,6 +58,7 @@ dependencies:
   photo_view: ^0.14.0
   quantity_input: ^1.0.0
   input_quantity: ^2.2.0
+  card_swiper: ^3.0.1
 
 
 dev_dependencies:

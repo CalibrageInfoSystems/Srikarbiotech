@@ -1,6 +1,7 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:card_swiper/card_swiper.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -95,13 +96,14 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
   List<int> quantities = [];
   int globalCartLength = 0;
   TextEditingController quantityController = TextEditingController();
-
+  late List<String> imageUrls;
   int CompneyId = 0;
   String? userId = "";
   String? slpCode = "";
   double totalSum = 0.0;
   String LrDate1 = "";
   String LrDate2 = "";
+// late String lrattachment, ReturnOrderReceipt, addlattchments;
   @override
   initState() {
     super.initState();
@@ -110,7 +112,11 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       DeviceOrientation.portraitUp,
     ]);
     getshareddata();
-
+    imageUrls = [
+      'data:image/png;base64,${widget.LRAttachment}',
+      'data:image/png;base64,${widget.ReturnOrderReceipt}',
+      'data:image/png;base64,${widget.addlattchments}',
+    ];
     print('Cart Items globalCartLength: $globalCartLength');
     print('cardName: ${widget.cardName}');
     print('cardCode: ${widget.cardCode}');
@@ -406,29 +412,58 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                           padding: const EdgeInsets.symmetric(
                               horizontal: 12, vertical: 10),
                           child: Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 10, vertical: 4),
-                            decoration: BoxDecoration(
-                              color: Colors.orange.shade100,
-                              border: Border.all(
-                                color: _orangeColor,
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
+                              decoration: BoxDecoration(
+                                color: Colors.orange.shade100,
+                                border: Border.all(
+                                  color: _orangeColor,
+                                ),
+                                borderRadius: BorderRadius.circular(5),
                               ),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: Row(
-                              mainAxisSize: MainAxisSize.min,
-                              children: [
-                                const Icon(Icons.link),
-                                const SizedBox(
-                                  width: 5,
+                              child: GestureDetector(
+                                onTap: () {
+                                  // Add your click listener logic here
+                                  // showDialog(
+                                  //   context: context,
+                                  //   builder: (context) => AlertDialog(
+                                  //     content: Image.memory(
+                                  //       base64Decode(
+                                  //           widget.LRAttachment.split(',')
+                                  //               .last),
+                                  //     ),
+                                  //   ),
+                                  // );
+                                  // showDialog(
+                                  //   context: context,
+                                  //   builder: (context) => ImageDialog(
+                                  //     imageString: widget.LRAttachment,
+                                  //     imageList: base64ImageStrings,
+                                  //   ),
+                                  // );
+
+                                  showDialog(
+                                    context: context,
+                                    builder: (context) => ImageSliderDialog(
+                                      LRAttachment: widget.LRAttachment,
+                                      ReturnOrderReceipt:
+                                          widget.ReturnOrderReceipt,
+                                      addlattchments: widget.addlattchments,
+                                    ),
+                                  );
+                                },
+                                child: Row(
+                                  mainAxisSize: MainAxisSize.min,
+                                  children: [
+                                    const Icon(Icons.link),
+                                    const SizedBox(width: 5),
+                                    Text(
+                                      'Attachment',
+                                      style: _titleTextStyle,
+                                    ),
+                                  ],
                                 ),
-                                Text(
-                                  'Attachment',
-                                  style: _titleTextStyle,
-                                ),
-                              ],
-                            ),
-                          ),
+                              )),
                         )
                       ],
                     ),
@@ -525,7 +560,6 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
               child: GestureDetector(
                 onTap: () {
                   Addreturnorder();
-
                 },
                 child: Container(
                   // width: desiredWidth * 0.9,
@@ -620,32 +654,29 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     // Format the date as 'yyyy-MM-dd'
     String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
     print('Formatted Date: $formattedcurrentDate');
-    final String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/AddReturnOrder';
+    final String apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/AddReturnOrder';
     List<Map<String, dynamic>> returnorderItemList = cartItems.map((cartItem) {
       double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
       double price = cartItem.price ?? 0.0;
 
-
-      double totalPrice = orderQty * price ;
+      double totalPrice = orderQty * price;
       return {
         "Id": 1,
         "ReturnOrderId": 2,
         "itemGrpCod": cartItem.itemGrpCod,
-        "itemGrpName":  cartItem.itemGrpName,
+        "itemGrpName": cartItem.itemGrpName,
         "itemCode": cartItem.itemCode,
-        "itemName":  cartItem.itemName,
+        "itemName": cartItem.itemName,
         "StatusTypeId": 13,
         "OrderQty": cartItem.orderQty,
-        "Price":  cartItem.price,
+        "Price": cartItem.price,
         "TotalPrice": totalPrice
       };
     }).toList();
 
     Map<String, dynamic> orderData = {
-
-
       "ReturnOrderItemXrefList": returnorderItemList,
-
       "Id": 1,
       "CompanyId": CompneyId,
       "ReturnOrderNumber": "",
@@ -669,19 +700,18 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       "CreatedDate": formattedcurrentDate,
       "UpdatedBy": userId,
       "UpdatedDate": formattedcurrentDate,
-      "LRFileString":  '${widget.LRAttachment}',
+      "LRFileString": '${widget.LRAttachment}',
       "LRFileName": "",
       "LRFileExtension": ".jpg",
       "LRFileLocation": "",
-      "OrderFileString":  '${widget.ReturnOrderReceipt}',
+      "OrderFileString": '${widget.ReturnOrderReceipt}',
       "OrderFileName": "",
       "OrderFileExtension": ".jpg",
       "OrderFileLocation": "",
-      "OtherFileString":  '${widget.addlattchments}',
+      "OtherFileString": '${widget.addlattchments}',
       "OtherFileName": ".jpg",
       "OtherFileExtension": "",
       "OtherFileLocation": ""
-
     };
     print(jsonEncode(orderData));
 
@@ -698,10 +728,10 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         // Successful request
         final responseData = jsonDecode(response.body);
         print(responseData);
-        String returnOrderNumber = responseData['response']['returnOrderNumber'];
+        String returnOrderNumber =
+            responseData['response']['returnOrderNumber'];
 
 // Navigate to the next screen while passing the returnOrderNumber
-
 
         final cartProvider = context.read<CartProvider>();
 
@@ -710,10 +740,10 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ReturnorderStatusScreen(returnOrderNumber: returnOrderNumber),
+            builder: (context) =>
+                ReturnorderStatusScreen(returnOrderNumber: returnOrderNumber),
           ),
         );
-
       } else {
         // Handle errors
         print('Error: ${response.reasonPhrase}');
@@ -800,22 +830,22 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 style: CommonUtils.Mediumtext_14,
               ),
               SizedBox(height: 8.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Expanded(
-                    child: Text(
-                      '₹${widget.cartItem.price}',
-                      style: CommonUtils.Mediumtext_o_14,
-                    ),
-                  ),
-                  Text(
-                    '₹${widget.totalPrice.toStringAsFixed(2)}',
-                    style: CommonUtils.Mediumtext_o_14,
-                  ),
-                ],
-              ),
-              SizedBox(height: 8.0),
+              // Row(
+              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              //   children: [
+              //     Expanded(
+              //       child: Text(
+              //         '₹${widget.cartItem.price}',
+              //         style: CommonUtils.Mediumtext_o_14,
+              //       ),
+              //     ),
+              //     Text(
+              //       '₹${widget.totalPrice.toStringAsFixed(2)}',
+              //       style: CommonUtils.Mediumtext_o_14,
+              //     ),
+              //   ],
+              // ),
+              // SizedBox(height: 8.0),
               Row(
                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
                 children: [
@@ -984,3 +1014,104 @@ class PlusMinusButtons extends StatelessWidget {
     print('Current Value: ${textController.text}');
   }
 }
+
+class ImageSliderDialog extends StatelessWidget {
+  final String LRAttachment;
+  final String ReturnOrderReceipt;
+  final String addlattchments;
+
+  ImageSliderDialog({
+    required this.LRAttachment,
+    required this.ReturnOrderReceipt,
+    required this.addlattchments,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return Dialog(
+      child: SizedBox(
+        height: MediaQuery.of(context).size.height / 1.5,
+        width: MediaQuery.of(context).size.width / 1.1,
+        child: Swiper(
+          itemBuilder: (BuildContext context, int index) {
+            // Get the base64 string based on the index
+            String base64ImageString;
+            if (index == 0) {
+              base64ImageString = LRAttachment;
+            } else if (index == 1) {
+              base64ImageString = ReturnOrderReceipt;
+            } else {
+              base64ImageString = addlattchments;
+            }
+            // Decode and display the image
+            return Image.memory(
+              base64.decode(
+                base64ImageString.split(',').last,
+              ),
+              fit: BoxFit.cover,
+            );
+          },
+          itemCount: 3, // Number of images
+          pagination: SwiperPagination(), // Add pagination dots
+          control: SwiperControl(), // Add next and previous arrow buttons
+        ),
+      ),
+    );
+  }
+}
+// class ImageDialog extends StatelessWidget {
+//   final String imageString;
+//   final List<String> imageList;
+//
+//   ImageDialog({required this.imageString, required this.imageList});
+//
+//   @override
+//   Widget build(BuildContext context) {
+//     return Dialog(
+//       child: Column(
+//         mainAxisSize: MainAxisSize.min,
+//         children: [
+//           Image.memory(
+//             base64Decode(imageString.split(',').last),
+//             width: 300, // Adjust the width as needed
+//           ),
+//           SizedBox(height: 10),
+//           if (imageList.length > 1) ...[
+//             Container(
+//               height: 200,
+//               child: ListView.builder(
+//                 itemCount: imageList.length,
+//                 itemBuilder: (context, index) {
+//                   if (imageList[index] != imageString) {
+//                     return GestureDetector(
+//                       onTap: () {
+//                         // Show the tapped image
+//                         Navigator.pop(context);
+//                         showDialog(
+//                           context: context,
+//                           builder: (context) => ImageDialog(
+//                             imageString: imageList[index],
+//                             imageList: imageList,
+//                           ),
+//                         );
+//                       },
+//                       child: Image.memory(
+//                         base64Decode(imageList[index].split(',').last),
+//                         width: 100,
+//                         height: 100,
+//                         fit: BoxFit.cover,
+//                       ),
+//                     );
+//                   } else {
+//                     return SizedBox(); // Skip the current image
+//                   }
+//                 },
+//                 scrollDirection: Axis.horizontal,
+//               ),
+//             ),
+//           ],
+//         ],
+//       ),
+//     );
+//   }
+// }
