@@ -1436,7 +1436,8 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
             // Navigate to the next screen
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => StatusScreen(Compneyname!)),
+              MaterialPageRoute(
+                  builder: (context) => StatusScreen(Compneyname!)),
             );
           } else {
             CommonUtils.showCustomToastMessageLong('Error', context, 1, 6);
