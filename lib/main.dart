@@ -186,7 +186,7 @@ class _MyHomePageState extends State<MyHomePage> with TickerProviderStateMixin {
                 child: ScaleTransition(
                   scale: _scaleAnimation,
                   child: Image.asset(
-                    'assets/login_screen_logo.png', // Replace with your PNG image path
+                    'assets/srikargroups_logo_with_border.png', // Replace with your PNG image path
                     height: 200.0,
                     width: 200.0,
                     // Adjust the height and width as needed

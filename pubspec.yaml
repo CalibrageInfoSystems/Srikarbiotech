@@ -133,6 +133,8 @@ flutter:
     - assets/minus-small.svg
     - assets/bags-orders.svg
     - assets/srikar_biotech_logo.svg
+    - assets/srikargroups_logo.png
+    - assets/srikargroups_logo_with_border.png
 
   #   - images/a_dot_ham.jpeg
 

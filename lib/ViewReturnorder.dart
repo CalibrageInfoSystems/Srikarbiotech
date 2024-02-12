@@ -149,7 +149,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                     child: CircularProgressIndicator.adaptive());
               } else if (snapshot.hasError) {
                 return const Center(
-                  child: Text('Collection is empty'),
+                  child: Text('No return orders found'),
                 );
               } else {
                 if (snapshot.hasData) {
@@ -309,7 +309,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
             Padding(
               padding: EdgeInsets.all(5.0),
               child: Text(
-                'No collection found!',
+                'No return orders found',
                 style: CommonUtils.txSty_13B,
               ),
             ),

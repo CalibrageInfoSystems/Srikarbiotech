@@ -13,7 +13,7 @@
         android:label="srikarbiotech"
         android:requestLegacyExternalStorage="true"
         android:name="${applicationName}"
-        android:icon="@mipmap/ic_launcher">
+        android:icon="@drawable/srikargroups_logo">
         <activity
             android:name=".MainActivity"
             android:exported="true"
