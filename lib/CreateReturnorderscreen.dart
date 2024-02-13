@@ -442,10 +442,8 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                               ),
                             ),
                           ))
-                    : Consumer<CartProvider>(
-                        builder: (context, cartProvider, _) {
-                        List<ReturnOrderItemXrefType> cartItems =
-                            cartProvider.getReturnCartItems();
+                    : Consumer<CartProvider>(builder: (context, cartProvider, _) {
+                        List<ReturnOrderItemXrefType> cartItems = cartProvider.getReturnCartItems();
                         // Set the global cart length
                         globalCartLength = cartItems.length;
                         print('Added cart: ${globalCartLength}');
@@ -459,7 +457,19 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                             }
 
                             final productresp = filteredproducts[index];
+                            if (globalCartLength > 0) {
+                              String itemcode = productresp.itemCode!;
 
+// Check if the current item is already added to the cart
+                              for (var cartItem in cartProvider.getReturnCartItems()) {
+                                if (cartItem.itemCode == itemcode) {
+                                  isItemAddedToCart[index] = true;
+                                  textEditingControllers[index].text = cartItem.orderQty.toString();
+                                  print('previousscreen:${textEditingControllers[index].text}');
+                                  break; // Exit the loop once the item is found in the cart
+                                }
+                              }
+                            }
                             return GestureDetector(
                                 onTap: () {
                                   print(

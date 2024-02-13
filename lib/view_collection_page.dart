@@ -1203,11 +1203,11 @@ class _MyCardState extends State<MyCard> {
                         ),
                         child: Container(
                           height: 65,
-                          width: 60,
+                          width: 65,
                           padding: const EdgeInsets.all(10),
                           decoration: _iconBoxBorder,
                           child: Center(
-                            child: getStatusTypeImage(
+                            child: getSvgImagesAndColors(
                                 widget.listResult.statusTypeId),
                           ),
                         ),
@@ -1283,6 +1283,7 @@ class _MyCardState extends State<MyCard> {
                   children: [
                     Container(
                       width: 65,
+                      margin: const EdgeInsets.only(left: 5.0),
                       padding: const EdgeInsets.symmetric(vertical: 3),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
@@ -1353,7 +1354,7 @@ class _MyCardState extends State<MyCard> {
 
   late Color statusColor;
   late Color statusBgColor;
-  Widget getStatusTypeImage(int statusTypeId) {
+  Widget getSvgImagesAndColors(int statusTypeId) {
     String assetPath;
     late Color iconColor;
 
@@ -1362,37 +1363,31 @@ class _MyCardState extends State<MyCard> {
         assetPath = 'assets/hourglass-start.svg';
         iconColor = const Color(0xFFE58338);
         statusColor = const Color(0xFFe58338);
-        statusBgColor = const Color.fromARGB(255, 252, 229, 213);
+        statusBgColor = const Color(0xFFe58338).withOpacity(0.2);
         break;
       case 8: // received
         assetPath = 'assets/sb_money-bill-wave.svg';
-        iconColor = const Color.fromARGB(255, 0, 146, 5);
-        statusColor = const Color.fromARGB(255, 0, 146, 5);
-        statusBgColor = const Color.fromARGB(255, 229, 253, 230);
-
-        // Set color filter or other customization as needed
+        iconColor = Colors.green;
+        statusColor = Colors.green;
+        statusBgColor = Colors.green.withOpacity(0.2);
         break;
       case 9: // rejected
         assetPath = 'assets/sensor-alert.svg';
-        iconColor = Colors.red;
-        statusColor = Colors.red;
-        statusBgColor = const Color.fromARGB(255, 247, 210, 208);
-        // Set color filter or other customization as needed
+        iconColor = HexColor('#C42121');
+        statusColor = HexColor('#C42121');
+        statusBgColor = HexColor('#C42121').withOpacity(0.2);
         break;
-    // Add more cases as needed for other statusTypeId values
-
       default:
         assetPath = 'assets/sb_home.svg';
-        iconColor = Colors.yellow;
-        statusColor = Colors.yellow;
-        statusBgColor = Colors.yellow.shade100;
-    // Set default image or handle other cases if needed
+        iconColor = Colors.black26;
+        statusColor = Colors.black26;
+        statusBgColor = Colors.black26.withOpacity(0.2);
     }
-
     return SvgPicture.asset(
       assetPath,
       width: 50,
       height: 50,
+      fit: BoxFit.fill,
       color: iconColor,
     );
   }

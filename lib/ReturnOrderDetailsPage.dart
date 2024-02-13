@@ -192,7 +192,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
 
                         // card 4
                         // payment details card
-                        PaymentDetailsCard(data: data),
+                     //   PaymentDetailsCard(data: data),
                       ],
                     ),
                   ),
@@ -706,33 +706,33 @@ class ItemCard extends StatelessWidget {
                 ),
               ],
             ),
-            const SizedBox(
-              height: 10,
-            ),
-            Row(
-              children: [
-                Icon(
-                  Icons.currency_rupee,
-                  size: 12,
-                  color: HexColor('#e58338'),
-                ),
-                Text(
-                  data.price.toString(),
-                  style: CommonUtils.txSty_13O_F6,
-                ),
-                // const SizedBox(
-                //   width: 10,
-                // ),
-                // Text(
-                //   '\$${data.price.toString()} ',
-                //   style: const TextStyle(
-                //     fontSize: 12,
-                //     fontFamily: 'Roboto',
-                //     fontWeight: FontWeight.bold,
-                //   ),
-                // ),
-              ],
-            ),
+            // const SizedBox(
+            //   height: 10,
+            // ),
+            // Row(
+            //   children: [
+            //     Icon(
+            //       Icons.currency_rupee,
+            //       size: 12,
+            //       color: HexColor('#e58338'),
+            //     ),
+            //     Text(
+            //       data.price.toString(),
+            //       style: CommonUtils.txSty_13O_F6,
+            //     ),
+            //     // const SizedBox(
+            //     //   width: 10,
+            //     // ),
+            //     // Text(
+            //     //   '\$${data.price.toString()} ',
+            //     //   style: const TextStyle(
+            //     //     fontSize: 12,
+            //     //     fontFamily: 'Roboto',
+            //     //     fontWeight: FontWeight.bold,
+            //     //   ),
+            //     // ),
+            //   ],
+            // ),
           ],
         ),
       ),

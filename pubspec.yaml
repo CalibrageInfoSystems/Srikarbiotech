@@ -138,8 +138,7 @@ flutter:
     - assets/overview.svg
     - assets/file-download.svg
     - assets/order-cancel.svg
-
-  #   - images/a_dot_ham.jpeg
+    - assets/reject.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware
@@ -179,3 +178,5 @@ flutter:
   #
   # For details regarding fonts from package dependencies,
   # see https://flutter.dev/custom-fonts/#from-packages
+reject:
+  svg:

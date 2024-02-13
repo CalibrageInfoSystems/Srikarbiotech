@@ -179,407 +179,14 @@ class _VieworderPageState extends State<ViewOrders> {
                           itemCount: data.length,
                           // Change this to the number of static items you want
                           itemBuilder: (context, index) {
-                            OrderResult orderresul = data[index];
-                            print('orderdate======>,${data[index].orderDate}');
-                            // String fromatteddates = orderresul.orderDate;
                             String dateString = data[index].orderDate;
                             DateTime date = DateTime.parse(dateString);
-                            String formattedDate = DateFormat('dd MMM, yyyy').format(date);
+                            String formattedDate =
+                            DateFormat('dd MMM, yyyy').format(date);
 
-                            return GestureDetector(
-                              onTap: () {
-                                viewOrdersProvider.clearFilter();
-                                Navigator.of(context).push(
-                                  MaterialPageRoute(
-                                    builder: (context) => Orderdetails(
-                                        orderid: data[index].id,
-                                        orderdate: formattedDate,
-                                        totalprice: data[index].totalCost,
-                                        bookingplace: data[index].bookingPlace,
-                                        transportmode:
-                                        data[index].transportName,
-                                        lrnumber: 12345,
-                                        lrdate: "",
-                                        statusname: data[index].statusName,
-                                        partyname: data[index].partyName,
-                                        partycode: data[index].partyCode,
-                                        proprietorName:
-                                        data[index].proprietorName!,
-                                        partyGSTNumber:
-                                        data[index].partyGSTNumber!,
-                                        ordernumber: data[index].orderNumber!,
-                                        partyAddress: data[index].partyAddress),
-                                  ),
-                                );
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                color: Colors.white,
-                                child: Card(
-                                  elevation: 5,
-                                  color: Colors.white,
-                                  child: Container(
-                                    padding: const EdgeInsets.all(10),
-                                    //   width: double.infinity,
-                                    width: MediaQuery.of(context).size.width,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          width:
-                                          MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.circular(10),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              // starting icon of card
-                                              Card(
-                                                elevation: 2,
-                                                color: Colors.white,
-                                                child: Container(
-                                                  height: 65,
-                                                  width: 70,
-                                                  padding:
-                                                  const EdgeInsets.all(8),
-                                                  decoration: BoxDecoration(
-                                                    borderRadius:
-                                                    BorderRadius.circular(
-                                                        10),
-                                                    color: Colors.white30,
-                                                  ),
-                                                  child: Center(
-                                                    child: getSvgAsset(
-                                                        orderresul.statusName),
-
-                                                    //    color: Colors.black, // Set color as needed
-                                                  ),
-                                                ),
-                                              ),
-
-                                              // beside info
-                                              SizedBox(
-                                                //height: 90,
-                                                // width: ,
-                                                width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                    1.8,
-                                                child: Padding(
-                                                  padding:
-                                                  const EdgeInsets.only(
-                                                      left: 10,
-                                                      top: 0,
-                                                      bottom: 0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        orderresul.partyName,
-                                                        style: const TextStyle(
-                                                            fontFamily:
-                                                            'Roboto',
-                                                            fontSize: 12,
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .bold),
-                                                        softWrap: true,
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 5.0,
-                                                      ),
-                                                      Row(
-                                                        // mainAxisAlignment:
-                                                        // MainAxisAlignment
-                                                        //     .spaceBetween,
-                                                        children: [
-                                                          Container(
-                                                            child:
-                                                            Row(
-                                                              children: [
-                                                                const Text(
-                                                                  'Order ID : ',
-                                                                  style: TextStyle(
-                                                                      fontFamily:
-                                                                      'Roboto',
-                                                                      fontSize: 13,
-                                                                      color: Colors
-                                                                          .black,
-                                                                      fontWeight:
-                                                                      FontWeight
-                                                                          .w400),
-                                                                ),
-                                                                Text(
-                                                                  '${orderresul.orderNumber}',
-                                                                  style: const TextStyle(
-                                                                      fontFamily:
-                                                                      'Roboto',
-                                                                      fontSize: 13,
-                                                                      color: Color(
-                                                                          0xFFe58338),
-                                                                      fontWeight:
-                                                                      FontWeight
-                                                                          .w600),
-                                                                ),
-                                                              ],
-                                                            ),
-
-                                                          ),
-                                                          const Spacer(),
-                                                          // Container(
-                                                          //   child: Row(
-                                                          //     children: [
-                                                          //       Text(
-                                                          //         'No.of Items: ',
-                                                          //         style: TextStyle(
-                                                          //             fontFamily:
-                                                          //                 'Roboto',
-                                                          //             fontSize: 12,
-                                                          //             color: Colors.black,
-                                                          //             fontWeight:
-                                                          //                 FontWeight
-                                                          //                     .w400),
-                                                          //       ),
-                                                          //       Text(
-                                                          //         '$numberOfItems',
-                                                          //         style: TextStyle(
-                                                          //             fontFamily:
-                                                          //                 'Roboto',
-                                                          //             fontSize: 13,
-                                                          //             color: Color(
-                                                          //                 0xFFe58338),
-                                                          //             fontWeight:
-                                                          //                 FontWeight
-                                                          //                     .w600),
-                                                          //       ),
-                                                          //     ],
-                                                          //   ),
-                                                          // ),
-                                                        ],
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 5.0,
-                                                      ),
-                                                      SizedBox(
-                                                        child:
-                                                        Row(
-                                                          children: [
-                                                            const Text(
-                                                              'Total Amount: ',
-                                                              style: TextStyle(
-                                                                  fontFamily:
-                                                                  'Roboto',
-                                                                  fontSize: 13,
-                                                                  color: Colors
-                                                                      .black,
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .w400),
-                                                            ),
-                                                            Text(
-                                                              '₹${orderresul.totalCost}',
-                                                              style: const TextStyle(
-                                                                  fontFamily:
-                                                                  'Roboto',
-                                                                  fontSize: 13,
-                                                                  color: Color(
-                                                                      0xFFe58338),
-                                                                  fontWeight:
-                                                                  FontWeight
-                                                                      .w600),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      )
-                                                      // SizedBox(
-                                                      //   height: 5.0,
-                                                      // ),
-                                                      // Container(
-                                                      //     child: Row(
-                                                      //   children: [
-                                                      //     Text(
-                                                      //       'Payment Mode: ',
-                                                      //       style: TextStyle(
-                                                      //           fontFamily: 'Roboto',
-                                                      //           fontSize: 12,
-                                                      //           color: Colors.black,
-                                                      //           fontWeight:
-                                                      //               FontWeight.w400),
-                                                      //     ),
-                                                      //     Text(
-                                                      //       'paymentTypeName',
-                                                      //       style: TextStyle(
-                                                      //           fontFamily: 'Roboto',
-                                                      //           fontSize: 13,
-                                                      //           color: Color(0xFFe58338),
-                                                      //           fontWeight:
-                                                      //               FontWeight.w600),
-                                                      //     ),
-                                                      //   ],
-                                                      // ))
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
-                                        ),
-                                        const SizedBox(
-                                          height: 5.0,
-                                        ),
-                                        //bottom date and amount in card
-                                        Row(
-                                          // mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: [
-                                            Container(
-                                              //      height: 30,
-
-                                              padding:
-                                              const EdgeInsets.symmetric(
-                                                  vertical: 4,
-                                                  horizontal: 5),
-                                              decoration: BoxDecoration(
-                                                borderRadius:
-                                                BorderRadius.circular(10),
-                                                color:
-                                                getStatusTypeBackgroundColor(
-                                                    orderresul.statusName),
-                                              ),
-                                              //    width: 100.0,
-                                              child: IntrinsicWidth(
-                                                stepWidth: 50.0,
-                                                child: Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                                  children: [
-                                                    Text(
-                                                      orderresul.statusName,
-                                                      style: TextStyle(
-                                                        fontSize: 12,
-                                                        color:
-                                                        getStatusTypeTextColor(
-                                                            orderresul
-                                                                .statusName),
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-
-                                            const SizedBox(
-                                              width: 5.0,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                              MainAxisAlignment.spaceAround,
-                                              children: [
-                                                Container(
-                                                    child: Row(
-                                                      children: [
-                                                        // Text(
-                                                        //   'Date: ',
-                                                        //   style: TextStyle(
-                                                        //       fontFamily: 'Roboto',
-                                                        //       fontSize: 12,
-                                                        //       color: Colors.black,
-                                                        //       fontWeight:
-                                                        //           FontWeight.w400),
-                                                        // ),
-                                                        Text(
-                                                          formattedDate,
-                                                          style: const TextStyle(
-                                                              fontFamily: 'Roboto',
-                                                              fontSize: 13,
-                                                              color:
-                                                              Color(0xFFe58338),
-                                                              fontWeight:
-                                                              FontWeight.w600),
-                                                        ),
-                                                      ],
-                                                    )),
-                                                const SizedBox(
-                                                  width: 10.0,
-                                                ),
-                                                //Spacer(),
-                                                // Container(
-                                                //   child: Row(
-                                                //     children: [
-                                                //       Text(
-                                                //         'Total Amount: ',
-                                                //         style: TextStyle(
-                                                //             fontFamily: 'Roboto',
-                                                //             fontSize: 13,
-                                                //             color: Colors.black,
-                                                //             fontWeight: FontWeight.w400),
-                                                //       ),
-                                                //       Text(
-                                                //         '₹ 555.006',
-                                                //         style: TextStyle(
-                                                //             fontFamily: 'Roboto',
-                                                //             fontSize: 13,
-                                                //             color: Color(0xFFe58338),
-                                                //             fontWeight: FontWeight.w600),
-                                                //       ),
-                                                //     ],
-                                                //   ),
-                                                // )
-                                                Container(
-                                                  child: Row(
-                                                    children: [
-                                                      const Text(
-                                                        'No.of Items: ',
-                                                        style: TextStyle(
-                                                            fontFamily:
-                                                            'Roboto',
-                                                            fontSize: 12,
-                                                            color: Colors.black,
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .w400),
-                                                      ),
-                                                      Text(
-                                                        '${orderresul.noOfItems}',
-                                                        style: const TextStyle(
-                                                            fontFamily:
-                                                            'Roboto',
-                                                            fontSize: 13,
-                                                            color: Color(
-                                                                0xFFe58338),
-                                                            fontWeight:
-                                                            FontWeight
-                                                                .w600),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            // SizedBox(
-                                            //   width: 10.0,
-                                            // ),
-                                          ],
-                                        )
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                              ),
-                            );
+                            return OrderCard(
+                                orderResult: data[index],
+                                formattedDate: formattedDate);
                           },
                         ),
                       )
@@ -609,98 +216,6 @@ class _VieworderPageState extends State<ViewOrders> {
           },
         ),
       ),
-    );
-  }
-
-  Color getStatusTypeBackgroundColor(String statusTypeId) {
-    switch (statusTypeId) {
-      case 'Pending':
-        return const Color(0xFFE58338).withOpacity(0.1);
-      case 'Shipped':
-      // Set background color for statusTypeId 8
-        return const Color(0xFF0d6efd).withOpacity(0.1);
-      case 'Accepted':
-      // Set background color for statusTypeId 9
-        return const Color(0xFF198754).withOpacity(0.1);
-      case 'Partially Shipped':
-      // Set background color for statusTypeId 9
-        return const Color(0xFF0dcaf0).withOpacity(0.1);
-      case 'Reject':
-        return const Color(0xFFdc3545).withOpacity(0.1);
-      case 'Cancelled':
-        return const Color(0xFFdc3545);
-        break;
-
-    // Add more cases as needed for other statusTypeId values
-
-      default:
-      // Default background color or handle other cases if needed
-        return Colors.white;
-    }
-  }
-
-  Color getStatusTypeTextColor(String statusTypeId) {
-    switch (statusTypeId) {
-      case 'Pending':
-        return const Color(0xFFe58338);
-      case 'Shipped':
-      // Set background color for statusTypeId 8
-        return const Color(0xFF0d6efd);
-      case 'Accepted':
-      // Set background color for statusTypeId 9
-        return const Color(0xFF198754);
-      case 'Partially Shipped':
-      // Set background color for statusTypeId 9
-        return const Color(0xFF0dcaf0);
-      case 'Reject':
-        return const Color(0xFFdc3545);
-      case 'Cancelled':
-        return const Color(0xFFdc3545);
-        break;
-      default:
-        return Colors.white;
-    }
-  }
-
-  Widget getSvgAsset(String status) {
-    String assetPath;
-    late Color iconColor;
-    switch (status) {
-      case "Pending":
-        assetPath = 'assets/shipping-timed.svg';
-        iconColor = const Color(0xFFe58338);
-        break;
-      case 'Shipped':
-        assetPath = 'assets/shipping-fast.svg';
-        iconColor = const Color(0xFF0d6efd);
-        break;
-      case 'Accepted':
-        assetPath = 'assets/box-circle-check.svg';
-        iconColor = const Color(0xFF198754);
-        break;
-      case 'Partially Shipped':
-        assetPath = 'assets/boxes.svg';
-        iconColor = const Color(0xFF0dcaf0);
-        break;
-      case 'Reject':
-        assetPath = 'assets/shipping-timed.svg';
-        iconColor = const Color(0xFFdc3545);
-        break;
-    // Add more cases for other statusnames
-      case 'Cancelled':
-        assetPath = 'assets/order-cancel.svg';
-        iconColor = const Color(0xFFdc3545);
-        break;
-      default:
-        assetPath = 'assets/sb_home.svg';
-        iconColor = Colors.black26;
-        break;
-    }
-    return SvgPicture.asset(
-      assetPath,
-      width: 40,
-      height: 35,
-      color: iconColor,
     );
   }
 
@@ -777,51 +292,33 @@ class _VieworderPageState extends State<ViewOrders> {
 
   Widget _viewOrdersSearchBarAndFilter() {
     return Container(
-      margin: const EdgeInsets.only(bottom: 0),
+      margin: const EdgeInsets.only(bottom: 10),
       child: Row(
         mainAxisAlignment: MainAxisAlignment.start,
         crossAxisAlignment: CrossAxisAlignment.center,
         children: [
           Expanded(
-              child: Container(
-                // height: 55.0,
-                decoration: BoxDecoration(
-                  borderRadius: BorderRadius.circular(5.0),
-                  border: Border.all(
-                    color: Colors.black26,
-                    width: 2,
-                  ),
+            child: SizedBox(
+              height: 45,
+              child: TextField(
+                onChanged: (input) => filterOrderBasedOnProduct(input),
+                decoration: InputDecoration(
+                  hintText: 'Order Search',
+                  hintStyle: CommonUtils.hintstyle_14,
+                  suffixIcon: const Icon(Icons.search),
+                  border: CommonUtils.searchBarOutPutInlineBorder,
+                  focusedBorder:
+                  CommonUtils.searchBarEnabledNdFocuedOutPutInlineBorder,
                 ),
-                child: Align(
-                  alignment: Alignment.centerRight,
-                  child: Padding(
-                    padding: const EdgeInsets.only(left: 10.0, top: 0.0),
-                    child: TextFormField(
-                      controller: searchController,
-                      onChanged: (value) {
-                        filterDealers();
-                        filterOrderBasedOnProduct(value);
-                      },
-                      keyboardType: TextInputType.name,
-                      style: CommonUtils.Mediumtext_12,
-                      decoration: const InputDecoration(
-                        suffixIcon: Icon(
-                          Icons.search,
-                          color: Color(0xFFC4C2C2),
-                        ),
-                        hintText: 'Search for Party Name or Id',
-                        //   hintStyle:CommonUtils.Mediumtext_12,
-                        border: InputBorder.none,
-                      ),
-                    ),
-                  ),
-                ),
-              )),
+              ),
+            ),
+          ),
           const SizedBox(
             width: 10,
           ),
           GestureDetector(
             onTap: () {
+              // Handle the click action here
               showModalBottomSheet(
                 context: context,
                 builder: (context) => const FilterBottomSheet(),
@@ -848,6 +345,307 @@ class _VieworderPageState extends State<ViewOrders> {
 
   Future<void> getshareddata() async {
     companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+  }
+}
+
+class OrderCard extends StatefulWidget {
+  final OrderResult orderResult;
+  final String formattedDate;
+  const OrderCard({
+    super.key,
+    required this.orderResult,
+    required this.formattedDate,
+  });
+
+  @override
+  State<OrderCard> createState() => _OrderCardState();
+}
+
+class _OrderCardState extends State<OrderCard> {
+  final _boxBorder = BoxDecoration(
+    borderRadius: BorderRadius.circular(5.0),
+    color: Colors.white,
+  );
+
+  final _iconBoxBorder = BoxDecoration(
+    borderRadius: BorderRadius.circular(5.0),
+    color: Colors.white,
+  );
+
+  late ViewOrdersProvider viewOrdersProvider;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    viewOrdersProvider = Provider.of<ViewOrdersProvider>(context);
+  }
+
+// start
+
+  @override
+  Widget build(BuildContext context) {
+    // String dateString = widget.listResult.date;
+    // DateTime date = DateTime.parse(dateString);
+    // String formattedDate = DateFormat('dd MMM, yyyy').format(date);
+    return GestureDetector(
+      onTap: () {
+        viewOrdersProvider.clearFilter();
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => Orderdetails(
+                orderid: widget.orderResult.id,
+                orderdate: widget.formattedDate,
+                totalprice: widget.orderResult.totalCost,
+                bookingplace: widget.orderResult.bookingPlace,
+                transportmode: widget.orderResult.transportName,
+                lrnumber: 1,
+                lrdate: "",
+                statusname: widget.orderResult.statusName,
+                partyname: widget.orderResult.partyName,
+                partycode: widget.orderResult.partyCode,
+                proprietorName: widget.orderResult.proprietorName!,
+                partyGSTNumber: widget.orderResult.partyGSTNumber!,
+                ordernumber: widget.orderResult.orderNumber!,
+                partyAddress: widget.orderResult.partyAddress),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        color: Colors.transparent,
+        child: Card(
+          elevation: 5,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: _boxBorder,
+                  child: Row(
+                    children: [
+                      // starting icon of card
+                      Card(
+                        elevation: 3,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        child: Container(
+                          height: 65,
+                          width: 65,
+                          padding: const EdgeInsets.all(10),
+                          decoration: _iconBoxBorder,
+                          child: Center(
+                            child: getSvgImagesAndColors(
+                              widget.orderResult.statusTypeId,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // beside info
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.6,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 10, top: 0, bottom: 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                widget.orderResult.partyName,
+                                style: CommonUtils.Mediumtext_14_cb,
+                                softWrap: true,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(
+                                height: 5.0,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Order ID : ',
+                                        style: CommonUtils.txSty_13B_Fb,
+                                      ),
+                                      Text(
+                                        widget.orderResult.orderNumber
+                                            .toString(),
+                                        style: CommonUtils.txSty_13O_F6,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5.0,
+                              ),
+                              Row(
+                                children: [
+                                  const Text(
+                                    'Total Amount : ',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  Text(
+                                    '₹${widget.orderResult.totalCost}',
+                                    style: CommonUtils.txSty_13O_F6,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 5.0,
+                ),
+                Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(left: 5.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 7),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: statusBgColor,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            widget.orderResult.statusName,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: statusColor,
+                              // Add other text styles as needed
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10.0,
+                    ),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          const Expanded(child: SizedBox()),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              Row(
+                                children: [
+                                  Text(
+                                    widget.formattedDate,
+                                    style: CommonUtils.txSty_13O_F6,
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  const Text(
+                                    'No.of Items: ',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  Text(
+                                    '${widget.orderResult.noOfItems}',
+                                    style: CommonUtils.txSty_13O_F6,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  late Color statusColor;
+  late Color statusBgColor;
+  Widget getSvgImagesAndColors(int statusTypeCode) {
+    String assetPath;
+    late Color iconColor;
+    switch (statusTypeCode) {
+      case 1: // 'Pending'
+        assetPath = 'assets/shipping-timed.svg';
+        iconColor = const Color(0xFFE58338);
+        statusColor = const Color(0xFFe58338);
+        statusBgColor = const Color(0xFFe58338).withOpacity(0.2);
+        break;
+      case 2: // 'Shipped'
+        assetPath = 'assets/shipping-fast.svg';
+        iconColor = const Color(0xFF0d6efd);
+        statusColor = const Color(0xFF0d6efd);
+        statusBgColor = const Color(0xFF0d6efd).withOpacity(0.2);
+        break;
+      case 3: // 'Delivered'
+        assetPath = 'assets/box-circle-check.svg';
+        iconColor = Colors.green;
+        statusColor = Colors.green;
+        statusBgColor = Colors.green.withOpacity(0.2);
+        break;
+      case 10: // 'Partially Shipped'
+        assetPath = 'assets/boxes.svg';
+        iconColor = const Color(0xFF0dcaf0);
+        statusColor = const Color(0xFF0dcaf0);
+        statusBgColor = const Color(0xFF0dcaf0).withOpacity(0.2);
+        break;
+      case 11: // 'Accepted'
+        assetPath = 'assets/shipping-timed.svg';
+        iconColor = Colors.green;
+        statusColor = Colors.green;
+        statusBgColor = Colors.green.withOpacity(0.2);
+        break;
+      case 12: // 'Rejected'
+        assetPath = 'assets/reject.svg';
+        iconColor = HexColor('#C42121');
+        statusColor = HexColor('#C42121');
+        statusBgColor = HexColor('#C42121').withOpacity(0.2);
+        break;
+      case 16: // 'Cancelled'
+        assetPath = 'assets/order-cancel.svg';
+        iconColor = HexColor('#dc3545');
+        statusColor = HexColor('#dc3545');
+        statusBgColor = HexColor('#dc3545').withOpacity(0.2);
+        break;
+      default:
+        assetPath = 'assets/sb_home.svg';
+        iconColor = Colors.black26;
+        statusColor = Colors.black26;
+        statusBgColor = Colors.black26.withOpacity(0.2);
+        break;
+    }
+    return SvgPicture.asset(
+      assetPath,
+      width: 50,
+      height: 50,
+      fit: BoxFit.fill,
+      color: iconColor,
+    );
   }
 }
 

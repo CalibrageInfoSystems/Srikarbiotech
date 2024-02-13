@@ -86,6 +86,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     print('cardCode: ${widget.cardCode}');
     print('address: ${widget.address}');
     updateTotalSumIncludingGst();
+    GetPreviousOrderBookingByPartyCode(widget.cardCode);
     // totalAmountWithGst = calculateTotalAmountWithGst();
     // print('totalAmountWithGst $totalAmountWithGst');
     // totalSumNotifier = ValueNotifier<double>(calculateTotalSum(cartItems));
@@ -971,6 +972,43 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
     return formatter.format(number);
   }
+
+
+
+  Future<void> GetPreviousOrderBookingByPartyCode(String cardCode) async {
+    try {
+      // Make a GET request to the API endpoint
+      http.Response response = await http.get(Uri.parse("http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetPreviousOrderBookingByPartyCode/$cardCode"));
+
+      // Check if the request was successful (status code 200)
+      if (response.statusCode == 200) {
+        // Parse the JSON response
+
+      Map<String, dynamic> data = jsonDecode(response.body);
+
+      // Check if 'response' field is not null
+      if (data['response'] != null) {
+        // Extract the values of bookingPlace and transportName
+        String bookingPlace = data['response']['bookingPlace'];
+        String transportName = data['response']['transportName'];
+
+        // Update the text field controllers with the received data
+        bookingplacecontroller.text = bookingPlace;
+        Parcelservicecontroller.text = transportName;
+      } else {
+        // If 'response' field is null, show a message or handle it as per your requirement
+        print('No data available.');
+      }
+    } else {
+    // If the request was not successful, print an error message
+    print('Failed to fetch data: ${response.statusCode}');
+    }
+    } catch (e) {
+      // If an error occurs during the fetching process, print the error
+      print('Error fetching data: $e');
+    }
+  }
+
 }
 
 // In CartItemWidget

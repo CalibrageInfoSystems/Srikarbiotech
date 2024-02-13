@@ -526,14 +526,14 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                                 ),
                               ],
                             ),
-                            Row(
-                              children: [
-                                Text(
-                                  widget.data.totalCost.toString(),
-                                  style: CommonUtils.txSty_13O_F6,
-                                ),
-                              ],
-                            ),
+                            // Row(
+                            //   children: [
+                            //     Text(
+                            //       widget.data.totalCost.toString(),
+                            //       style: CommonUtils.txSty_13O_F6,
+                            //     ),
+                            //   ],
+                            // ),
                           ],
                         ),
                       ],

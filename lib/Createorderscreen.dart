@@ -469,8 +469,7 @@ class _ProductListState extends State<Createorderscreen> {
                           ))
                     : Consumer<CartProvider>(
                         builder: (context, cartProvider, _) {
-                        List<OrderItemXrefType> cartItems =
-                            cartProvider.getCartItems();
+                        List<OrderItemXrefType> cartItems = cartProvider.getCartItems();
                         // Set the global cart length
                         globalCartLength = cartItems.length;
                         print('Added cart: ${globalCartLength}');
@@ -487,8 +486,7 @@ class _ProductListState extends State<Createorderscreen> {
                               String itemcode = productresp.itemCode!;
 
 // Check if the current item is already added to the cart
-                              for (var cartItem
-                                  in cartProvider.getCartItems()) {
+                              for (var cartItem in cartProvider.getCartItems()) {
                                 if (cartItem.itemCode == itemcode) {
                                   isItemAddedToCart[index] = true;
                                   textEditingControllers[index].text =
@@ -502,8 +500,7 @@ class _ProductListState extends State<Createorderscreen> {
 
                             return GestureDetector(
                                 onTap: () {
-                                  print(
-                                      'Tapped on ID: ${productresp.itemCode}');
+                                  print('Tapped on ID: ${productresp.itemCode}');
                                 },
                                 // child: Container(
                                 //     //  color: Colors.white,

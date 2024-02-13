@@ -265,7 +265,8 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                   borderRadius: BorderRadius.circular(5.0),
                                   color: Colors.white,
                                 ),
-                                child: TextFormField(
+                                child:
+                                TextFormField(
                                   controller: remarkstext,
                                   maxLength: 100,
                                   style: CommonUtils.Mediumtext_o_14,

@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
+import 'package:path_provider/path_provider.dart';
 import 'package:srikarbiotech/HomeScreen.dart';
 import 'package:http/http.dart' as http;
 import 'Common/CommonUtils.dart';
@@ -84,6 +86,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
   int CompneyId = 0;
   late Future<InvoiceApiResponse> futureData;
   InvoiceApiResponse? invoiceResponse; // Make invoiceResponse nullable
+  bool _showBottomSheet = false;
+  TextEditingController remarkstext = TextEditingController();
   @override
   void initState() {
     print('OrderId: ${Statusname}');
@@ -139,6 +143,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
             totalsum = getOrderDetailsListResult[0].totalCostWithGST;
           });
           print("partyname====> ${partyname}");
+          print("ordernumber====> ${ordernumber}");
           // extracting the orderItemXrefList
           List<dynamic> orderItemsData =
               response['response']['orderItemXrefList'];
@@ -430,40 +435,40 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                               ),
                                             ]),
                                       ),
-
+                                      _orderStatus(widget.statusname),
                                       //+  Spacer(),
-                                      Container(
-                                        padding: const EdgeInsets.all(10),
-                                        child: Container(
-                                          // height: 30,
-                                          padding: const EdgeInsets.only(
-                                              top: 10, bottom: 10),
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                                BorderRadius.circular(25),
-                                            color: getStatusTypeBackgroundColor(
-                                                widget.statusname),
-                                          ),
-                                          child: IntrinsicWidth(
-                                            stepWidth: 80.0,
-                                            child: Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
-                                              children: [
-                                                Text(
-                                                  '${widget.statusname}',
-                                                  style: TextStyle(
-                                                    fontWeight: FontWeight.w500,
-                                                    color:
-                                                        getStatusTypeTextColor(
-                                                            widget.statusname),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      )
+                                      // Container(
+                                      //   padding: const EdgeInsets.all(10),
+                                      //   child: Container(
+                                      //     // height: 30,
+                                      //     padding: const EdgeInsets.only(
+                                      //         top: 10, bottom: 10),
+                                      //     decoration: BoxDecoration(
+                                      //       borderRadius:
+                                      //           BorderRadius.circular(25),
+                                      //       color: getStatusTypeBackgroundColor(
+                                      //           widget.statusname),
+                                      //     ),
+                                      //     child: IntrinsicWidth(
+                                      //       stepWidth: 80.0,
+                                      //       child: Row(
+                                      //         mainAxisAlignment:
+                                      //             MainAxisAlignment.center,
+                                      //         children: [
+                                      //           Text(
+                                      //             '${widget.statusname}',
+                                      //             style: TextStyle(
+                                      //               fontWeight: FontWeight.w500,
+                                      //               color:
+                                      //                   getStatusTypeTextColor(
+                                      //                       widget.statusname),
+                                      //             ),
+                                      //           ),
+                                      //         ],
+                                      //       ),
+                                      //     ),
+                                      //   ),
+                                      // )
                                     ],
                                   ),
                                   SizedBox(
@@ -705,82 +710,83 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                       //     ),
                                       //   ],
                                       // ),
-                                      Container(
-                                        width: double.infinity,
-                                        height: 0.2,
-                                        color: Colors.grey,
-                                      ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 10),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  const Text(
-                                                    'LR Number',
-                                                    style: CommonUtils
-                                                        .txSty_13B_Fb,
-                                                  ),
-                                                  Text(
-                                                    '${widget.lrnumber}',
-                                                    style: TextStyle(
-                                                      fontFamily: 'Roboto',
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color:
-                                                          HexColor('#e58338'),
-                                                      fontSize: 13,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                          Container(
-                                            width: 0.2,
-                                            height: 60,
-                                            color: Colors.grey,
-                                          ),
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 10),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  const Text(
-                                                    'LR Date',
-                                                    style: CommonUtils
-                                                        .txSty_13B_Fb,
-                                                  ),
-                                                  Text(
-                                                    '',
-                                                    style: TextStyle(
-                                                      fontFamily: 'Roboto',
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color:
-                                                          HexColor('#e58338'),
-                                                      fontSize: 13,
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                      // Container(
+                                      //   width: double.infinity,
+                                      //   height: 0.2,
+                                      //   color: Colors.grey,
+                                      // ),
+                                      // Row(
+                                      //   mainAxisAlignment:
+                                      //       MainAxisAlignment.spaceBetween,
+                                      //   children: <Widget>[
+                                      //     Expanded(
+                                      //       child: Padding(
+                                      //         padding:
+                                      //             const EdgeInsets.symmetric(
+                                      //                 horizontal: 12,
+                                      //                 vertical: 10),
+                                      //         child:
+                                      //         Column(
+                                      //           crossAxisAlignment:
+                                      //               CrossAxisAlignment.start,
+                                      //           children: [
+                                      //             const Text(
+                                      //               'LR Number',
+                                      //               style: CommonUtils
+                                      //                   .txSty_13B_Fb,
+                                      //             ),
+                                      //             Text(
+                                      //               '${widget.lrnumber}',
+                                      //               style: TextStyle(
+                                      //                 fontFamily: 'Roboto',
+                                      //                 fontWeight:
+                                      //                     FontWeight.bold,
+                                      //                 color:
+                                      //                     HexColor('#e58338'),
+                                      //                 fontSize: 13,
+                                      //               ),
+                                      //             ),
+                                      //           ],
+                                      //         ),
+                                      //       ),
+                                      //     ),
+                                      //     Container(
+                                      //       width: 0.2,
+                                      //       height: 60,
+                                      //       color: Colors.grey,
+                                      //     ),
+                                      //     Expanded(
+                                      //       child: Padding(
+                                      //         padding:
+                                      //             const EdgeInsets.symmetric(
+                                      //                 horizontal: 12,
+                                      //                 vertical: 10),
+                                      //         child: Column(
+                                      //           crossAxisAlignment:
+                                      //               CrossAxisAlignment.start,
+                                      //           children: [
+                                      //             const Text(
+                                      //               'LR Date',
+                                      //               style: CommonUtils
+                                      //                   .txSty_13B_Fb,
+                                      //             ),
+                                      //             Text(
+                                      //               '',
+                                      //               style: TextStyle(
+                                      //                 fontFamily: 'Roboto',
+                                      //                 fontWeight:
+                                      //                     FontWeight.bold,
+                                      //                 color:
+                                      //                     HexColor('#e58338'),
+                                      //                 fontSize: 13,
+                                      //               ),
+                                      //             ),
+                                      //           ],
+                                      //         ),
+                                      //       ),
+                                      //     ),
+                                      //   ],
+                                      // ),
 
                                       Container(
                                         width: double.infinity,
@@ -955,21 +961,36 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                         height: 0.0,
                       ),
 
-            Visibility(
-                visible: Statusname == 'Partially Shipped',
-                child:
-                    Container(
+
+                    invoiceResponse?.listResult != null && invoiceResponse!.listResult!.isNotEmpty
+                        ? Container(
                       width: screenWidth,
-                      height: 250,// Adjust the width as needed
-                      child: invoiceResponse!.listResult != null && invoiceResponse!.listResult!.isNotEmpty
-                          ? ListView.builder(
+                      height: 250,
+                      child: ListView.builder(
                         scrollDirection: Axis.horizontal,
-                        itemCount: invoiceResponse!.listResult?.length,
+                        itemCount: invoiceResponse!.listResult!.length,
                         itemBuilder: (context, index) {
                           InvoiceDetails invoice = invoiceResponse!.listResult![index];
                           DateTime date = invoice.invoiceDate;
                           String invoicedateDate = DateFormat('dd MMM, yyyy').format(date);
-                          return Container(
+                          WidgetsBinding.instance!.addPostFrameCallback((_) {
+                            if (invoiceResponse?.listResult != null &&
+                                invoiceResponse!.listResult!.isNotEmpty &&
+                                !_showBottomSheet) {
+                              for (InvoiceDetails invoice in invoiceResponse!.listResult!) {
+                                if (invoice.isReceived == false) {
+                                  setState(() {
+                                    _showBottomSheet = true;
+                                  });
+                                  showBottomSheet(context,invoice.invoiceNo,invoicedateDate);
+                                  break; // Stop looping after finding the first invoice with isReceived == false
+                                }
+                              }
+                            }
+                          });
+
+
+    return Container(
                             width: screenWidth,
                             padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                             child: Card(
@@ -1125,8 +1146,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                 Text(
                                                   '${formatNumber(invoice.totalInvoiceAmount)}',
                                                   style: TextStyle(
-                                                    fontFamily:
-                                                    'Roboto',
+                                                    fontFamily: 'Roboto',
                                                     fontWeight:
                                                     FontWeight.bold,
                                                     color: HexColor(
@@ -1229,12 +1249,9 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                     ),
                                     Row(
                                       mainAxisAlignment:
-                                      MainAxisAlignment
-                                          .spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                       children: <Widget>[
-                                        Container(
-                                            padding:
-                                            EdgeInsets.all(8.0),
+                                        Container(padding: EdgeInsets.all(8.0),
                                             child: GestureDetector(
                                               // Inside your GestureDetector onTap method
                                               // Inside your GestureDetector onTap method
@@ -1354,76 +1371,65 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                 ),
                                               ),
                                             )),
-                                        Container(
-                                            padding:
-                                            EdgeInsets.all(8.0),
-                                            child: GestureDetector(
-                                              onTap: () {},
-                                              child: Container(
-                                                // color: Color(0xFFF8dac2),
-                                                height: 35,
 
-                                                margin: EdgeInsets
-                                                    .symmetric(
-                                                    horizontal:
-                                                    4.0),
-                                                decoration:
-                                                BoxDecoration(
-                                                  color:
-                                                  Color(0xFFF8dac2),
-                                                  border: Border.all(
-                                                    color: Color(
-                                                        0xFFe78337),
-                                                    width: 1,
-                                                  ),
-                                                  borderRadius:
-                                                  BorderRadius
-                                                      .circular(
-                                                      8.0),
-                                                ),
-                                                child: IntrinsicWidth(
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .center,
-                                                    children: [
-                                                      Container(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                            horizontal:
-                                                            10.0),
-                                                        child: Row(
-                                                          children: [
-                                                            SvgPicture
-                                                                .asset(
-                                                              'assets/file-download.svg',
-                                                              height:
-                                                              18,
-                                                              width: 18,
-                                                              fit: BoxFit
-                                                                  .fitWidth,
-                                                              color: Colors
-                                                                  .black,
-                                                            ),
-                                                            SizedBox(
-                                                                width:
-                                                                8.0), // Add some spacing between icon and text
-                                                            Text(
-                                                              'Download Invoice',
-                                                              style:
-                                                              TextStyle(
-                                                                color: Colors
-                                                                    .black,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
+
+                                            Visibility(
+                                              visible: invoice.isReceived == true,
+                                              child: Container(
+                                                padding: EdgeInsets.all(8.0),
+                                                child: GestureDetector(
+                                                  onTap: () async {
+                                                    String? pdfUrl = invoice.invoiceFileUrl;
+                                                    String? invoiceNo = invoice.invoiceNo;
+                                                    downloadFile(pdfUrl!,invoiceNo);
+
+
+                                                    //Add your download functionality here
+                                                  },
+                                                  child: Container(
+                                                    height: 35,
+                                                    margin: EdgeInsets.symmetric(horizontal: 4.0),
+                                                    decoration: BoxDecoration(
+                                                      color: Color(0xFFF8dac2),
+                                                      border: Border.all(
+                                                        color: Color(0xFFe78337),
+                                                        width: 1,
                                                       ),
-                                                    ],
+                                                      borderRadius: BorderRadius.circular(8.0),
+                                                    ),
+                                                    child: IntrinsicWidth(
+                                                      child: Column(
+                                                        mainAxisAlignment: MainAxisAlignment.center,
+                                                        children: [
+                                                          Container(
+                                                            padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                                            child: Row(
+                                                              children: [
+                                                                SvgPicture.asset(
+                                                                  'assets/file-download.svg',
+                                                                  height: 18,
+                                                                  width: 18,
+                                                                  fit: BoxFit.fitWidth,
+                                                                  color: Colors.black,
+                                                                ),
+                                                                SizedBox(width: 8.0),
+                                                                Text(
+                                                                  'Download Invoice',
+                                                                  style: TextStyle(
+                                                                    color: Colors.black,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
                                                   ),
                                                 ),
                                               ),
-                                            ))
+                                            ),
+
                                       ],
                                     ),
                                   ],
@@ -1432,15 +1438,13 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                             ),
                           );
                         },
-                      ) : Center(
-                        child: Text(
-                          "No invoices available",
-                          style: TextStyle(fontSize: 16),
-                        ),
                       ),
                     )
-            ),
-                   Container(
+                        : Container(),
+
+                    //_buildBody(context),
+
+                    Container(
                         width: screenWidth,
                         padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                         //   height: screenHeight / 2,
@@ -1834,6 +1838,9 @@ class _OrderdetailsPageState extends State<Orderdetails> {
 
   Future<void> cancelOrder() async {
     orderid = widget.orderid;
+    DateTime currentDate = DateTime.now();
+    String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
+    print('Formatted Date: $formattedcurrentDate');
     final String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus';
     final String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
 
@@ -1842,7 +1849,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
       "StatusTypeId": 16,
       "Remarks": "",
       "UpdatedBy": userId,
-      "UpdatedDate": DateTime.now().toIso8601String(),
+      "UpdatedDate": formattedcurrentDate,
     };
     print(jsonEncode(requestData));
     try {
@@ -1880,6 +1887,428 @@ class _OrderdetailsPageState extends State<Orderdetails> {
     }
   }
 
+  void showBottomSheet(BuildContext context, String invoiceNo, String invoicedateDate) {
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Container(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                'Did party receive this $invoiceNo Shipment?',
+                style: CommonUtils.Mediumtext_o_14,
+              ),
+              SizedBox(height: 5),
+              Text(
+                'If received, click on the "Received" button. If you have any queries, enter the remarks.',
+                style: CommonUtils.Mediumtext_12_0,
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop(); // Close the bottom sheet
+                      // Show a new bottom sheet for entering remarks
+                      showRemarksBottomSheet(context, invoiceNo,invoicedateDate);
+                    },
+                    child: Container(
+                      height: 35,
+                      margin: EdgeInsets.symmetric(horizontal: 4.0),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFFffece6),
+                        border: Border.all(
+                          color: Color(0xFFe6504d),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: IntrinsicWidth(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10.0),
+                              child: Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/crosscircle.svg',
+                                    height: 18,
+                                    width: 18,
+                                    fit: BoxFit.fitWidth,
+                                    color: Color(0xFFe6504d),
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(
+                                    'Not Received',
+                                    style: TextStyle(
+                                      fontFamily: 'Roboto',
+                                      fontSize: 12,
+                                      color: Color(0xFFe6504d),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  GestureDetector(
+                    onTap: () {
+                      Navigator.of(context).pop(); // Close the bottom sheet
+                      // Show a new bottom sheet for entering remarks
+                      showRemarksBottomSheet(context, invoiceNo,invoicedateDate);
+                    },
+                    child: Container(
+                      height: 35,
+                      margin: EdgeInsets.symmetric(horizontal: 4.0),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFFdfffe8),
+                        border: Border.all(
+                          color: Color(0xFF009746),
+                          width: 1,
+                        ),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child:
+                      IntrinsicWidth(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10.0),
+                              child:
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/check.svg',
+                                    height: 18,
+                                    width: 18,
+                                    fit: BoxFit.fitWidth,
+                                    color: Color(0xFF009746),
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(
+                                    ' Received',
+                                    style: TextStyle(
+                                      fontFamily: 'Roboto',
+                                      fontSize: 12,
+                                      color: Color(0xFF009746),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
+        );
+      },
+    );
+  }
+  void showRemarksBottomSheet(BuildContext context, String invoiceNo, String invoicedateDate) {
+    print("ordernumber====> ${ordernumber}");
+
+    print("invoiceNo====> ${invoiceNo}");
+    showModalBottomSheet(
+      context: context,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return SingleChildScrollView(child:
+          Container(
+          padding: EdgeInsets.all(20),
+          child: Column(
+            mainAxisSize: MainAxisSize.min,
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              Text(
+                ' $invoiceNo ($invoicedateDate) ',
+                style: CommonUtils.Mediumtext_o_14,
+              ),
+              SizedBox(height: 10),
+              Padding(
+                padding: EdgeInsets.only(
+                    top: 15.0, left: 0.0, right: 0.0,bottom: 5.0),
+                child: Text(
+                  'Remarks',
+                  style: CommonUtils.Mediumtext_12,
+                  textAlign: TextAlign.start,
+                ),
+              ),
+              Container(
+                height: 70,
+                width: MediaQuery.of(context).size.width,
+                decoration: BoxDecoration(
+                  border: Border.all(
+                      color: Color(0xFFe78337), width: 1),
+                  borderRadius: BorderRadius.circular(5.0),
+                  color: Colors.white,
+                ),
+                child:
+                TextFormField(
+                  controller: remarkstext,
+                  maxLength: 100,
+                  style: CommonUtils.Mediumtext_o_14,
+                  maxLines:
+                  null, // Set maxLines to null for multiline input
+                  decoration: InputDecoration(
+                    counterText: '',
+                    hintText: 'Enter Remarks',
+                    hintStyle: CommonUtils.hintstyle_o_14,
+                    contentPadding: EdgeInsets.symmetric(
+                      horizontal: 10.0,
+                      vertical: 0.0,
+                    ),
+                    border: InputBorder.none,
+                  ),
+                ),
+              ),
+              SizedBox(height: 20),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  GestureDetector(
+                    onTap: () {
+                      String remarks = remarkstext.text.trim();
+                      if (remarks.isEmpty) {
+                        CommonUtils.showCustomToastMessageLong(
+                            'Please Enter Remarks', context, 1, 4);
+                      } else {
+                        // Call the API to update invoice status with remarks
+                        updateInvoiceStatus(ordernumber!, invoiceNo, remarks);
+                        Navigator.of(context).pop(); // Close the bottom sheet
+                      }
+                      // updateInvoiceStatus(ordernumber!, invoiceNo);
+                      // Navigator.of(context).pop(); // Close the bottom sheet
+                    },
+                    child: Container(
+                      height: 35,
+                      margin: EdgeInsets.symmetric(horizontal: 4.0),
+                      decoration: BoxDecoration(
+                        color: Color(0xFFF8dac2),
+                        border: Border.all(
+                          color: Color(0xFFe78337),
+                          width: 1,
+                        ),
+                        borderRadius:
+                        BorderRadius.circular(8.0),),
+                      child:
+                      IntrinsicWidth(
+                        child: Column(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              padding: EdgeInsets.symmetric(horizontal: 10.0),
+                              child:
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/check.svg',
+                                    height: 18,
+                                    width: 18,
+                                    fit: BoxFit.fitWidth,
+                                    color: Color(0xFFe78337),
+                                  ),
+                                  SizedBox(width: 8.0),
+                                  Text(
+                                    ' Submit',
+                                    style: TextStyle(
+                                      fontFamily: 'Roboto',
+                                      fontSize: 12,
+                                      color: Color(0xFFe78337),
+                                      fontWeight: FontWeight.w600,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                  // ElevatedButton(
+                  //   onPressed: () {
+                  //     // Implement your logic to handle the remarks
+                  //     Navigator.of(context).pop(); // Close the bottom sheet
+                  //   },
+                  //   child: Text('Submit'),
+                  // ),
+                ],
+              ),
+            ],
+          ),
+        ));
+      },
+    );
+  }
+
+  void updateInvoiceStatus(String orderNumber, String invoiceNo, String remarks) async {
+    final String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
+    DateTime currentDate = DateTime.now();
+    String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
+    print('Formatted Date: $formattedcurrentDate');
+    // Your API URL
+    final String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateInvoiceStatus';
+
+    // Your API request body
+    final Map<String, dynamic> requestBody = {
+      "OrderNumber": orderNumber,
+      "InvoiceNo": invoiceNo,
+      "IsReceived": true,
+      "Remarks": remarks,
+      "UpdatedBy": userId,
+      "UpdatedDate": formattedcurrentDate,
+    };
+    print(jsonEncode(requestBody));
+    // Send the API request
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (responseData['isSuccess']) {
+          // Status updated successfully
+          print(responseData['endUserMessage']);
+          CommonUtils.showCustomToastMessageLong(responseData['endUserMessage'], context, 0, 3);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ViewOrders()),
+          );
+        } else {
+          // Handle API failure
+          print('API request failed');
+        }
+      } else {
+        // Handle HTTP error
+        print('HTTP error ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle network error
+      print('Network error: $error');
+    }
+  }
+
+  canLaunch(String? url) {}
+
+  Future<void> downloadFile(String url, String invoiceNo) async {
+    try {
+      // Send a GET request to the provided URL
+      http.Response response = await http.get(Uri.parse(url));
+
+      // Check if the request was successful (status code 200)
+      if (response.statusCode == 200) {
+        // Get the application documents directory
+
+        Directory appDocDir = Directory('/storage/emulated/0/Download');
+        String fileName = "srikar_invoice_${invoiceNo}.pdf";
+
+        String filePath = '${appDocDir.path}/$fileName';
+        // Get the download directory
+
+        if (!appDocDir.existsSync()) {
+          appDocDir.createSync(recursive: true);
+        }
+        await File(filePath).writeAsBytes(response.bodyBytes);
+        // Create a File instance to save the PDF
+
+
+        // Show a message indicating successful download
+        // print('PDF downloaded successfully');
+        CommonUtils.showCustomToastMessageLong('Invoice Downloaded Successfully', context, 0, 4);
+        // You can use this file path to open the PDF file, or display it in your app
+
+        print('PDF path: $filePath');
+      } else {
+        // If the request was not successful, print an error message
+        print('Failed to download PDF: ${response.statusCode}');
+      }
+    } catch (e) {
+      // If an error occurs during the download process, print the error
+      print('Error downloading PDF: $e');
+    }
+  }
+  Widget _orderStatus(String statusName) {
+    final Color statusColor;
+    final Color statusBgColor;
+    switch (statusName) {
+      case 'Pending':
+        statusColor = const Color(0xFFe58338);
+        statusBgColor = const Color(0xFFe58338).withOpacity(0.2);
+        break;
+      case 'Shipped':
+        statusColor = const Color(0xFF0d6efd);
+        statusBgColor = const Color(0xFF0d6efd).withOpacity(0.2);
+        break;
+      case 'Delivered':
+        statusColor = Colors.green;
+        statusBgColor = Colors.green.withOpacity(0.2);
+        break;
+      case 'Partially Shipped':
+        statusColor = const Color(0xFF0dcaf0);
+        statusBgColor = const Color(0xFF0dcaf0).withOpacity(0.2);
+        break;
+      case 'Accepted':
+        statusColor = Colors.green;
+        statusBgColor = Colors.green.withOpacity(0.2);
+        break;
+      case 'Rejected':
+        statusColor = HexColor('#C42121');
+        statusBgColor = HexColor('#C42121').withOpacity(0.2);
+        break;
+      case 'Cancelled':
+        statusColor = HexColor('#dc3545');
+        statusBgColor = HexColor('#dc3545').withOpacity(0.2);
+        break;
+      default:
+        statusColor = Colors.black26;
+        statusBgColor = Colors.black26.withOpacity(0.2);
+        break;
+    }
+    return Container(
+      margin: const EdgeInsets.only(right: 10),
+      decoration: BoxDecoration(
+        color: statusBgColor,
+        borderRadius: BorderRadius.circular(14.0),
+      ),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+      child: Text(
+        statusName,
+        style: TextStyle(
+          fontFamily: 'Roboto',
+          fontSize: 13,
+          color: statusColor,
+        ),
+      ),
+    );
+  }
 
 }
 class InvoiceApiResponse {
@@ -1906,7 +2335,6 @@ class InvoiceApiResponse {
   }
 }
 
-
 class InvoiceDetails {
   final String invoiceNo;
   final DateTime invoiceDate;
@@ -1921,6 +2349,8 @@ class InvoiceDetails {
   final String? invoiceFileLocation;
   final String? invoiceFileExtension;
   final String? invoiceFileUrl;
+  final String? remarks;
+  final bool? isReceived;
 
   InvoiceDetails({
     required this.invoiceNo,
@@ -1936,6 +2366,8 @@ class InvoiceDetails {
     required this.invoiceFileLocation,
     required this.invoiceFileExtension,
     required this.invoiceFileUrl,
+    this.remarks,
+    this.isReceived,
   });
 
   factory InvoiceDetails.fromJson(Map<String, dynamic> json) {
@@ -1953,8 +2385,9 @@ class InvoiceDetails {
       invoiceFileLocation: json['invoiceFileLocation'],
       invoiceFileExtension: json['invoiceFileExtension'],
       invoiceFileUrl: json['invoiceFileUrl'],
+      remarks: json['remarks'],
+      isReceived: json['isReceived'],
     );
   }
 }
-
 

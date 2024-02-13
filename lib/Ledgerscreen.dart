@@ -506,17 +506,14 @@ class Ledger_screen extends State<Ledgerscreen> {
               print(jsonResponse);
               // Your further processing logic here
             }
-            List<int> pdfBytes =
-                base64.decode(jsonResponse['result']['response']);
+            List<int> pdfBytes = base64.decode(jsonResponse['result']['response']);
             var status = await Permission.storage.request();
             var manageExternalStorage =
                 await Permission.manageExternalStorage.request();
             if (status!.isGranted || manageExternalStorage!.isGranted) {
-              Directory downloadsDirectory =
-                  Directory('/storage/emulated/0/Download');
+              Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
 
-              String fileName =
-                  "srikar_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.pdf";
+              String fileName = "srikar_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.pdf";
 
               String filePath = '${downloadsDirectory.path}/$fileName';
 
@@ -525,8 +522,7 @@ class Ledger_screen extends State<Ledgerscreen> {
               // Permission granted, proceed with file operations
               // ... (your existing code)
               print('PDF saved to: $filePath');
-              CommonUtils.showCustomToastMessageLong(
-                  'Downloaded Successfully', context, 0, 4);
+              CommonUtils.showCustomToastMessageLong('Downloaded Successfully', context, 0, 4);
             } else {
               print('Permission denied');
 
