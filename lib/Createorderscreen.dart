@@ -1080,7 +1080,8 @@ class _ProductListState extends State<Createorderscreen> {
                                                           }
                                                         }
                                                       },
-                                                      child: Container(
+                                                      child:
+                                                      Container(
                                                         height: 36,
                                                         decoration:
                                                             BoxDecoration(

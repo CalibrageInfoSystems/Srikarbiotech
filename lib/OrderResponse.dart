@@ -63,7 +63,7 @@ class OrderResult {
   double? partyOutStandingAmount;
   String bookingPlace;
   String transportName;
-  int? statusTypeId;
+  int statusTypeId;
   String? fileName;
   String? fileLocation;
   String? fileExtension;

@@ -84,6 +84,9 @@ class _VieworderPageState extends State<ViewOrders> {
       "UserId": userId
     };
 
+    debugPrint('_______view orders____1___');
+    debugPrint(jsonEncode(requestBody));
+
     final response = await http.post(
       url,
       body: json.encode(requestBody),
@@ -181,8 +184,7 @@ class _VieworderPageState extends State<ViewOrders> {
                             // String fromatteddates = orderresul.orderDate;
                             String dateString = data[index].orderDate;
                             DateTime date = DateTime.parse(dateString);
-                            String formattedDate =
-                            DateFormat('dd MMM, yyyy').format(date);
+                            String formattedDate = DateFormat('dd MMM, yyyy').format(date);
 
                             return GestureDetector(
                               onTap: () {
@@ -242,7 +244,7 @@ class _VieworderPageState extends State<ViewOrders> {
                                                 color: Colors.white,
                                                 child: Container(
                                                   height: 65,
-                                                  width: 90,
+                                                  width: 70,
                                                   padding:
                                                   const EdgeInsets.all(8),
                                                   decoration: BoxDecoration(
@@ -301,20 +303,20 @@ class _VieworderPageState extends State<ViewOrders> {
                                                         height: 5.0,
                                                       ),
                                                       Row(
-                                                        mainAxisAlignment:
-                                                        MainAxisAlignment
-                                                            .spaceBetween,
+                                                        // mainAxisAlignment:
+                                                        // MainAxisAlignment
+                                                        //     .spaceBetween,
                                                         children: [
                                                           Container(
-                                                            child: Row(
+                                                            child:
+                                                            Row(
                                                               children: [
                                                                 const Text(
-                                                                  'Order id :',
+                                                                  'Order ID : ',
                                                                   style: TextStyle(
                                                                       fontFamily:
                                                                       'Roboto',
-                                                                      fontSize:
-                                                                      12,
+                                                                      fontSize: 13,
                                                                       color: Colors
                                                                           .black,
                                                                       fontWeight:
@@ -322,20 +324,20 @@ class _VieworderPageState extends State<ViewOrders> {
                                                                           .w400),
                                                                 ),
                                                                 Text(
-                                                                  ' ${orderresul.orderNumber}',
+                                                                  '${orderresul.orderNumber}',
                                                                   style: const TextStyle(
                                                                       fontFamily:
                                                                       'Roboto',
-                                                                      fontSize:
-                                                                      13,
-                                                                      color: Colors
-                                                                          .black,
+                                                                      fontSize: 13,
+                                                                      color: Color(
+                                                                          0xFFe58338),
                                                                       fontWeight:
                                                                       FontWeight
                                                                           .w600),
                                                                 ),
                                                               ],
                                                             ),
+
                                                           ),
                                                           const Spacer(),
                                                           // Container(
@@ -373,7 +375,8 @@ class _VieworderPageState extends State<ViewOrders> {
                                                         height: 5.0,
                                                       ),
                                                       SizedBox(
-                                                        child: Row(
+                                                        child:
+                                                        Row(
                                                           children: [
                                                             const Text(
                                                               'Total Amount: ',
@@ -616,7 +619,7 @@ class _VieworderPageState extends State<ViewOrders> {
       case 'Shipped':
       // Set background color for statusTypeId 8
         return const Color(0xFF0d6efd).withOpacity(0.1);
-      case 'Accept':
+      case 'Accepted':
       // Set background color for statusTypeId 9
         return const Color(0xFF198754).withOpacity(0.1);
       case 'Partially Shipped':
@@ -624,7 +627,10 @@ class _VieworderPageState extends State<ViewOrders> {
         return const Color(0xFF0dcaf0).withOpacity(0.1);
       case 'Reject':
         return const Color(0xFFdc3545).withOpacity(0.1);
+      case 'Cancelled':
+        return const Color(0xFFdc3545);
         break;
+
     // Add more cases as needed for other statusTypeId values
 
       default:
@@ -640,7 +646,7 @@ class _VieworderPageState extends State<ViewOrders> {
       case 'Shipped':
       // Set background color for statusTypeId 8
         return const Color(0xFF0d6efd);
-      case 'Accept':
+      case 'Accepted':
       // Set background color for statusTypeId 9
         return const Color(0xFF198754);
       case 'Partially Shipped':
@@ -648,8 +654,9 @@ class _VieworderPageState extends State<ViewOrders> {
         return const Color(0xFF0dcaf0);
       case 'Reject':
         return const Color(0xFFdc3545);
+      case 'Cancelled':
+        return const Color(0xFFdc3545);
         break;
-
       default:
         return Colors.white;
     }
@@ -667,7 +674,7 @@ class _VieworderPageState extends State<ViewOrders> {
         assetPath = 'assets/shipping-fast.svg';
         iconColor = const Color(0xFF0d6efd);
         break;
-      case 'Accept':
+      case 'Accepted':
         assetPath = 'assets/box-circle-check.svg';
         iconColor = const Color(0xFF198754);
         break;
@@ -680,6 +687,10 @@ class _VieworderPageState extends State<ViewOrders> {
         iconColor = const Color(0xFFdc3545);
         break;
     // Add more cases for other statusnames
+      case 'Cancelled':
+        assetPath = 'assets/order-cancel.svg';
+        iconColor = const Color(0xFFdc3545);
+        break;
       default:
         assetPath = 'assets/sb_home.svg';
         iconColor = Colors.black26;
@@ -739,7 +750,7 @@ class _VieworderPageState extends State<ViewOrders> {
 
                 return GestureDetector(
                   onTap: () {
-                    // Handle the click event for the home icon
+                    viewOrdersProvider.clearFilter();
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -1570,12 +1581,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         "CompanyId": savedCompanyId,
         "UserId": userId
       };
-      print('===========>${jsonEncode(requestBody)}');
-      print('PartyCode : $selectedValue');
-      print('StatusId : $payid');
-      print('FormDate : $selectformattedfromdate');
-      print('ToDate : $selectformattedtodate');
-      print('CompanyId : $savedCompanyId');
+
+      debugPrint('_______view orders____2___');
+      debugPrint(jsonEncode(requestBody));
 
       final response = await http.post(
         url,

@@ -471,70 +471,70 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                 ),
               ),
             ),
-            Container(
-                width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-                child: IntrinsicHeight(
-                    child: Card(
-                  color: Colors.white,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5.0),
-                      color: Colors.white,
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      children: [
-                        Row(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          mainAxisAlignment: MainAxisAlignment.start,
-                          children: [
-                            Container(
-                              padding: EdgeInsets.only(top: 5.0),
-                              child: Text(
-                                'Total',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontWeight: FontWeight.bold,
-                                  fontSize: 14.0,
-                                ),
-                              ),
-                            ),
-                            Spacer(),
-                            Row(
-                              crossAxisAlignment: CrossAxisAlignment.end,
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                Container(
-                                  //   width: MediaQuery.of(context).size.width / 1.8,
-                                  padding: EdgeInsets.only(top: 5.0),
-                                  child: Row(
-                                    crossAxisAlignment: CrossAxisAlignment.end,
-                                    mainAxisAlignment: MainAxisAlignment.end,
-                                    children: [
-                                      Text(
-                                        '₹${totalSum.toStringAsFixed(2)}',
-                                        style: TextStyle(
-                                          color: Color(0xFFe78337),
-                                          fontWeight: FontWeight.bold,
-                                          fontSize: 16.0,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                )
-                              ],
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                )))
+            // Container(
+            //     width: MediaQuery.of(context).size.width,
+            //     padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+            //     child: IntrinsicHeight(
+            //         child: Card(
+            //       color: Colors.white,
+            //       shape: RoundedRectangleBorder(
+            //         borderRadius: BorderRadius.circular(5.0),
+            //       ),
+            //       child: Container(
+            //         padding: EdgeInsets.all(10.0),
+            //         decoration: BoxDecoration(
+            //           borderRadius: BorderRadius.circular(5.0),
+            //           color: Colors.white,
+            //         ),
+            //         width: MediaQuery.of(context).size.width,
+            //         child: Column(
+            //           children: [
+            //             Row(
+            //               crossAxisAlignment: CrossAxisAlignment.start,
+            //               mainAxisAlignment: MainAxisAlignment.start,
+            //               children: [
+            //                 Container(
+            //                   padding: EdgeInsets.only(top: 5.0),
+            //                   child: Text(
+            //                     'Total',
+            //                     style: TextStyle(
+            //                       color: Colors.black,
+            //                       fontWeight: FontWeight.bold,
+            //                       fontSize: 14.0,
+            //                     ),
+            //                   ),
+            //                 ),
+            //                 Spacer(),
+            //                 Row(
+            //                   crossAxisAlignment: CrossAxisAlignment.end,
+            //                   mainAxisAlignment: MainAxisAlignment.end,
+            //                   children: [
+            //                     Container(
+            //                       //   width: MediaQuery.of(context).size.width / 1.8,
+            //                       padding: EdgeInsets.only(top: 5.0),
+            //                       child: Row(
+            //                         crossAxisAlignment: CrossAxisAlignment.end,
+            //                         mainAxisAlignment: MainAxisAlignment.end,
+            //                         children: [
+            //                           Text(
+            //                             '₹${totalSum.toStringAsFixed(2)}',
+            //                             style: TextStyle(
+            //                               color: Color(0xFFe78337),
+            //                               fontWeight: FontWeight.bold,
+            //                               fontSize: 16.0,
+            //                             ),
+            //                           ),
+            //                         ],
+            //                       ),
+            //                     )
+            //                   ],
+            //                 ),
+            //               ],
+            //             ),
+            //           ],
+            //         ),
+            //       ),
+            //     )))
           ],
         ),
       ),

@@ -137,6 +137,7 @@ flutter:
     - assets/srikargroups_logo_with_border.png
     - assets/overview.svg
     - assets/file-download.svg
+    - assets/order-cancel.svg
 
   #   - images/a_dot_ham.jpeg
 

@@ -44,8 +44,8 @@ class _MyHomePageState extends State<LoginScreen> {
     print("Company ID: ${widget.companyId}");
     compneyid = widget.companyId;
     print("Company ID: $compneyid");
-    emailController.text = "Superadmin";
-   passwordController.text = "Abcd@123";
+   //  emailController.text = "Superadmin";
+   // passwordController.text = "Abcd@123";
 
   }
 

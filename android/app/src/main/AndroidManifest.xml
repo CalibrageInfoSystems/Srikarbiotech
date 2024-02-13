@@ -10,7 +10,7 @@
         android:maxSdkVersion="33"  />
 
     <application
-        android:label="srikarbiotech"
+        android:label="Srikar Groups"
         android:requestLegacyExternalStorage="true"
         android:name="${applicationName}"
         android:icon="@drawable/srikargroups_logo">

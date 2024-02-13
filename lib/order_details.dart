@@ -2,11 +2,13 @@ import 'dart:convert';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
+import 'package:intl/intl.dart';
 import 'package:srikarbiotech/HomeScreen.dart';
 import 'package:http/http.dart' as http;
 import 'Common/CommonUtils.dart';
 import 'Common/SharedPrefsData.dart';
 import 'Model/OrderDetailsResponse.dart';
+import 'ViewOrders.dart';
 import 'orderdetails_model.dart';
 
 class Orderdetails extends StatefulWidget {
@@ -56,7 +58,9 @@ class _OrderdetailsPageState extends State<Orderdetails> {
     ]
   ];
   int orderid = 0;
+  String ordernum = "";
   bool isDataLoaded = false;
+  String Statusname = "";
   //List<OrderDetailsResponse> orderdetailslist = [];
   late List tableCellValues;
   late Future<OrderDetailsResponse?> orderDetailsList;
@@ -73,12 +77,18 @@ class _OrderdetailsPageState extends State<Orderdetails> {
   int orderqty = 0;
   double price = 0.0;
   double totalcost = 0.0;
+  double totalGst = 0.0;
+  double totalsum = 0.0;
   late List<GetOrderDetailsResult> orderDetails;
   late List<OrderItemXrefList> orderItemsList = [];
   int CompneyId = 0;
+  late Future<InvoiceApiResponse> futureData;
+  InvoiceApiResponse? invoiceResponse; // Make invoiceResponse nullable
   @override
   void initState() {
-    print('OrderId: ${widget.orderid}');
+    print('OrderId: ${Statusname}');
+    Statusname = widget.statusname;
+    print('Statusname: ${Statusname}');
     super.initState();
     fetchData();
     getOrderDetails();
@@ -87,6 +97,14 @@ class _OrderdetailsPageState extends State<Orderdetails> {
         isDataLoaded = true;
       });
     });
+    fetchinvoicedata().then((invoiceResponse) {
+      setState(() {
+        this.invoiceResponse = invoiceResponse;
+      });
+    }).catchError((error) {
+      print('Error fetching invoice data: $error');
+    });
+
   }
 
   Future<void> getOrderDetails() async {
@@ -117,6 +135,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
             salesname = getOrderDetailsListResult[0].proprietorName;
             ordernumber = getOrderDetailsListResult[0].orderNumber;
             totalcost = getOrderDetailsListResult[0].totalCost;
+            totalGst = getOrderDetailsListResult[0].gstCost;
+            totalsum = getOrderDetailsListResult[0].totalCostWithGST;
           });
           print("partyname====> ${partyname}");
           // extracting the orderItemXrefList
@@ -194,7 +214,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
       case 'Shipped':
         // Set background color for statusTypeId 8
         return Color(0xFF0d6efd).withOpacity(0.1);
-      case 'Accept':
+      case 'Accepted':
         // Set background color for statusTypeId 9
         return Color(0xFF198754).withOpacity(0.1);
       case 'Partially Shipped':
@@ -218,7 +238,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
       case 'Shipped':
         // Set background color for statusTypeId 8
         return Color(0xFF0d6efd);
-      case 'Accept':
+      case 'Accepted':
         // Set background color for statusTypeId 9
         return Color(0xFF198754);
       case 'Partially Shipped':
@@ -242,8 +262,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
         body: SingleChildScrollView(
           child: isDataLoaded
               ? Column(
-
-                  //mainAxisSize: MainAxisSize.min,
+            //mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   // Set mainAxisSize to min for intrinsic height
                   children: [
@@ -518,7 +537,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                         .txSty_13B_Fb,
                                                   ),
                                                   Text(
-                                                    '${widget.totalprice}',
+                                                    '${formatNumber(widget.totalprice)}',
                                                     style: TextStyle(
                                                       fontFamily: 'Roboto',
                                                       fontWeight:
@@ -768,42 +787,101 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                         height: 0.2,
                                         color: Colors.grey,
                                       ),
-                                      Row(
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
-                                        children: <Widget>[
-                                          Expanded(
-                                            child: Padding(
-                                              padding:
-                                                  const EdgeInsets.symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 10),
-                                              child: Column(
-                                                crossAxisAlignment:
-                                                    CrossAxisAlignment.start,
-                                                children: [
-                                                  const Text(
-                                                    'Remarks',
-                                                    style: CommonUtils
-                                                        .txSty_13B_Fb,
-                                                  ),
-                                                  Text(
-                                                    '',
-                                                    style: TextStyle(
-                                                      fontFamily: 'Roboto',
-                                                      fontWeight:
-                                                          FontWeight.bold,
-                                                      color:
-                                                          HexColor('#e58338'),
-                                                      fontSize: 13,
+
+                                      Visibility(
+                                        visible: Statusname == 'Pending', // Set the visibility based on statustypeid
+                                        child: Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(
+                                                  horizontal: 12,
+                                                  vertical: 10,
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      'You can cancel this order before it got Approved ',
+                                                      style: CommonUtils.txSty_13B_Fb,
                                                     ),
-                                                  ),
-                                                ],
+                                                    Text(
+                                                      '',
+                                                      style: TextStyle(
+                                                        fontFamily: 'Roboto',
+                                                        fontWeight: FontWeight.bold,
+                                                        color: HexColor('#e58338'),
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
                                               ),
                                             ),
-                                          ),
-                                        ],
+                                            GestureDetector(
+                                              onTap: () {
+                          // Show confirmation dialog
+                          showDialog(
+                          context: context,
+                          builder: (BuildContext context) {
+                            return AlertDialog(
+                              title: Text("Confirmation"),
+                              content: Text("Are you sure you want to cancel this order?"),
+                              actions: [
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(); // Close the dialog
+                                  },
+                                  child: Text("Cancel"),
+                                ),
+                                TextButton(
+                                  onPressed: () {
+                                    Navigator.of(context).pop(); // Close the dialog
+                                    // Call function to cancel order
+                                    cancelOrder();
+                                  },
+                                  child: Text("OK"),
+                                ),
+                              ],
+                            );
+                          },
+                        );
+                      },
+                                              child: Container(
+                                                decoration: BoxDecoration(
+                                                  color: HexColor('#ffecee'), // Background color of the card
+                                                  borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
+                                                ),
+                                                padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Adjust padding as needed
+                                                child: Row(
+                                                  children: [
+                                                    SvgPicture.asset(
+                                                      'assets/crosscircle.svg',
+                                                      height: 18,
+                                                      width: 18,
+                                                      fit: BoxFit.fitWidth,
+                                                      color: HexColor('#de4554'),
+                                                    ),
+                                                    SizedBox(width: 8.0), // Add some spacing between icon and text
+                                                    Text(
+                                                      'Cancel',
+                                                      style: TextStyle(
+                                                        fontFamily: 'Roboto',
+                                                        fontWeight: FontWeight.bold,
+                                                        color: HexColor('#de4554'),
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                            SizedBox(width: 10),
+                                          ],
+                                        ),
                                       ),
+
                                     ],
                                   ),
 
@@ -876,434 +954,493 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                       SizedBox(
                         height: 0.0,
                       ),
-                      FutureBuilder(
-                          future: Future.value(),
-                          builder: (context, snapshot) {
-                            return Container(
-                              padding: const EdgeInsets.only(
-                                  left: 10.0, right: 10.0),
-                              child: Card(
-                                  elevation: 7,
-                                  child: Container(
-                                      //   padding: const EdgeInsets.all(10),
-                                      width: double.infinity,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white,
-                                      ),
-                                      child: Column(children: [
-                                        // Table
 
-                                        Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: <Widget>[
-                                            // row one
-
-                                            // row two
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 10),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          'Invoice Number',
-                                                          style: CommonUtils
-                                                              .txSty_13B_Fb,
-                                                        ),
-                                                        Text(
-                                                          '${widget.orderdate}',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: HexColor(
-                                                                '#e58338'),
-                                                            fontSize: 13,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
+            Visibility(
+                visible: Statusname == 'Partially Shipped',
+                child:
+                    Container(
+                      width: screenWidth,
+                      height: 250,// Adjust the width as needed
+                      child: invoiceResponse!.listResult != null && invoiceResponse!.listResult!.isNotEmpty
+                          ? ListView.builder(
+                        scrollDirection: Axis.horizontal,
+                        itemCount: invoiceResponse!.listResult?.length,
+                        itemBuilder: (context, index) {
+                          InvoiceDetails invoice = invoiceResponse!.listResult![index];
+                          DateTime date = invoice.invoiceDate;
+                          String invoicedateDate = DateFormat('dd MMM, yyyy').format(date);
+                          return Container(
+                            width: screenWidth,
+                            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                            child: Card(
+                              elevation: 7,
+                              child: Container(
+                                width: double.infinity,
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white,
+                                ),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment
+                                          .spaceBetween,
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets
+                                                .symmetric(
+                                                horizontal: 12,
+                                                vertical: 10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                const Text(
+                                                  'Invoice Number',
+                                                  style: CommonUtils
+                                                      .txSty_13B_Fb,
                                                 ),
-                                                Container(
-                                                  width: 0.2,
-                                                  height: 60,
-                                                  color: Colors.grey,
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 10),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          'Invoice Date',
-                                                          style: CommonUtils
-                                                              .txSty_13B_Fb,
-                                                        ),
-                                                        Text(
-                                                          '${widget.totalprice}',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: HexColor(
-                                                                '#e58338'),
-                                                            fontSize: 13,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
+                                                Text(
+                                                  '${invoice.invoiceNo}',
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    'Roboto',
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    color: HexColor(
+                                                        '#e58338'),
+                                                    fontSize: 13,
                                                   ),
                                                 ),
                                               ],
                                             ),
-                                            Container(
-                                              width: double.infinity,
-                                              height: 0.2,
-                                              color: Colors.grey,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 10),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          'Quantity',
-                                                          style: CommonUtils
-                                                              .txSty_13B_Fb,
-                                                        ),
-                                                        Text(
-                                                          '${widget.bookingplace}',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: HexColor(
-                                                                '#e58338'),
-                                                            fontSize: 13,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: 0.2,
-                                                  height: 60,
-                                                  color: Colors.grey,
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 10),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          'Invoice Amount',
-                                                          style: CommonUtils
-                                                              .txSty_13B_Fb,
-                                                        ),
-                                                        Text(
-                                                          '${widget.transportmode}',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: HexColor(
-                                                                '#e58338'),
-                                                            fontSize: 13,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                            Container(
-                                              width: double.infinity,
-                                              height: 0.2,
-                                              color: Colors.grey,
-                                            ),
-
-                                            // Container(
-                                            //   width: double.infinity,
-                                            //   height: 0.2,
-                                            //   color: Colors.grey,
-                                            // ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 10),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          'LR Number',
-                                                          style: CommonUtils
-                                                              .txSty_13B_Fb,
-                                                        ),
-                                                        Text(
-                                                          '${widget.lrnumber}',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: HexColor(
-                                                                '#e58338'),
-                                                            fontSize: 13,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                                Container(
-                                                  width: 0.2,
-                                                  height: 60,
-                                                  color: Colors.grey,
-                                                ),
-                                                Expanded(
-                                                  child: Padding(
-                                                    padding: const EdgeInsets
-                                                        .symmetric(
-                                                        horizontal: 12,
-                                                        vertical: 10),
-                                                    child: Column(
-                                                      crossAxisAlignment:
-                                                          CrossAxisAlignment
-                                                              .start,
-                                                      children: [
-                                                        const Text(
-                                                          'LR Date',
-                                                          style: CommonUtils
-                                                              .txSty_13B_Fb,
-                                                        ),
-                                                        Text(
-                                                          '',
-                                                          style: TextStyle(
-                                                            fontFamily:
-                                                                'Roboto',
-                                                            fontWeight:
-                                                                FontWeight.bold,
-                                                            color: HexColor(
-                                                                '#e58338'),
-                                                            fontSize: 13,
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-
-                                            Container(
-                                              width: double.infinity,
-                                              height: 0.2,
-                                              color: Colors.grey,
-                                            ),
-                                            Row(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
-                                              children: <Widget>[
-                                                Container(
-                                                    padding:
-                                                        EdgeInsets.all(8.0),
-                                                    child: GestureDetector(
-                                                      onTap: () {},
-                                                      child: Container(
-                                                        // color: Color(0xFFF8dac2),
-                                                        height: 35,
-
-                                                        margin: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal:
-                                                                    4.0),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color:
-                                                              Color(0xFFF8dac2),
-                                                          border: Border.all(
-                                                            color: Color(
-                                                                0xFFe78337),
-                                                            width: 1,
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      8.0),
-                                                        ),
-                                                        child: IntrinsicWidth(
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Container(
-                                                                padding: EdgeInsets
-                                                                    .symmetric(
-                                                                        horizontal:
-                                                                            10.0),
-                                                                child: Row(
-                                                                  children: [
-                                                                    SvgPicture
-                                                                        .asset(
-                                                                      'assets/overview.svg',
-                                                                      height:
-                                                                          18,
-                                                                      width: 18,
-                                                                      fit: BoxFit
-                                                                          .fitWidth,
-                                                                      color: Colors
-                                                                          .black,
-                                                                    ),
-                                                                    SizedBox(
-                                                                        width:
-                                                                            8.0), // Add some spacing between icon and text
-                                                                    Text(
-                                                                      'View LR',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .black,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    )),
-                                                Container(
-                                                    padding:
-                                                        EdgeInsets.all(8.0),
-                                                    child: GestureDetector(
-                                                      onTap: () {},
-                                                      child: Container(
-                                                        // color: Color(0xFFF8dac2),
-                                                        height: 35,
-
-                                                        margin: EdgeInsets
-                                                            .symmetric(
-                                                                horizontal:
-                                                                    4.0),
-                                                        decoration:
-                                                            BoxDecoration(
-                                                          color:
-                                                              Color(0xFFF8dac2),
-                                                          border: Border.all(
-                                                            color: Color(
-                                                                0xFFe78337),
-                                                            width: 1,
-                                                          ),
-                                                          borderRadius:
-                                                              BorderRadius
-                                                                  .circular(
-                                                                      8.0),
-                                                        ),
-                                                        child: IntrinsicWidth(
-                                                          child: Column(
-                                                            mainAxisAlignment:
-                                                                MainAxisAlignment
-                                                                    .center,
-                                                            children: [
-                                                              Container(
-                                                                padding: EdgeInsets
-                                                                    .symmetric(
-                                                                        horizontal:
-                                                                            10.0),
-                                                                child: Row(
-                                                                  children: [
-                                                                    SvgPicture
-                                                                        .asset(
-                                                                      'assets/file-download.svg',
-                                                                      height:
-                                                                          18,
-                                                                      width: 18,
-                                                                      fit: BoxFit
-                                                                          .fitWidth,
-                                                                      color: Colors
-                                                                          .black,
-                                                                    ),
-                                                                    SizedBox(
-                                                                        width:
-                                                                            8.0), // Add some spacing between icon and text
-                                                                    Text(
-                                                                      'Download Invoice',
-                                                                      style:
-                                                                          TextStyle(
-                                                                        color: Colors
-                                                                            .black,
-                                                                      ),
-                                                                    ),
-                                                                  ],
-                                                                ),
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      ),
-                                                    ))
-                                              ],
-                                            ),
-                                          ],
+                                          ),
                                         ),
-                                      ]))),
-                            );
-                          }),
-                      Container(
+                                        Container(
+                                          width: 0.2,
+                                          height: 60,
+                                          color: Colors.grey,
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets
+                                                .symmetric(
+                                                horizontal: 12,
+                                                vertical: 10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                const Text(
+                                                  'Invoice Date',
+                                                  style: CommonUtils
+                                                      .txSty_13B_Fb,
+                                                ),
+                                                Text(
+                                                  '${invoicedateDate}',
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    'Roboto',
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    color: HexColor(
+                                                        '#e58338'),
+                                                    fontSize: 13,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      width: double.infinity,
+                                      height: 0.2,
+                                      color: Colors.grey,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment
+                                          .spaceBetween,
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets
+                                                .symmetric(
+                                                horizontal: 12,
+                                                vertical: 10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                const Text(
+                                                  'Quantity',
+                                                  style: CommonUtils
+                                                      .txSty_13B_Fb,
+                                                ),
+                                                Text(
+                                                  '${invoice.totalInvoiceQty}',
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    'Roboto',
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    color: HexColor(
+                                                        '#e58338'),
+                                                    fontSize: 13,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 0.2,
+                                          height: 60,
+                                          color: Colors.grey,
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets
+                                                .symmetric(
+                                                horizontal: 12,
+                                                vertical: 10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                const Text(
+                                                  'Invoice Amount',
+                                                  style: CommonUtils
+                                                      .txSty_13B_Fb,
+                                                ),
+                                                Text(
+                                                  '${formatNumber(invoice.totalInvoiceAmount)}',
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    'Roboto',
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    color: HexColor(
+                                                        '#e58338'),
+                                                    fontSize: 13,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                    Container(
+                                      width: double.infinity,
+                                      height: 0.2,
+                                      color: Colors.grey,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment
+                                          .spaceBetween,
+                                      children: <Widget>[
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets
+                                                .symmetric(
+                                                horizontal: 12,
+                                                vertical: 10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                const Text(
+                                                  'LR Number',
+                                                  style: CommonUtils
+                                                      .txSty_13B_Fb,
+                                                ),
+                                                Text(
+                                                  '${widget.lrnumber}',
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    'Roboto',
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    color: HexColor(
+                                                        '#e58338'),
+                                                    fontSize: 13,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        Container(
+                                          width: 0.2,
+                                          height: 60,
+                                          color: Colors.grey,
+                                        ),
+                                        Expanded(
+                                          child: Padding(
+                                            padding: const EdgeInsets
+                                                .symmetric(
+                                                horizontal: 12,
+                                                vertical: 10),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment
+                                                  .start,
+                                              children: [
+                                                const Text(
+                                                  'LR Date',
+                                                  style: CommonUtils
+                                                      .txSty_13B_Fb,
+                                                ),
+                                                Text(
+                                                  '',
+                                                  style: TextStyle(
+                                                    fontFamily:
+                                                    'Roboto',
+                                                    fontWeight:
+                                                    FontWeight.bold,
+                                                    color: HexColor(
+                                                        '#e58338'),
+                                                    fontSize: 13,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+
+                                    Container(
+                                      width: double.infinity,
+                                      height: 0.2,
+                                      color: Colors.grey,
+                                    ),
+                                    Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment
+                                          .spaceBetween,
+                                      children: <Widget>[
+                                        Container(
+                                            padding:
+                                            EdgeInsets.all(8.0),
+                                            child: GestureDetector(
+                                              // Inside your GestureDetector onTap method
+                                              // Inside your GestureDetector onTap method
+                                              // Inside your GestureDetector onTap method
+                                              // Inside your GestureDetector onTap method
+                                              onTap: () {
+                                                showDialog(
+                                                  context: context,
+                                                  builder: (BuildContext context) {
+                                                    return AlertDialog(
+                                                      content: Container(
+                                                        width: double.infinity,
+                                                        height: double.infinity,
+                                                        child: Column(
+                                                          children: [
+                                                            Expanded(
+                                                              child: Image.network(
+                                                                invoiceResponse!.listResult![index].lrFileUrl ?? '',
+                                                                fit: BoxFit.contain,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                      actions: [
+                                                        Container(
+                                                          margin: EdgeInsets.only(top: 10, right: 10),
+                                                          decoration: BoxDecoration(
+                                                            shape: BoxShape.circle,
+                                                            color: Colors.white,
+                                                            boxShadow: [
+                                                              BoxShadow(
+                                                                color: Colors.black.withOpacity(0.1),
+                                                                blurRadius: 6,
+                                                                spreadRadius: 3,
+                                                              ),
+                                                            ],
+                                                          ),
+                                                          child: IconButton(
+                                                            icon: Icon(Icons.close, color: Colors.red),
+                                                            onPressed: () {
+                                                              Navigator.of(context).pop();
+                                                            },
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    );
+                                                  },
+                                                );
+                                              },
+
+
+
+
+                                              child: Container(
+                                                // color: Color(0xFFF8dac2),
+                                                height: 35,
+
+                                                margin: EdgeInsets
+                                                    .symmetric(
+                                                    horizontal:
+                                                    4.0),
+                                                decoration:
+                                                BoxDecoration(
+                                                  color:
+                                                  Color(0xFFe78337),
+                                                  border: Border.all(
+                                                    color: Color(
+                                                        0xFFe78337),
+                                                    width: 1,
+                                                  ),
+                                                  borderRadius:
+                                                  BorderRadius
+                                                      .circular(
+                                                      8.0),
+                                                ),
+                                                child: IntrinsicWidth(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .center,
+                                                    children: [
+                                                      Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                            horizontal:
+                                                            10.0),
+                                                        child: Row(
+                                                          children: [
+                                                            SvgPicture
+                                                                .asset(
+                                                              'assets/overview.svg',
+                                                              height:
+                                                              18,
+                                                              width: 18,
+                                                              fit: BoxFit
+                                                                  .fitWidth,
+                                                              color: Colors
+                                                                  .white,
+                                                            ),
+                                                            SizedBox(
+                                                                width:
+                                                                8.0), // Add some spacing between icon and text
+                                                            Text(
+                                                              'View LR',
+                                                              style:
+                                                              TextStyle(
+                                                                color: Colors
+                                                                    .white,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            )),
+                                        Container(
+                                            padding:
+                                            EdgeInsets.all(8.0),
+                                            child: GestureDetector(
+                                              onTap: () {},
+                                              child: Container(
+                                                // color: Color(0xFFF8dac2),
+                                                height: 35,
+
+                                                margin: EdgeInsets
+                                                    .symmetric(
+                                                    horizontal:
+                                                    4.0),
+                                                decoration:
+                                                BoxDecoration(
+                                                  color:
+                                                  Color(0xFFF8dac2),
+                                                  border: Border.all(
+                                                    color: Color(
+                                                        0xFFe78337),
+                                                    width: 1,
+                                                  ),
+                                                  borderRadius:
+                                                  BorderRadius
+                                                      .circular(
+                                                      8.0),
+                                                ),
+                                                child: IntrinsicWidth(
+                                                  child: Column(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .center,
+                                                    children: [
+                                                      Container(
+                                                        padding: EdgeInsets
+                                                            .symmetric(
+                                                            horizontal:
+                                                            10.0),
+                                                        child: Row(
+                                                          children: [
+                                                            SvgPicture
+                                                                .asset(
+                                                              'assets/file-download.svg',
+                                                              height:
+                                                              18,
+                                                              width: 18,
+                                                              fit: BoxFit
+                                                                  .fitWidth,
+                                                              color: Colors
+                                                                  .black,
+                                                            ),
+                                                            SizedBox(
+                                                                width:
+                                                                8.0), // Add some spacing between icon and text
+                                                            Text(
+                                                              'Download Invoice',
+                                                              style:
+                                                              TextStyle(
+                                                                color: Colors
+                                                                    .black,
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ))
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          );
+                        },
+                      ) : Center(
+                        child: Text(
+                          "No invoices available",
+                          style: TextStyle(fontSize: 16),
+                        ),
+                      ),
+                    )
+            ),
+                   Container(
                         width: screenWidth,
                         padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                         //   height: screenHeight / 2,
@@ -1311,7 +1448,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                           borderRadius: BorderRadius.circular(10),
                           //        color: Colors.white,
                         ),
-                        child: ListView.builder(
+                        child:
+                        ListView.builder(
                           shrinkWrap: true,
                           physics: const PageScrollPhysics(),
                           itemCount: orderItemsList.length,
@@ -1344,7 +1482,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                         borderRadius: BorderRadius.circular(10),
                                         color: Colors.white),
 
-                                    child: Column(
+                                    child:
+                                    Column(
                                       crossAxisAlignment:
                                           CrossAxisAlignment.start,
                                       children: [
@@ -1449,7 +1588,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                       Row(
                                                         children: [
                                                           Text(
-                                                            '₹${orderItemsList[index].totalPrice.toString()}',
+                                                            '₹${formatNumber(orderItemsList[index].totalPrice)}',
                                                             style: const TextStyle(
                                                                 fontFamily:
                                                                     'Roboto',
@@ -1499,76 +1638,97 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                       SizedBox(
                         height: 5.0,
                       ),
-                      Container(
-                          width: screenWidth,
-                          padding: EdgeInsets.only(
-                              top: 0.0, left: 10.0, right: 10.0),
-                          child: IntrinsicHeight(
-                              child: Card(
-                            color: Colors.white,
-                            child: Container(
-                              padding: EdgeInsets.all(10.0),
-                              decoration: BoxDecoration(
-                                borderRadius: BorderRadius.circular(10),
-                                color: Colors.white,
-                              ),
-                              width: screenWidth,
-                              child: Column(
-                                children: [
-                                  Row(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    mainAxisAlignment: MainAxisAlignment.start,
-                                    children: [
-                                      Container(
-                                        padding: EdgeInsets.only(top: 0.0),
-                                        child: Text(
-                                          'Total',
-                                          style: TextStyle(
-                                            color: Colors.black,
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.bold,
-                                            fontSize: 16.0,
-                                          ),
-                                        ),
-                                      ),
-                                      Spacer(),
-                                      Row(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.end,
-                                        mainAxisAlignment:
-                                            MainAxisAlignment.end,
-                                        children: [
-                                          Container(
-                                            //   width: MediaQuery.of(context).size.width / 1.8,
-                                            padding: EdgeInsets.only(top: 0.0),
-                                            child: Row(
-                                              crossAxisAlignment:
-                                                  CrossAxisAlignment.end,
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.end,
-                                              children: [
-                                                Text(
-                                                  '₹${totalcost}',
-                                                  style: TextStyle(
-                                                    color: Color(0xFFe78337),
-                                                    fontFamily: 'Roboto',
-                                                    fontWeight: FontWeight.w600,
-                                                    fontSize: 16.0,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
+                    Container(
+                      width: MediaQuery.of(context).size.width,
+                      padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                      child: IntrinsicHeight(
+                        child: Card(
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          child: Container(
+                            padding: EdgeInsets.all(10.0),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5.0),
+                              color: Colors.white,
                             ),
-                          )))
-                    ])
+                            width: MediaQuery.of(context).size.width,
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Sub Total',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      '₹${formatNumber(totalcost)}',
+                                      style: TextStyle(
+                                        color: Color(0xFFe78337),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 8.0),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'GST',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      '₹${formatNumber(totalGst)}',
+                                      style: TextStyle(
+                                        color: Color(0xFFe78337),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                SizedBox(height: 8.0),
+                                Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Text(
+                                      'Total Amount',
+                                      style: TextStyle(
+                                        color: Colors.black,
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                    Text(
+                                      '₹${formatNumber(totalsum)}',
+                                      style: TextStyle(
+                                        color: Color(0xFFe78337),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ),
+                    ),
+
+                  ])
               : CircularProgressIndicator(),
         ));
   }
@@ -1650,4 +1810,151 @@ class _OrderdetailsPageState extends State<Orderdetails> {
 
     print('Company ID: $CompneyId');
   }
+  Future<InvoiceApiResponse> fetchinvoicedata() async {
+    ordernum = widget.ordernumber;
+    final response = await http.get(Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetInvoiceDetailsByOrderNumber/$ordernum'));
+
+    if (response.statusCode == 200) {
+      final responseData = json.decode(response.body);
+      if (responseData != null && responseData['response'] != null) {
+        return InvoiceApiResponse.fromJson(responseData);
+      } else {
+        throw Exception('Invalid response data');
+      }
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+
+  String formatNumber(double number) {
+    NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+    return formatter.format(number);
+  }
+
+  Future<void> cancelOrder() async {
+    orderid = widget.orderid;
+    final String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus';
+    final String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
+
+    final Map<String, dynamic> requestData = {
+      "Id": orderid,
+      "StatusTypeId": 16,
+      "Remarks": "",
+      "UpdatedBy": userId,
+      "UpdatedDate": DateTime.now().toIso8601String(),
+    };
+    print(jsonEncode(requestData));
+    try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(requestData),
+      );
+
+      if (response.statusCode == 200) {
+        final Map<String, dynamic> responseData = json.decode(response.body);
+        if (responseData['isSuccess']) {
+          // Status updated successfully
+          print(responseData['endUserMessage']);
+          CommonUtils.showCustomToastMessageLong("Your Order Cancelled Successfully", context, 0, 3);
+          Navigator.push(
+            context,
+            MaterialPageRoute(
+                builder: (context) =>
+                    ViewOrders()),
+          );
+        } else {
+          // Handle API failure
+          print('API request failed');
+        }
+      } else {
+        // Handle HTTP error
+        print('HTTP error ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle network error
+      print('Network error: $error');
+    }
+  }
+
+
 }
+class InvoiceApiResponse {
+  final List<InvoiceDetails>? listResult;
+  final int count;
+  final int affectedRecords;
+
+  InvoiceApiResponse({
+    required this.listResult,
+    required this.count,
+    required this.affectedRecords,
+  });
+
+  factory InvoiceApiResponse.fromJson(Map<String, dynamic> json) {
+    return InvoiceApiResponse(
+      listResult: json['response']['listResult'] != null
+          ? List<InvoiceDetails>.from(
+        json['response']['listResult'].map((x) => InvoiceDetails.fromJson(x)),
+      )
+          : null,
+      count: json['response']['count'],
+      affectedRecords: json['response']['affectedRecords'],
+    );
+  }
+}
+
+
+class InvoiceDetails {
+  final String invoiceNo;
+  final DateTime invoiceDate;
+  final double totalInvoiceAmount;
+  final double totalAmountWithGST;
+  final int totalInvoiceQty;
+  final String? lrFileName;
+  final String? lrFileLocation;
+  final String? lrFileExtension;
+  final String? lrFileUrl;
+  final String? invoiceFileName;
+  final String? invoiceFileLocation;
+  final String? invoiceFileExtension;
+  final String? invoiceFileUrl;
+
+  InvoiceDetails({
+    required this.invoiceNo,
+    required this.invoiceDate,
+    required this.totalInvoiceAmount,
+    required this.totalAmountWithGST,
+    required this.totalInvoiceQty,
+    required this.lrFileName,
+    required this.lrFileLocation,
+    required this.lrFileExtension,
+    required this.lrFileUrl,
+    required this.invoiceFileName,
+    required this.invoiceFileLocation,
+    required this.invoiceFileExtension,
+    required this.invoiceFileUrl,
+  });
+
+  factory InvoiceDetails.fromJson(Map<String, dynamic> json) {
+    return InvoiceDetails(
+      invoiceNo: json['invoiceNo'],
+      invoiceDate: DateTime.parse(json['invoiceDate']),
+      totalInvoiceAmount: json['totalInvoiceAmount'].toDouble(),
+      totalAmountWithGST: json['totalAmountWithGST'].toDouble(),
+      totalInvoiceQty: json['totalInvoiceQty'],
+      lrFileName: json['lrFileName'],
+      lrFileLocation: json['lrFileLocation'],
+      lrFileExtension: json['lrFileExtension'],
+      lrFileUrl: json['lrFileUrl'],
+      invoiceFileName: json['invoiceFileName'],
+      invoiceFileLocation: json['invoiceFileLocation'],
+      invoiceFileExtension: json['invoiceFileExtension'],
+      invoiceFileUrl: json['invoiceFileUrl'],
+    );
+  }
+}
+
+
