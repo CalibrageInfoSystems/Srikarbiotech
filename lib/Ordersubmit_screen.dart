@@ -318,8 +318,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                 //   return CircularProgressIndicator();
                 // } else
                 // if (snapshot.connectionState == ConnectionState.done) {
-                List<OrderItemXrefType> cartItems =
-                    Provider.of<CartProvider>(context).getCartItems();
+                List<OrderItemXrefType> cartItems = Provider.of<CartProvider>(context).getCartItems();
 
                 return buildListView(cartItems, ValueKey(cartItems));
 

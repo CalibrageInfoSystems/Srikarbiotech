@@ -157,4 +157,10 @@ class CartProvider extends ChangeNotifier {
     print('Cart Items Length: ${cartItemsJson!.length}');
 
   }
+  void clearreturnCart() {
+    // Your logic to clear the cart
+    retuncartItems.clear();
+  }
+
+
 }

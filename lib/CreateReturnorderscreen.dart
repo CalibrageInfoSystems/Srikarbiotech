@@ -120,6 +120,11 @@ class _ProductListState extends State<CreateReturnorderscreen> {
 
   @override
   Widget build(BuildContext context) {
+
+    savedDataList = Provider.of<CartProvider>(context).getReturnCartItems();
+
+    // Update the globalCartLength
+    globalCartLength = savedDataList.length;
     return WillPopScope(
         onWillPop: () async {
           // Clear the cart data here
@@ -129,6 +134,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
 
           return true; // Allow the back navigation
         },
+
         child: Scaffold(
           appBar: AppBar(
             backgroundColor: Color(0xFFe78337),
@@ -1199,6 +1205,6 @@ class _ProductListState extends State<CreateReturnorderscreen> {
   }
 
   void clearCartData(CartProvider cartProvider) {
-    cartProvider.clearCart();
+    cartProvider.clearreturnCart();
   }
 }

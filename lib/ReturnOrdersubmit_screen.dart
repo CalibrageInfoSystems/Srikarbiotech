@@ -176,8 +176,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       // Access the cart data from the provider
-                      cartItems = Provider.of<CartProvider>(context)
-                          .getReturnCartItems();
+                      cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
                       // Update the globalCartLength
                       globalCartLength = cartItems.length;
                     }
@@ -246,21 +245,106 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                 ],
               ),
             ),
+            Container(
+              width: MediaQuery.of(context).size.width,
+              padding: EdgeInsets.only(top: 2.0, left: 8.0, right: 10.0),
+              child: IntrinsicHeight(
+                child: Card(
+                  //color: Colors.white,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                  ),
+                  child: Container(
+                    padding: const EdgeInsets.all(5.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(5.0),
+                      color: Colors.white,
+
+                      // color: Colors.white
+                    ),
+                    width: MediaQuery.of(context).size.width,
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        Container(
+                          padding: EdgeInsets.only(top: 1.0),
+                          child: Text(
+                            '${widget.cardName}',
+                            style: CommonUtils.header_Styles16,
+                            maxLines: 2, // Display in 2 lines
+                            overflow: TextOverflow.ellipsis,
+                          ),
+                        ),
+                        Container(
+                          width: MediaQuery.of(context).size.width,
+                          child: Row(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            mainAxisAlignment: MainAxisAlignment.end,
+                            children: [
+                              Text(
+                                '₹${widget.balance}',
+                                style: TextStyle(
+                                  color: Color(0xFFe78337),
+                                  fontFamily: "Roboto",
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                              SizedBox(
+                                  width:
+                                  5.0), // Add some space between balance and credit line
+                              Text(
+                                '(${widget.creditLine})',
+                                style: TextStyle(
+                                  color: Colors.black,
+                                  fontFamily: "Roboto",
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                  ),
+                ),
+              ),
+            ),
+            SizedBox(height: 5),
             FutureBuilder(
               future: Future.value(),
               builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.waiting) {
-                  return CircularProgressIndicator();
-                } else if (snapshot.connectionState == ConnectionState.done) {
-                  // Assuming `buildListView` is defined elsewhere
-                  cartItems =
-                      Provider.of<CartProvider>(context).getReturnCartItems();
-                  return buildListView(); // Assuming this function returns a widget
-                } else {
-                  return Text('Error: Unable to fetch cart data');
-                }
+                // if (snapshot.connectionState == ConnectionState.waiting) {
+                //   return CircularProgressIndicator();
+                // } else
+                // if (snapshot.connectionState == ConnectionState.done) {
+              cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
+
+                return buildListView(cartItems, ValueKey(cartItems));
+
+                // }
+                // else {
+                //   return Text('Error: Unable to fetch cart data');
+                // }
               },
             ),
+
+            // FutureBuilder(
+            //   future: Future.value(),
+            //   builder: (context, snapshot) {
+            //     if (snapshot.connectionState == ConnectionState.waiting) {
+            //       return CircularProgressIndicator();
+            //     } else if (snapshot.connectionState == ConnectionState.done) {
+            //       // Assuming `buildListView` is defined elsewhere
+            //       cartItems =
+            //           Provider.of<CartProvider>(context).getReturnCartItems();
+            //       return buildListView(); // Assuming this function returns a widget
+            //     } else {
+            //       return Text('Error: Unable to fetch cart data');
+            //     }
+            //   },
+            // ),
             SizedBox(height: 10),
             Container(
               width: MediaQuery.of(context).size.width,
@@ -602,9 +686,12 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     print('Company ID: $CompneyId');
   }
 
-  Widget buildListView() {
+  Widget buildListView(List<ReturnOrderItemXrefType> cartItems, Key key) {
+   // updateTotalSum(cartItems);
+
     return ListView.builder(
-      key: UniqueKey(),
+      // key: UniqueKey(),
+      key: key,
       shrinkWrap: true,
       physics: PageScrollPhysics(),
       scrollDirection: Axis.vertical,
@@ -617,21 +704,29 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         }
         double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
         double price = cartItem.price ?? 0.0;
-        // double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
-        double totalPrice = orderQty * price;
+       // double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
+      //  double totalPrice = orderQty * price * numInSale;
+
+        // Update totalSumNotifier with the correct value
+
 
         return CartItemWidget(
           cartItem: cartItem,
           onDelete: () {
             setState(() {
               cartItems.removeAt(index);
+             // Update totalSumIncludingGst after removing an item
             });
           },
-          totalPrice: totalPrice,
+          cartItems: cartItems,
+          onQuantityChanged: () {
+           // updateTotalSumIncludingGst(); // Update totalSumIncludingGst when quantity changes
+          },
         );
       },
     );
   }
+
 
   double calculateTotalSum(List<ReturnOrderItemXrefType> cartItems) {
     double sum = 0.0;
@@ -645,7 +740,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
   }
 
   void clearCartData(CartProvider cartProvider) {
-    cartProvider.clearCart();
+    cartProvider.clearreturnCart();
   }
 
   void Addreturnorder() async {
@@ -728,8 +823,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         // Successful request
         final responseData = jsonDecode(response.body);
         print(responseData);
-        String returnOrderNumber =
-            responseData['response']['returnOrderNumber'];
+        String returnOrderNumber = responseData['response']['returnOrderNumber'];
 
 // Navigate to the next screen while passing the returnOrderNumber
 
@@ -780,12 +874,17 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
 class CartItemWidget extends StatefulWidget {
   final ReturnOrderItemXrefType cartItem;
   final Function onDelete;
-  final double totalPrice;
+
+  final List<ReturnOrderItemXrefType> cartItems;
+
+  final VoidCallback
+  onQuantityChanged; // Callback function to notify when quantity changes
 
   CartItemWidget({
     required this.cartItem,
     required this.onDelete,
-    required this.totalPrice,
+    required this.cartItems,
+    required this.onQuantityChanged // Initialize here
   });
 
   @override
@@ -795,137 +894,226 @@ class CartItemWidget extends StatefulWidget {
 class _CartItemWidgetState extends State<CartItemWidget> {
   late TextEditingController _textController;
   late int _orderQty;
-
+  double gstPrice = 0.0;
+  double totalGstAmount = 0.0;
+  late int Quantity = 0;
+  double totalSumForProduct = 0.0;
+  double totalSum = 0.0;
   @override
   void initState() {
     super.initState();
-    //todo
-    _orderQty = widget.cartItem.orderQty!;
+    // _orderQty = widget.cartItem.orderQty ?? 0;
+    _orderQty = widget.cartItem.orderQty ?? 1;
+    Quantity = widget.cartItem.orderQty!;
+    print('Quantity==$Quantity');
+
     _textController = TextEditingController(text: _orderQty.toString());
+
+
+    // Initialize totalSumNotifier in initState
   }
 
   @override
   Widget build(BuildContext context) {
     double totalWidth = MediaQuery.of(context).size.width;
 
-    return Container(
+    // Calculate totalSum for all products
+    // Calculate totalSum for all products
+
+    // Calculate totalSumForProduct for the single product
+    // double totalSumForProduct = calculateTotalSumForProduct(widget.cartItem);
+    // gstPrice = calculateGstPrice(totalSumForProduct, widget.cartItem.gst);
+
+    // Calculate total sum including GST
+
+
+    widget.onQuantityChanged();
+
+
+
+    return Padding(
       padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
       child: Card(
         elevation: 5.0,
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5.0),
+          borderRadius: BorderRadius.circular(8.0),
         ),
         child: Container(
-          decoration: BoxDecoration(
-            borderRadius: BorderRadius.circular(5.0),
-            color: Colors.white,
-          ),
+          color: Colors.white,
           padding: const EdgeInsets.all(8.0),
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.start,
-            children: [
-              Text(
-                '${widget.cartItem.itemName}',
-                style: CommonUtils.Mediumtext_14,
-              ),
-              SizedBox(height: 8.0),
-              // Row(
-              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              //   children: [
-              //     Expanded(
-              //       child: Text(
-              //         '₹${widget.cartItem.price}',
-              //         style: CommonUtils.Mediumtext_o_14,
-              //       ),
-              //     ),
-              //     Text(
-              //       '₹${widget.totalPrice.toStringAsFixed(2)}',
-              //       style: CommonUtils.Mediumtext_o_14,
-              //     ),
-              //   ],
-              // ),
-              // SizedBox(height: 8.0),
-              Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  Container(
+          child:
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            Text(
+              '${widget.cartItem.itemName}',
+              style: CommonUtils.Mediumtext_14,
+            ),
+            SizedBox(height: 8.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                // Expanded(
+                //   child: Text(
+                //     '₹${formatNumber(totalSumForProduct)}',
+                //     style: CommonUtils.Mediumtext_o_14,
+                //   ),
+                // ),
+                // Text(
+                //   '$Quantity ${widget.cartItem.salUnitMsr} = ${Quantity * widget.cartItem.numInSale!}  Nos', // Display totalSumForProduct for the single product
+                //   style: CommonUtils.Mediumtext_o_14,
+                // ),
+              ],
+            ),
+            SizedBox(height: 8.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                Container(
+                  width: (totalWidth - 40) / 2,
+                  child: Container(
                     width: (totalWidth - 40) / 2,
                     child: PlusMinusButtons(
                       addQuantity: () {
                         setState(() {
+                          Quantity++;
+                          // totalSumForProduct =
+                          //     calculateTotalSumForProduct(widget.cartItem);
+                          // print('totalSumForProductplus==$totalSumForProduct');
+                          formatNumber(totalSumForProduct);
                           _orderQty = (_orderQty ?? 0) + 1;
                           _textController.text = _orderQty.toString();
                           // Call the updateQuantity method in your model class
                           widget.cartItem.updateQuantity(_orderQty);
+
+                          widget.onQuantityChanged(); // Call onQuantityChanged callback
                         });
                       },
                       deleteQuantity: () {
                         setState(() {
-                          if (_orderQty! > 1) {
+                          if (_orderQty > 1) {
+                            Quantity--;
+                            // totalSumForProduct =
+                            //     calculateTotalSumForProduct(widget.cartItem);
+                            formatNumber(totalSumForProduct);
+                            print(
+                                'totalSumForProductminus==$totalSumForProduct');
+                            formatNumber(totalSumForProduct);
                             _orderQty = (_orderQty ?? 0) - 1;
                             _textController.text = _orderQty.toString();
                             widget.cartItem.updateQuantity(_orderQty);
+
+                            widget.onQuantityChanged(); // Call onQuantityChanged callback
                           }
                         });
                       },
                       textController: _textController,
+                      orderQuantity:
+                      _orderQty, // Pass _orderQty as orderQuantity
+                      // Pass the onQuantityChanged callback function
+                      updateTotalPrice: (int value) {
+                        // Your updateTotalPrice logic, if any
+                        setState(() {
+                          Quantity = value;
+                          _orderQty = value;
+                          widget.cartItem.updateQuantity(_orderQty);
+
+                          widget.onQuantityChanged();
+                        });
+                      },
+                      onQuantityChanged: (int value) {
+                        setState(() {
+                          _orderQty = value;
+                          Quantity = value;
+                          widget.cartItem.updateQuantity(_orderQty);
+
+                          widget.onQuantityChanged();
+                        });
+                      },
                     ),
                   ),
-                  SizedBox(width: 8.0),
-                  GestureDetector(
-                    onTap: () {
-                      widget.onDelete();
-                    },
-                    child: Container(
-                      height: 36,
-                      width: 40,
-                      decoration: BoxDecoration(
-                        color: Color(0xFFF8dac2),
-                        border: Border.all(
-                          color: Color(0xFFe78337),
-                          width: 1.0,
-                        ),
-                        borderRadius: BorderRadius.circular(8.0),
+                ),
+                SizedBox(width: 8.0),
+                GestureDetector(
+                  onTap: () {
+                    widget.onDelete();
+                  },
+                  child: Container(
+                    height: 36,
+                    width: 40,
+                    decoration: BoxDecoration(
+                      color: Color(0xFFF8dac2),
+                      border: Border.all(
+                        color: Color(0xFFe78337),
+                        width: 1.0,
                       ),
-                      child: Padding(
-                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                        child: Align(
-                          alignment: Alignment.center,
-                          child: Row(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            children: [
-                              Icon(
-                                Icons.delete,
-                                size: 18.0,
-                                color: Colors.red,
-                              ),
-                            ],
-                          ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                      child: Align(
+                        alignment: Alignment.center,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Icon(
+                              Icons.delete,
+                              size: 18.0,
+                              color: Colors.red,
+                            ),
+                          ],
                         ),
                       ),
                     ),
                   ),
-                ],
-              ),
-            ],
-          ),
+                ),
+              ],
+            ),
+            SizedBox(height: 8.0),
+          ]),
         ),
       ),
     );
   }
+
+  double calculateGstPrice(double totalSum, double? gst) {
+    return (totalSum * gst!) / 100.0;
+  }
+
+  // double calculateTotalGstAmount(List<OrderItemXrefType> cartItems) {
+  //   double totalGstAmount = 0.0;
+  //   for (OrderItemXrefType item in cartItems) {
+  //     totalGstAmount += calculateGstPrice(
+  //       calculateTotalSumForProduct(item),
+  //       item.gst,
+  //     );
+  //   }
+  //   return totalGstAmount;
+  // }
+
+  String formatNumber(double number) {
+    NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+    return formatter.format(number);
+  }
 }
+
+// In PlusMinusButtons widget
 
 class PlusMinusButtons extends StatelessWidget {
   final VoidCallback deleteQuantity;
   final VoidCallback addQuantity;
   final TextEditingController textController;
+  final int orderQuantity; // Add orderQuantity parameter
+  final ValueChanged<int> onQuantityChanged;
+  final ValueChanged<int> updateTotalPrice;
 
   PlusMinusButtons({
     Key? key,
     required this.addQuantity,
     required this.deleteQuantity,
     required this.textController,
+    required this.orderQuantity, // Include orderQuantity parameter
+    required this.onQuantityChanged,
+    required this.updateTotalPrice,
   }) : super(key: key);
 
   @override
@@ -982,6 +1170,13 @@ class PlusMinusButtons extends StatelessWidget {
                         ),
                         textAlign: TextAlign.center,
                         style: CommonUtils.Mediumtext_o_14,
+                        onChanged: (newValue) {
+                          if (newValue.isNotEmpty) {
+                            int newOrderQuantity = int.tryParse(newValue) ?? 0;
+                            print('textchanged:$newOrderQuantity');
+                            onQuantityChanged(newOrderQuantity);
+                          }
+                        },
                       ),
                     ),
                   ),
@@ -1006,11 +1201,7 @@ class PlusMinusButtons extends StatelessWidget {
     );
   }
 
-  // Helper method to update the text controller
   void _updateTextController() {
-    // Update the text controller based on your logic
-    // For example, you might want to increment or decrement the value
-    // Here, I'm just printing the current value to the console
     print('Current Value: ${textController.text}');
   }
 }

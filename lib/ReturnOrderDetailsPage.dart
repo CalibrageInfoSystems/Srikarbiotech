@@ -386,11 +386,11 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
                               const Text(
-                                'LR Number',
+                                'Order ID',
                                 style: CommonUtils.txSty_13B_Fb,
                               ),
                               Text(
-                                widget.data.lrNumber,
+                                widget.data.returnOrderNumber,
                                 style: _dataTextStyle,
                               ),
                             ],
@@ -445,11 +445,11 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  'LR Date',
+                                  'LR Number',
                                   style: CommonUtils.txSty_13B_Fb,
                                 ),
                                 Text(
-                                  formattedDate,
+                                  widget.data.lrNumber.toString(),
                                   style: _dataTextStyle,
                                 ),
                               ],
@@ -465,11 +465,11 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
                                 const Text(
-                                  'Total',
+                                  'LR Date',
                                   style: CommonUtils.txSty_13B_Fb,
                                 ),
                                 Text(
-                                  widget.data.totalCost.toString(),
+                                  formattedDate,
                                   style: _dataTextStyle,
                                 ),
                               ],
@@ -478,7 +478,34 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                         ),
                       ],
                     ),
+                    dividerForHorizontal1,
 
+                    // row two
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Remarks',
+                                  style: CommonUtils.txSty_13B_Fb,
+                                ),
+                                Text(
+                                  widget.data.dealerRemarks.toString(),
+                                  style: _dataTextStyle,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+
+                      ],
+                    ),
                     dividerForHorizontal1,
                     Padding(
                       padding: const EdgeInsets.symmetric(
