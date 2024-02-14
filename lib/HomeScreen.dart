@@ -99,7 +99,7 @@ class _home_Screen extends State<HomeScreen> {
                       width: 2.0,
                     ),
                     Text(
-                     '$companyName',
+                      '$companyName',
                       style: TextStyle(
                         color: Color(0xFF414141),
                         fontWeight: FontWeight.w600,
@@ -145,6 +145,61 @@ class _home_Screen extends State<HomeScreen> {
             },
           ),
         ),
+        drawer: Drawer(
+          child: ListView(
+            children: [
+              DrawerHeader(
+                decoration: BoxDecoration(
+                    // Remove the DecorationImage with AssetImage
+                    ),
+                child: SvgPicture.asset(
+                  'assets/cislogo-new.svg', // Replace with the path to your SVG icon
+                  width: 80, // Adjust the width as needed
+                  height: 100, // Adjust the height as needed
+                ),
+              ),
+
+              ListTile(
+                leading: SvgPicture.asset(
+                  'assets/atten.svg',
+                  width: 20,
+                  height: 20,
+                  fit: BoxFit.contain,
+                  color: Colors.black,
+                ),
+                title: Text(
+                  'My Leaves',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'hind_semibold',
+                  ),
+                ),
+                onTap: () {
+                  // Navigator.push(
+                  //   context,
+                  //   MaterialPageRoute(builder: (context) => Myleaveslist()),
+                  // );
+                },
+              ),
+
+              ListTile(
+                leading: Icon(Icons.logout), // Change the icon as needed
+                title: Text(
+                  'Logout',
+                  style: TextStyle(
+                    color: Colors.black,
+                    fontFamily: 'hind_semibold',
+                  ),
+                ),
+                onTap: () {
+                  logOutDialog();
+                  // Handle the onTap action for Logout
+                },
+              ),
+              // Add more ListTiles or other widgets as needed
+            ],
+          ),
+        ),
         body: imageslider(),
       ),
     );
@@ -159,7 +214,6 @@ class _home_Screen extends State<HomeScreen> {
     print('SLP Code: $slpCode');
     print('Company ID: $CompneyId');
     print('companyName: $companyName');
-
   }
 
   void logOutDialog() {
