@@ -8,11 +8,11 @@ class CommonUtils {
   static final orangeColor = HexColor('#e58338');
 
   static void showCustomToastMessageLong(
-    String message,
-    BuildContext context,
-    int backgroundColorType,
-    int length,
-  ) {
+      String message,
+      BuildContext context,
+      int backgroundColorType,
+      int length,
+      ) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double textWidth = screenWidth / 1.5; // Adjust multiplier as needed
 
@@ -37,11 +37,12 @@ class CommonUtils {
               borderRadius: BorderRadius.circular(8.0),
             ),
             child: Padding(
-              padding: EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+              padding:
+              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
               child: Center(
                 child: Text(
                   message,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 16.0,
                       color: Colors.black,
                       fontFamily: 'Calibri'),
@@ -69,6 +70,7 @@ class CommonUtils {
       return false; // Not connected to the internet
     }
   }
+
   static final decorationO_R10W1 = BoxDecoration(
       borderRadius: BorderRadius.circular(10),
       border: Border.all(
@@ -80,14 +82,14 @@ class CommonUtils {
   }
 
   static Widget buildCard(
-    String title,
-    String subtitle1,
-    String subtitle2,
-    String subtitle3,
-    String subtitle4,
-    Color backgroundColor,
-    BorderRadius borderRadius,
-  ) {
+      String title,
+      String subtitle1,
+      String subtitle2,
+      String subtitle3,
+      String subtitle4,
+      Color backgroundColor,
+      BorderRadius borderRadius,
+      ) {
     return Card(
       elevation: 2.0,
       shape: RoundedRectangleBorder(
@@ -99,7 +101,7 @@ class CommonUtils {
           borderRadius: BorderRadius.circular(5.0),
           color: backgroundColor,
         ),
-        padding: const EdgeInsets.all(16.0),
+        padding: const EdgeInsets.all(10.0),
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: [
@@ -126,14 +128,15 @@ class CommonUtils {
             RichText(
               text: TextSpan(
                 children: <TextSpan>[
-                  TextSpan(text: 'GST No. ', style: CommonUtils.Mediumtext_12),
+                  const TextSpan(
+                      text: 'GST No. ', style: CommonUtils.Mediumtext_12),
                   TextSpan(text: subtitle3, style: CommonUtils.Mediumtext_12_0),
                 ],
               ),
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 8.0),
-            Text(
+            const Text(
               'Address',
               style: CommonUtils.Mediumtext_12,
               overflow: TextOverflow.ellipsis,
@@ -150,6 +153,12 @@ class CommonUtils {
       ),
     );
   }
+
+  static final boxBorder = BoxDecoration(
+    borderRadius: BorderRadius.circular(5.0),
+    color: Colors.white,
+  );
+
   static final borderForAppliedFilter = BoxDecoration(
     borderRadius: BorderRadius.circular(10),
     color: const Color.fromARGB(255, 250, 214, 152),
@@ -172,7 +181,7 @@ class CommonUtils {
     borderRadius: BorderRadius.circular(10),
     borderSide: const BorderSide(color: Colors.black),
   );
-  static final TextStyle hintstyle_o_14 = TextStyle(
+  static const TextStyle hintstyle_o_14 = TextStyle(
     fontSize: 14,
     fontFamily: 'Roboto',
     fontWeight: FontWeight.w700,
@@ -180,59 +189,59 @@ class CommonUtils {
   );
 
   // header style
-  static final TextStyle headerStyles = TextStyle(
+  static const TextStyle headerStyles = TextStyle(
     fontSize: 25,
     fontFamily: "Roboto",
     fontWeight: FontWeight.w700,
     color: Colors.black87,
   );
   // header style
-  static final TextStyle header_Styles18 = TextStyle(
+  static const TextStyle header_Styles18 = TextStyle(
     fontSize: 18,
     fontFamily: "Roboto",
     fontWeight: FontWeight.w700,
     color: Color(0xFFe78337),
   );
 
-  static final TextStyle header_Styles16 = TextStyle(
+  static const TextStyle header_Styles16 = TextStyle(
     fontSize: 16,
     fontFamily: "Roboto",
     fontWeight: FontWeight.w700,
     color: Color(0xFFe78337),
   );
-  static final TextStyle Mediumtext_o_14 = TextStyle(
+  static const TextStyle Mediumtext_o_14 = TextStyle(
     fontSize: 14,
     fontFamily: "Roboto",
     fontWeight: FontWeight.w600,
     color: Color(0xFFe78337),
   );
-  static final TextStyle Mediumtext_14 = TextStyle(
+  static const TextStyle Mediumtext_14 = TextStyle(
     fontSize: 14,
     fontFamily: "Roboto",
     fontWeight: FontWeight.w600,
     color: Color(0xFF5f5f5f),
   );
-  static final TextStyle Mediumtext_12 = TextStyle(
+  static const TextStyle Mediumtext_12 = TextStyle(
     fontSize: 12,
     fontFamily: "Roboto",
     fontWeight: FontWeight.w600,
     color: Color(0xFF5f5f5f),
   );
-  static final TextStyle Mediumtext_12_0 = TextStyle(
+  static const TextStyle Mediumtext_12_0 = TextStyle(
     fontSize: 12,
     fontFamily: "Roboto",
     fontWeight: FontWeight.w600,
     color: Color(0xFFe78337),
   );
 
-  static final TextStyle hintstyle_14 = TextStyle(
+  static const TextStyle hintstyle_14 = TextStyle(
     fontSize: 14,
     fontFamily: "Roboto",
     fontWeight: FontWeight.w600,
     color: Color(0xFFC4C2C2),
   );
 
-  static final TextStyle Buttonstyle = TextStyle(
+  static const TextStyle Buttonstyle = TextStyle(
     fontSize: 14,
     fontFamily: "Roboto",
     fontWeight: FontWeight.w600,

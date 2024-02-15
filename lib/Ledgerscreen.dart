@@ -25,6 +25,8 @@ class Ledgerscreen extends StatefulWidget {
   final String gstRegnNo;
   final String state;
   final String phone;
+  final double creditLine;
+  final double balance;
 
   Ledgerscreen(
       {required this.cardName,
@@ -33,7 +35,9 @@ class Ledgerscreen extends StatefulWidget {
       required this.state,
       required this.phone,
       required this.proprietorName,
-      required this.gstRegnNo});
+      required this.gstRegnNo,
+        required this.creditLine,
+        required this.balance});
   @override
   Ledger_screen createState() => Ledger_screen();
 }
@@ -46,6 +50,7 @@ class Ledger_screen extends State<Ledgerscreen> {
   DateTime selectedFromDate = DateTime.now();
   DateTime selectedToDate = DateTime.now();
   int CompneyId = 0;
+  String companyCode ="";
   @override
   initState() {
     super.initState();
@@ -130,7 +135,7 @@ class Ledger_screen extends State<Ledgerscreen> {
 
       body: Column(children: [
         Padding(
-            padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
+            padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
             child:
                 Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               CommonUtils.buildCard(
@@ -142,7 +147,92 @@ class Ledger_screen extends State<Ledgerscreen> {
                 Colors.white,
                 BorderRadius.circular(5.0),
               ),
-              SizedBox(height: 16.0),
+
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: EdgeInsets.only(top: 5.0, left: 0.0, right: 0.0),
+                    child: IntrinsicHeight(
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+
+                        child: Container(
+
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(5.0),
+                            color: Colors.white,
+                          ),
+                          padding: EdgeInsets.all(10.0),
+
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Credit Limit',
+                                      style: TextStyle(
+                                        color: Color(0xFF5f5f5f),
+                                        fontFamily: "Roboto",
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      '₹${widget.creditLine}',
+                                      style: TextStyle(
+                                        color: Color(0xFF5f5f5f),
+                                        fontFamily: "Roboto",
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14.0,
+                                      ),
+                                      textAlign: TextAlign.right,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              SizedBox(height: 5.0), // Add some space between rows
+                              // Third Row: Outstanding Amount
+                              Row(
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      'Outstanding Amount',
+                                      style: TextStyle(
+                                        color: Color(0xFF5f5f5f),
+                                        fontFamily: "Roboto",
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14.0,
+                                      ),
+                                    ),
+                                  ),
+                                  Expanded(
+                                    child: Text(
+                                      '₹${widget.balance}',
+                                      style: TextStyle(
+                                        color: Color(0xFF5f5f5f),
+                                        fontFamily: "Roboto",
+                                        fontWeight: FontWeight.w700,
+                                        fontSize: 14.0,
+                                      ),
+                                      textAlign: TextAlign.right,
+                                    ),
+                                  ),
+                                ],
+                              ),
+
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
               Card(
                   elevation: 2.0,
                   shape: RoundedRectangleBorder(
@@ -155,7 +245,7 @@ class Ledger_screen extends State<Ledgerscreen> {
                       borderRadius: BorderRadius.circular(5.0),
                       color: Colors.white,
                     ),
-                    padding: EdgeInsets.all(16.0),
+                    padding: EdgeInsets.all(10.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -442,6 +532,10 @@ class Ledger_screen extends State<Ledgerscreen> {
     bool hasValidationFailed = false;
     String fromdate = DateFormat('yyyy-MM-dd').format(selectedFromDate);
     String todate = DateFormat('yyyy-MM-dd').format(selectedToDate);
+    String pdffromdate = DateFormat('ddMMyyyy').format(selectedFromDate);
+    String pdftodate = DateFormat('ddMMyyyy').format(selectedToDate);
+    print('pdffromdate: $pdffromdate');
+    print('pdftodate: $pdftodate');
 
     if (isValid && fromDateController.text.isEmpty) {
       CommonUtils.showCustomToastMessageLong(
@@ -512,8 +606,8 @@ class Ledger_screen extends State<Ledgerscreen> {
                 await Permission.manageExternalStorage.request();
             if (status!.isGranted || manageExternalStorage!.isGranted) {
               Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
-
-              String fileName = "srikar_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.pdf";
+              String fileName = "${companyCode}_${widget.cardCode}_${pdffromdate}_${pdftodate}.pdf";
+          //    String fileName = "'$companyCode'_'${widget.cardCode}'_${fromDateController.text}_${toDateController.text}.pdf";
 
               String filePath = '${downloadsDirectory.path}/$fileName';
 
@@ -522,7 +616,8 @@ class Ledger_screen extends State<Ledgerscreen> {
               // Permission granted, proceed with file operations
               // ... (your existing code)
               print('PDF saved to: $filePath');
-              CommonUtils.showCustomToastMessageLong('Downloaded Successfully', context, 0, 4);
+
+              CommonUtils.showCustomToastMessageLong('Ledger Report Downloaded Successfully', context, 0, 4);
             } else {
               print('Permission denied');
 
@@ -550,6 +645,10 @@ class Ledger_screen extends State<Ledgerscreen> {
     bool hasValidationFailed = false;
     String fromdate = DateFormat('yyyy-MM-dd').format(selectedFromDate);
     String todate = DateFormat('yyyy-MM-dd').format(selectedToDate);
+    String pdffromdate = DateFormat('ddMMyyyy').format(selectedFromDate);
+    String pdftodate = DateFormat('ddMMyyyy').format(selectedToDate);
+    print('pdffromdate: $pdffromdate');
+    print('pdftodate: $pdftodate');
 
     if (isValid && fromDateController.text.isEmpty) {
       CommonUtils.showCustomToastMessageLong(
@@ -613,9 +712,8 @@ class Ledger_screen extends State<Ledgerscreen> {
             if (status!.isGranted || manageExternalStorage!.isGranted) {
               Directory downloadsDirectory =
                   Directory('/storage/emulated/0/Download');
-
-              String fileName =
-                  "srikar_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.pdf";
+             // String fileName = "srikar_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.pdf";
+              String fileName = "${companyCode}_${widget.cardCode}_${pdffromdate}_${pdftodate}.pdf";
 
               String filePath = '${downloadsDirectory.path}/$fileName';
 
@@ -696,7 +794,8 @@ class Ledger_screen extends State<Ledgerscreen> {
 // Retrieve userId and slpCode
 
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-
+    companyCode  = await SharedPrefsData.getStringFromSharedPrefs("companyCode");
+    print('companyCode: $companyCode');
     print('Company ID: $CompneyId');
   }
 }

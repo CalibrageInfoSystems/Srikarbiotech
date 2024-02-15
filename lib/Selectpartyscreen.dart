@@ -181,7 +181,7 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                             keyboardType: TextInputType.name,
                             style: CommonUtils.Mediumtext_12,
                             decoration: InputDecoration(
-                              hintText: 'Search for Party Name or Id',
+                              hintText: 'Search for Party Name or Code or City ',
                               hintStyle: CommonUtils.hintstyle_14,
                               border: InputBorder.none,
                             ),
@@ -274,9 +274,10 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                                   address: filteredDealers[index].fullAddress,
                                   state: filteredDealers[index].state,
                                   phone: filteredDealers[index].phoneNumber,
-                                  proprietorName:
-                                      filteredDealers[index].proprietorName,
-                                  gstRegnNo: filteredDealers[index].gstRegnNo),
+                                  proprietorName: filteredDealers[index].proprietorName,
+                                  gstRegnNo: filteredDealers[index].gstRegnNo,
+                                  creditLine: filteredDealers[index].creditLine,
+                                  balance: filteredDealers[index].balance),
                             ),
                           );
                         } else if (screenFrom == "CreatereturnOrder") {
@@ -295,8 +296,7 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                                     proprietorName:
                                         filteredDealers[index].proprietorName,
                                     gstRegnNo: filteredDealers[index].gstRegnNo,
-                                    creditLine:
-                                        filteredDealers[index].creditLine,
+                                    creditLine: filteredDealers[index].creditLine,
                                     balance: filteredDealers[index].balance),
                               ),
                             );
@@ -411,7 +411,8 @@ class Selectparty_screen extends State<Selectpartyscreen> {
     setState(() {
       filteredDealers = dealers.where((dealer) {
         return dealer.cardCode.toLowerCase().contains(searchTerm) ||
-            dealer.cardName.toLowerCase().contains(searchTerm);
+            dealer.cardName.toLowerCase().contains(searchTerm)  ||
+            dealer.fullAddress.toLowerCase().contains(searchTerm);
       }).toList();
     });
   }

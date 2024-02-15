@@ -13,6 +13,7 @@ import 'Common/SharedPrefsData.dart';
 import 'HomeScreen.dart';
 import 'Model/CompanyModel.dart';
 import 'Services/api_config.dart';
+import 'forgot_password_screen.dart';
 
 class LoginScreen extends StatefulWidget {
   // Assuming you have a class named Company
@@ -107,14 +108,11 @@ class _MyHomePageState extends State<LoginScreen> {
                         ),
                       ),
                       SizedBox(height: 10.0),
-                      Text(
-                        compneyid == 1
-                            ? 'Hi, Welcome to Srikar Bio Tech'
-                            : 'Hi, Welcome to ${widget.companyName} ',
+                      Text('Hi, Welcome to ${widget.companyName} ',
                         style: CommonUtils.header_Styles16,
                       ),
                       SizedBox(height: 10.0),
-                      Text('Enter your credentials to continue',
+                      Text('Enter your login credentials to continue',
                           style: CommonUtils.Mediumtext_14),
                       Padding(
                         padding:
@@ -345,6 +343,14 @@ class _MyHomePageState extends State<LoginScreen> {
                                     // Handle the click event for the "Click here!" text
                                     print('Click here! clicked');
                                     // Add your custom logic or navigation code here
+                                    Navigator.of(context).push(
+                                      MaterialPageRoute(
+                                        builder: (context) => ForgotPasswordScreen(
+                                            companyId: widget.companyId,
+                                            companyName: widget.companyName
+                                        ),
+                                      ),
+                                    );
                                   },
                                   child: Text('Click here!',
                                       style: CommonUtils.Mediumtext_o_14),
@@ -409,7 +415,7 @@ class _MyHomePageState extends State<LoginScreen> {
         prefs.setString("slpCode", jsonResponse['response']['slpCode']);
         prefs.setInt("companyId", jsonResponse['response']['companyId']);
         prefs.setString("companyName", jsonResponse['response']['companyName']);
-
+        prefs.setString("companyCode", jsonResponse['response']['companyCode']);
         SharedPrefsData.updateStringValue(
             "userId", jsonResponse['response']['userId']);
         SharedPrefsData.updateStringValue(
@@ -423,7 +429,7 @@ class _MyHomePageState extends State<LoginScreen> {
       } else {
         print('Login failed. Please check your credentials.');
         CommonUtils.showCustomToastMessageLong(
-            'Login failed. Please check your credentials.', context, 1, 4);
+            'Login failed. Please check your login credentials.', context, 1, 4);
       }
     } else {
       print('Login failed. Please check your credentials.');

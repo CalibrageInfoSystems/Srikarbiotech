@@ -805,43 +805,24 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                                   productresp
                                                                       .itmsGrpCod!;
                                                             } else {
-                                                              itemGrpCod =
-                                                                  productresp
-                                                                      .itmsGrpCod!;
+                                                              itemGrpCod = productresp.itmsGrpCod!;
                                                             }
 
-                                                            if (cartProvider
-                                                                .isSameItemGroup(
-                                                                    itemGrpCod)) {
+                                                            if (cartProvider.isSamereturnItemGroup(itemGrpCod)) {
                                                               returnorderItem = ReturnOrderItemXrefType(
                                                                   id: 1,
-                                                                  returnOrderId:
-                                                                      1001,
-                                                                  itemGrpCod:
-                                                                      itemGrpCod,
-                                                                  itemGrpName:
-                                                                      productresp
-                                                                          .itmsGrpNam,
-                                                                  itemCode:
-                                                                      productresp
-                                                                          .itemCode,
-                                                                  itemName:
-                                                                      productresp
-                                                                          .itemName,
-                                                                  statusTypeId:
-                                                                      13,
-                                                                  orderQty:
-                                                                      quantities[
-                                                                          index],
-                                                                  price:
-                                                                      productresp
-                                                                          .price,
+                                                                  returnOrderId: 1001,
+                                                                  itemGrpCod: itemGrpCod,
+                                                                  itemGrpName: productresp.itmsGrpNam,
+                                                                  itemCode: productresp.itemCode,
+                                                                  itemName: productresp.itemName,
+                                                                  statusTypeId: 13,
+                                                                  orderQty: quantities[index],
+                                                                  price: productresp.price,
                                                                   remarks: "",
-                                                                  totalPrice:
-                                                                      null);
+                                                                  totalPrice: null);
 
-                                                              await cartProvider
-                                                                  .addToreturnorderCart(
+                                                              await cartProvider.addToreturnorderCart(
                                                                       returnorderItem!);
                                                               await prefs.setBool(
                                                                   'isItemAddedToCart_$index',

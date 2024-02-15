@@ -142,21 +142,28 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
       builder: (context, viewReturnOrdersProvider, _) => Scaffold(
         appBar: _appBar(),
         body: FutureBuilder(
-            future: apiData,
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: CircularProgressIndicator.adaptive());
-              } else if (snapshot.hasError) {
-                return const Center(
-                  child: Text('No return orders found'),
-                );
-              } else {
-                if (snapshot.hasData) {
-                  // List<ListResult> data = snapshot.data!;
-                  List<ReturnOrdersList> data =
-                      viewReturnOrdersProvider.returnOrdersProviderData;
-                  return Padding(
+          future: apiData,
+          builder: (context, snapshot) {
+            if (snapshot.connectionState == ConnectionState.waiting) {
+              return const Center(child: CircularProgressIndicator.adaptive());
+            } else if (snapshot.hasError) {
+              return const Center(
+                child: Text('No return orders found'),
+              );
+            } else {
+              if (snapshot.hasData) {
+                // List<ListResult> data = snapshot.data!;
+                List<ReturnOrdersList> data =
+                    viewReturnOrdersProvider.returnOrdersProviderData;
+
+                    return WillPopScope(
+                    onWillPop: () async {
+                  // Clear the cart data here
+                      returnOrdersProvider.clearFilter();
+
+                  return true; // Allow the back navigation
+                },
+                  child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
@@ -181,14 +188,16 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                           noCollectionText(),
                       ],
                     ),
-                  );
-                } else {
-                  return const Center(
-                    child: Text('No data available'),
-                  );
-                }
+                  ),
+                );
+              } else {
+                return const Center(
+                  child: Text('No data available'),
+                );
               }
-            }),
+            }
+          },
+        ),
       ),
     );
   }
@@ -314,235 +323,6 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
               ),
             ),
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class ReturnCarditem extends StatefulWidget {
-  final int index;
-  final ReturnOrdersList data;
-  const ReturnCarditem({super.key, required this.index, required this.data});
-
-  @override
-  State<ReturnCarditem> createState() => _ReturnCarditemState();
-}
-
-class _ReturnCarditemState extends State<ReturnCarditem> {
-  final _iconBoxBorder = BoxDecoration(
-    borderRadius: BorderRadius.circular(5.0),
-    color: Colors.white,
-  );
-
-  late Color statusColor;
-  late Color statusBgColor;
-  Widget getSvgAsset(String status) {
-    String assetPath;
-    late Color iconColor;
-    switch (status) {
-      case "Shipped":
-        assetPath = 'assets/shipping-fast.svg';
-        iconColor = const Color(0xFFe58338);
-        statusColor = const Color(0xFFe58338);
-        statusBgColor = const Color.fromARGB(255, 250, 214, 187);
-        break;
-      case 'Pending':
-        assetPath = 'assets/shipping-timed.svg';
-        iconColor = const Color(0xFFc04f51);
-        statusColor = const Color(0xFFc04f51);
-        statusBgColor = const Color.fromARGB(255, 241, 183, 184);
-        break;
-      case 'Delivered':
-        assetPath = 'assets/box-circle-check.svg';
-        iconColor = Colors.green;
-        statusColor = Colors.green;
-        statusBgColor = Colors.green.shade100;
-        break;
-      case 'Partially Shipped':
-        assetPath = 'assets/boxes.svg';
-        iconColor = Colors.purple;
-        statusColor = Colors.purple;
-        statusBgColor = Colors.purple.shade100;
-        break;
-      case 'Rejected':
-        assetPath = 'assets/shipping-timed.svg';
-        iconColor = Colors.red;
-        statusColor = Colors.red;
-        statusBgColor = Colors.red.shade100;
-        break;
-      default:
-        assetPath = 'assets/sb_home.svg';
-        iconColor = Colors.black26;
-        statusColor = Colors.black26;
-        statusBgColor = const Color.fromARGB(31, 124, 124, 124);
-        break;
-    }
-    return SvgPicture.asset(
-      assetPath,
-      width: 50,
-      height: 50,
-      fit: BoxFit.fill,
-      color: iconColor,
-    );
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    String dateString = widget.data.lrDate;
-    DateTime date = DateTime.parse(dateString);
-    String formattedDate = DateFormat('dd MMM, yyyy').format(date);
-
-    return GestureDetector(
-      onTap: () {
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) =>
-                ReturnOrderDetailsPage(orderId: widget.data.id),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        child: Card(
-          color: Colors.white,
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(5),
-          ),
-          elevation: 5,
-          child: Container(
-            padding: const EdgeInsets.all(10), // here
-            width: double.infinity,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(5.0),
-            ),
-            child: Row(
-              // two part of row left icon and right info
-              children: [
-                SizedBox(
-                  // part one
-                  width: MediaQuery.of(context).size.width / 4.7,
-                  child: Column(
-                    children: [
-                      // top card icon
-                      Card(
-                        elevation: 5,
-                        child: Container(
-                          height: 65,
-                          width: 60,
-                          decoration: _iconBoxBorder,
-                          child: Center(
-                            child: getSvgAsset(widget.data.statusName),
-                          ),
-                        ),
-                      ),
-                      const SizedBox(
-                        height: 3,
-                      ),
-                      // bottom status name
-                      Container(
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 3, horizontal: 11),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(15),
-                          color: statusBgColor,
-                        ),
-                        child: Text(
-                          widget.data.statusName,
-                          textAlign: TextAlign.center,
-                          style: TextStyle(
-                              fontSize: 11,
-                              fontWeight: FontWeight.w500,
-                              color: statusColor),
-                        ),
-                      ),
-                    ],
-                  ),
-                ),
-
-                // part two
-                Expanded(
-                  child: Container(
-                    height: 100,
-                    padding: const EdgeInsets.symmetric(horizontal: 5),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Text(
-                          widget.data.partyName,
-                          style: CommonUtils.txSty_13B_Fb,
-                        ),
-                        Column(
-                          children: [
-                            Row(
-                              children: [
-                                const Text(
-                                  'Order ID :  ',
-                                  style: CommonUtils.txSty_13B_Fb,
-                                ),
-                                Text(
-                                  widget.data.returnOrderNumber,
-                                  style: CommonUtils.txSty_13O_F6,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text(
-                                  'LR No :  ',
-                                  style: CommonUtils.txSty_13B_Fb,
-                                ),
-                                Text(
-                                  widget.data.lrNumber,
-                                  style: CommonUtils.txSty_13O_F6,
-                                ),
-                              ],
-                            ),
-                            Row(
-                              children: [
-                                const Text(
-                                  'No of items :  ',
-                                  style: CommonUtils.txSty_13B_Fb,
-                                ),
-                                Text(
-                                  widget.data.noOfItems.toString(),
-                                  style: CommonUtils.txSty_13O_F6,
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Row(
-                              children: [
-                                Text(
-                                  // here
-                                  formattedDate, //widget.data.lrDate.toString()
-                                  style: CommonUtils.txSty_13O_F6,
-                                ),
-                              ],
-                            ),
-                            // Row(
-                            //   children: [
-                            //     Text(
-                            //       widget.data.totalCost.toString(),
-                            //       style: CommonUtils.txSty_13O_F6,
-                            //     ),
-                            //   ],
-                            // ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
         ),
       ),
     );
@@ -1333,4 +1113,278 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 //     fromdateController.text = DateFormat('dd-MM-yyyy').format(oneWeekAgo);
 //   });
 // }
+}
+
+class ReturnCarditem extends StatefulWidget {
+  final int index;
+  final ReturnOrdersList data;
+  const ReturnCarditem({super.key, required this.index, required this.data});
+
+  @override
+  State<ReturnCarditem> createState() => _ReturnCarditemState();
+}
+
+class _ReturnCarditemState extends State<ReturnCarditem> {
+  final _iconBoxBorder = BoxDecoration(
+    borderRadius: BorderRadius.circular(5.0),
+    color: Colors.white,
+  );
+
+  late Color statusColor;
+  late Color statusBgColor;
+  Widget getSvgAsset(String status) {
+    String assetPath;
+    late Color iconColor;
+    switch (status) {
+      case "Shipped":
+        assetPath = 'assets/shipping-fast.svg';
+        iconColor = const Color(0xFFe58338);
+        statusColor = const Color(0xFFe58338);
+        statusBgColor = const Color.fromARGB(255, 250, 214, 187);
+        break;
+      case 'Pending':
+        assetPath = 'assets/shipping-timed.svg';
+        iconColor = const Color(0xFFc04f51);
+        statusColor = const Color(0xFFc04f51);
+        statusBgColor = const Color.fromARGB(255, 241, 183, 184);
+        break;
+      case 'Delivered':
+        assetPath = 'assets/box-circle-check.svg';
+        iconColor = Colors.green;
+        statusColor = Colors.green;
+        statusBgColor = Colors.green.shade100;
+        break;
+      case 'Partially Shipped':
+        assetPath = 'assets/boxes.svg';
+        iconColor = Colors.purple;
+        statusColor = Colors.purple;
+        statusBgColor = Colors.purple.shade100;
+        break;
+      case 'Rejected':
+        assetPath = 'assets/shipping-timed.svg';
+        iconColor = Colors.red;
+        statusColor = Colors.red;
+        statusBgColor = Colors.red.shade100;
+        break;
+      default:
+        assetPath = 'assets/sb_home.svg';
+        iconColor = Colors.black26;
+        statusColor = Colors.black26;
+        statusBgColor = const Color.fromARGB(31, 124, 124, 124);
+        break;
+    }
+    return SvgPicture.asset(
+      assetPath,
+      width: 50,
+      height: 50,
+      fit: BoxFit.fill,
+      color: iconColor,
+    );
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    String dateString = widget.data.lrDate;
+    DateTime date = DateTime.parse(dateString);
+    String formattedDate = DateFormat('dd MMM, yyyy').format(date);
+
+    return GestureDetector(
+      onTap: () {
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) =>
+                ReturnOrderDetailsPage(orderId: widget.data.id),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        color: Colors.transparent,
+        child: Card(
+          elevation: 5,
+          child: Container(
+            padding: const EdgeInsets.all(12),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: CommonUtils.boxBorder,
+                  child: Row(
+                    children: [
+                      // starting icon of card
+                      Card(
+                        elevation: 3,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        child: Container(
+                          height: 65,
+                          width: 65,
+                          padding: const EdgeInsets.all(10),
+                          decoration: _iconBoxBorder,
+                          child: Center(
+                            child: getSvgAsset(widget.data.statusName),
+                          ),
+                        ),
+                      ),
+
+                      // beside info
+                      SizedBox(
+                        width: MediaQuery.of(context).size.width / 1.6,
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 10, top: 0, bottom: 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                widget.data.partyName,
+                                style: CommonUtils.Mediumtext_14_cb,
+                                softWrap: true,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(
+                                height: 5.0,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Order ID : ',
+                                        style: CommonUtils.txSty_13B_Fb,
+                                      ),
+                                      Text(
+                                        widget.data.returnOrderNumber,
+                                        style: CommonUtils.txSty_13O_F6,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5.0,
+                              ),
+                              Row(
+                                children: [
+                                  const Text(
+                                    'LR No :  ',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  Text(
+                                    widget.data.lrNumber,
+                                    style: CommonUtils.txSty_13O_F6,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 5.0,
+                ),
+                Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(left: 5.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 7),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: statusBgColor,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            widget.data.statusName,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: statusColor,
+                              // Add other text styles as needed
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10.0,
+                    ),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          const Expanded(child: SizedBox()),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              // Row(
+                              //   children:[
+                              //   const Text(
+                              //     'LR No :  ',
+                              //     style: CommonUtils.txSty_13B_Fb,
+                              //   ),
+                              //   Text(
+                              //     widget.data.lrNumber,
+                              //     style: CommonUtils.txSty_13O_F6,
+                              //   ),
+                              // ],
+                              // ),
+                              Row(
+                                children: [
+                                  const Text(
+                                    'No.of Items : ',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  Text(
+                                    '${widget.data.noOfItems}',
+                                    style: CommonUtils.txSty_13O_F6,
+                                  ),
+                                ],
+                              ),
+                              Row(
+                                children: [
+                                  // const Text(
+                                  //   'Date : ',
+                                  //   style: CommonUtils.txSty_13B_Fb,
+                                  // ),
+                                  // Text(
+                                  //   '${widget.data.noOfItems}',
+                                  //   style: CommonUtils.txSty_13O_F6,
+                                  // ),
+                                  Text(
+                                    formattedDate,
+                                    style: CommonUtils.txSty_13O_F6,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
 }

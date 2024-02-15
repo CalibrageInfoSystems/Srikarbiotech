@@ -348,307 +348,6 @@ class _VieworderPageState extends State<ViewOrders> {
   }
 }
 
-class OrderCard extends StatefulWidget {
-  final OrderResult orderResult;
-  final String formattedDate;
-  const OrderCard({
-    super.key,
-    required this.orderResult,
-    required this.formattedDate,
-  });
-
-  @override
-  State<OrderCard> createState() => _OrderCardState();
-}
-
-class _OrderCardState extends State<OrderCard> {
-  final _boxBorder = BoxDecoration(
-    borderRadius: BorderRadius.circular(5.0),
-    color: Colors.white,
-  );
-
-  final _iconBoxBorder = BoxDecoration(
-    borderRadius: BorderRadius.circular(5.0),
-    color: Colors.white,
-  );
-
-  late ViewOrdersProvider viewOrdersProvider;
-
-  @override
-  void didChangeDependencies() {
-    super.didChangeDependencies();
-    viewOrdersProvider = Provider.of<ViewOrdersProvider>(context);
-  }
-
-// start
-
-  @override
-  Widget build(BuildContext context) {
-    // String dateString = widget.listResult.date;
-    // DateTime date = DateTime.parse(dateString);
-    // String formattedDate = DateFormat('dd MMM, yyyy').format(date);
-    return GestureDetector(
-      onTap: () {
-        viewOrdersProvider.clearFilter();
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => Orderdetails(
-                orderid: widget.orderResult.id,
-                orderdate: widget.formattedDate,
-                totalprice: widget.orderResult.totalCost,
-                bookingplace: widget.orderResult.bookingPlace,
-                transportmode: widget.orderResult.transportName,
-                lrnumber: 1,
-                lrdate: "",
-                statusname: widget.orderResult.statusName,
-                partyname: widget.orderResult.partyName,
-                partycode: widget.orderResult.partyCode,
-                proprietorName: widget.orderResult.proprietorName!,
-                partyGSTNumber: widget.orderResult.partyGSTNumber!,
-                ordernumber: widget.orderResult.orderNumber!,
-                partyAddress: widget.orderResult.partyAddress),
-          ),
-        );
-      },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        color: Colors.transparent,
-        child: Card(
-          elevation: 5,
-          child: Container(
-            padding: const EdgeInsets.all(12),
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
-            ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  decoration: _boxBorder,
-                  child: Row(
-                    children: [
-                      // starting icon of card
-                      Card(
-                        elevation: 3,
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: Container(
-                          height: 65,
-                          width: 65,
-                          padding: const EdgeInsets.all(10),
-                          decoration: _iconBoxBorder,
-                          child: Center(
-                            child: getSvgImagesAndColors(
-                              widget.orderResult.statusTypeId,
-                            ),
-                          ),
-                        ),
-                      ),
-
-                      // beside info
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.6,
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 10, top: 0, bottom: 0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              Text(
-                                widget.orderResult.partyName,
-                                style: CommonUtils.Mediumtext_14_cb,
-                                softWrap: true,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        'Order ID : ',
-                                        style: CommonUtils.txSty_13B_Fb,
-                                      ),
-                                      Text(
-                                        widget.orderResult.orderNumber
-                                            .toString(),
-                                        style: CommonUtils.txSty_13O_F6,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Row(
-                                children: [
-                                  const Text(
-                                    'Total Amount : ',
-                                    style: CommonUtils.txSty_13B_Fb,
-                                  ),
-                                  Text(
-                                    '₹${widget.orderResult.totalCost}',
-                                    style: CommonUtils.txSty_13O_F6,
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 5.0,
-                ),
-                Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(left: 5.0),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 3, horizontal: 7),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: statusBgColor,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            widget.orderResult.statusName,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: statusColor,
-                              // Add other text styles as needed
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10.0,
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          const Expanded(child: SizedBox()),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Row(
-                                children: [
-                                  Text(
-                                    widget.formattedDate,
-                                    style: CommonUtils.txSty_13O_F6,
-                                  ),
-                                ],
-                              ),
-                              Row(
-                                children: [
-                                  const Text(
-                                    'No.of Items: ',
-                                    style: CommonUtils.txSty_13B_Fb,
-                                  ),
-                                  Text(
-                                    '${widget.orderResult.noOfItems}',
-                                    style: CommonUtils.txSty_13O_F6,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
-                        ],
-                      ),
-                    ),
-                  ],
-                )
-              ],
-            ),
-          ),
-        ),
-      ),
-    );
-  }
-
-  late Color statusColor;
-  late Color statusBgColor;
-  Widget getSvgImagesAndColors(int statusTypeCode) {
-    String assetPath;
-    late Color iconColor;
-    switch (statusTypeCode) {
-      case 1: // 'Pending'
-        assetPath = 'assets/shipping-timed.svg';
-        iconColor = const Color(0xFFE58338);
-        statusColor = const Color(0xFFe58338);
-        statusBgColor = const Color(0xFFe58338).withOpacity(0.2);
-        break;
-      case 2: // 'Shipped'
-        assetPath = 'assets/shipping-fast.svg';
-        iconColor = const Color(0xFF0d6efd);
-        statusColor = const Color(0xFF0d6efd);
-        statusBgColor = const Color(0xFF0d6efd).withOpacity(0.2);
-        break;
-      case 3: // 'Delivered'
-        assetPath = 'assets/box-circle-check.svg';
-        iconColor = Colors.green;
-        statusColor = Colors.green;
-        statusBgColor = Colors.green.withOpacity(0.2);
-        break;
-      case 10: // 'Partially Shipped'
-        assetPath = 'assets/boxes.svg';
-        iconColor = const Color(0xFF0dcaf0);
-        statusColor = const Color(0xFF0dcaf0);
-        statusBgColor = const Color(0xFF0dcaf0).withOpacity(0.2);
-        break;
-      case 11: // 'Accepted'
-        assetPath = 'assets/shipping-timed.svg';
-        iconColor = Colors.green;
-        statusColor = Colors.green;
-        statusBgColor = Colors.green.withOpacity(0.2);
-        break;
-      case 12: // 'Rejected'
-        assetPath = 'assets/reject.svg';
-        iconColor = HexColor('#C42121');
-        statusColor = HexColor('#C42121');
-        statusBgColor = HexColor('#C42121').withOpacity(0.2);
-        break;
-      case 16: // 'Cancelled'
-        assetPath = 'assets/order-cancel.svg';
-        iconColor = HexColor('#dc3545');
-        statusColor = HexColor('#dc3545');
-        statusBgColor = HexColor('#dc3545').withOpacity(0.2);
-        break;
-      default:
-        assetPath = 'assets/sb_home.svg';
-        iconColor = Colors.black26;
-        statusColor = Colors.black26;
-        statusBgColor = Colors.black26.withOpacity(0.2);
-        break;
-    }
-    return SvgPicture.asset(
-      assetPath,
-      width: 50,
-      height: 50,
-      fit: BoxFit.fill,
-      color: iconColor,
-    );
-  }
-}
-
 class FilterBottomSheet extends StatefulWidget {
   const FilterBottomSheet({super.key});
 
@@ -656,7 +355,6 @@ class FilterBottomSheet extends StatefulWidget {
   State<FilterBottomSheet> createState() => _FilterBottomSheetState();
 }
 
-// X000
 class _FilterBottomSheetState extends State<FilterBottomSheet> {
   int selectedCardCode = -1;
 
@@ -1431,4 +1129,310 @@ class Dealer {
   final String cardName;
 
   Dealer({required this.cardCode, required this.cardName});
+}
+
+class OrderCard extends StatefulWidget {
+  final OrderResult orderResult;
+  final String formattedDate;
+  const OrderCard({
+    super.key,
+    required this.orderResult,
+    required this.formattedDate,
+  });
+
+  @override
+  State<OrderCard> createState() => _OrderCardState();
+}
+
+class _OrderCardState extends State<OrderCard> {
+  final _boxBorder = BoxDecoration(
+    borderRadius: BorderRadius.circular(5.0),
+    color: Colors.white,
+  );
+
+  final _iconBoxBorder = BoxDecoration(
+    borderRadius: BorderRadius.circular(5.0),
+    color: Colors.white,
+  );
+
+  late ViewOrdersProvider viewOrdersProvider;
+
+  @override
+  void didChangeDependencies() {
+    super.didChangeDependencies();
+    viewOrdersProvider = Provider.of<ViewOrdersProvider>(context);
+  }
+
+// start
+
+  @override
+  Widget build(BuildContext context) {
+    // String dateString = widget.listResult.date;
+    // DateTime date = DateTime.parse(dateString);
+    // String formattedDate = DateFormat('dd MMM, yyyy').format(date);
+    return GestureDetector(
+      onTap: () {
+        viewOrdersProvider.clearFilter();
+        Navigator.of(context).push(
+          MaterialPageRoute(
+            builder: (context) => Orderdetails(
+                orderid: widget.orderResult.id,
+                orderdate: widget.formattedDate,
+                totalprice: widget.orderResult.totalCost,
+                bookingplace: widget.orderResult.bookingPlace,
+                transportmode: widget.orderResult.transportName,
+                lrnumber: 1,
+                lrdate: "",
+                statusname: widget.orderResult.statusName,
+                partyname: widget.orderResult.partyName,
+                partycode: widget.orderResult.partyCode,
+                proprietorName: widget.orderResult.proprietorName!,
+                partyGSTNumber: widget.orderResult.partyGSTNumber!,
+                ordernumber: widget.orderResult.orderNumber!,
+                partyAddress: widget.orderResult.partyAddress),
+          ),
+        );
+      },
+      child: Container(
+        margin: const EdgeInsets.only(bottom: 10),
+        color: Colors.transparent,
+        child: Card(
+          elevation: 5,
+          child: Container(
+            padding:  EdgeInsets.all(12),
+            width: MediaQuery.of(context).size.width,
+            decoration: BoxDecoration(
+              color: Colors.white,
+              borderRadius: BorderRadius.circular(10),
+            ),
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  decoration: CommonUtils.boxBorder,
+                  child: Row(
+                    children: [
+                      // starting icon of card
+                      Card(
+                        elevation: 3,
+                        color: Colors.white,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        child: Container(
+                          height: 65,
+                          width: 65,
+                          padding: const EdgeInsets.all(10),
+                          decoration: _iconBoxBorder,
+                          child: Center(
+                            child: getSvgImagesAndColors(
+                              widget.orderResult.statusTypeId,
+                            ),
+                          ),
+                        ),
+                      ),
+
+                      // beside info
+                      Expanded(
+                        child: Padding(
+                          padding: const EdgeInsets.only(
+                              left: 10, top: 0, bottom: 0),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            children: [
+                              Text(
+                                widget.orderResult.partyName,
+                                style: CommonUtils.Mediumtext_14_cb,
+                                softWrap: true,
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
+                              ),
+                              const SizedBox(
+                                height: 5.0,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'Order ID : ',
+                                        style: CommonUtils.txSty_13B_Fb,
+                                      ),
+                                      Text(
+                                        widget.orderResult.orderNumber
+                                            .toString(),
+                                        style: CommonUtils.txSty_13O_F6,
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5.0,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // const Text(
+                                  //   'Total Amount : ',
+                                  //   style: CommonUtils.txSty_13B_Fb,
+                                  // ),
+                                  Text(
+                                    '₹${widget.orderResult.totalCost}',
+                                    style: CommonUtils.txSty_13O_F6,
+                                  ),
+                                  Text(
+                                    widget.formattedDate,
+                                    style: CommonUtils.txSty_13O_F6,
+                                  ),
+                                ],
+                              )
+                            ],
+                          ),
+                        ),
+                      )
+                    ],
+                  ),
+                ),
+                const SizedBox(
+                  height: 5.0,
+                ),
+                Row(
+                  children: [
+                    Container(
+                      margin: const EdgeInsets.only(left: 5.0),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 7),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: statusBgColor,
+                      ),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: [
+                          Text(
+                            widget.orderResult.statusName,
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: statusColor,
+                              // Add other text styles as needed
+                            ),
+                          ),
+                        ],
+                      ),
+                    ),
+                    const SizedBox(
+                      width: 10.0,
+                    ),
+                    Expanded(
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: [
+                          const Expanded(child: SizedBox()),
+                          Column(
+                            crossAxisAlignment: CrossAxisAlignment.end,
+                            children: [
+                              // Row(
+                              //   children: [
+                              //     Text(
+                              //       widget.formattedDate,
+                              //       style: CommonUtils.txSty_13O_F6,
+                              //     ),
+                              //   ],
+                              // ),
+                              Row(
+                                children: [
+                                  const Text(
+                                    'No.of Items: ',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  Text(
+                                    '${widget.orderResult.noOfItems}',
+                                    style: CommonUtils.txSty_13O_F6,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          )
+                        ],
+                      ),
+                    ),
+                  ],
+                )
+              ],
+            ),
+          ),
+        ),
+      ),
+    );
+  }
+
+  late Color statusColor;
+  late Color statusBgColor;
+  Widget getSvgImagesAndColors(int statusTypeCode) {
+    String assetPath;
+    late Color iconColor;
+    switch (statusTypeCode) {
+      case 1: // 'Pending'
+        assetPath = 'assets/shipping-timed.svg';
+        iconColor = const Color(0xFFE58338);
+        statusColor = const Color(0xFFe58338);
+        statusBgColor = const Color(0xFFe58338).withOpacity(0.2);
+        break;
+      case 2: // 'Shipped'
+        assetPath = 'assets/shipping-fast.svg';
+        iconColor = const Color(0xFF0d6efd);
+        statusColor = const Color(0xFF0d6efd);
+        statusBgColor = const Color(0xFF0d6efd).withOpacity(0.2);
+        break;
+      case 3: // 'Delivered'
+        assetPath = 'assets/box-circle-check.svg';
+        iconColor = Colors.green;
+        statusColor = Colors.green;
+        statusBgColor = Colors.green.withOpacity(0.2);
+        break;
+      case 10: // 'Partially Shipped'
+        assetPath = 'assets/boxes.svg';
+        iconColor = const Color(0xFF0dcaf0);
+        statusColor = const Color(0xFF0dcaf0);
+        statusBgColor = const Color(0xFF0dcaf0).withOpacity(0.2);
+        break;
+      case 11: // 'Accepted'
+        assetPath = 'assets/shipping-timed.svg';
+        iconColor = Colors.green;
+        statusColor = Colors.green;
+        statusBgColor = Colors.green.withOpacity(0.2);
+        break;
+      case 12: // 'Rejected'
+        assetPath = 'assets/reject.svg';
+        iconColor = HexColor('#C42121');
+        statusColor = HexColor('#C42121');
+        statusBgColor = HexColor('#C42121').withOpacity(0.2);
+        break;
+      case 16: // 'Cancelled'
+        assetPath = 'assets/order-cancel.svg';
+        iconColor = HexColor('#dc3545');
+        statusColor = HexColor('#dc3545');
+        statusBgColor = HexColor('#dc3545').withOpacity(0.2);
+        break;
+      default:
+        assetPath = 'assets/sb_home.svg';
+        iconColor = Colors.black26;
+        statusColor = Colors.black26;
+        statusBgColor = Colors.black26.withOpacity(0.2);
+        break;
+    }
+    return SvgPicture.asset(
+      assetPath,
+      width: 50,
+      height: 50,
+      fit: BoxFit.fill,
+      color: iconColor,
+    );
+  }
 }

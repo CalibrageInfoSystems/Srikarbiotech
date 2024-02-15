@@ -101,6 +101,16 @@ class CartProvider extends ChangeNotifier {
     // Check if the newItemGrpCod is the same as the itemGrpCod of the first item in the cart
     return cartItems.first.itemGrpCod == newItemGrpCod;
   }
+  bool isSamereturnItemGroup(String newItemGrpCod) {
+    if (retuncartItems.isEmpty) {
+      // If the cart is empty, there are no conflicts
+      return true;
+    }
+
+    // Check if the newItemGrpCod is the same as the itemGrpCod of the first item in the cart
+    return retuncartItems.first.itemGrpCod == newItemGrpCod;
+  }
+
   bool isSameItemcode(String newItemCode) {
     if (cartItems.isEmpty) {
       // If the cart is empty, there are no conflicts
