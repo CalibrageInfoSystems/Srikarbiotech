@@ -88,6 +88,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
   InvoiceApiResponse? invoiceResponse; // Make invoiceResponse nullable
   bool _showBottomSheet = false;
   TextEditingController remarkstext = TextEditingController();
+
+  final ExpansionTileController controller = ExpansionTileController();
   @override
   void initState() {
     print('OrderId: ${Statusname}');
@@ -264,13 +266,15 @@ class _OrderdetailsPageState extends State<Orderdetails> {
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
         appBar: _appBar(),
-        body: SingleChildScrollView(
+        body:
+        SingleChildScrollView(
           child: isDataLoaded
               ? Column(
             //mainAxisSize: MainAxisSize.min,
                   crossAxisAlignment: CrossAxisAlignment.start,
                   // Set mainAxisSize to min for intrinsic height
                   children: [
+
                       Container(
                         width: screenWidth,
                         padding: const EdgeInsets.all(10.0),
@@ -278,121 +282,28 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                           borderRadius: BorderRadius.circular(10),
                           color: Colors.white,
                         ),
-                        child: Card(
-                          color: Colors.white,
-                          child: Container(
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: Colors.white,
-                            ),
-                            padding: const EdgeInsets.all(10.0),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 0.0, left: 0.0, right: 0.0),
-                                  child: Text(
-                                    '${partyname}',
-                                    style: TextStyle(
-                                      fontSize: 16.0,
-                                      color: Color(0xFFe78337),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 1.0,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 0.0, left: 0.0, right: 0.0),
-                                  child: Text(
-                                    '${partycode}',
-                                    style: TextStyle(
-                                      fontSize: 13.0,
-                                      color: Color(0xFF414141),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ),
-                                SizedBox(
-                                  height: 4.0,
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 0.0, left: 0.0, right: 0.0),
-                                  child: Text(
-                                    '${salesname}',
-                                    style: TextStyle(
-                                      fontSize: 14.0,
-                                      color: Color(0xFFe78337),
-                                      fontWeight: FontWeight.w500,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ),
-                                Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 0.0, left: 0.0, right: 0.0),
-                                    child: Container(
-                                      child: Row(
-                                        children: [
-                                          Text(
-                                            'GST NO.',
-                                            style: TextStyle(
-                                              fontSize: 14.0,
-                                              color: Colors.black,
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                          Text(
-                                            '${partygstnumber}',
-                                            style: TextStyle(
-                                              fontSize: 14.0,
-                                              color: Color(0xFFe78337),
-                                              fontWeight: FontWeight.w500,
-                                            ),
-                                            textAlign: TextAlign.start,
-                                          ),
-                                        ],
-                                      ),
-                                    )),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 0.0, left: 0.0, right: 0.0),
-                                  child: Text(
-                                    'Address',
-                                    style: TextStyle(
-                                      fontSize: 12.0,
-                                      color: Color(0xFF414141),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ),
-                                Padding(
-                                  padding: EdgeInsets.only(
-                                      top: 0.0, left: 0.0, right: 0.0),
-                                  child: Text(
-                                    '${partyaddress}',
-                                    style: TextStyle(
-                                      fontSize: 12.0,
-                                      color: Color(0xFFe78337),
-                                      fontWeight: FontWeight.bold,
-                                    ),
-                                    textAlign: TextAlign.start,
-                                  ),
-                                ),
-                                // Add more widgets as needed
-                              ],
-                            ),
-                          ),
+                        child:
+
+                        CommonUtils.buildCard(
+                          widget.partyname,
+                          widget.partycode,
+                          widget.proprietorName,
+                          widget.partyGSTNumber,
+                          widget.partyAddress,
+                          Colors.white,
+                          BorderRadius.circular(5.0),
                         ),
                       ),
+                    Container(
+                      padding:
+                      const EdgeInsets.symmetric(
+                          horizontal: 12,
+                          vertical: 10),
+                      child: Text(
+                        'Order Details',
+                        style: CommonUtils.header_Styles16,
+                      ),
+                    ),
                       Container(
                         padding: const EdgeInsets.only(left: 10.0, right: 10.0),
                         child: Card(
@@ -436,39 +347,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                             ]),
                                       ),
                                       _orderStatus(widget.statusname),
-                                      //+  Spacer(),
-                                      // Container(
-                                      //   padding: const EdgeInsets.all(10),
-                                      //   child: Container(
-                                      //     // height: 30,
-                                      //     padding: const EdgeInsets.only(
-                                      //         top: 10, bottom: 10),
-                                      //     decoration: BoxDecoration(
-                                      //       borderRadius:
-                                      //           BorderRadius.circular(25),
-                                      //       color: getStatusTypeBackgroundColor(
-                                      //           widget.statusname),
-                                      //     ),
-                                      //     child: IntrinsicWidth(
-                                      //       stepWidth: 80.0,
-                                      //       child: Row(
-                                      //         mainAxisAlignment:
-                                      //             MainAxisAlignment.center,
-                                      //         children: [
-                                      //           Text(
-                                      //             '${widget.statusname}',
-                                      //             style: TextStyle(
-                                      //               fontWeight: FontWeight.w500,
-                                      //               color:
-                                      //                   getStatusTypeTextColor(
-                                      //                       widget.statusname),
-                                      //             ),
-                                      //           ),
-                                      //         ],
-                                      //       ),
-                                      //     ),
-                                      //   ),
-                                      // )
+
                                     ],
                                   ),
                                   SizedBox(
@@ -542,7 +421,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                         .txSty_13B_Fb,
                                                   ),
                                                   Text(
-                                                    '${formatNumber(widget.totalprice)}',
+                                                    '₹${formatNumber(widget.totalprice)}',
                                                     style: TextStyle(
                                                       fontFamily: 'Roboto',
                                                       fontWeight:
@@ -957,784 +836,801 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                   // ),
                                 ]))),
                       ),
-                      SizedBox(
-                        height: 0.0,
-                      ),
 
 
-                    invoiceResponse?.listResult != null && invoiceResponse!.listResult!.isNotEmpty
-                        ? Container(
-                      width: screenWidth,
-                      height: 250,
-                      child: ListView.builder(
-                        scrollDirection: Axis.horizontal,
-                        itemCount: invoiceResponse!.listResult!.length,
-                        itemBuilder: (context, index) {
-                          InvoiceDetails invoice = invoiceResponse!.listResult![index];
-                          DateTime date = invoice.invoiceDate;
-                          String invoicedateDate = DateFormat('dd MMM, yyyy').format(date);
-                          WidgetsBinding.instance!.addPostFrameCallback((_) {
-                            if (invoiceResponse?.listResult != null &&
-                                invoiceResponse!.listResult!.isNotEmpty &&
-                                !_showBottomSheet) {
-                              for (InvoiceDetails invoice in invoiceResponse!.listResult!) {
-                                if (invoice.isReceived == false) {
-                                  setState(() {
-                                    _showBottomSheet = true;
-                                  });
-                                  showBottomSheet(context,invoice.invoiceNo,invoicedateDate);
-                                  break; // Stop looping after finding the first invoice with isReceived == false
-                                }
-                              }
-                            }
-                          });
+                    SizedBox(
+                      height: 5.0,
+                    ),
 
-
-    return Container(
-                            width: screenWidth,
-                            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                            child: Card(
-                              elevation: 7,
-                              child: Container(
-                                width: double.infinity,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white,
-                                ),
-                                child: Column(
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment
-                                          .spaceBetween,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets
-                                                .symmetric(
-                                                horizontal: 12,
-                                                vertical: 10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                const Text(
-                                                  'Invoice Number',
-                                                  style: CommonUtils
-                                                      .txSty_13B_Fb,
-                                                ),
-                                                Text(
-                                                  '${invoice.invoiceNo}',
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                    'Roboto',
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                    color: HexColor(
-                                                        '#e58338'),
-                                                    fontSize: 13,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: 0.2,
-                                          height: 60,
-                                          color: Colors.grey,
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets
-                                                .symmetric(
-                                                horizontal: 12,
-                                                vertical: 10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                const Text(
-                                                  'Invoice Date',
-                                                  style: CommonUtils
-                                                      .txSty_13B_Fb,
-                                                ),
-                                                Text(
-                                                  '${invoicedateDate}',
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                    'Roboto',
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                    color: HexColor(
-                                                        '#e58338'),
-                                                    fontSize: 13,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      width: double.infinity,
-                                      height: 0.2,
-                                      color: Colors.grey,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment
-                                          .spaceBetween,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets
-                                                .symmetric(
-                                                horizontal: 12,
-                                                vertical: 10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                const Text(
-                                                  'Quantity',
-                                                  style: CommonUtils
-                                                      .txSty_13B_Fb,
-                                                ),
-                                                Text(
-                                                  '${invoice.totalInvoiceQty}',
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                    'Roboto',
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                    color: HexColor(
-                                                        '#e58338'),
-                                                    fontSize: 13,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: 0.2,
-                                          height: 60,
-                                          color: Colors.grey,
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets
-                                                .symmetric(
-                                                horizontal: 12,
-                                                vertical: 10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                const Text(
-                                                  'Invoice Amount',
-                                                  style: CommonUtils
-                                                      .txSty_13B_Fb,
-                                                ),
-                                                Text(
-                                                  '${formatNumber(invoice.totalInvoiceAmount)}',
-                                                  style: TextStyle(
-                                                    fontFamily: 'Roboto',
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                    color: HexColor(
-                                                        '#e58338'),
-                                                    fontSize: 13,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                    Container(
-                                      width: double.infinity,
-                                      height: 0.2,
-                                      color: Colors.grey,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment
-                                          .spaceBetween,
-                                      children: <Widget>[
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets
-                                                .symmetric(
-                                                horizontal: 12,
-                                                vertical: 10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                const Text(
-                                                  'LR Number',
-                                                  style: CommonUtils
-                                                      .txSty_13B_Fb,
-                                                ),
-                                                Text(
-                                                  '${widget.lrnumber}',
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                    'Roboto',
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                    color: HexColor(
-                                                        '#e58338'),
-                                                    fontSize: 13,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        Container(
-                                          width: 0.2,
-                                          height: 60,
-                                          color: Colors.grey,
-                                        ),
-                                        Expanded(
-                                          child: Padding(
-                                            padding: const EdgeInsets
-                                                .symmetric(
-                                                horizontal: 12,
-                                                vertical: 10),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              children: [
-                                                const Text(
-                                                  'LR Date',
-                                                  style: CommonUtils
-                                                      .txSty_13B_Fb,
-                                                ),
-                                                Text(
-                                                  '',
-                                                  style: TextStyle(
-                                                    fontFamily:
-                                                    'Roboto',
-                                                    fontWeight:
-                                                    FontWeight.bold,
-                                                    color: HexColor(
-                                                        '#e58338'),
-                                                    fontSize: 13,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-
-                                    Container(
-                                      width: double.infinity,
-                                      height: 0.2,
-                                      color: Colors.grey,
-                                    ),
-                                    Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: <Widget>[
-                                        Container(padding: EdgeInsets.all(8.0),
-                                            child: GestureDetector(
-                                              // Inside your GestureDetector onTap method
-                                              // Inside your GestureDetector onTap method
-                                              // Inside your GestureDetector onTap method
-                                              // Inside your GestureDetector onTap method
-                                              onTap: () {
-                                                showDialog(
-                                                  context: context,
-                                                  builder: (BuildContext context) {
-                                                    return AlertDialog(
-                                                      content: Container(
-                                                        width: double.infinity,
-                                                        height: double.infinity,
-                                                        child: Column(
-                                                          children: [
-                                                            Expanded(
-                                                              child: Image.network(
-                                                                invoiceResponse!.listResult![index].lrFileUrl ?? '',
-                                                                fit: BoxFit.contain,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                      actions: [
-                                                        Container(
-                                                          margin: EdgeInsets.only(top: 10, right: 10),
-                                                          decoration: BoxDecoration(
-                                                            shape: BoxShape.circle,
-                                                            color: Colors.white,
-                                                            boxShadow: [
-                                                              BoxShadow(
-                                                                color: Colors.black.withOpacity(0.1),
-                                                                blurRadius: 6,
-                                                                spreadRadius: 3,
-                                                              ),
-                                                            ],
-                                                          ),
-                                                          child: IconButton(
-                                                            icon: Icon(Icons.close, color: Colors.red),
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop();
-                                                            },
-                                                          ),
-                                                        ),
-                                                      ],
-                                                    );
-                                                  },
-                                                );
-                                              },
-
-
-
-
-                                              child: Container(
-                                                // color: Color(0xFFF8dac2),
-                                                height: 35,
-
-                                                margin: EdgeInsets
-                                                    .symmetric(
-                                                    horizontal:
-                                                    4.0),
-                                                decoration:
-                                                BoxDecoration(
-                                                  color:
-                                                  Color(0xFFe78337),
-                                                  border: Border.all(
-                                                    color: Color(
-                                                        0xFFe78337),
-                                                    width: 1,
-                                                  ),
-                                                  borderRadius:
-                                                  BorderRadius
-                                                      .circular(
-                                                      8.0),
-                                                ),
-                                                child: IntrinsicWidth(
-                                                  child: Column(
-                                                    mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .center,
-                                                    children: [
-                                                      Container(
-                                                        padding: EdgeInsets
-                                                            .symmetric(
-                                                            horizontal:
-                                                            10.0),
-                                                        child: Row(
-                                                          children: [
-                                                            SvgPicture
-                                                                .asset(
-                                                              'assets/overview.svg',
-                                                              height:
-                                                              18,
-                                                              width: 18,
-                                                              fit: BoxFit
-                                                                  .fitWidth,
-                                                              color: Colors
-                                                                  .white,
-                                                            ),
-                                                            SizedBox(
-                                                                width:
-                                                                8.0), // Add some spacing between icon and text
-                                                            Text(
-                                                              'View LR',
-                                                              style:
-                                                              TextStyle(
-                                                                color: Colors
-                                                                    .white,
-                                                              ),
-                                                            ),
-                                                          ],
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            )),
-
-
-                                            Visibility(
-                                              visible: invoice.isReceived == true,
-                                              child: Container(
-                                                padding: EdgeInsets.all(8.0),
-                                                child: GestureDetector(
-                                                  onTap: () async {
-                                                    String? pdfUrl = invoice.invoiceFileUrl;
-                                                    String? invoiceNo = invoice.invoiceNo;
-                                                    downloadFile(pdfUrl!,invoiceNo);
-
-
-                                                    //Add your download functionality here
-                                                  },
-                                                  child: Container(
-                                                    height: 35,
-                                                    margin: EdgeInsets.symmetric(horizontal: 4.0),
-                                                    decoration: BoxDecoration(
-                                                      color: Color(0xFFF8dac2),
-                                                      border: Border.all(
-                                                        color: Color(0xFFe78337),
-                                                        width: 1,
-                                                      ),
-                                                      borderRadius: BorderRadius.circular(8.0),
-                                                    ),
-                                                    child: IntrinsicWidth(
-                                                      child: Column(
-                                                        mainAxisAlignment: MainAxisAlignment.center,
-                                                        children: [
-                                                          Container(
-                                                            padding: EdgeInsets.symmetric(horizontal: 10.0),
-                                                            child: Row(
-                                                              children: [
-                                                                SvgPicture.asset(
-                                                                  'assets/file-download.svg',
-                                                                  height: 18,
-                                                                  width: 18,
-                                                                  fit: BoxFit.fitWidth,
-                                                                  color: Colors.black,
-                                                                ),
-                                                                SizedBox(width: 8.0),
-                                                                Text(
-                                                                  'Download Invoice',
-                                                                  style: TextStyle(
-                                                                    color: Colors.black,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-
-                                      ],
-                                    ),
-                                  ],
-                                ),
-                              ),
-                            ),
-                          );
-                        },
-                      ),
-                    )
-                        : Container(),
 
                     //_buildBody(context),
-
-                    Container(
-                        width: screenWidth,
-                        padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                        //   height: screenHeight / 2,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          //        color: Colors.white,
-                        ),
-                        child:
-                        ListView.builder(
-                          shrinkWrap: true,
-                          physics: const PageScrollPhysics(),
-                          itemCount: orderItemsList.length,
-                          itemBuilder: (context, index) {
-                            return GestureDetector(
-                              onTap: () {
-                                // Navigator.of(context)
-                                //     .pushNamed('/statusScreen', arguments: widget.listResult);
-                                // Navigator.of(context).push(
-                                //   MaterialPageRoute(
-                                //     builder: (context) => ViewCollectionCheckOut(
-                                //       //
-                                //       listResult: widget.listResult,
-                                //       position: widget.index, // Assuming you have the index available
-                                //     ),
-                                //   ),
-                                // );
-                              },
-                              child: Container(
-                                margin: const EdgeInsets.only(bottom: 10),
-                                color: Colors.transparent,
-                                child: Card(
-                                  elevation: 5,
-                                  color: Colors.white,
+                    CustomExpansionTile(
+                      title: Text(
+                        "Item Details",
+                        style: TextStyle(color: Colors.white), // Adjust text color as needed
+                        maxLines: 2,
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Container(
+                            width: screenWidth,
+                            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                            //   height: screenHeight / 2,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              //        color: Colors.white,
+                            ),
+                            child:
+                            ListView.builder(
+                              shrinkWrap: true,
+                              physics: const PageScrollPhysics(),
+                              itemCount: orderItemsList.length,
+                              itemBuilder: (context, index) {
+                                return GestureDetector(
+                                  onTap: () {
+                                    // Navigator.of(context)
+                                    //     .pushNamed('/statusScreen', arguments: widget.listResult);
+                                    // Navigator.of(context).push(
+                                    //   MaterialPageRoute(
+                                    //     builder: (context) => ViewCollectionCheckOut(
+                                    //       //
+                                    //       listResult: widget.listResult,
+                                    //       position: widget.index, // Assuming you have the index available
+                                    //     ),
+                                    //   ),
+                                    // );
+                                  },
                                   child: Container(
-                                    padding: const EdgeInsets.all(10),
-                                    //   width: double.infinity,
-                                    width: MediaQuery.of(context).size.width,
-                                    decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(10),
-                                        color: Colors.white),
+                                    margin: const EdgeInsets.only(bottom: 10),
+                                    color: Colors.transparent,
+                                    child: Card(
+                                      elevation: 5,
+                                      color: Colors.white,
+                                      child: Container(
+                                        padding: const EdgeInsets.all(10),
+                                        //   width: double.infinity,
+                                        width: MediaQuery.of(context).size.width,
+                                        decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(10),
+                                            color: Colors.white),
 
-                                    child:
-                                    Column(
-                                      crossAxisAlignment:
+                                        child:
+                                        Column(
+                                          crossAxisAlignment:
                                           CrossAxisAlignment.start,
-                                      children: [
-                                        Container(
-                                          // height: 70,
-                                          // width: double.infinity,
-                                          // margin: const EdgeInsets.only(bottom: 12),
-                                          width:
+                                          children: [
+                                            Container(
+                                              // height: 70,
+                                              // width: double.infinity,
+                                              // margin: const EdgeInsets.only(bottom: 12),
+                                              width:
                                               MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
+                                              decoration: BoxDecoration(
+                                                borderRadius:
                                                 BorderRadius.circular(10),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              // starting icon of card
+                                              ),
+                                              child:
+                                              Row(
+                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                                children: [
+                                                  // starting icon of card
 
-                                              // beside info
-                                              Container(
-                                                //height: 90,
-                                                // width: ,
-                                                width: MediaQuery.of(context)
-                                                        .size
-                                                        .width /
-                                                    1.8,
-                                                child: Padding(
-                                                  padding:
+                                                  // beside info
+                                                  Container(
+                                                    //height: 90,
+                                                    // width: ,
+                                                   width: MediaQuery.of(context).size.width/1.3,
+                                                    child:
+                                                    Container(
+                                                      padding:
                                                       const EdgeInsets.only(
                                                           left: 0,
                                                           top: 0,
                                                           bottom: 0),
-                                                  child: Column(
-                                                    crossAxisAlignment:
+                                                      child: Column(
+                                                        crossAxisAlignment:
                                                         CrossAxisAlignment
                                                             .start,
-                                                    mainAxisAlignment:
+                                                        mainAxisAlignment:
                                                         MainAxisAlignment
                                                             .spaceBetween,
-                                                    children: [
-                                                      Text(
-                                                        orderItemsList[index]
-                                                            .itemName,
-                                                        style: const TextStyle(
-                                                            fontFamily:
+                                                        children: [
+                                                          Text(
+                                                            orderItemsList[index]
+                                                                .itemName,
+                                                            style: const TextStyle(
+                                                                fontFamily:
                                                                 'Roboto',
-                                                            fontSize: 14,
-                                                            color: Colors.black,
-                                                            fontWeight:
+                                                                fontSize: 14,
+                                                                color: Colors.black,
+                                                                fontWeight:
                                                                 FontWeight
                                                                     .bold),
-                                                        softWrap: true,
-                                                        maxLines: 2,
-                                                        overflow: TextOverflow
-                                                            .ellipsis,
-                                                      ),
-                                                      const SizedBox(
-                                                        height: 5.0,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
-                                                        children: [
+                                                            softWrap: true,
+                                                            maxLines: 2,
+                                                            overflow: TextOverflow
+                                                                .ellipsis,
+                                                          ),
+                                                          const SizedBox(
+                                                            height: 5.0,
+                                                          ),
                                                           Row(
+                                                         mainAxisAlignment: MainAxisAlignment.spaceAround,
                                                             children: [
-                                                              const Text(
-                                                                'Qty: ',
-                                                                style: TextStyle(
-                                                                    fontFamily:
-                                                                        'Roboto',
-                                                                    fontSize:
-                                                                        14,
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w400),
+                                                              Container(
+                                                                child: Row(
+                                                                children: [
+                                                                  Text(
+                                                                    'Qty: ${orderItemsList[index].orderQty}',
+                                                                    style: TextStyle(
+                                                                      fontFamily: 'Roboto',
+                                                                      fontSize: 14,
+                                                                      color: Colors.black,
+                                                                      fontWeight: FontWeight.w400,
+                                                                    ),
+                                                                  ),
+                                                                  // Text(
+                                                                  //   orderItemsList[index].orderQty.toString(),
+                                                                  //   style: CommonUtils.Mediumtext_12,
+                                                                  // ),
+
+                                                                  Text(
+                                                                    ' (${orderItemsList[index].orderQty} ${orderItemsList[index].salUnitMsr} = ${orderItemsList[index].orderQty * orderItemsList[index].numInSale!}  Nos)', // Display totalSumForProduct for the single product
+                                                                    style: CommonUtils.Mediumtext_o_14,
+                                                                  ),
+                                                                ],
+                                                              ),),
+                                                              //  Text(
+                                                              //   'Qty: ${orderItemsList[index].orderQty}',
+                                                              //   style: TextStyle(
+                                                              //     fontFamily: 'Roboto',
+                                                              //     fontSize: 14,
+                                                              //     color: Colors.black,
+                                                              //     fontWeight: FontWeight.w400,
+                                                              //   ),
+                                                              // ),
+                                                              // // Text(
+                                                              // //   orderItemsList[index].orderQty.toString(),
+                                                              // //   style: CommonUtils.Mediumtext_12,
+                                                              // // ),
+                                                              //
+                                                              // Text(
+                                                              //   ' (${orderItemsList[index].orderQty} ${orderItemsList[index].salUnitMsr} = ${orderItemsList[index].orderQty * orderItemsList[index].numInSale!}  Nos)', // Display totalSumForProduct for the single product
+                                                              //   style: CommonUtils.Mediumtext_o_14,
+                                                              // ),
+                                                              Expanded(
+                                                                child: Container(), // This Expanded widget ensures that the additional text is positioned at the end of the row
                                                               ),
+                                                              // SizedBox(width: 20.0,),
+
                                                               Text(
-                                                                orderItemsList[
-                                                                        index]
-                                                                    .orderQty
-                                                                    .toString(),
-                                                                style: const TextStyle(
-                                                                    fontFamily:
-                                                                        'Roboto',
-                                                                    fontSize:
-                                                                        13,
-                                                                    color: Colors
-                                                                        .black,
-                                                                    fontWeight:
-                                                                        FontWeight
-                                                                            .w600),
+                                                                '₹${formatNumber(orderItemsList[index].totalPrice)}',
+                                                                style: CommonUtils.Mediumtext_o_14,
                                                               ),
                                                             ],
                                                           ),
+
+
                                                         ],
                                                       ),
-                                                      const SizedBox(
-                                                        height: 5.0,
-                                                      ),
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                            '₹${formatNumber(orderItemsList[index].totalPrice)}',
-                                                            style: const TextStyle(
-                                                                fontFamily:
-                                                                    'Roboto',
-                                                                fontSize: 14,
-                                                                color: Color(
-                                                                    0xFFe58338),
-                                                                fontWeight:
-                                                                    FontWeight
-                                                                        .w600),
-                                                          ),
-                                                          const SizedBox(
-                                                            width: 15.0,
-                                                          ),
-                                                          // Text(
-                                                          //   '',
-                                                          //   style: TextStyle(
-                                                          //     color:
-                                                          //         Color(0xFFa6a6a6),
-                                                          //     fontWeight:
-                                                          //         FontWeight.bold,
-                                                          //     fontSize: 13.0,
-                                                          //     decoration:
-                                                          //         TextDecoration
-                                                          //             .lineThrough,
-                                                          //   ),
-                                                          // ),
-                                                        ],
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              )
-                                            ],
-                                          ),
+                                                    ),
+                                                  )
+                                                ],
+                                              ),
+                                            ),
+                                          ],
                                         ),
-                                      ],
+                                      ),
                                     ),
+                                  ),
+                                );
+                              },
+                            ),
+                          ),
+                          SizedBox(
+                            height: 5.0,
+                          ),
+                          Container(
+                            width: MediaQuery.of(context).size.width,
+                            padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                            child: IntrinsicHeight(
+                              child: Card(
+                                shape: RoundedRectangleBorder(
+                                  borderRadius: BorderRadius.circular(5.0),
+                                ),
+                                child: Container(
+                                  padding: EdgeInsets.all(10.0),
+                                  decoration: BoxDecoration(
+                                    borderRadius: BorderRadius.circular(5.0),
+                                    color: Colors.white,
+                                  ),
+                                  width: MediaQuery.of(context).size.width,
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Sub Total',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14.0,
+                                            ),
+                                          ),
+                                          Text(
+                                            '₹${formatNumber(totalcost)}',
+                                            style: TextStyle(
+                                              color: Color(0xFFe78337),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'GST',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14.0,
+                                            ),
+                                          ),
+                                          Text(
+                                            '₹${formatNumber(totalGst)}',
+                                            style: TextStyle(
+                                              color: Color(0xFFe78337),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                      SizedBox(height: 8.0),
+                                      Row(
+                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                        children: [
+                                          Text(
+                                            'Total Amount',
+                                            style: TextStyle(
+                                              color: Colors.black,
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14.0,
+                                            ),
+                                          ),
+                                          Text(
+                                            '₹${formatNumber(totalsum)}',
+                                            style: TextStyle(
+                                              color: Color(0xFFe78337),
+                                              fontWeight: FontWeight.bold,
+                                              fontSize: 14.0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
-                            );
-                          },
-                        ),
-                      ),
-                      //     ),
-                      //    ),
-                      SizedBox(
-                        height: 5.0,
-                      ),
-                    Container(
-                      width: MediaQuery.of(context).size.width,
-                      padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                      child: IntrinsicHeight(
-                        child: Card(
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                          ),
-                          child: Container(
-                            padding: EdgeInsets.all(10.0),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(5.0),
-                              color: Colors.white,
                             ),
-                            width: MediaQuery.of(context).size.width,
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Sub Total',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
-                                    Text(
-                                      '₹${formatNumber(totalcost)}',
-                                      style: TextStyle(
-                                        color: Color(0xFFe78337),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 8.0),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'GST',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
-                                    Text(
-                                      '₹${formatNumber(totalGst)}',
-                                      style: TextStyle(
-                                        color: Color(0xFFe78337),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                SizedBox(height: 8.0),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Text(
-                                      'Total Amount',
-                                      style: TextStyle(
-                                        color: Colors.black,
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
-                                    Text(
-                                      '₹${formatNumber(totalsum)}',
-                                      style: TextStyle(
-                                        color: Color(0xFFe78337),
-                                        fontWeight: FontWeight.bold,
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      ),
-                    ),
 
+                          ),
+
+                        ],
+                      ),
+                        initiallyExpanded: false,
+
+                         ),
+                      //    ),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    if (invoiceResponse?.listResult != null && invoiceResponse!.listResult!.isNotEmpty)
+                    CustomExpansionTile(
+                      title: Text(
+                        "Invoice Details",
+                        style: TextStyle(color: Colors.white), // Adjust text color as needed
+                        overflow: TextOverflow.ellipsis,
+                      ),
+                      content: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          invoiceResponse?.listResult != null && invoiceResponse!.listResult!.isNotEmpty
+                              ? Container(
+                            width: screenWidth,
+                            height: 250,
+                            child: ListView.builder(
+                              scrollDirection: Axis.horizontal,
+                              itemCount: invoiceResponse!.listResult!.length,
+                              itemBuilder: (context, index) {
+                                InvoiceDetails invoice = invoiceResponse!.listResult![index];
+                                DateTime date = invoice.invoiceDate;
+                                String invoicedateDate = DateFormat('dd MMM, yyyy').format(date);
+                                WidgetsBinding.instance!.addPostFrameCallback((_) {
+                                  if (invoiceResponse?.listResult != null &&
+                                      invoiceResponse!.listResult!.isNotEmpty &&
+                                      !_showBottomSheet) {
+                                    for (InvoiceDetails invoice in invoiceResponse!.listResult!) {
+                                      if (invoice.isReceived == false) {
+                                        setState(() {
+                                          _showBottomSheet = true;
+                                        });
+                                        showBottomSheet(context,invoice.invoiceNo,invoicedateDate);
+                                        break; // Stop looping after finding the first invoice with isReceived == false
+                                      }
+                                    }
+                                  }
+                                });
+
+
+                                return Container(
+                                  width: screenWidth,
+                                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                                  child: Card(
+                                    elevation: 7,
+                                    child: Container(
+                                      width: double.infinity,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                        color: Colors.white,
+                                      ),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .spaceBetween,
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 10),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      const Text(
+                                                        'Invoice Number',
+                                                        style: CommonUtils
+                                                            .txSty_13B_Fb,
+                                                      ),
+                                                      Text(
+                                                        '${invoice.invoiceNo}',
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                          'Roboto',
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          color: HexColor(
+                                                              '#e58338'),
+                                                          fontSize: 13,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 0.2,
+                                                height: 60,
+                                                color: Colors.grey,
+                                              ),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 10),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      const Text(
+                                                        'Invoice Date',
+                                                        style: CommonUtils.txSty_13B_Fb,
+                                                      ),
+                                                      Text(
+                                                        '${invoicedateDate}',
+                                                        style: TextStyle(
+                                                          fontFamily: 'Roboto',
+                                                          fontWeight: FontWeight.bold,
+                                                          color: HexColor('#e58338'),
+                                                          fontSize: 13,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            width: double.infinity,
+                                            height: 0.2,
+                                            color: Colors.grey,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .spaceBetween,
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 10),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      const Text(
+                                                        'Quantity',
+                                                        style: CommonUtils
+                                                            .txSty_13B_Fb,
+                                                      ),
+                                                      Text(
+                                                        '${invoice.totalInvoiceQty}',
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                          'Roboto',
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          color: HexColor(
+                                                              '#e58338'),
+                                                          fontSize: 13,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 0.2,
+                                                height: 60,
+                                                color: Colors.grey,
+                                              ),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 10),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      const Text(
+                                                        'Invoice Amount',
+                                                        style: CommonUtils
+                                                            .txSty_13B_Fb,
+                                                      ),
+                                                      Text(
+                                                        '${formatNumber(invoice.totalInvoiceAmount)}',
+                                                        style: TextStyle(
+                                                          fontFamily: 'Roboto',
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          color: HexColor(
+                                                              '#e58338'),
+                                                          fontSize: 13,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                          Container(
+                                            width: double.infinity,
+                                            height: 0.2,
+                                            color: Colors.grey,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment
+                                                .spaceBetween,
+                                            children: <Widget>[
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 10),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      const Text(
+                                                        'LR Number',
+                                                        style: CommonUtils
+                                                            .txSty_13B_Fb,
+                                                      ),
+                                                      Text(
+                                                        '${widget.lrnumber}',
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                          'Roboto',
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          color: HexColor(
+                                                              '#e58338'),
+                                                          fontSize: 13,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                              Container(
+                                                width: 0.2,
+                                                height: 60,
+                                                color: Colors.grey,
+                                              ),
+                                              Expanded(
+                                                child: Padding(
+                                                  padding: const EdgeInsets
+                                                      .symmetric(
+                                                      horizontal: 12,
+                                                      vertical: 10),
+                                                  child: Column(
+                                                    crossAxisAlignment:
+                                                    CrossAxisAlignment
+                                                        .start,
+                                                    children: [
+                                                      const Text(
+                                                        'LR Date',
+                                                        style: CommonUtils
+                                                            .txSty_13B_Fb,
+                                                      ),
+                                                      Text(
+                                                        '',
+                                                        style: TextStyle(
+                                                          fontFamily:
+                                                          'Roboto',
+                                                          fontWeight:
+                                                          FontWeight.bold,
+                                                          color: HexColor(
+                                                              '#e58338'),
+                                                          fontSize: 13,
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+
+                                          Container(
+                                            width: double.infinity,
+                                            height: 0.2,
+                                            color: Colors.grey,
+                                          ),
+                                          Row(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: <Widget>[
+                                              Container(padding: EdgeInsets.all(8.0),
+                                                  child: GestureDetector(
+                                                    // Inside your GestureDetector onTap method
+                                                    // Inside your GestureDetector onTap method
+                                                    // Inside your GestureDetector onTap method
+                                                    // Inside your GestureDetector onTap method
+                                                    onTap: () {
+                                                      showDialog(
+                                                        context: context,
+                                                        builder: (BuildContext context) {
+                                                          return AlertDialog(
+                                                            content: Container(
+                                                              width: double.infinity,
+                                                              height: double.infinity,
+                                                              child: Column(
+                                                                children: [
+                                                                  Expanded(
+                                                                    child: Image.network(
+                                                                      invoiceResponse!.listResult![index].lrFileUrl ?? '',
+                                                                      fit: BoxFit.contain,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                            actions: [
+                                                              Container(
+                                                                margin: EdgeInsets.only(top: 10, right: 10),
+                                                                decoration: BoxDecoration(
+                                                                  shape: BoxShape.circle,
+                                                                  color: Colors.white,
+                                                                  boxShadow: [
+                                                                    BoxShadow(
+                                                                      color: Colors.black.withOpacity(0.1),
+                                                                      blurRadius: 6,
+                                                                      spreadRadius: 3,
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                                child: IconButton(
+                                                                  icon: Icon(Icons.close, color: Colors.red),
+                                                                  onPressed: () {
+                                                                    Navigator.of(context).pop();
+                                                                  },
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          );
+                                                        },
+                                                      );
+                                                    },
+
+
+
+
+                                                    child: Container(
+                                                      // color: Color(0xFFF8dac2),
+                                                      height: 35,
+
+                                                      margin: EdgeInsets
+                                                          .symmetric(
+                                                          horizontal:
+                                                          4.0),
+                                                      decoration:
+                                                      BoxDecoration(
+                                                        color:
+                                                        Color(0xFFe78337),
+                                                        border: Border.all(
+                                                          color: Color(
+                                                              0xFFe78337),
+                                                          width: 1,
+                                                        ),
+                                                        borderRadius:
+                                                        BorderRadius
+                                                            .circular(
+                                                            8.0),
+                                                      ),
+                                                      child: IntrinsicWidth(
+                                                        child: Column(
+                                                          mainAxisAlignment:
+                                                          MainAxisAlignment
+                                                              .center,
+                                                          children: [
+                                                            Container(
+                                                              padding: EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                  10.0),
+                                                              child: Row(
+                                                                children: [
+                                                                  SvgPicture
+                                                                      .asset(
+                                                                    'assets/overview.svg',
+                                                                    height:
+                                                                    18,
+                                                                    width: 18,
+                                                                    fit: BoxFit
+                                                                        .fitWidth,
+                                                                    color: Colors
+                                                                        .white,
+                                                                  ),
+                                                                  SizedBox(
+                                                                      width:
+                                                                      8.0), // Add some spacing between icon and text
+                                                                  Text(
+                                                                    'View LR',
+                                                                    style:
+                                                                    TextStyle(
+                                                                      color: Colors
+                                                                          .white,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  )),
+
+
+                                              Visibility(
+                                                visible: invoice.isReceived == true,
+                                                child: Container(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: GestureDetector(
+                                                    onTap: () async {
+                                                      String? pdfUrl = invoice.invoiceFileUrl;
+                                                      String? invoiceNo = invoice.invoiceNo;
+                                                      downloadFile(pdfUrl!,invoiceNo);
+
+
+                                                      //Add your download functionality here
+                                                    },
+                                                    child: Container(
+                                                      height: 35,
+                                                      margin: EdgeInsets.symmetric(horizontal: 4.0),
+                                                      decoration: BoxDecoration(
+                                                        color: Color(0xFFF8dac2),
+                                                        border: Border.all(
+                                                          color: Color(0xFFe78337),
+                                                          width: 1,
+                                                        ),
+                                                        borderRadius: BorderRadius.circular(8.0),
+                                                      ),
+                                                      child: IntrinsicWidth(
+                                                        child: Column(
+                                                          mainAxisAlignment: MainAxisAlignment.center,
+                                                          children: [
+                                                            Container(
+                                                              padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                                              child: Row(
+                                                                children: [
+                                                                  SvgPicture.asset(
+                                                                    'assets/file-download.svg',
+                                                                    height: 18,
+                                                                    width: 18,
+                                                                    fit: BoxFit.fitWidth,
+                                                                    color: Colors.black,
+                                                                  ),
+                                                                  SizedBox(width: 8.0),
+                                                                  Text(
+                                                                    'Download Invoice',
+                                                                    style: TextStyle(
+                                                                      color: Colors.black,
+                                                                    ),
+                                                                  ),
+                                                                ],
+                                                              ),
+                                                            ),
+                                                          ],
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+
+                                            ],
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                );
+                              },
+                            ),
+                          )
+                              : Container(),
+
+                        ],
+                      ),
+                      initiallyExpanded: false,
+
+                    ),
+                    SizedBox(
+                      height: 5.0,
+                    ),
                   ])
-              : CircularProgressIndicator(),
+              :  Center(child: CircularProgressIndicator())
+
         ));
+
   }
 
   AppBar _appBar() {
@@ -2313,6 +2209,73 @@ class _OrderdetailsPageState extends State<Orderdetails> {
   }
 
 }
+
+class CustomExpansionTile extends StatefulWidget {
+  final Widget title;
+  final Widget content;
+  final bool initiallyExpanded;
+
+  const CustomExpansionTile({
+    Key? key,
+    required this.title,
+    required this.content,
+    this.initiallyExpanded = false,
+  }) : super(key: key);
+
+  @override
+  _CustomExpansionTileState createState() => _CustomExpansionTileState();
+}
+
+class _CustomExpansionTileState extends State<CustomExpansionTile> {
+  late bool _isExpanded;
+
+  @override
+  void initState() {
+    super.initState();
+    _isExpanded = widget.initiallyExpanded;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: EdgeInsets.symmetric(horizontal: 16.0),
+      elevation: 4,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _isExpanded = !_isExpanded;
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.only(
+                  topLeft: Radius.circular(8.0),
+                  topRight: Radius.circular(8.0),
+                ),
+                color: Color(0xFFe78337),// Adjust the color as needed
+              ),
+              padding: EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(child: widget.title),
+                  Icon(
+                    _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (_isExpanded) widget.content,
+        ],
+      ),
+    );
+  }
+}
+
 class InvoiceApiResponse {
   final List<InvoiceDetails>? listResult;
   final int count;

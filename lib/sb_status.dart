@@ -7,8 +7,10 @@ import 'package:srikarbiotech/view_collection_page.dart';
 import 'HomeScreen.dart';
 class StatusScreen extends StatelessWidget {
   final String Compneyname;
+  final String collectionNumber;
 
-  const StatusScreen(this.Compneyname, {Key? key}) : super(key: key);
+  StatusScreen(this.Compneyname, this.collectionNumber);
+
 
   @override
   Widget build(BuildContext context) {
@@ -18,9 +20,10 @@ class StatusScreen extends StatelessWidget {
     String orderId = 'xxxxxxxxxx';
     String successText = 'Your Collection Submitted Successfully';
 
-    // Modify the success text based on the compneyId
 
+    // Modify the success text based on the compneyId
 print('===>$Compneyname');
+    print('===>$collectionNumber');
 
     return WillPopScope(
         onWillPop: () async {
@@ -68,7 +71,29 @@ print('===>$Compneyname');
                 height: 1.5
               ),
             ),
+            const SizedBox(
+              height: 5,
+            ),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.center,
+              crossAxisAlignment: CrossAxisAlignment.center,
+              children: [
 
+                // Display the orderId in the UI
+                const Text(
+                  'Collection ID: ',
+                  style: TextStyle(fontWeight: FontWeight.bold),
+                ),
+                Text(
+                  '$collectionNumber',
+                  style: TextStyle(
+                    fontWeight: FontWeight.bold,
+                    fontSize: 20,
+                    color: primaryOrange,
+                  ),
+                ),
+              ],
+            ),
             // const SizedBox(
             //   height: 5,
             // ),

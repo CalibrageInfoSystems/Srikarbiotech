@@ -1402,8 +1402,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
       print(requestData);
       print(jsonEncode(requestData));
       // URL for the API endpoint
-      String apiUrl =
-          "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/AddUpdateCollections";
+      String apiUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/AddUpdateCollections";
 
       // Encode the JSON data
       String requestBody = jsonEncode(requestData);
@@ -1437,7 +1436,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => StatusScreen(Compneyname!)),
+                  builder: (context) => StatusScreen(Compneyname!,responseData['response']['collectionNumber'] )),
             );
           } else {
             CommonUtils.showCustomToastMessageLong('Error', context, 1, 6);

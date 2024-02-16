@@ -416,6 +416,7 @@ class _MyHomePageState extends State<LoginScreen> {
         prefs.setInt("companyId", jsonResponse['response']['companyId']);
         prefs.setString("companyName", jsonResponse['response']['companyName']);
         prefs.setString("companyCode", jsonResponse['response']['companyCode']);
+        prefs.setString("email", jsonResponse['response']['email']);
         SharedPrefsData.updateStringValue(
             "userId", jsonResponse['response']['userId']);
         SharedPrefsData.updateStringValue(

@@ -237,7 +237,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                     Colors.white,
                     BorderRadius.circular(5.0),
                   ),
-                  SizedBox(height: 15.0),
+                  SizedBox(height: 10.0),
                 ],
               ),
             ),
@@ -246,64 +246,83 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
             //       ),
             Container(
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 2.0, left: 8.0, right: 10.0),
+              padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
               child: IntrinsicHeight(
                 child: Card(
-                  //color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
+
                   child: Container(
-                    padding: const EdgeInsets.all(5.0),
+
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
                       color: Colors.white,
-
-                      // color: Colors.white
                     ),
+                    padding: EdgeInsets.all(10.0),
+
                     width: MediaQuery.of(context).size.width,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: EdgeInsets.only(top: 1.0),
-                          child: Text(
-                            '${widget.cardName}',
-                            style: CommonUtils.header_Styles16,
-                            maxLines: 2, // Display in 2 lines
-                            overflow: TextOverflow.ellipsis,
-                          ),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Credit Limit',
+                                style: TextStyle(
+                                  color: Color(0xFF5f5f5f),
+                                  fontFamily: "Roboto",
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                '₹${widget.creditLine}',
+                                style: TextStyle(
+                                  color: Color(0xFF5f5f5f),
+                                  fontFamily: "Roboto",
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.0,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ),
+                          ],
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
+                        SizedBox(height: 5.0), // Add some space between rows
+                        // Third Row: Outstanding Amount
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Outstanding Amount',
+                                style: TextStyle(
+                                  color: Color(0xFF5f5f5f),
+                                  fontFamily: "Roboto",
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
                                 '₹${widget.balance}',
                                 style: TextStyle(
-                                  color: Color(0xFFe78337),
+                                  color: Color(0xFF5f5f5f),
                                   fontFamily: "Roboto",
                                   fontWeight: FontWeight.w700,
                                   fontSize: 14.0,
                                 ),
+                                textAlign: TextAlign.right,
                               ),
-                              SizedBox(
-                                  width:
-                                      5.0), // Add some space between balance and credit line
-                              Text(
-                                '(${widget.creditLine})',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Roboto",
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
+                            ),
+                          ],
+                        ),
+
                       ],
                     ),
                   ),
@@ -662,9 +681,14 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
             Expanded(
               child: InkWell(
                 onTap: () {
-                  AddOrder();
-                  // Add logic for the download button
-
+      if (globalCartLength > 0) {
+        AddOrder();
+        // Add logic for the download button
+      }
+      else{
+        CommonUtils.showCustomToastMessageLong(
+            'Please Add Atleast One Product', context, 1, 4);
+      }
                   print(' button clicked');
                 },
                 child: Container(
@@ -792,14 +816,15 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       "StatusTypeId": 1,
       "Discount": 1.1,
       "TotalCost": totalCost,
+      "TotalCostWithGST": totalCostWithGST,
+      "GSTCost": totalGSTCost,
       "Remarks": "",
       "IsActive": true,
       "CreatedBy": userId,
       "CreatedDate": formattedcurrentDate,
       "UpdatedBy": userId,
       "UpdatedDate": formattedcurrentDate,
-      "TotalCostWithGST": totalCostWithGST,
-      "GSTCost": totalGSTCost
+
     };
     print(jsonEncode(orderData));
     if (isValid) {

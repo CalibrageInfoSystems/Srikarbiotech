@@ -9,7 +9,6 @@ import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:share_extend/share_extend.dart';
 import 'package:srikarbiotech/ViewOrders.dart';
-
 import 'HomeScreen.dart';
 
 class orderStatusScreen extends StatelessWidget {
@@ -282,17 +281,33 @@ class orderStatusScreen extends StatelessWidget {
     //   Transport Name: ${responseData['response']['transportName']}
     //   End User Message: ${responseData['endUserMessage']}
     // """;
+
+// Retrieve orderDate from responseData
+      String orderDate = responseData['response']['orderDate'];
+
+// Parse the orderDate string into a DateTime object
+      DateTime dateTime = DateTime.parse(orderDate);
+
+// Define the desired date format
+      DateFormat formatter = DateFormat('dd-MM-yyyy');
+
+// Format the DateTime object to the desired format
+      String formattedOrderDate = formatter.format(dateTime);
+
+      // Format the order amount with Rupee symbol
+      NumberFormat amountFormatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+      String formattedOrderAmount = '₹${amountFormatter.format(responseData['response']['totalCostWithGST'])}';
+
+
+// Now you can use formattedOrderDate in your string template
       String orderDetails = """
-   
-      Party Code: ${responseData['response']['partyCode']}
-      Party Name: ${responseData['response']['partyName']}
-      Party Address: ${responseData['response']['partyAddress']}
-      Order Number: ${responseData['response']['orderNumber']}
-      Order Date: ${responseData['response']['orderDate']}
-      Outstanding Amount: ${responseData['response']['partyOutStandingAmount']}
-     
-    """;
-      // Share the formatted order details
+    Order ID: ${responseData['response']['orderNumber']}
+    Order Date: ${formattedOrderDate}
+    Order Amount: ${formattedOrderAmount}
+    Party Name (Code): ${responseData['response']['partyName']} (${responseData['response']['partyCode']})
+    Booking Place: ${responseData['response']['bookingPlace']}
+""";
+
       await Share.share(orderDetails, subject: 'Order Details');
     } catch (error) {
       print('Error sharing order details: $error');

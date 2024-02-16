@@ -427,7 +427,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
   Future<void> getpaymentmethods() async {
     final response = await http.get(Uri.parse(
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Master/GetAllTypeCdDmt/3'));
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Master/GetAllTypeCdDmt/4'));
 
     if (response.statusCode == 200) {
       setState(() {

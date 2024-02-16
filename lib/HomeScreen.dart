@@ -5,8 +5,11 @@ import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/ViewOrders.dart';
+
+import 'package:srikarbiotech/forgot_password_screen.dart';
 import 'package:srikarbiotech/view_collection_page.dart';
 
+import 'ChangePassword.dart';
 import 'Common/CommonUtils.dart';
 import 'Common/Constants.dart';
 import 'Common/SharedPreferencesHelper.dart';
@@ -68,136 +71,113 @@ class _home_Screen extends State<HomeScreen> {
                 Widget logoWidget = CompneyId == 1
                     ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
                     : Image.asset('assets/srikar-seed.png',
-                        width: 60.0, height: 40.0);
+                    width: 60.0, height: 40.0);
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.start,
+                  crossAxisAlignment: CrossAxisAlignment.center,
                   // mainAxisSize: MainAxisSize.min,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 2, vertical: 2),
+                    const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                     ),
-                    // Container(
-                    //   width: 40.0,
-                    //   height: 40.0,
-                    //   child: SvgPicture.asset(
-                    //     CompneyId == 1
-                    //         ? 'assets/srikar_biotech_logo.svg'
-                    //         : 'assets/srikar-seed.png',
-                    //     fit: BoxFit.contain,
-                    //     alignment: Alignment.center,
-                    //     // width: 60.0,
-                    //     // height: 40.0,
-                    //   ),
-                    // ),
-                    Container(
-                      width: 50.0,
-                      height: 40.0,
-                      child: logoWidget,
+                    GestureDetector(
+                      onTap: () {
+                        Scaffold.of(context).openDrawer();
+                      },
+                      child: const Icon(Icons.menu,color: Color(0xFFe78337), size: 30,),
+                    ),
+                    const SizedBox(
+                      width: 2.0,
                     ),
                     SizedBox(
+                      width: 50.0,
+                      height: 50.0,
+                      child: logoWidget,
+                    ),
+                    const SizedBox(
                       width: 2.0,
                     ),
                     Text(
                       '$companyName',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Color(0xFF414141),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    Spacer(),
-                    GestureDetector(
-                      onTap: () {
-                        // Show the bell icon functionality
-                        // Implement your logic here for the bell icon click
-                      },
-                      child: SvgPicture.asset(
-                        'assets/bell.svg',
-                        width: 18.0,
-                        height: 23.0,
-                        color: Color(0xFFe78337),
-                      ),
-                    ),
-                    SizedBox(
+                    const Spacer(),
+                    const SizedBox(
                       width: 10.0,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        // Show the logout confirmation dialog
-                        logOutDialog();
-                      },
-                      child: SvgPicture.asset(
-                        'assets/sign-out-alt.svg',
-                        width: 18.0,
-                        height: 23.0,
-                        color: Color(0xFFe78337),
-                      ),
-                    ),
-                    SizedBox(
-                      width: 0.0,
                     ),
                   ],
                 );
               } else {
-                // Return a placeholder or loading indicator
-                return SizedBox.shrink();
+                return const SizedBox.shrink();
               }
             },
           ),
         ),
         drawer: Drawer(
-          child: ListView(
-            children: [
-              DrawerHeader(
-                decoration: BoxDecoration(
-                    // Remove the DecorationImage with AssetImage
+          elevation: 16,
+          width: MediaQuery.of(context).size.width / 1.8,
+          shape: const RoundedRectangleBorder(
+            borderRadius: BorderRadius.only(
+              topRight: Radius.circular(40),
+              bottomRight: Radius.circular(40),
+            ),
+          ),
+          child: Container(
+            decoration: const BoxDecoration(
+              borderRadius: BorderRadius.only(
+                topRight: Radius.circular(20),
+                bottomRight: Radius.circular(50),
+              ),
+              color: Colors.white10,
+            ),
+            child: Column(
+              children: [
+                // header
+                DrawerHeader(
+                  child: Center(
+                    child:  CompneyId == 1
+            ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
+                  : Image.asset('assets/srikar-seed.png',
+
+                      width: MediaQuery.of(context).size.height / 3.2,
+                      height: MediaQuery.of(context).size.height / 3.2,
                     ),
-                child: SvgPicture.asset(
-                  'assets/cislogo-new.svg', // Replace with the path to your SVG icon
-                  width: 80, // Adjust the width as needed
-                  height: 100, // Adjust the height as needed
+                  ),
                 ),
-              ),
-
-              ListTile(
-                leading: SvgPicture.asset(
-                  'assets/atten.svg',
-                  width: 20,
+                const SizedBox(
                   height: 20,
-                  fit: BoxFit.contain,
-                  color: Colors.black,
                 ),
-                title: Text(
-                  'My Leaves',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'hind_semibold',
-                  ),
-                ),
-                onTap: () {
-                  // Navigator.push(
-                  //   context,
-                  //   MaterialPageRoute(builder: (context) => Myleaveslist()),
-                  // );
-                },
-              ),
+                // options
 
-              ListTile(
-                leading: Icon(Icons.logout), // Change the icon as needed
-                title: Text(
-                  'Logout',
-                  style: TextStyle(
-                    color: Colors.black,
-                    fontFamily: 'hind_semibold',
-                  ),
+                ListTile(
+                  leading: const Icon(Icons.key),
+                  title: const Text('Change Password',
+                      style: CommonUtils.txSty_14B_Fb),
+                  onTap: () {
+                    Navigator.pop(context);
+                    Navigator.of(context).push(
+                      MaterialPageRoute(
+                        builder: (context) => const ChangePassword(
+                          companyId: 1,),
+                      ),
+                    );
+                  },
                 ),
-                onTap: () {
-                  logOutDialog();
-                  // Handle the onTap action for Logout
-                },
-              ),
-              // Add more ListTiles or other widgets as needed
-            ],
+                ListTile(
+                  leading: const Icon(Icons.logout),
+                  title: const Text(
+                    'Logout',
+                    style: CommonUtils.txSty_14B_Fb,
+                  ),
+                  onTap: () async {
+                    logOutDialog();
+                  },
+                ),
+              ],
+            ),
           ),
         ),
         body: imageslider(),
@@ -226,14 +206,14 @@ class _home_Screen extends State<HomeScreen> {
           actions: [
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
+                Navigator.of(context).pop();
               },
               child: Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
-                Navigator.of(context).pop(); // Close the dialog
-                onConfirmLogout(); // Perform logout action
+                Navigator.of(context).pop();
+                onConfirmLogout();
               },
               child: Text('Logout'),
             ),
@@ -249,7 +229,7 @@ class _home_Screen extends State<HomeScreen> {
 
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => Companiesselection()),
-      (route) => false,
+          (route) => false,
     );
   }
 }
@@ -293,14 +273,14 @@ class _imagesliderState extends State<imageslider> {
             child: Column(
               children: [
                 Expanded(
-                    //   child: SingleChildScrollView(
+                  //   child: SingleChildScrollView(
                     child: Container(
-                        // width: MediaQuery.of(context).size.width,
-                        //  padding: EdgeInsets.all(20.0),
+                      // width: MediaQuery.of(context).size.width,
+                      //  padding: EdgeInsets.all(20.0),
 
                         height: MediaQuery.of(context).size.height,
                         padding:
-                            EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+                        EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
                         width: MediaQuery.of(context).size.width,
                         child: Stack(
                           children: [
@@ -354,7 +334,7 @@ class _imagesliderState extends State<imageslider> {
                                     children: List.generate(
                                       // Use the number of images from assets
                                       3, // Replace with the actual number of assets
-                                      (index) => buildIndicator(index),
+                                          (index) => buildIndicator(index),
                                     ),
                                   ),
                                 ),
@@ -362,8 +342,8 @@ class _imagesliderState extends State<imageslider> {
                             ),
                           ],
                         ))
-                    //  )
-                    ),
+                  //  )
+                ),
                 SizedBox(
                   height: 5.0,
                 ),
@@ -394,7 +374,7 @@ class _imagesliderState extends State<imageslider> {
                                       item: "Ledger",
                                       color: Color(0xFFe78337),
                                       item_1:
-                                          "All Incoming and Outgoing Transactions record",
+                                      "All Incoming and Outgoing Transactions record",
                                       color_1: Color(0xFFF8dac2),
                                       textcolor: Colors.white,
                                       onTap: () {
@@ -413,14 +393,14 @@ class _imagesliderState extends State<imageslider> {
                                     ),
                                     Container(
                                       height:
-                                          MediaQuery.of(context).size.height /
-                                              3,
+                                      MediaQuery.of(context).size.height /
+                                          3,
                                       //     (4 / 9) -
                                       // 160 / 2,
 
                                       child: Column(
                                         mainAxisAlignment:
-                                            MainAxisAlignment.spaceBetween,
+                                        MainAxisAlignment.spaceBetween,
                                         children: [
                                           _customcontainerCard(
                                             imageUrl: "shopping_cart_add.svg",
@@ -548,18 +528,18 @@ class _imagesliderState extends State<imageslider> {
                             height: 5.0,
                           ),
                           Row(
-                              //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              // crossAxisAlignment: CrossAxisAlignment.start,
-                              //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              // mainAxisAlignment: MainAxisAlignment.spaceAround,
-                              // mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            // crossAxisAlignment: CrossAxisAlignment.start,
+                            //   mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            // mainAxisAlignment: MainAxisAlignment.spaceAround,
+                            // mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
                                   height:
-                                      MediaQuery.of(context).size.height / 6,
+                                  MediaQuery.of(context).size.height / 6,
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                    MainAxisAlignment.spaceAround,
                                     children: [
                                       _customwidthCard(
                                         imageUrl: "creditcard.svg",
@@ -575,7 +555,7 @@ class _imagesliderState extends State<imageslider> {
                                               builder: (context) =>
                                                   Selectpartyscreen(
                                                       from:
-                                                          'CreateCollections'),
+                                                      'CreateCollections'),
                                             ),
                                           );
                                         },
@@ -588,7 +568,7 @@ class _imagesliderState extends State<imageslider> {
                                 ),
                                 Container(
                                   height:
-                                      MediaQuery.of(context).size.height / 6,
+                                  MediaQuery.of(context).size.height / 6,
                                   child: Row(
                                     // mainAxisAlignment:
                                     //     MainAxisAlignment.spaceAround,
@@ -652,20 +632,20 @@ class _imagesliderState extends State<imageslider> {
                           SizedBox(height: 5), // Add spacing between rows
 
                           Row(
-                              //  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                              //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            //  mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                            //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Container(
                                   height:
-                                      MediaQuery.of(context).size.height / 6,
+                                  MediaQuery.of(context).size.height / 6,
                                   child: Row(
                                     mainAxisAlignment:
-                                        MainAxisAlignment.spaceAround,
+                                    MainAxisAlignment.spaceAround,
                                     children: [
                                       _customwidthCard(
                                         imageUrl: "arrows_repeat.svg",
                                         item: "Create Return order",
-                                        item1: "Create a Reorder",
+                                        item1: "Create a Return order",
                                         color: Color(0xFFF8dac2),
                                         color_1: Color(0xFFec9d62),
                                         textcolor: Color(0xFFe78337),
@@ -676,7 +656,7 @@ class _imagesliderState extends State<imageslider> {
                                               builder: (context) =>
                                                   Selectpartyscreen(
                                                       from:
-                                                          'CreatereturnOrder'),
+                                                      'CreatereturnOrder'),
                                             ),
                                           );
                                         },
@@ -689,7 +669,7 @@ class _imagesliderState extends State<imageslider> {
                                 ),
                                 Container(
                                   height:
-                                      MediaQuery.of(context).size.height / 6,
+                                  MediaQuery.of(context).size.height / 6,
                                   child: Row(
                                     // mainAxisAlignment:
                                     //     MainAxisAlignment.spaceAround,
@@ -783,7 +763,7 @@ class _imagesliderState extends State<imageslider> {
         child: Card(
           color: color,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
             padding: EdgeInsets.only(left: 18, right: 15, top: 20, bottom: 8),
@@ -847,7 +827,7 @@ class _imagesliderState extends State<imageslider> {
                           // ),
                           TextSpan(
                               text:
-                                  'All Incoming and Outgoing Transactions record',
+                              'All Incoming and Outgoing Transactions record',
                               style: TextStyle(height: 1.5))
                         ],
                       ),
@@ -882,7 +862,7 @@ class _imagesliderState extends State<imageslider> {
         child: Card(
           color: color,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
             padding: EdgeInsets.only(left: 10, right: 15, top: 7, bottom: 3),
@@ -970,7 +950,7 @@ class _imagesliderState extends State<imageslider> {
         child: Card(
           color: color,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
             padding: EdgeInsets.only(left: 10, right: 15, top: 7, bottom: 3),

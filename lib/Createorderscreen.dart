@@ -704,7 +704,8 @@ class _ProductListState extends State<Createorderscreen> {
                                                                     ],
                                                                     onChanged: (value) {
                                                                       setState(() {
-                                                                        quantities[index] = int.parse(value.isEmpty ? '1' : value);
+                                                                      //  quantities[index] = 1;
+                                                                      quantities[index] = int.parse(value.isEmpty ? '1' : value);
                                                                         if (globalCartLength > 1) {
                                                                           String itemcode = productresp.itemCode!;
                                               for (var cartItem in cartProvider.getCartItems()) {
@@ -903,56 +904,48 @@ class _ProductListState extends State<Createorderscreen> {
                                                   SizedBox(width: 8.0),
                                                   if (isItemAddedToCart[index]) // Render delete button only when item is added to cart
                                                     GestureDetector(
-                                                      // onTap: () {
-                                                      //   setState(() {
-                                                      //     // Remove the item from the cart
-                                                      //   print('delete index$index');
-                                                      //   quantities[index] = 1;
-                                                      //   // Remove the item from the cart
-                                                      //   cartItems.removeAt(index);
-                                                      //   // Set isItemAddedToCart to false
-                                                      //   isItemAddedToCart[index] = false;
-                                                      //   fetchproductlist(getgropcode);
-                                                      //
-                                                      //   });
-                                                      // },
+
+
                                                       // Inside the GestureDetector for deleting items
                                                       // onTap: () {
                                                       //   setState(() {
                                                       //     // Reset the quantity to 1
                                                       //     quantities[index] = 1;
-                                                      //     // Check if the index is within the valid range
-                                                      //     if (index < cartItems.length) {
+                                                      //     // Check if the index is valid for deletion
+                                                      //     if (index >= 0 && index < cartItems.length) {
                                                       //       // Remove the item from the cart
                                                       //       cartItems.removeAt(index);
-                                                      //       // Set isItemAddedToCart to false
-                                                      //       isItemAddedToCart[index] = false;
+                                                      //       // Update related lists
+                                                      //       isItemAddedToCart.removeAt(index);
+                                                      //       textEditingControllers.removeAt(index);
+                                                      //       // Ensure the index doesn't exceed the bounds after removal
+                                                      //       if (index >= isItemAddedToCart.length) {
+                                                      //         index = isItemAddedToCart.length - 1;
+                                                      //       }
                                                       //     }
                                                       //     fetchproductlist(getgropcode);
                                                       //   });
                                                       // },
-
-                                                      // Inside the GestureDetector for deleting items
                                                       onTap: () {
+                                                        // Update state to show "Add" button and reset quantity
                                                         setState(() {
-                                                          // Reset the quantity to 1
+                                                          isItemAddedToCart[index] = false;
                                                           quantities[index] = 1;
-                                                          // Check if the index is valid for deletion
-                                                          if (index >= 0 && index < cartItems.length) {
-                                                            // Remove the item from the cart
-                                                            cartItems.removeAt(index);
-                                                            // Update related lists
-                                                            isItemAddedToCart.removeAt(index);
-                                                            textEditingControllers.removeAt(index);
-                                                            // Ensure the index doesn't exceed the bounds after removal
-                                                            if (index >= isItemAddedToCart.length) {
-                                                              index = isItemAddedToCart.length - 1;
-                                                            }
-                                                          }
-                                                          fetchproductlist(getgropcode);
                                                         });
-                                                      },
 
+                                                        // Find the index of the item in the cart based on the product code
+                                                        int deleteIndex = cartItems.indexWhere(
+                                                              (item) => item.itemCode == productresp.itemCode,
+                                                        );
+
+                                                        if (deleteIndex != -1) {
+                                                          // Remove the item from the cart
+                                                          cartItems.removeAt(deleteIndex);
+                                                          textEditingControllers.removeAt(deleteIndex);
+                                                        }
+
+                                                        fetchproductlist(getgropcode);
+                                                      },
                                                       child: Container(
                                                         height: 36,
                                                         width: 40,

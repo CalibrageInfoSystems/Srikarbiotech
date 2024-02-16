@@ -444,7 +444,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
   Future<void> getpaymentmethods() async {
     final response = await http.get(Uri.parse(
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Master/GetAllTypeCdDmt/3'));
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Master/GetAllTypeCdDmt/1'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -1283,7 +1283,7 @@ class _OrderCardState extends State<OrderCard> {
                                   //   style: CommonUtils.txSty_13B_Fb,
                                   // ),
                                   Text(
-                                    '₹${widget.orderResult.totalCost}',
+                                    '₹${formatNumber(widget.orderResult.totalCost)}',
                                     style: CommonUtils.txSty_13O_F6,
                                   ),
                                   Text(
@@ -1434,5 +1434,10 @@ class _OrderCardState extends State<OrderCard> {
       fit: BoxFit.fill,
       color: iconColor,
     );
+  }
+
+  String formatNumber(double number) {
+    NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+    return formatter.format(number);
   }
 }

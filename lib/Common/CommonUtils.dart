@@ -91,7 +91,7 @@ class CommonUtils {
       BorderRadius borderRadius,
       ) {
     return Card(
-      elevation: 2.0,
+      elevation: 5.0,
       shape: RoundedRectangleBorder(
         borderRadius: borderRadius,
       ),
@@ -120,7 +120,7 @@ class CommonUtils {
             const SizedBox(height: 8.0),
             Text(
               subtitle2,
-              style: CommonUtils.Mediumtext_14,
+              style: CommonUtils.Mediumtext_o_14,
               maxLines: 2, // Display in 2 lines
               overflow: TextOverflow.ellipsis,
             ),

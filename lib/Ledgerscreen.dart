@@ -68,7 +68,8 @@ class Ledger_screen extends State<Ledgerscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
+      appBar:
+      AppBar(
         backgroundColor: Color(0xFFe78337),
         automaticallyImplyLeading: false,
         title: Row(
@@ -136,8 +137,8 @@ class Ledger_screen extends State<Ledgerscreen> {
       body: Column(children: [
         Padding(
             padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-            child:
-                Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children:
+            [
               CommonUtils.buildCard(
                 widget.cardName,
                 widget.cardCode,
