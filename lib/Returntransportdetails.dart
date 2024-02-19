@@ -759,38 +759,35 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
         },
         child: Padding(
           padding:
-              EdgeInsets.only(top: 0.0, left: 14.0, right: 14.0, bottom: 10.0),
+          const EdgeInsets.only(top: 0.0, left: 14.0, right: 14.0, bottom: 10.0),
           child: Container(
             alignment: Alignment.bottomCenter,
             width: MediaQuery.of(context).size.width,
             height: 55.0,
             child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  validate(context);
-                },
-                child: Container(
-                  // width: desiredWidth * 0.9,
-                  width: MediaQuery.of(context).size.width,
-                  height: 55.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.0),
-                    color: Color(0xFFe78337),
-                  ),
-                  child: Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Go To Cart',
-                          style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            color: Colors.white,
-                          ),
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 45.0,
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      validate(context);
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 45.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.0),
+                        color: const Color(0xFFe78337),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Go to Cart',
+                          style: CommonUtils.Buttonstyle,
                         ),
-                      ]),
+                      ),
+                    ),
+                  ),
                 ),
               ),
             ),

@@ -14,7 +14,8 @@ class ViewCollectionCheckOut extends StatefulWidget {
   final ListResult listResult;
   final int position;
 
-  ViewCollectionCheckOut({required this.listResult, required this.position});
+  const ViewCollectionCheckOut(
+      {required this.listResult, required this.position});
   //const ViewCollectionCheckOut({super.key});
 
   @override
@@ -22,8 +23,6 @@ class ViewCollectionCheckOut extends StatefulWidget {
 }
 
 class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
-  final _orangeColor = HexColor('#e58338');
-
   final _titleTextStyle = const TextStyle(
     fontFamily: 'Roboto',
     fontWeight: FontWeight.w700,
@@ -58,18 +57,13 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
     super.initState();
 
     getshareddata();
-    print("screenFrom: ${widget.listResult.phoneNumber}");
-
-    print("screenFrom: ${widget.listResult.paymentTypeName}");
-
-    print("screenFrom: $payment_mode");
   }
 
   @override
   Widget build(BuildContext context) {
     //  final arguments = ModalRoute.of(context)?.settings?.arguments as ListResult;
     String dateString = widget.listResult.date;
-    payment_mode = '${widget.listResult.paymentTypeName}';
+    payment_mode = widget.listResult.paymentTypeName;
     DateTime date = DateTime.parse(dateString);
     String formattedDate = DateFormat('dd-MM-yyyy').format(date);
     String checkdateString = widget.listResult.checkDate;
@@ -93,7 +87,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
         widget.listResult.remarks
       ],
       [
-        widget.listResult.amount, // double
+        widget.listResult.amount,
         widget.listResult.creditAccountNo,
         widget.listResult.utrNumber,
         widget.listResult.categoryName,
@@ -109,7 +103,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
         widget.listResult.remarks
       ],
       [
-        widget.listResult.amount, // double
+        widget.listResult.amount,
         widget.listResult.checkNumber,
         widget.listResult.checkIssuedBank,
         widget.listResult.categoryName,
@@ -119,7 +113,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFe78337),
+        backgroundColor: const Color(0xFFe78337),
         automaticallyImplyLeading: false,
         // This line removes the default back arrow
         title: Row(
@@ -129,21 +123,21 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
                       Navigator.of(context).pop();
                     },
-                    child: Icon(
+                    child: const Icon(
                       Icons.chevron_left,
                       size: 30.0,
                       color: Colors.white,
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
-                Text(
+                const SizedBox(width: 8.0),
+                const Text(
                   'View Collection',
                   style: TextStyle(
                     color: Colors.white,
@@ -178,7 +172,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                   );
                 } else {
                   // Return a placeholder or loading indicator
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 }
               },
             ),
@@ -193,7 +187,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
             crossAxisAlignment: CrossAxisAlignment.start,
             children: [
               // small box
-              SizedBox(height: 8.0),
+              const SizedBox(height: 8.0),
               CommonUtils.buildCard(
                 widget.listResult.partyName,
                 widget.listResult.partyCode,
@@ -203,7 +197,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                 Colors.white,
                 BorderRadius.circular(5.0),
               ),
-              SizedBox(height: 16.0),
+              const SizedBox(height: 16.0),
               // big box
               Card(
                 elevation: 7,
@@ -217,7 +211,39 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                   child: Column(
                     children: [
                       // Table
+                      Row(
+                        //  crossAxisAlignment: CrossAxisAlignment.start,
+                        mainAxisAlignment:
+                        MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.all(10),
+                            child: Column(
+                                mainAxisAlignment:
+                                MainAxisAlignment.start,
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Collection ID',
+                                    textAlign: TextAlign.start,
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  Text(
+                                    '${widget.listResult.collectionNumber}',
+                                    style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 13,
+                                        color: Color(0xFFe58338),
+                                        fontWeight:
+                                        FontWeight.w600),
+                                  ),
+                                ]),
+                          ),
+                         _collectionStatus(widget.listResult.statusName),
 
+                        ],
+                      ),
                       if (payment_mode == "Online")
                         Table(
                           border: TableBorder.all(
@@ -233,16 +259,16 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                     padding: _tableCellPadding,
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles[0][index],
-                                          style: _titleTextStyle,
+                                          style: CommonUtils.txSty_14B_Fb,
                                         ),
-                                        SizedBox(height: 5),
+                                        const SizedBox(height: 5),
                                         Text(
                                           tableCellValues[0][index].toString(),
-                                          style: _dataTextStyle,
+                                          style: CommonUtils.txSty_13O_F6,
                                         )
                                       ],
                                     ),
@@ -253,16 +279,16 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                     padding: _tableCellPadding,
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles[1][index],
-                                          style: _titleTextStyle,
+                                          style: CommonUtils.txSty_14B_Fb,
                                         ),
-                                        SizedBox(height: 5),
+                                        const SizedBox(height: 5),
                                         Text(
                                           tableCellValues[1][index].toString(),
-                                          style: _dataTextStyle,
+                                          style: CommonUtils.txSty_13O_F6,
                                         )
                                       ],
                                     ),
@@ -289,13 +315,13 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                     padding: _tableCellPadding,
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles2[0][index],
                                           style: _titleTextStyle,
                                         ),
-                                        SizedBox(height: 5),
+                                        const SizedBox(height: 5),
                                         Text(
                                           tableCellValues2[0][index].toString(),
                                           style: _dataTextStyle,
@@ -309,13 +335,13 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                     padding: _tableCellPadding,
                                     child: Column(
                                       crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                      CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles2[1][index],
                                           style: _titleTextStyle,
                                         ),
-                                        SizedBox(height: 5),
+                                        const SizedBox(height: 5),
                                         Text(
                                           tableCellValues2[1][index].toString(),
                                           style: _dataTextStyle,
@@ -338,9 +364,10 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
+                          // ignore: prefer_const_constructors
                           Text(
                             'Attachment',
-                            style: _titleTextStyle,
+                            style: CommonUtils.txSty_14B_Fb,
                           ),
                           SizedBox(
                             width: double.infinity,
@@ -351,13 +378,13 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                 onTap: _showZoomedDialog,
                                 child: widget.listResult.fileUrl != null
                                     ? Image.network(
-                                        widget.listResult.fileUrl,
-                                        fit: BoxFit.fill,
-                                      )
+                                  widget.listResult.fileUrl,
+                                  fit: BoxFit.fill,
+                                )
                                     : Image.asset(
-                                        'assets/sreekar_seeds.png',
-                                        fit: BoxFit.fill,
-                                      ),
+                                  'assets/sreekar_seeds.png',
+                                  fit: BoxFit.fill,
+                                ),
                               ),
                             ),
                           ),
@@ -390,8 +417,8 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
             children: [
               GestureDetector(
                 onTap: () => Navigator.of(context).pop(),
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
+                child: const Padding(
+                  padding: EdgeInsets.all(8.0),
                   child: Icon(
                     Icons.close,
                     color: Colors.red,
@@ -408,27 +435,27 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                 // Adjust the height as needed
                 child: IntrinsicHeight(
                     child: PhotoViewGallery.builder(
-                  itemCount: 1, // Only one image in the gallery
-                  builder: (context, index) {
-                    return PhotoViewGalleryPageOptions(
-                      imageProvider:
+                      itemCount: 1, // Only one image in the gallery
+                      builder: (context, index) {
+                        return PhotoViewGalleryPageOptions(
+                          imageProvider:
                           NetworkImage(widget.listResult.fileUrl ?? ''),
-                      minScale: PhotoViewComputedScale.contained,
-                      maxScale: PhotoViewComputedScale.covered * 2,
-                    );
-                  },
-                  scrollDirection: Axis.vertical,
-                  scrollPhysics: PageScrollPhysics(),
-                  allowImplicitScrolling: true,
-                  //   scrollPhysics: PageScrollPhysics(),
-                  backgroundDecoration: BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  // pageController: PageController(),
-                  // onPageChanged: (index) {
-                  //   // Handle page change if needed
-                  // },
-                )),
+                          minScale: PhotoViewComputedScale.contained,
+                          maxScale: PhotoViewComputedScale.covered * 2,
+                        );
+                      },
+                      scrollDirection: Axis.vertical,
+                      scrollPhysics: const PageScrollPhysics(),
+                      allowImplicitScrolling: true,
+                      //   scrollPhysics: PageScrollPhysics(),
+                      backgroundDecoration: const BoxDecoration(
+                        color: Colors.white,
+                      ),
+                      // pageController: PageController(),
+                      // onPageChanged: (index) {
+                      //   // Handle page change if needed
+                      // },
+                    )),
               ),
             ],
           ),
@@ -436,4 +463,47 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
       },
     );
   }
-}
+
+  Widget _collectionStatus(String statusName) {
+
+      final Color statusColor;
+      final Color statusBgColor;
+      switch (statusName) {
+        case 'Pending':
+          statusColor = const Color(0xFFe58338);
+          statusBgColor = const Color(0xFFe58338).withOpacity(0.2);
+          break;
+        case 'Received':
+          statusColor = Colors.green;
+          statusBgColor = Colors.green.withOpacity(0.2);
+          break;
+        case 'Reject':
+          statusColor = HexColor('#C42121');
+          statusBgColor = HexColor('#C42121').withOpacity(0.2);
+          break;
+
+        default:
+          statusColor = Colors.black26;
+          statusBgColor = Colors.black26.withOpacity(0.2);
+          break;
+      }
+      return Container(
+        margin: const EdgeInsets.only(right: 10),
+        decoration: BoxDecoration(
+          color: statusBgColor,
+          borderRadius: BorderRadius.circular(14.0),
+        ),
+        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+        child: Text(
+          statusName,
+          style: TextStyle(
+            fontFamily: 'Roboto',
+            fontSize: 13,
+            color: statusColor,
+          ),
+        ),
+      );
+    }
+
+  }
+

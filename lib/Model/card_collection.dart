@@ -51,6 +51,7 @@ class ResponseData {
 class ListResult {
   int id;
   String date;
+  String collectionNumber;
   String partyCode;
   String partyName;
   String stateName;
@@ -92,6 +93,7 @@ class ListResult {
   ListResult({
     required this.id,
     required this.date,
+    required this.collectionNumber,
     required this.partyCode,
     required this.partyName,
     required this.stateName,
@@ -135,6 +137,7 @@ class ListResult {
     return ListResult(
       id: json['id'] ?? 0, // Provide a default value for id
       date: json['date'] ?? "",
+      collectionNumber: json['collectionNumber'] ?? "",
       partyCode: json['partyCode'] ?? "",
       partyName: json['partyName'] ?? "",
       stateName: json['stateName'] ?? "",

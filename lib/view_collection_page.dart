@@ -1243,11 +1243,11 @@ class _MyCardState extends State<MyCard> {
                                   Row(
                                     children: [
                                       Text(
-                                        'Purpose: ',
+                                        'Collection Id: ',
                                         style: _textStyle,
                                       ),
                                       Text(
-                                        widget.listResult.purposeName,
+                                        widget.listResult.collectionNumber,
                                         style: CommonUtils.txSty_13O_F6,
                                       ),
                                     ],
@@ -1365,7 +1365,7 @@ class _MyCardState extends State<MyCard> {
         statusColor = const Color(0xFFe58338);
         statusBgColor = const Color(0xFFe58338).withOpacity(0.2);
         break;
-      case 8: // received
+      case 8: // Received
         assetPath = 'assets/sb_money-bill-wave.svg';
         iconColor = Colors.green;
         statusColor = Colors.green;

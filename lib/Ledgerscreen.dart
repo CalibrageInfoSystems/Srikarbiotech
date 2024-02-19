@@ -47,8 +47,9 @@ class Ledger_screen extends State<Ledgerscreen> {
   TextEditingController fromDateController = TextEditingController();
   TextEditingController toDateController = TextEditingController();
   // CalendarFormat calendarFormat = CalendarFormat.month;
-  DateTime selectedFromDate = DateTime.now();
-  DateTime selectedToDate = DateTime.now();
+  DateTime? selectedFromDate;
+
+  DateTime? selectedToDate;
   int CompneyId = 0;
   String companyCode ="";
   @override
@@ -443,8 +444,8 @@ class Ledger_screen extends State<Ledgerscreen> {
     TextEditingController controller,
   ) async {
     DateTime currentDate = DateTime.now();
-    DateTime initialDate;
-
+    // DateTime initialDate;
+    DateTime initialDate = selectedFromDate ?? currentDate;
     if (controller.text.isNotEmpty) {
       try {
         initialDate = DateTime.parse(controller.text);
@@ -488,23 +489,23 @@ class Ledger_screen extends State<Ledgerscreen> {
     TextEditingController controller,
   ) async {
     DateTime currentDate = DateTime.now();
-    DateTime initialDate;
-
-    if (controller.text.isNotEmpty) {
-      try {
-        initialDate = DateTime.parse(controller.text);
-      } catch (e) {
-        // Handle the case where the current text is not a valid date format
-        print("Invalid date format: $e");
-        initialDate = currentDate;
-      }
-    } else {
-      initialDate = currentDate;
-    }
+    DateTime initialDate = selectedToDate ?? currentDate;
+    // if (controller.text.isNotEmpty) {
+    //   try {
+    //     initialDate = DateTime.parse(controller.text);
+    //   } catch (e) {
+    //     // Handle the case where the current text is not a valid date format
+    //     print("Invalid date format: $e");
+    //     initialDate = currentDate;
+    //   }
+    // } else {
+    //   initialDate = currentDate;
+    // }
 
     try {
       DateTime? picked = await showDatePicker(
         context: context,
+        initialDatePickerMode: DatePickerMode.day, // Add this line
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: initialDate,
         firstDate: DateTime(2000),
@@ -531,10 +532,10 @@ class Ledger_screen extends State<Ledgerscreen> {
   Future<void> downloadData() async {
     bool isValid = true;
     bool hasValidationFailed = false;
-    String fromdate = DateFormat('yyyy-MM-dd').format(selectedFromDate);
-    String todate = DateFormat('yyyy-MM-dd').format(selectedToDate);
-    String pdffromdate = DateFormat('ddMMyyyy').format(selectedFromDate);
-    String pdftodate = DateFormat('ddMMyyyy').format(selectedToDate);
+    String fromdate = DateFormat('yyyy-MM-dd').format(selectedFromDate!);
+    String todate = DateFormat('yyyy-MM-dd').format(selectedToDate!);
+    String pdffromdate = DateFormat('ddMMyyyy').format(selectedFromDate!);
+    String pdftodate = DateFormat('ddMMyyyy').format(selectedToDate!);
     print('pdffromdate: $pdffromdate');
     print('pdftodate: $pdftodate');
 
@@ -644,10 +645,10 @@ class Ledger_screen extends State<Ledgerscreen> {
   Future<void> shareData() async {
     bool isValid = true;
     bool hasValidationFailed = false;
-    String fromdate = DateFormat('yyyy-MM-dd').format(selectedFromDate);
-    String todate = DateFormat('yyyy-MM-dd').format(selectedToDate);
-    String pdffromdate = DateFormat('ddMMyyyy').format(selectedFromDate);
-    String pdftodate = DateFormat('ddMMyyyy').format(selectedToDate);
+    String fromdate = DateFormat('yyyy-MM-dd').format(selectedFromDate!);
+    String todate = DateFormat('yyyy-MM-dd').format(selectedToDate!);
+    String pdffromdate = DateFormat('ddMMyyyy').format(selectedFromDate!);
+    String pdftodate = DateFormat('ddMMyyyy').format(selectedToDate!);
     print('pdffromdate: $pdffromdate');
     print('pdftodate: $pdftodate');
 

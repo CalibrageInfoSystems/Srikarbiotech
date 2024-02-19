@@ -214,7 +214,7 @@ class ReturnOrderItemXrefList {
   final int statusTypeId;
   final int orderQty;
   final double price;
-  final String remarks;
+  final String? remarks;
   final dynamic totalPrice;
 
   ReturnOrderItemXrefList({

@@ -16,7 +16,7 @@ import 'orderdetails_model.dart';
 class Orderdetails extends StatefulWidget {
   final int orderid;
   final String orderdate;
-  final double totalprice;
+  final double totalCostWithGST;
   final String bookingplace;
   final String transportmode;
   final int lrnumber;
@@ -33,7 +33,7 @@ class Orderdetails extends StatefulWidget {
       {super.key,
       required this.orderid,
       required this.orderdate,
-      required this.totalprice,
+      required this.totalCostWithGST,
       required this.bookingplace,
       required this.transportmode,
       required this.lrnumber,
@@ -81,6 +81,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
   double totalcost = 0.0;
   double totalGst = 0.0;
   double totalsum = 0.0;
+  String? Remarks;
   late List<GetOrderDetailsResult> orderDetails;
   late List<OrderItemXrefList> orderItemsList = [];
   int CompneyId = 0;
@@ -143,8 +144,11 @@ class _OrderdetailsPageState extends State<Orderdetails> {
             totalcost = getOrderDetailsListResult[0].totalCost;
             totalGst = getOrderDetailsListResult[0].gstCost;
             totalsum = getOrderDetailsListResult[0].totalCostWithGST;
+            Remarks =  getOrderDetailsListResult[0].remarks;
+
           });
           print("partyname====> ${partyname}");
+          print("Remarks====> ${Remarks}");
           print("ordernumber====> ${ordernumber}");
           // extracting the orderItemXrefList
           List<dynamic> orderItemsData =
@@ -202,7 +206,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
     // Retrieve saved cart items using CartHelper
     tableCellValues = [
       [widget.orderdate, widget.bookingplace, widget.lrnumber],
-      [widget.totalprice, widget.transportmode, widget.lrdate]
+      [widget.totalCostWithGST, widget.transportmode, widget.lrdate]
     ];
 
     // Convert the elements to strings if needed
@@ -210,7 +214,6 @@ class _OrderdetailsPageState extends State<Orderdetails> {
         tableCellValues.expand((row) => row).map((element) {
       return element.toString(); // Adjust the conversion as needed
     }).toList();
-
     return stringList;
   }
 
@@ -416,12 +419,12 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                     CrossAxisAlignment.start,
                                                 children: [
                                                   const Text(
-                                                    'Total',
+                                                    'Total Amount',
                                                     style: CommonUtils
                                                         .txSty_13B_Fb,
                                                   ),
                                                   Text(
-                                                    '₹${formatNumber(widget.totalprice)}',
+                                                    '₹${formatNumber(widget.totalCostWithGST)}',
                                                     style: TextStyle(
                                                       fontFamily: 'Roboto',
                                                       fontWeight:
@@ -513,82 +516,44 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                           ),
                                         ],
                                       ),
-                                      Container(
+                                     Visibility(
+                                        visible: Remarks != null  && Remarks != "",
+                                      child:Column(children: [Container(
                                         width: double.infinity,
                                         height: 0.2,
                                         color: Colors.grey,
                                       ),
-                                      // Row(
-                                      //   mainAxisAlignment:
-                                      //       MainAxisAlignment.spaceBetween,
-                                      //   children: <Widget>[
-                                      //     Expanded(
-                                      //       child: Padding(
-                                      //         padding:
-                                      //             const EdgeInsets.symmetric(
-                                      //                 horizontal: 12,
-                                      //                 vertical: 10),
-                                      //         child: Column(
-                                      //           crossAxisAlignment:
-                                      //               CrossAxisAlignment.start,
-                                      //           children: [
-                                      //             const Text(
-                                      //               'Preferable Transport',
-                                      //               style: CommonUtils
-                                      //                   .txSty_13B_Fb,
-                                      //             ),
-                                      //             Text(
-                                      //               '${widget.transportmode}',
-                                      //               style: TextStyle(
-                                      //                 fontFamily: 'Roboto',
-                                      //                 fontWeight:
-                                      //                     FontWeight.bold,
-                                      //                 color:
-                                      //                     HexColor('#e58338'),
-                                      //                 fontSize: 13,
-                                      //               ),
-                                      //             ),
-                                      //           ],
-                                      //         ),
-                                      //       ),
-                                      //     ),
-                                      //     Container(
-                                      //       width: 0.2,
-                                      //       height: 60,
-                                      //       color: Colors.grey,
-                                      //     ),
-                                      //     Expanded(
-                                      //       child: Padding(
-                                      //         padding:
-                                      //             const EdgeInsets.symmetric(
-                                      //                 horizontal: 12,
-                                      //                 vertical: 10),
-                                      //         child: Column(
-                                      //           crossAxisAlignment:
-                                      //               CrossAxisAlignment.start,
-                                      //           children: [
-                                      //             const Text(
-                                      //               'PaymentMode',
-                                      //               style: CommonUtils
-                                      //                   .txSty_13B_Fb,
-                                      //             ),
-                                      //             Text(
-                                      //               'Road',
-                                      //               style: TextStyle(
-                                      //                 fontFamily: 'Roboto',
-                                      //                 fontWeight:
-                                      //                     FontWeight.bold,
-                                      //                 color:
-                                      //                     HexColor('#e58338'),
-                                      //                 fontSize: 13,
-                                      //               ),
-                                      //             ),
-                                      //           ],
-                                      //         ),
-                                      //       ),
-                                      //     ),
-                                      //   ],
-                                      // ),
+                                        Row(
+                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                          children: <Widget>[
+                                            Expanded(
+                                              child: Padding(
+                                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                                // Check if remarks are not null or empty
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  children: [
+                                                    const Text(
+                                                      'Remarks',
+                                                      style: CommonUtils.txSty_13B_Fb,
+                                                    ),
+                                                    Text(
+                                                      '$Remarks',
+                                                      style: TextStyle(
+                                                        fontFamily: 'Roboto',
+                                                        fontWeight: FontWeight.bold,
+                                                        color: HexColor('#e58338'),
+                                                        fontSize: 13,
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+
+                                          ],
+                                        ),],), ),
+
                                       // Container(
                                       //   width: double.infinity,
                                       //   height: 0.2,
@@ -1146,35 +1111,31 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                               ? Container(
                             width: screenWidth,
                             height: 250,
-                            child: ListView.builder(
-                              scrollDirection: Axis.horizontal,
+                            child:
+                            ListView.builder(
+                              scrollDirection: Axis.vertical,
                               itemCount: invoiceResponse!.listResult!.length,
                               itemBuilder: (context, index) {
                                 InvoiceDetails invoice = invoiceResponse!.listResult![index];
                                 DateTime date = invoice.invoiceDate;
                                 String invoicedateDate = DateFormat('dd MMM, yyyy').format(date);
-                                WidgetsBinding.instance!.addPostFrameCallback((_) {
-                                  if (invoiceResponse?.listResult != null &&
-                                      invoiceResponse!.listResult!.isNotEmpty &&
-                                      !_showBottomSheet) {
-                                    for (InvoiceDetails invoice in invoiceResponse!.listResult!) {
-                                      if (invoice.isReceived == false) {
-                                        setState(() {
-                                          _showBottomSheet = true;
-                                        });
-                                        showBottomSheet(context,invoice.invoiceNo,invoicedateDate);
-                                        break; // Stop looping after finding the first invoice with isReceived == false
-                                      }
-                                    }
-                                  }
-                                });
 
 
-                                return Container(
+
+                                return
+                                  Container(
                                   width: screenWidth,
                                   padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                                  child: Card(
+                                  child:
+                                  Card(
                                     elevation: 7,
+                                    shape: RoundedRectangleBorder(
+                                      side: BorderSide(
+                                        color: invoice.isReceived ?? false ? Colors.green : Colors.redAccent,
+                                        width: 2.0, // Set your desired border width here
+                                      ),
+                                      borderRadius: BorderRadius.circular(10.0),
+                                    ),
                                     child: Container(
                                       width: double.infinity,
                                       decoration: BoxDecoration(
@@ -1428,115 +1389,153 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                             MainAxisAlignment.spaceBetween,
                                             children: <Widget>[
                                               Container(padding: EdgeInsets.all(8.0),
-                                                  child: GestureDetector(
-                                                    // Inside your GestureDetector onTap method
-                                                    // Inside your GestureDetector onTap method
-                                                    // Inside your GestureDetector onTap method
-                                                    // Inside your GestureDetector onTap method
-                                                    onTap: () {
-                                                      showDialog(
-                                                        context: context,
-                                                        builder: (BuildContext context) {
-                                                          return AlertDialog(
-                                                            content: Container(
-                                                              width: double.infinity,
-                                                              height: double.infinity,
-                                                              child: Column(
-                                                                children: [
-                                                                  Expanded(
-                                                                    child: Image.network(
-                                                                      invoiceResponse!.listResult![index].lrFileUrl ?? '',
-                                                                      fit: BoxFit.contain,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                            actions: [
-                                                              Container(
-                                                                margin: EdgeInsets.only(top: 10, right: 10),
-                                                                decoration: BoxDecoration(
-                                                                  shape: BoxShape.circle,
-                                                                  color: Colors.white,
-                                                                  boxShadow: [
-                                                                    BoxShadow(
-                                                                      color: Colors.black.withOpacity(0.1),
-                                                                      blurRadius: 6,
-                                                                      spreadRadius: 3,
+                                                  child:
+                                                  Visibility(
+                                                    visible: invoiceResponse!.listResult![index].lrFileUrl != null,
+                                                    child: GestureDetector(
+                                                      onTap: () {
+                                                        showDialog(
+                                                          context: context,
+                                                          builder: (BuildContext context) {
+                                                            return AlertDialog(
+                                                              content: Container(
+                                                                width: double.infinity,
+                                                                height: double.infinity,
+                                                                child: Column(
+                                                                  children: [
+                                                                    Expanded(
+                                                                      child: Image.network(
+                                                                        invoiceResponse!.listResult![index].lrFileUrl ?? '',
+                                                                        fit: BoxFit.contain,
+                                                                      ),
                                                                     ),
                                                                   ],
                                                                 ),
-                                                                child: IconButton(
-                                                                  icon: Icon(Icons.close, color: Colors.red),
-                                                                  onPressed: () {
-                                                                    Navigator.of(context).pop();
-                                                                  },
+                                                              ),
+                                                              actions: [
+                                                                Container(
+                                                                  margin: EdgeInsets.only(top: 10, right: 10),
+                                                                  decoration: BoxDecoration(
+                                                                    shape: BoxShape.circle,
+                                                                    color: Colors.white,
+                                                                    boxShadow: [
+                                                                      BoxShadow(
+                                                                        color: Colors.black.withOpacity(0.1),
+                                                                        blurRadius: 6,
+                                                                        spreadRadius: 3,
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                  child: IconButton(
+                                                                    icon: Icon(Icons.close, color: Colors.red),
+                                                                    onPressed: () {
+                                                                      Navigator.of(context).pop();
+                                                                    },
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            );
+                                                          },
+                                                        );
+                                                      },
+                                                      child: Container(
+                                                        height: 35,
+                                                        margin: EdgeInsets.symmetric(horizontal: 4.0),
+                                                        decoration: BoxDecoration(
+                                                          color: Color(0xFFe78337),
+                                                          border: Border.all(
+                                                            color: Color(0xFFe78337),
+                                                            width: 1,
+                                                          ),
+                                                          borderRadius: BorderRadius.circular(8.0),
+                                                        ),
+                                                        child: IntrinsicWidth(
+                                                          child: Column(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              Container(
+                                                                padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                                                child: Row(
+                                                                  children: [
+                                                                    SvgPicture.asset(
+                                                                      'assets/overview.svg',
+                                                                      height: 18,
+                                                                      width: 18,
+                                                                      fit: BoxFit.fitWidth,
+                                                                      color: Colors.white,
+                                                                    ),
+                                                                    SizedBox(width: 8.0),
+                                                                    Text(
+                                                                      'View LR',
+                                                                      style: TextStyle(
+                                                                        color: Colors.white,
+                                                                      ),
+                                                                    ),
+                                                                  ],
                                                                 ),
                                                               ),
                                                             ],
-                                                          );
-                                                        },
-                                                      );
-                                                    },
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ),
+
+                                              ),
+
+                                              Visibility(
+                                                visible: invoice.isReceived == false,
+                                                child: Container(
+                                                  padding: EdgeInsets.all(8.0),
+                                                  child: GestureDetector(
+                                                    onTap: () async {
 
 
+                                                        if (invoiceResponse?.listResult != null && invoiceResponse!.listResult!.isNotEmpty && !_showBottomSheet) {
+                                                          for (InvoiceDetails invoice in invoiceResponse!.listResult!) {
+                                                            if (invoice.isReceived == false) {
+                                                              // setState(() {
+                                                              //   _showBottomSheet = true;
+                                                              // });
+                                                              showBottomSheet(context,invoice.invoiceNo,invoicedateDate);
+                                                              break; // Stop looping after finding the first invoice with isReceived == false
+                                                            }
+                                                          }
 
 
+                                                      //Add your download functionality here
+                                                    };},
                                                     child: Container(
-                                                      // color: Color(0xFFF8dac2),
                                                       height: 35,
-
-                                                      margin: EdgeInsets
-                                                          .symmetric(
-                                                          horizontal:
-                                                          4.0),
-                                                      decoration:
-                                                      BoxDecoration(
-                                                        color:
-                                                        Color(0xFFe78337),
+                                                      margin: EdgeInsets.symmetric(horizontal: 4.0),
+                                                      decoration: BoxDecoration(
+                                                        color: Color(0xFFF8dac2),
                                                         border: Border.all(
-                                                          color: Color(
-                                                              0xFFe78337),
+                                                          color: Color(0xFFe78337),
                                                           width: 1,
                                                         ),
-                                                        borderRadius:
-                                                        BorderRadius
-                                                            .circular(
-                                                            8.0),
+                                                        borderRadius: BorderRadius.circular(8.0),
                                                       ),
                                                       child: IntrinsicWidth(
                                                         child: Column(
-                                                          mainAxisAlignment:
-                                                          MainAxisAlignment
-                                                              .center,
+                                                          mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
                                                             Container(
-                                                              padding: EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal:
-                                                                  10.0),
+                                                              padding: EdgeInsets.symmetric(horizontal: 10.0),
                                                               child: Row(
                                                                 children: [
-                                                                  SvgPicture
-                                                                      .asset(
-                                                                    'assets/overview.svg',
-                                                                    height:
-                                                                    18,
+                                                                  SvgPicture.asset(
+                                                                    'assets/box-check.svg',
+                                                                    height: 18,
                                                                     width: 18,
-                                                                    fit: BoxFit
-                                                                        .fitWidth,
-                                                                    color: Colors
-                                                                        .white,
+                                                                    fit: BoxFit.fitWidth,
+                                                                    color: Colors.black,
                                                                   ),
-                                                                  SizedBox(
-                                                                      width:
-                                                                      8.0), // Add some spacing between icon and text
+                                                                  SizedBox(width: 8.0),
                                                                   Text(
-                                                                    'View LR',
-                                                                    style:
-                                                                    TextStyle(
-                                                                      color: Colors
-                                                                          .white,
+                                                                    'Received',
+                                                                    style: TextStyle(
+                                                                      color: Colors.black,
                                                                     ),
                                                                   ),
                                                                 ],
@@ -1546,11 +1545,11 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                         ),
                                                       ),
                                                     ),
-                                                  )),
-
-
+                                                  ),
+                                                ),
+                                              ),
                                               Visibility(
-                                                visible: invoice.isReceived == true,
+                                                visible: invoice.isReceived == true && invoice.invoiceFileUrl != null ,
                                                 child: Container(
                                                   padding: EdgeInsets.all(8.0),
                                                   child: GestureDetector(
@@ -1802,7 +1801,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
               ),
               SizedBox(height: 5),
               Text(
-                'If received, click on the "Received" button. If you have any queries, enter the remarks.',
+                'If received, click on the Received button. If you have any queries, enter the remarks.',
                 style: CommonUtils.Mediumtext_12_0,
               ),
               SizedBox(height: 20),
@@ -1813,7 +1812,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                     onTap: () {
                       Navigator.of(context).pop(); // Close the bottom sheet
                       // Show a new bottom sheet for entering remarks
-                      showRemarksBottomSheet(context, invoiceNo,invoicedateDate);
+
                     },
                     child: Container(
                       height: 35,
@@ -2239,7 +2238,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
   Widget build(BuildContext context) {
     return Card(
       margin: EdgeInsets.symmetric(horizontal: 16.0),
-      elevation: 4,
+      elevation: 5,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: <Widget>[
@@ -2251,10 +2250,12 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
             },
             child: Container(
               decoration: BoxDecoration(
-                borderRadius: BorderRadius.only(
-                  topLeft: Radius.circular(8.0),
-                  topRight: Radius.circular(8.0),
-                ),
+
+                borderRadius: BorderRadius.circular(8.0),
+                // borderRadius: BorderRadius.only(
+                //   topLeft: Radius.circular(8.0),
+                //   topRight: Radius.circular(8.0),
+                // ),
                 color: Color(0xFFe78337),// Adjust the color as needed
               ),
               padding: EdgeInsets.all(8.0),

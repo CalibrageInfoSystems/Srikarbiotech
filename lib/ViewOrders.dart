@@ -478,6 +478,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       DateTime? picked = await showDatePicker(
         context: context,
         initialDate: initialDate,
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
       );
@@ -1178,7 +1179,7 @@ class _OrderCardState extends State<OrderCard> {
             builder: (context) => Orderdetails(
                 orderid: widget.orderResult.id,
                 orderdate: widget.formattedDate,
-                totalprice: widget.orderResult.totalCost,
+                totalCostWithGST: widget.orderResult.totalCostWithGST!,
                 bookingplace: widget.orderResult.bookingPlace,
                 transportmode: widget.orderResult.transportName,
                 lrnumber: 1,
@@ -1283,7 +1284,7 @@ class _OrderCardState extends State<OrderCard> {
                                   //   style: CommonUtils.txSty_13B_Fb,
                                   // ),
                                   Text(
-                                    '₹${formatNumber(widget.orderResult.totalCost)}',
+                                    '₹${formatNumber(widget.orderResult.totalCostWithGST!)}',
                                     style: CommonUtils.txSty_13O_F6,
                                   ),
                                   Text(

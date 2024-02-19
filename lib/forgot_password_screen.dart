@@ -23,16 +23,51 @@ class ForgotPasswordScreen extends StatefulWidget {
 
 class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   TextEditingController forgotEmailController = TextEditingController();
+  bool _isLoading = false;
 
-  Future<void> forgotPassword() async {
+  void _submitForm() {
+    final forgotEmail = forgotEmailController.text;
+
+    setState(() {
+      _isLoading = true;
+    });
+
+    forgotPassword(forgotEmail).then(
+          (data) {
+        setState(
+              () {
+            _isLoading = false;
+            ForgotModel res = forgotModelFromJson(data);
+            if (res.isSuccess) {
+              CommonUtils.showCustomToastMessageLong(
+                  res.endUserMessage, context, 0, 2);
+            } else {
+              CommonUtils.showCustomToastMessageLong(
+                  res.endUserMessage, context, 1, 2);
+            }
+          },
+        );
+      },
+    ).catchError((err) {
+      setState(() {
+        _isLoading = false;
+        String errorMessage = err.toString();
+        if (errorMessage.startsWith('Exception:')) {
+          errorMessage = errorMessage.substring('Exception:'.length).trim();
+        }
+        CommonUtils.showCustomToastMessageLong(errorMessage, context, 0, 2);
+      });
+    });
+  }
+
+  Future<dynamic> forgotPassword(String forgotEmail) async {
     String url =
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/ForgotPassword';
     final requestHeaders = {'Content-Type': 'application/json'};
-    final requestBody = {
-      "UserNameorEmail": forgotEmailController.text,
-      "CompanyId": 2
-    };
-
+    final requestBody = {"UserNameorEmail": forgotEmail, "CompanyId": 2};
+    if (forgotEmail.isEmpty) {
+      throw Exception('Please Enter Email/Username');
+    }
     try {
       final response = await http.post(
         Uri.parse(url),
@@ -40,27 +75,14 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
         body: jsonEncode(requestBody),
       );
 
-      if (forgotEmailController.text.isEmpty) {
-        CommonUtils.showCustomToastMessageLong(
-            'Please Enter Email/Username', context, 1, 4);
-        return;
-      }
-
-      ForgotModel forgotModel = forgotModelFromJson(response.body);
-      debugPrint(forgotModel.isSuccess.toString());
-      if (forgotModel.isSuccess) {
-        debugPrint('Valid email.');
-        CommonUtils.showCustomToastMessageLong(
-            forgotModel.endUserMessage, context, 0, 4);
-        return;
+      if (response.statusCode == 200) {
+        return response.body;
       } else {
-        debugPrint('Invalid email.');
-        CommonUtils.showCustomToastMessageLong(
-            forgotModel.endUserMessage, context, 1, 4);
-        return;
+        throw Exception(
+            'API call failed with status code: ${response.statusCode}');
       }
     } catch (e) {
-      throw Exception('Error Occurred!');
+      throw Exception('Error occurred during forgot password request: $e');
     }
   }
 
@@ -111,8 +133,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                   ),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.center,
-                    mainAxisAlignment: MainAxisAlignment.center, // here
-                    mainAxisSize: MainAxisSize.min, // here
+                    mainAxisAlignment: MainAxisAlignment.center,
+                    mainAxisSize: MainAxisSize.min,
                     children: [
                       const Align(
                         alignment: Alignment.topCenter,
@@ -212,7 +234,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                               child: Center(
                                 child: GestureDetector(
                                   onTap: () {
-                                    forgotPassword();
+                                    _submitForm();
                                   },
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
@@ -221,15 +243,26 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                       borderRadius: BorderRadius.circular(6.0),
                                       color: const Color(0xFFe78337),
                                     ),
-                                    child: const Row(
+                                    child: Row(
                                       crossAxisAlignment:
                                       CrossAxisAlignment.center,
                                       mainAxisAlignment:
                                       MainAxisAlignment.center,
                                       children: [
-                                        Text(
-                                          'Submit',
-                                          style: CommonUtils.Buttonstyle,
+                                        Stack(
+                                          alignment: Alignment.center,
+                                          children: [
+                                            const Text(
+                                              'Submit',
+                                              style: CommonUtils.Buttonstyle,
+                                            ),
+                                            if (_isLoading)
+                                              const Padding(
+                                                padding: EdgeInsets.all(8.0),
+                                                child: CircularProgressIndicator
+                                                    .adaptive(),
+                                              ),
+                                          ],
                                         ),
                                       ],
                                     ),
@@ -251,7 +284,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                   children: [
                                     const Text(
                                       'You want to go back to ',
-                                      style: CommonUtils.txSty_14B_Fb,
+                                      style: CommonUtils.Mediumtext_14,
                                     ),
                                     GestureDetector(
                                       onTap: () {

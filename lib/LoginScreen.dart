@@ -408,6 +408,7 @@ class _MyHomePageState extends State<LoginScreen> {
         print('Savedresponse: ${responseData}');
         await SharedPreferencesHelper.saveCategories(responseData);
 
+        await SharedPreferencesHelper.getCategories();
         SharedPreferencesHelper.putBool(Constants.IS_LOGIN, true);
         SharedPreferences prefs = await SharedPreferences.getInstance();
 
@@ -417,6 +418,8 @@ class _MyHomePageState extends State<LoginScreen> {
         prefs.setString("companyName", jsonResponse['response']['companyName']);
         prefs.setString("companyCode", jsonResponse['response']['companyCode']);
         prefs.setString("email", jsonResponse['response']['email']);
+        prefs.setString("userName", jsonResponse['response']['userName']);
+        prefs.setString("roleName", jsonResponse['response']['roleName']);
         SharedPrefsData.updateStringValue(
             "userId", jsonResponse['response']['userId']);
         SharedPrefsData.updateStringValue(

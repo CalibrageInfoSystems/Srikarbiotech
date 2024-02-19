@@ -808,7 +808,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                               itemGrpCod = productresp.itmsGrpCod!;
                                                             }
 
-                                                            if (cartProvider.isSamereturnItemGroup(itemGrpCod)) {
+
                                                               returnorderItem = ReturnOrderItemXrefType(
                                                                   id: 1,
                                                                   returnOrderId: 1001,
@@ -846,25 +846,10 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                                         index] =
                                                                     true;
                                                               });
-                                                            } else {
-                                                              // Display an error message, as itemGrpCod is not the same
-                                                              print(
-                                                                  'Error: Cannot add items with different itemGrpCod to the cart');
-                                                              CommonUtils
-                                                                  .showCustomToastMessageLong(
-                                                                      ' You can only add items with the Category ',
-                                                                      context,
-                                                                      1,
-                                                                      4);
-                                                              // Optionally reset isSelectedList[index] to false to keep UI in sync with cart state
-                                                              setState(() {
-                                                                isSelectedList[
-                                                                        index] =
-                                                                    false;
-                                                              });
                                                             }
+
                                                           }
-                                                        }
+
                                                       },
                                                       child: Container(
                                                         height: 36,
@@ -988,6 +973,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
               ))
             ],
           ),
+
           bottomNavigationBar: Container(
             height: 60,
             margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
@@ -995,53 +981,44 @@ class _ProductListState extends State<CreateReturnorderscreen> {
             child: Row(
               children: [
                 Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      // Add logic for the download button
-                      // if (globalCartLength > 0) {
-                      Navigator.push(
-                        context,
-                        MaterialPageRoute(
-                          builder: (context) => Returntransportdetails(
-                            cardName: '${widget.cardName}',
-                            cardCode: '${widget.cardCode}',
-                            address: '${widget.address}',
-                            state: '${widget.state}',
-                            phone: '${widget.phone}',
-                            proprietorName: '${widget.proprietorName}',
-                            gstRegnNo: '${widget.gstRegnNo}',
-                            creditLine: double.parse('${widget.creditLine}'),
-                            balance: double.parse('${widget.balance}'),
-                            lrnumber: '',
-                            lrdate: '',
-                            remarks: '',
+                  child: SizedBox(
+                    width: MediaQuery.of(context).size.width,
+                    height: 45.0,
+                    child: Center(
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => Returntransportdetails(
+                                cardName: widget.cardName,
+                                cardCode: widget.cardCode,
+                                address: widget.address,
+                                state: widget.state,
+                                phone: widget.phone,
+                                proprietorName: widget.proprietorName,
+                                gstRegnNo: widget.gstRegnNo,
+                                creditLine: double.parse('${widget.creditLine}'),
+                                balance: double.parse('${widget.balance}'),
+                                lrnumber: '',
+                                lrdate: '',
+                                remarks: '',
+                              ),
+                            ),
+                          );
+                        },
+                        child: Container(
+                          width: MediaQuery.of(context).size.width,
+                          height: 45.0,
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(6.0),
+                            color: const Color(0xFFe78337),
                           ),
-                        ),
-                      );
-
-                      print('Download button clicked');
-                      //    }
-                      // else {
-                      //   CommonUtils.showCustomToastMessageLong(
-                      //       'Please Select Atleast One Product', context, 1, 4);
-                      // }
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Color(0xFFe78337),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'Select Transport & Payment',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight:
-                                FontWeight.w700, // Set the font weight to bold
-                            fontFamily:
-                                'Roboto', // Set the font family to Roboto
+                          child: const Center(
+                            child: Text(
+                              'Select Transport',
+                              style: CommonUtils.Buttonstyle,
+                            ),
                           ),
                         ),
                       ),
@@ -1051,6 +1028,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
               ],
             ),
           ),
+
         ));
   }
 

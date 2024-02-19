@@ -199,7 +199,7 @@ class _ProductListState extends State<Createorderscreen> {
                           ),
                         );
 
-                        print('Download button clicked');
+                        print(' button clicked');
                       } else {
                         CommonUtils.showCustomToastMessageLong(
                             'Please Select Atleast One Product', context, 1, 4);
@@ -797,7 +797,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                               } else {
                                                                 // Display an error message, as itemGrpCod is not the same
                                                                 print('Error: Cannot add items with different itemGrpCod to the cart');
-                                                                CommonUtils.showCustomToastMessageLong(' You can only add items with the Category ', context, 1,
+                                                                CommonUtils.showCustomToastMessageLong('You can add items from one category in one order. For each category, you need to place a different order.', context, 1,
                                                                         4);
                                                                 setState(() {
                                                                   isSelectedList[index] = false;
@@ -1043,9 +1043,9 @@ class _ProductListState extends State<Createorderscreen> {
                             color: Colors.white,
                             fontSize: 18,
                             fontWeight:
-                                FontWeight.w700, // Set the font weight to bold
+                            FontWeight.w700, // Set the font weight to bold
                             fontFamily:
-                                'Roboto', // Set the font family to Roboto
+                            'Roboto', // Set the font family to Roboto
                           ),
                         ),
                       ),
@@ -1055,6 +1055,9 @@ class _ProductListState extends State<Createorderscreen> {
               ],
             ),
           ),
+
+
+
         ));
   }
 

@@ -50,23 +50,28 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
 
   void initializingApiData(Map<String, dynamic> apiData) {
     try {
-      List<Map<String, dynamic>> returnOrderDetailsResultListData =
-      List<Map<String, dynamic>>.from(
-          apiData['response']['returnOrderDetailsResult']);
+      if (apiData['response'] != null) {
+        if (apiData['response']['returnOrderDetailsResult'] != null) {
+          List<dynamic> returnOrderDetailsResultListData =
+          apiData['response']['returnOrderDetailsResult'];
+          returnOrderDetailsResultList = returnOrderDetailsResultListData
+              .map((item) => ReturnOrderDetailsResult.fromJson(item))
+              .toList();
+        }
 
-      returnOrderDetailsResultList = returnOrderDetailsResultListData
-          .map((item) => ReturnOrderDetailsResult.fromJson(item))
-          .toList();
-      List<Map<String, dynamic>> returnOrderItemXrefListData =
-      List<Map<String, dynamic>>.from(
-          apiData['response']['returnOrderItemXrefList']);
-      returnOrderItemXrefList = returnOrderItemXrefListData
-          .map((item) => ReturnOrderItemXrefList.fromJson(item))
-          .toList();
+        if (apiData['response']['returnOrderItemXrefList'] != null) {
+          List<dynamic> returnOrderItemXrefListData =
+          apiData['response']['returnOrderItemXrefList'];
+          returnOrderItemXrefList = returnOrderItemXrefListData
+              .map((item) => ReturnOrderItemXrefList.fromJson(item))
+              .toList();
+        }
+      }
     } catch (e) {
       debugPrint('Error initializing data: $e');
     }
   }
+
 
   Future<Map<String, dynamic>> getApiData() async {
     String apiUrl =
@@ -91,7 +96,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
           } else if (snapshot.hasError) {
             return const Center(
               child: Text(
-                'No collection found!',
+                'No orders found!',
                 style: CommonUtils.Mediumtext_14_cb,
               ),
             );
