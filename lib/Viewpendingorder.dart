@@ -18,14 +18,14 @@ import 'Payment_model.dart';
 import 'Services/api_config.dart';
 import 'order_details.dart';
 
-class ViewOrders extends StatefulWidget {
-  const ViewOrders({super.key});
+class Viewpendingorder extends StatefulWidget {
+  const Viewpendingorder({super.key});
 
   @override
-  State<ViewOrders> createState() => _VieworderPageState();
+  State<Viewpendingorder> createState() => _VieworderPageState();
 }
 
-class _VieworderPageState extends State<ViewOrders> {
+class _VieworderPageState extends State<Viewpendingorder> {
   final _orangeColor = HexColor('#e58338');
 
   List<OrderResult> orderesponselist = [];
@@ -76,12 +76,13 @@ class _VieworderPageState extends State<ViewOrders> {
     final url = Uri.parse(
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
     final requestBody = {
-      "PartyCode": viewOrdersProvider.getApiPartyCode,
-      "StatusId": viewOrdersProvider.getApiStatusId,
-      "FormDate": viewOrdersProvider.apiFromDate,
-      "ToDate": viewOrdersProvider.apiToDate,
-      "CompanyId": companyId,
-      "UserId": userId
+    "PartyCode": null,
+    "StatusId": 1,
+    "FormDate": "2024-02-20T11:32:21.6884332+05:30",
+    "ToDate": "2024-02-20T11:32:21.6884332+05:30",
+    "CompanyId": companyId,
+    "UserId": userId
+
     };
 
     debugPrint('_______view orders____1___');
@@ -103,8 +104,7 @@ class _VieworderPageState extends State<ViewOrders> {
         print('===========>$listResult');
 
         setState(() {
-          orderesponselist =
-              listResult.map((json) => OrderResult.fromJson(json)).toList();
+          orderesponselist = listResult.map((json) => OrderResult.fromJson(json)).toList();
           filterorderesponselist = List.from(orderesponselist);
         });
 
@@ -399,7 +399,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     // fromdateController.text = DateFormat('dd-MM-yyyy').format(oneWeekAgo);
     fetchData();
     getpaymentmethods();
-
+    fetchdropdownitems();
     super.initState();
   }
 
@@ -417,7 +417,30 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     todateController.text = viewOrdersProvider.displayToDate;
   }
 
+  Future<void> fetchdropdownitems() async {
+    savedCompanyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    final apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'
+        '$savedCompanyId';
 
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        final data = json.decode(response.body);
+        final listResult = data['response']['listResult'] as List;
+
+        setState(() {
+          purposeList =
+              listResult.map((item) => Purpose.fromJson(item)).toList();
+        });
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      print('Error: $e');
+    }
+  }
 
   Future<void> getpaymentmethods() async {
     final response = await http.get(Uri.parse(
@@ -997,7 +1020,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       final url = Uri.parse(
           'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
       final requestBody = {
-        "PartyCode": viewOrdersProvider.getApiPartyCode,
+        "PurposeName": viewOrdersProvider.getApiPurpose,
         "StatusId": viewOrdersProvider.getApiStatusId,
         "FormDate": viewOrdersProvider.apiFromDate,
         "ToDate": viewOrdersProvider.apiToDate,

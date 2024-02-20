@@ -18,6 +18,7 @@ import 'Companiesselection.dart';
 import 'LoginScreen.dart';
 import 'Selectpartyscreen.dart';
 import 'ViewReturnorder.dart';
+import 'Viewpendingorder.dart';
 
 class HomeScreen extends StatefulWidget {
   @override
@@ -42,16 +43,7 @@ class _home_Screen extends State<HomeScreen> {
       DeviceOrientation.portraitUp,
     ]);
 
-    // CommonUtils.checkInternetConnectivity().then((isConnected) {
-    //   if (isConnected) {
-    //     print('Connected to the internet');
- //
-    //   } else {
-    //     CommonUtils.showCustomToastMessageLong(
-    //         'No Internet Connection', context, 1, 4);
-    //     print('Not connected to the internet'); // Not connected to the internet
-    //   }
-    // });
+
   }
 
   @override
@@ -579,6 +571,46 @@ class _imagesliderState extends State<imageslider> {
                               ),
                             ],
                           ),
+
+                          Row(
+                            children: [
+                              // First Container with single card view
+                              Expanded(
+                                child: Container(
+                                  height: MediaQuery.of(context).size.height / 12, // Match height with the first container
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Expanded(
+                                        child:
+                                        Container(
+                                          child: _customcontainernewCard(
+                                            imageUrl: "bags-orders.svg",
+                                            item: "Approve Orders",
+                                            item1: "View All Pending Orders ",
+                                            color: Color(0xFFb7dbc1),
+                                            color_1: Color(0xFF43a05a),
+                                            textcolor: Color(0xFF118730),
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                    builder: (context) =>
+                                                        Viewpendingorder()),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              // Second Container divided into two equal-sized containers
+
+                            ],
+                          ),
                         ],
                       ),
                     ),
@@ -882,4 +914,87 @@ class _imagesliderState extends State<imageslider> {
       ),
     );
   }
+  _customcontainernewCard({
+    required String imageUrl,
+    required String item,
+    required String item1,
+    required Color color,
+    required VoidCallback? onTap,
+    required Color color_1,
+    required Color textcolor,
+  }) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        //height: 260 / 2,
+        height: MediaQuery.of(context).size.height / 6,
+        width: MediaQuery.of(context).size.width ,
+        child: Card(
+          color: color,
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          elevation: 8,
+          child: Padding(
+            padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            child:
+            Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              mainAxisAlignment: MainAxisAlignment.start,
+              children: <Widget>[
+                // SizedBox(height: 8),
+                Container(
+                  margin: EdgeInsets.only(bottom: 6),
+                  padding: EdgeInsets.all(6),
+                  decoration: BoxDecoration(
+                    color: color_1,
+                    borderRadius: BorderRadius.circular(10),
+                  ),
+                  child: SvgPicture.asset(
+                    "assets/" + imageUrl,
+                    width: 20.0,
+                    height: 22.0,
+                    color: Color(0xFF414141),
+                  ),
+                ),
+                SizedBox(width: 8),
+                Column( // Wrap item and item1 with a Column widget
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Container(
+                      child: Align(
+                        alignment: Alignment.topLeft,
+                        child: Text(
+                          item,
+                          maxLines: 1,
+                          style: TextStyle(
+                              fontSize: 16,
+                              fontFamily: "Roboto",
+                              fontWeight: FontWeight.w700,
+                              color: textcolor),
+                        ),
+                      ),
+                    ),
+                    SizedBox(
+                      height: 5.0,
+                    ),
+                    Text(
+                      item1,
+                      style: TextStyle(
+                          fontSize: 12,
+                          fontFamily: "Roboto",
+                          fontWeight: FontWeight.w500,
+                          color: Color(0xFF414141)),
+                    ),
+                  ],
+                ),
+              ],
+            ),
+
+
+          ),
+        ),
+      ),
+    );
+  }
+
+
 }
