@@ -30,29 +30,34 @@ class _home_Screen extends State<HomeScreen> {
   String? userId = "";
   String? companyName = "";
   String? slpCode = "";
+  String? userName = "";
+  String? roleName = "";
+  Map<String, dynamic>? categories;
   @override
   void initState() {
     super.initState();
+    getshareddata();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
 
-    CommonUtils.checkInternetConnectivity().then((isConnected) {
-      if (isConnected) {
-        print('Connected to the internet');
-        getshareddata();
-      } else {
-        CommonUtils.showCustomToastMessageLong(
-            'No Internet Connection', context, 1, 4);
-        print('Not connected to the internet'); // Not connected to the internet
-      }
-    });
+    // CommonUtils.checkInternetConnectivity().then((isConnected) {
+    //   if (isConnected) {
+    //     print('Connected to the internet');
+ //
+    //   } else {
+    //     CommonUtils.showCustomToastMessageLong(
+    //         'No Internet Connection', context, 1, 4);
+    //     print('Not connected to the internet'); // Not connected to the internet
+    //   }
+    // });
   }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height / 3;
+    getshareddata();
     return WillPopScope(
       onWillPop: () async {
         // Handle back button press here
@@ -68,50 +73,48 @@ class _home_Screen extends State<HomeScreen> {
             future: getshareddata(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                // final companyName = snapshot.data['companyName'];
+
                 Widget logoWidget = CompneyId == 1
                     ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
-                    : Image.asset('assets/srikar-seed.png',
-                    width: 60.0, height: 40.0);
+                    : Image.asset('assets/srikar-seed.png', width: 60.0, height: 40.0);
+
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
-                  // mainAxisSize: MainAxisSize.min,
                   children: [
-                    const Padding(
+                    Padding(
                       padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                      child: GestureDetector(
+                        onTap: () {
+                          Scaffold.of(context).openDrawer();
+                        },
+                        child: Icon(Icons.menu, color: Color(0xFFe78337), size: 30,),
+                      ),
                     ),
-                    GestureDetector(
-                      onTap: () {
-                        Scaffold.of(context).openDrawer();
-                      },
-                      child: const Icon(Icons.menu,color: Color(0xFFe78337), size: 30,),
-                    ),
-                    const SizedBox(
-                      width: 2.0,
-                    ),
+                    SizedBox(width: 2.0),
                     SizedBox(
                       width: 50.0,
                       height: 50.0,
                       child: logoWidget,
                     ),
-                    const SizedBox(
-                      width: 2.0,
-                    ),
+                    SizedBox(width: 2.0),
                     Text(
                       '$companyName',
-                      style: const TextStyle(
+                      style: TextStyle(
                         color: Color(0xFF414141),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    const Spacer(),
-                    const SizedBox(
-                      width: 10.0,
-                    ),
+                    Spacer(),
+                    SizedBox(width: 10.0),
                   ],
                 );
               } else {
-                return const SizedBox.shrink();
+                return SizedBox.shrink();
               }
             },
           ),
@@ -119,67 +122,89 @@ class _home_Screen extends State<HomeScreen> {
         drawer: Drawer(
           elevation: 16,
           width: MediaQuery.of(context).size.width / 1.8,
-          shape: const RoundedRectangleBorder(
+          shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(40),
               bottomRight: Radius.circular(40),
             ),
           ),
-          child: Container(
-            decoration: const BoxDecoration(
-              borderRadius: BorderRadius.only(
-                topRight: Radius.circular(20),
-                bottomRight: Radius.circular(50),
-              ),
-              color: Colors.white10,
-            ),
-            child: Column(
-              children: [
-                // header
-                DrawerHeader(
-                  child: Center(
-                    child:  CompneyId == 1
-            ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
-                  : Image.asset('assets/srikar-seed.png',
+          child: FutureBuilder(
+            future: getshareddata(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                if (snapshot.hasError) {
+                  return Text('Error: ${snapshot.error}');
+                }
+                // final companyName = snapshot.data['companyName'];
+                // final compneyId = snapshot.data['compneyId'];
 
-                      width: MediaQuery.of(context).size.height / 3.2,
-                      height: MediaQuery.of(context).size.height / 3.2,
+                return Container(
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.only(
+                      topRight: Radius.circular(20),
+                      bottomRight: Radius.circular(50),
                     ),
+                    color: Colors.white10,
                   ),
-                ),
-                const SizedBox(
-                  height: 20,
-                ),
-                // options
-
-                ListTile(
-                  leading: const Icon(Icons.key),
-                  title: const Text('Change Password',
-                      style: CommonUtils.txSty_14B_Fb),
-                  onTap: () {
-                    Navigator.pop(context);
-                    Navigator.of(context).push(
-                      MaterialPageRoute(
-                        builder: (context) => const ChangePassword(
-                         ),
+                  child: Column(
+                    children: [
+                      DrawerHeader(
+                        child: Center(
+                          child: CompneyId == 1
+                              ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
+                              : Image.asset(
+                            'assets/srikar-seed.png',
+                            width: MediaQuery.of(context).size.height / 3,
+                            height: MediaQuery.of(context).size.height / 3,
+                          ),
+                        ),
                       ),
-                    );
-                  },
-                ),
-                ListTile(
-                  leading: const Icon(Icons.logout),
-                  title: const Text(
-                    'Logout',
-                    style: CommonUtils.txSty_14B_Fb,
+                      SizedBox(height: 5),
+                      Column(
+                        mainAxisSize: MainAxisSize.min,
+                        children: [
+                          Text('$userName', style: CommonUtils.txSty_14B_Fb),
+                          Text('($roleName)', style: TextStyle(fontSize: 11)),
+                        ],
+                      ),
+                      SizedBox(height: 5),
+                      Container(
+                        width: double.infinity,
+                        height: 0.2,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.key),
+                        title: Text('Change Password', style: CommonUtils.txSty_14B_Fb),
+                        onTap: () {
+                          Navigator.pop(context);
+                          Navigator.of(context).push(
+                            MaterialPageRoute(
+                              builder: (context) => ChangePassword(),
+                            ),
+                          );
+                        },
+                      ),
+                      ListTile(
+                        leading: Icon(Icons.logout),
+                        title: Text('Logout', style: CommonUtils.txSty_14B_Fb),
+                        onTap: () async {
+                          logOutDialog();
+                        },
+                      ),
+                    ],
                   ),
-                  onTap: () async {
-                    logOutDialog();
-                  },
-                ),
-              ],
-            ),
+                );
+              } else {
+                return CircularProgressIndicator();
+              }
+            },
           ),
         ),
+
         body: imageslider(),
       ),
     );
@@ -190,6 +215,8 @@ class _home_Screen extends State<HomeScreen> {
     slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
     companyName = await SharedPrefsData.getStringFromSharedPrefs("companyName");
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    userName = await SharedPrefsData.getStringFromSharedPrefs("userName");
+    roleName = await SharedPrefsData.getStringFromSharedPrefs("roleName");
     print('User ID: $userId');
     print('SLP Code: $slpCode');
     print('Company ID: $CompneyId');

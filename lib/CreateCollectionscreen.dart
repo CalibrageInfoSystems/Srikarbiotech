@@ -1546,19 +1546,19 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
     TextEditingController controller,
   ) async {
     DateTime currentDate = DateTime.now();
-    DateTime initialDate;
+    DateTime initialDate = selectedCheckDate ?? currentDate;
 
-    if (controller.text.isNotEmpty) {
-      try {
-        initialDate = DateTime.parse(controller.text);
-      } catch (e) {
-        // Handle the case where the current text is not a valid date format
-        print("Invalid date format: $e");
-        initialDate = currentDate;
-      }
-    } else {
-      initialDate = currentDate;
-    }
+    // if (controller.text.isNotEmpty) {
+    //   try {
+    //     initialDate = DateTime.parse(controller.text);
+    //   } catch (e) {
+    //     // Handle the case where the current text is not a valid date format
+    //     print("Invalid date format: $e");
+    //     initialDate = currentDate;
+    //   }
+    // } else {
+    //   initialDate = currentDate;
+    // }
 
     try {
       DateTime? picked = await showDatePicker(
@@ -1592,19 +1592,19 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
     TextEditingController controller,
   ) async {
     DateTime currentDate = DateTime.now();
-    DateTime initialDate;
 
-    if (controller.text.isNotEmpty) {
-      try {
-        initialDate = DateTime.parse(controller.text);
-      } catch (e) {
-        // Handle the case where the current text is not a valid date format
-        print("Invalid date format: $e");
-        initialDate = currentDate;
-      }
-    } else {
-      initialDate = currentDate;
-    }
+    DateTime initialDate = selectedDate ?? currentDate;
+    // if (controller.text.isNotEmpty) {
+    //   try {
+    //     initialDate = DateTime.parse(controller.text);
+    //   } catch (e) {
+    //     // Handle the case where the current text is not a valid date format
+    //     print("Invalid date format: $e");
+    //     initialDate = currentDate;
+    //   }
+    // } else {
+    //   initialDate = currentDate;
+    // }
 
     try {
       DateTime? picked = await showDatePicker(

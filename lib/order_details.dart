@@ -1108,12 +1108,19 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           invoiceResponse?.listResult != null && invoiceResponse!.listResult!.isNotEmpty
-                              ? Container(
+                              ?
+                          Container(
                             width: screenWidth,
-                            height: 250,
+                          padding: const EdgeInsets.only(left: 0.0, right: 0.0),
+                          //   height: screenHeight / 2,
+                          decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          //        color: Colors.white,
+                          ),
                             child:
                             ListView.builder(
-                              scrollDirection: Axis.vertical,
+                            shrinkWrap: true,
+    physics: const PageScrollPhysics(),
                               itemCount: invoiceResponse!.listResult!.length,
                               itemBuilder: (context, index) {
                                 InvoiceDetails invoice = invoiceResponse!.listResult![index];
@@ -1297,87 +1304,87 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                               ),
                                             ],
                                           ),
-                                          Container(
-                                            width: double.infinity,
-                                            height: 0.2,
-                                            color: Colors.grey,
-                                          ),
-                                          Row(
-                                            mainAxisAlignment:
-                                            MainAxisAlignment
-                                                .spaceBetween,
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 10),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
-                                                    children: [
-                                                      const Text(
-                                                        'LR Number',
-                                                        style: CommonUtils
-                                                            .txSty_13B_Fb,
-                                                      ),
-                                                      Text(
-                                                        '${widget.lrnumber}',
-                                                        style: TextStyle(
-                                                          fontFamily:
-                                                          'Roboto',
-                                                          fontWeight:
-                                                          FontWeight.bold,
-                                                          color: HexColor(
-                                                              '#e58338'),
-                                                          fontSize: 13,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              Container(
-                                                width: 0.2,
-                                                height: 60,
-                                                color: Colors.grey,
-                                              ),
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: const EdgeInsets
-                                                      .symmetric(
-                                                      horizontal: 12,
-                                                      vertical: 10),
-                                                  child: Column(
-                                                    crossAxisAlignment:
-                                                    CrossAxisAlignment
-                                                        .start,
-                                                    children: [
-                                                      const Text(
-                                                        'LR Date',
-                                                        style: CommonUtils
-                                                            .txSty_13B_Fb,
-                                                      ),
-                                                      Text(
-                                                        '',
-                                                        style: TextStyle(
-                                                          fontFamily:
-                                                          'Roboto',
-                                                          fontWeight:
-                                                          FontWeight.bold,
-                                                          color: HexColor(
-                                                              '#e58338'),
-                                                          fontSize: 13,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                          // Container(
+                                          //   width: double.infinity,
+                                          //   height: 0.2,
+                                          //   color: Colors.grey,
+                                          // ),
+                                          // Row(
+                                          //   mainAxisAlignment:
+                                          //   MainAxisAlignment
+                                          //       .spaceBetween,
+                                          //   children: <Widget>[
+                                          //     Expanded(
+                                          //       child: Padding(
+                                          //         padding: const EdgeInsets
+                                          //             .symmetric(
+                                          //             horizontal: 12,
+                                          //             vertical: 10),
+                                          //         child: Column(
+                                          //           crossAxisAlignment:
+                                          //           CrossAxisAlignment
+                                          //               .start,
+                                          //           children: [
+                                          //             const Text(
+                                          //               'LR Number',
+                                          //               style: CommonUtils
+                                          //                   .txSty_13B_Fb,
+                                          //             ),
+                                          //             Text(
+                                          //               '${widget.lrnumber}',
+                                          //               style: TextStyle(
+                                          //                 fontFamily:
+                                          //                 'Roboto',
+                                          //                 fontWeight:
+                                          //                 FontWeight.bold,
+                                          //                 color: HexColor(
+                                          //                     '#e58338'),
+                                          //                 fontSize: 13,
+                                          //               ),
+                                          //             ),
+                                          //           ],
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //     Container(
+                                          //       width: 0.2,
+                                          //       height: 60,
+                                          //       color: Colors.grey,
+                                          //     ),
+                                          //     Expanded(
+                                          //       child: Padding(
+                                          //         padding: const EdgeInsets
+                                          //             .symmetric(
+                                          //             horizontal: 12,
+                                          //             vertical: 10),
+                                          //         child: Column(
+                                          //           crossAxisAlignment:
+                                          //           CrossAxisAlignment
+                                          //               .start,
+                                          //           children: [
+                                          //             const Text(
+                                          //               'LR Date',
+                                          //               style: CommonUtils
+                                          //                   .txSty_13B_Fb,
+                                          //             ),
+                                          //             Text(
+                                          //               '',
+                                          //               style: TextStyle(
+                                          //                 fontFamily:
+                                          //                 'Roboto',
+                                          //                 fontWeight:
+                                          //                 FontWeight.bold,
+                                          //                 color: HexColor(
+                                          //                     '#e58338'),
+                                          //                 fontSize: 13,
+                                          //               ),
+                                          //             ),
+                                          //           ],
+                                          //         ),
+                                          //       ),
+                                          //     ),
+                                          //   ],
+                                          // ),
 
                                           Container(
                                             width: double.infinity,
@@ -1577,7 +1584,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                           mainAxisAlignment: MainAxisAlignment.center,
                                                           children: [
                                                             Container(
-                                                              padding: EdgeInsets.symmetric(horizontal: 10.0),
+                                                              padding: EdgeInsets.symmetric(horizontal: 5.0),
                                                               child: Row(
                                                                 children: [
                                                                   SvgPicture.asset(
@@ -1590,9 +1597,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                                   SizedBox(width: 8.0),
                                                                   Text(
                                                                     'Download Invoice',
-                                                                    style: TextStyle(
-                                                                      color: Colors.black,
-                                                                    ),
+                                                                    style: CommonUtils.Mediumtext_12
                                                                   ),
                                                                 ],
                                                               ),
@@ -2251,7 +2256,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
             child: Container(
               decoration: BoxDecoration(
 
-                borderRadius: BorderRadius.circular(8.0),
+                borderRadius: BorderRadius.circular(10.0),
                 // borderRadius: BorderRadius.only(
                 //   topLeft: Radius.circular(8.0),
                 //   topRight: Radius.circular(8.0),

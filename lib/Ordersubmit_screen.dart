@@ -824,6 +824,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       "CreatedDate": formattedcurrentDate,
       "UpdatedBy": userId,
       "UpdatedDate": formattedcurrentDate,
+      "SHRemarks": "",
+      "RejectedRemarks": ""
 
     };
     print(jsonEncode(orderData));
@@ -839,24 +841,30 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
 
         if (response.statusCode == 200) {
           // Successful request
+
           final responseData = jsonDecode(response.body);
           print(responseData);
+if(responseData['isSuccess']) {
+  final cartProvider = context.read<CartProvider>();
 
-          final cartProvider = context.read<CartProvider>();
+  clearCartData(cartProvider);
 
-          clearCartData(cartProvider);
-
-          Navigator.push(
-            context,
-            MaterialPageRoute(
-              builder: (context) => orderStatusScreen(
-                responseData: responseData,
-                Compneyname: Compneyname,
-              ),
-            ),
-          );
-          clearCartItems();
-          printRemainingCartItems();
+  Navigator.push(
+    context,
+    MaterialPageRoute(
+      builder: (context) =>
+          orderStatusScreen(
+            responseData: responseData,
+            Compneyname: Compneyname,
+          ),
+    ),
+  );
+}else{
+  CommonUtils.showCustomToastMessageLong(
+      responseData['endUserMessage'], context, 1, 4);
+}
+          // clearCartItems();
+          // printRemainingCartItems();
         } else {
           // Handle errors
           print('Error: ${response.reasonPhrase}');

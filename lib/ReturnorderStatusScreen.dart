@@ -48,7 +48,7 @@ class ReturnorderStatusScreen extends StatelessWidget {
                 height: 35,
               ),
               Text(
-                'Your Return Order got Placed successfully',
+                'Your Return Order Placed Successfully',
                 style: TextStyle(
                   fontSize: 19,
                   letterSpacing: 0,

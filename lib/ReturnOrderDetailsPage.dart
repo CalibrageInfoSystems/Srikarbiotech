@@ -6,6 +6,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'package:srikarbiotech/Model/returnorderimagedata_model.dart';
 import 'package:srikarbiotech/Model/viewreturnorders_model.dart';
@@ -72,7 +74,6 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
     }
   }
 
-
   Future<Map<String, dynamic>> getApiData() async {
     String apiUrl =
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderDetailsById/${widget.orderId}';
@@ -124,80 +125,59 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                         const SizedBox(
                           height: 10,
                         ),
-                        // Card(
-                        //   elevation: 5,
-                        //   child: Container(
-                        //     decoration: BoxDecoration(
-                        //       color: Colors.white,
-                        //       borderRadius: BorderRadius.circular(10),
-                        //     ),
-                        //     width: double.infinity,
-                        //     padding: const EdgeInsets.all(12),
-                        //     child: Column(
-                        //       crossAxisAlignment: CrossAxisAlignment.start,
-                        //       children: <Widget>[
-                        //         Text(
-                        //           'Party Details',
-                        //           style: _titleTextStyle,
-                        //         ),
-                        //         Text(
-                        //           data[0].partyName,
-                        //           style: _dataTextStyle,
-                        //         ),
-                        //         Text(
-                        //           data[0].partyCode,
-                        //           style: _dataTextStyle,
-                        //         ),
-                        //         const SizedBox(
-                        //           height: 10,
-                        //         ),
-                        //         Text(
-                        //           'Address',
-                        //           style: _titleTextStyle,
-                        //         ),
-                        //         Text(
-                        //           data[0].partyAddress,
-                        //           style: _dataTextStyle,
-                        //         ),
-                        //       ],
-                        //     ),
-                        //   ),
-                        // ),
 
                         // card 2
                         // shipment details card
-                        ListView(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          children: List.generate(
-                            returnOrderDetailsResultList.length,
-                                (index) => ShipmentDetailsCard(
-                                orderId: widget.orderId, data: result[index]),
-                          ),
+                        Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5.0), // Adjust the left padding as needed
+                              child: Text(
+                                'Order Details',
+                                style: CommonUtils.header_Styles16,
+                              ),
+                            ),
+                            ListView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              children: List.generate(
+                                returnOrderDetailsResultList.length,
+                                    (index) => ShipmentDetailsCard(
+                                  orderId: widget.orderId,
+                                  data: returnOrderDetailsResultList[index],
+                                ),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 10,
+                            ),
+                            Padding(
+                              padding: const EdgeInsets.only(left: 5.0), // Adjust the left padding as needed
+                              child: Text(
+                                'Item Details',
+                                style: CommonUtils.header_Styles16,
+                              ),
+                            ),
+                            ListView(
+                              physics: const NeverScrollableScrollPhysics(),
+                              shrinkWrap: true,
+                              children: List.generate(
+                                returnOrderItemXrefList.length,
+                                    (index) => ItemCard(data: returnOrderItemXrefList[index]),
+                              ),
+                            ),
+                            const SizedBox(
+                              height: 20,
+                            ),
+                          ],
                         ),
 
-                        const SizedBox(
-                          height: 10,
-                        ),
 
-                        // card 3
-                        // item card
-                        ListView(
-                          physics: const NeverScrollableScrollPhysics(),
-                          shrinkWrap: true,
-                          children: List.generate(
-                            returnOrderItemXrefList.length,
-                                (index) =>
-                                ItemCard(data: returnOrderItemXrefList[index]),
-                          ),
-                        ),
-                        const SizedBox(
-                          height: 20,
-                        ),
 
                         // card 4
                         // payment details card
-                     //   PaymentDetailsCard(data: data),
+                        //   PaymentDetailsCard(data: data),
                       ],
                     ),
                   ),
@@ -257,7 +237,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
               // Handle the click event for the home icon
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
+                MaterialPageRoute(builder: (context) =>  HomeScreen()),
               );
             },
             child: Image.asset(
@@ -285,6 +265,7 @@ class ShipmentDetailsCard extends StatefulWidget {
 class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
   final _orangeColor = HexColor('#e58338');
 
+  int currentIndex = 0;
   final _titleTextStyle = const TextStyle(
     fontFamily: 'Roboto',
     fontWeight: FontWeight.w700,
@@ -483,6 +464,35 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                         ),
                       ],
                     ),
+
+
+                    dividerForHorizontal,
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: <Widget>[
+                        Expanded(
+                          child: Padding(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 12, vertical: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                Text(
+                                  'Transport Name',
+                                  style: _titleTextStyle,
+                                ),
+                                SizedBox(height: 4),
+                                Text(
+                                '',
+                                  style: _dataTextStyle,
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      ],
+                    ),
+
                     dividerForHorizontal1,
 
                     // row two
@@ -508,7 +518,6 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                             ),
                           ),
                         ),
-
                       ],
                     ),
                     dividerForHorizontal1,
@@ -527,50 +536,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                         ),
                         child: GestureDetector(
                           onTap: () {
-                            showDialog(
-                              context: context,
-                              builder: (context) {
-                                return AlertDialog(
-                                  title: const Text('Attachments'),
-                                  elevation: 5.0,
-                                  contentPadding: const EdgeInsets.all(10.0),
-                                  content: SizedBox(
-                                    height: 120,
-                                    width: 300,
-                                    child: CarouselSlider(
-                                      items: data.map((imageUrl) {
-                                        return Image.network(
-                                          imageUrl.imageString,
-                                          fit: BoxFit.cover,
-                                        );
-                                      }).toList(),
-                                      options: CarouselOptions(
-                                        scrollPhysics:
-                                        const BouncingScrollPhysics(),
-                                        autoPlay: true,
-                                        height:
-                                        MediaQuery.of(context).size.height,
-                                        aspectRatio: 23 / 9,
-                                        viewportFraction: 1,
-                                        onPageChanged: (index, reason) {
-                                          setState(() {
-                                            currentIndex = index;
-                                          });
-                                        },
-                                      ),
-                                    ),
-                                  ),
-                                  actions: [
-                                    TextButton(
-                                      onPressed: () {
-                                        Navigator.pop(context);
-                                      },
-                                      child: const Text('Close'),
-                                    ),
-                                  ],
-                                );
-                              },
-                            );
+                            showAttachmentsDialog(data);
                           },
                           child: const Row(
                             mainAxisSize: MainAxisSize.min,
@@ -602,6 +568,170 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
       },
     );
   }
+
+  void _showZoomedAttachments(String imageString) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10), color: Colors.white),
+            width: double.infinity,
+            height: 500,
+            child: Stack(
+              children: [
+                Center(
+                  child: PhotoViewGallery.builder(
+                    itemCount: 1, // Only one image in the gallery
+                    builder: (context, index) {
+                      return PhotoViewGalleryPageOptions(
+                        imageProvider: NetworkImage(imageString),
+                        minScale: PhotoViewComputedScale.contained,
+                        maxScale: PhotoViewComputedScale.covered,
+                      );
+                    },
+                    scrollDirection: Axis.vertical,
+                    scrollPhysics: const PageScrollPhysics(),
+                    allowImplicitScrolling: true,
+                    backgroundDecoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Container(
+                      padding: const EdgeInsets.all(3.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.red,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildIndicator(int index) {
+    debugPrint('index: $index');
+    return Container(
+      width: 8,
+      height: 8,
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: index == currentIndex ? Colors.orange : Colors.grey,
+      ),
+    );
+  }
+
+  void showAttachmentsDialog(List<ReturnOrdersImageList> data) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Attachments'),
+          elevation: 5.0,
+          contentPadding: const EdgeInsets.all(5.0),
+          content: SizedBox(
+            height: 120,
+            width: 300,
+            child: Stack(
+              children: [
+                CarouselSlider(
+                  items: data.map((imageUrl) {
+                    return GestureDetector(
+                      onTap: () {
+                        _showZoomedAttachments(imageUrl.imageString);
+                      },
+                      child: Image.network(
+                        imageUrl.imageString,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  }).toList(),
+                  options: CarouselOptions(
+                    scrollPhysics: const BouncingScrollPhysics(),
+                    autoPlay: true,
+                    enableInfiniteScroll: false,
+                    height: MediaQuery.of(context).size.height,
+                    aspectRatio: 23 / 9,
+                    viewportFraction: 1,
+                    onPageChanged: (index, reason) {
+                      // Handle page change if needed
+                      setState(() {
+                        currentIndex = index;
+                      });
+                    },
+                  ),
+
+                  // CarouselOptions(
+                  //   scrollPhysics:
+                  //       const BouncingScrollPhysics(),
+                  //   autoPlay: false,
+                  //   enableInfiniteScroll: false,
+                  //   viewportFraction: 1.0,
+                  //   height: MediaQuery.of(context)
+                  //       .size
+                  //       .height,
+                  //   aspectRatio: 23 / 9,
+                  //   onPageChanged: (index, reason) {
+                  //     setState(() {
+                  //       currentIndex = index;
+                  //     });
+                  //   },
+                  // ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  //  padding: EdgeInsets.all(20.0),
+
+                  height: MediaQuery.of(context).size.height,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 25.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          // Use the number of images from assets
+                          data.length, // Replace with the actual number of assets
+                              (index) {
+                            return buildIndicator(index);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
 }
 
 class AttachmentImages extends StatelessWidget {
@@ -619,84 +749,7 @@ class AttachmentImages extends StatelessWidget {
   }
 }
 
-// class ItemCard extends StatelessWidget {
-//   const ItemCard({super.key});
 
-//   final _titleTextStyle = const TextStyle(
-//     fontFamily: 'Roboto',
-//     fontWeight: FontWeight.w700,
-//     color: Colors.black,
-//     fontSize: 15,
-//   );
-//   final _dataTextStyle = const TextStyle(
-//     fontFamily: 'Roboto',
-//     fontWeight: FontWeight.w600,
-//     color: Color.fromARGB(255, 185, 105, 0),
-//     fontSize: 14,
-//   );
-
-//   @override
-//   Widget build(BuildContext context) {
-//     return ListView.builder(
-//         itemCount: 1,
-//         itemBuilder: (context, index) {
-//           return ClipRRect(
-//             borderRadius: BorderRadius.circular(25.0),
-//             child: Card(
-//               elevation: 5,
-//               child: Container(
-//                 color: Colors.white,
-//                 width: double.infinity,
-//                 padding: const EdgeInsets.all(12),
-//                 child: Column(
-//                   crossAxisAlignment: CrossAxisAlignment.start,
-//                   children: <Widget>[
-//                     Text(
-//                       'Nuca-11 (Calcium 11% SC) - 1 Liter',
-//                       style: _titleTextStyle,
-//                     ),
-//                     Row(
-//                       children: [
-//                         Text(
-//                           'Qty: ',
-//                           style: _titleTextStyle,
-//                         ),
-//                         Text(
-//                           '12',
-//                           style: _dataTextStyle,
-//                         ),
-//                       ],
-//                     ),
-//                     const SizedBox(
-//                       height: 10,
-//                     ),
-//                     Row(
-//                       children: [
-//                         Text(
-//                           '\$5475.00 ',
-//                           style: _dataTextStyle,
-//                         ),
-//                         const SizedBox(
-//                           width: 10,
-//                         ),
-//                         const Text(
-//                           '\$8500.00 ',
-//                           style: TextStyle(
-//                             fontSize: 12,
-//                             fontFamily: 'Roboto',
-//                             fontWeight: FontWeight.bold,
-//                           ),
-//                         ),
-//                       ],
-//                     ),
-//                   ],
-//                 ),
-//               ),
-//             ),
-//           );
-//         });
-//   }
-// }
 
 class ItemCard extends StatelessWidget {
   final ReturnOrderItemXrefList data;
@@ -716,7 +769,8 @@ class ItemCard extends StatelessWidget {
         ),
         width: double.infinity,
         padding: const EdgeInsets.all(12),
-        child: Column(
+        child:
+        Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
@@ -738,35 +792,45 @@ class ItemCard extends StatelessWidget {
                 ),
               ],
             ),
-            // const SizedBox(
-            //   height: 10,
-            // ),
-            // Row(
-            //   children: [
-            //     Icon(
-            //       Icons.currency_rupee,
-            //       size: 12,
-            //       color: HexColor('#e58338'),
-            //     ),
-            //     Text(
-            //       data.price.toString(),
-            //       style: CommonUtils.txSty_13O_F6,
-            //     ),
-            //     // const SizedBox(
-            //     //   width: 10,
-            //     // ),
-            //     // Text(
-            //     //   '\$${data.price.toString()} ',
-            //     //   style: const TextStyle(
-            //     //     fontSize: 12,
-            //     //     fontFamily: 'Roboto',
-            //     //     fontWeight: FontWeight.bold,
-            //     //   ),
-            //     // ),
-            //   ],
-            // ),
+            SizedBox(height: 5.0),
+            Container(
+              width: double.infinity,
+              height: 0.2,
+              color: Colors.grey,
+            ),
+            SizedBox(height: 5.0),
+            Row(
+              children: [
+                if (data.remarks != null)
+                  Expanded(
+                    child: Row(
+                      children: [
+                        const Text(
+                          'Remarks:',
+                          style: CommonUtils.txSty_13B_Fb,
+                        ),
+                        Text(
+                          data.remarks!,
+                          style: CommonUtils.txSty_13O_F6,
+                        ),
+                      ],
+                    ),
+                  ),
+                if (data.remarks == null)
+                  Expanded(
+                    child: SizedBox(), // Empty container to occupy space
+                  ),
+                Spacer(), // Spacer to push statusName to the end
+                Text(
+                  data.statusName,
+                  style: CommonUtils.txSty_13O_F6,
+                ),
+              ],
+            ),
           ],
         ),
+
+
       ),
     );
   }

@@ -413,8 +413,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   void initializeFromAndToDates() {
-    fromdateController.text = viewOrdersProvider.apiFromDate;
-    todateController.text = viewOrdersProvider.apiToDate;
+    fromdateController.text = viewOrdersProvider.displayFromDate;
+    todateController.text = viewOrdersProvider.displayToDate;
   }
 
   Future<void> fetchdropdownitems() async {
@@ -591,6 +591,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       DateTime? picked = await showDatePicker(
         context: context,
         initialDate: initialDate,
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
       );
@@ -809,59 +810,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     const SizedBox(
                       height: 10.0,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5.0),
-                      child: Text(
-                        'Purpose',
-                        style: CommonUtils.txSty_13O_F6,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 4.0,
-                    ),
-                    Container(
-                        height: 40.0,
-                        padding: const EdgeInsets.only(left: 15, right: 5),
-                        //TODO
-                        decoration: CommonUtils.decorationO_R10W1,
-                        child: purposeList.isEmpty
-                            ? LoadingAnimationWidget.newtonCradle(
-                          color: Colors.blue,
-                          size: 40.0,
-                        )
-                            : DropdownButton<String>(
-                          hint: Text(
-                            'Select Purpose',
-                            style: CommonUtils.txSty_13O_F6,
-                          ),
-                          value: provider.dropDownPurpose,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedPurpose = newValue;
-                              provider.dropDownPurpose = newValue;
-                              selectedPurposeObj = purposeList.firstWhere(
-                                    (purpose) => purpose.fldValue == newValue,
-                                orElse: () => Purpose(
-                                    fldValue: '', descr: '', purposeName: ''),
-                              );
-                              purposename = selectedPurposeObj!.fldValue;
-                              provider.getApiPurpose = newValue;
-                            });
-                          },
-                          items: purposeList.map((Purpose purpose) {
-                            return DropdownMenuItem<String>(
-                              value: purpose.fldValue,
-                              child: Text(
-                                purpose.purposeName,
-                                style: CommonUtils.txSty_13O_F6,
-                              ),
-                            );
-                          }).toList(),
-                          icon: const Icon(Icons.arrow_drop_down),
-                          iconSize: 20,
-                          isExpanded: true,
-                          underline: const SizedBox(),
-                        ))
+
                   ],
                 ),
 

@@ -42,6 +42,7 @@ class ReturnOrdersubmit_screen extends StatefulWidget {
   final String addlattchments;
   final double creditLine;
   final double balance;
+  final String transportname;
 
   ReturnOrdersubmit_screen(
       {required this.cardName,
@@ -58,7 +59,7 @@ class ReturnOrdersubmit_screen extends StatefulWidget {
       required this.ReturnOrderReceipt,
       required this.addlattchments,
       required this.creditLine,
-      required this.balance});
+      required this.balance,required this.transportname});
   @override
   returnOrder_submit_screen createState() => returnOrder_submit_screen();
 }
@@ -165,7 +166,8 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                 ),
                 SizedBox(width: 8.0),
                 Text(
-                  'Place Return Order ',
+                  'Return Order Submission ',
+
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -247,64 +249,83 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
             ),
             Container(
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 2.0, left: 8.0, right: 10.0),
+              padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
               child: IntrinsicHeight(
                 child: Card(
-                  //color: Colors.white,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
+
                   child: Container(
-                    padding: const EdgeInsets.all(5.0),
+
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
                       color: Colors.white,
-
-                      // color: Colors.white
                     ),
+                    padding: EdgeInsets.all(10.0),
+
                     width: MediaQuery.of(context).size.width,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        Container(
-                          padding: EdgeInsets.only(top: 1.0),
-                          child: Text(
-                            '${widget.cardName}',
-                            style: CommonUtils.header_Styles16,
-                            maxLines: 2, // Display in 2 lines
-                            overflow: TextOverflow.ellipsis,
-                          ),
+
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Credit Limit',
+                                style: TextStyle(
+                                  color: Color(0xFF5f5f5f),
+                                  fontFamily: "Roboto",
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
+                                '₹${widget.creditLine}',
+                                style: TextStyle(
+                                  color: Color(0xFF5f5f5f),
+                                  fontFamily: "Roboto",
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.0,
+                                ),
+                                textAlign: TextAlign.right,
+                              ),
+                            ),
+                          ],
                         ),
-                        Container(
-                          width: MediaQuery.of(context).size.width,
-                          child: Row(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            mainAxisAlignment: MainAxisAlignment.end,
-                            children: [
-                              Text(
+                        SizedBox(height: 5.0), // Add some space between rows
+                        // Third Row: Outstanding Amount
+                        Row(
+                          children: [
+                            Expanded(
+                              child: Text(
+                                'Outstanding Amount',
+                                style: TextStyle(
+                                  color: Color(0xFF5f5f5f),
+                                  fontFamily: "Roboto",
+                                  fontWeight: FontWeight.w700,
+                                  fontSize: 14.0,
+                                ),
+                              ),
+                            ),
+                            Expanded(
+                              child: Text(
                                 '₹${widget.balance}',
                                 style: TextStyle(
-                                  color: Color(0xFFe78337),
+                                  color: Color(0xFF5f5f5f),
                                   fontFamily: "Roboto",
                                   fontWeight: FontWeight.w700,
                                   fontSize: 14.0,
                                 ),
+                                textAlign: TextAlign.right,
                               ),
-                              SizedBox(
-                                  width:
-                                  5.0), // Add some space between balance and credit line
-                              Text(
-                                '(${widget.creditLine})',
-                                style: TextStyle(
-                                  color: Colors.black,
-                                  fontFamily: "Roboto",
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14.0,
-                                ),
-                              ),
-                            ],
-                          ),
-                        )
+                            ),
+                          ],
+                        ),
+
                       ],
                     ),
                   ),
@@ -395,6 +416,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                                                   '${widget.creditLine}'), // Convert to double
                                               balance: double.parse(
                                                   '${widget.balance}'),
+                                                transportname :'${widget.transportname}',
                                             )),
                                   );
                                 },
@@ -453,6 +475,33 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                                     SizedBox(height: 4),
                                     Text(
                                       LrDate1,
+                                      style: _dataTextStyle,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        dividerForHorizontal,
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Text(
+                                      'Transport Name',
+                                      style: _titleTextStyle,
+                                    ),
+                                    SizedBox(height: 4),
+                                    Text(
+                                      '${widget.transportname}',
                                       style: _dataTextStyle,
                                     ),
                                   ],
@@ -658,7 +707,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
                         Text(
-                          'Place Your Order',
+                          'Place Your Return Order',
                           style: TextStyle(
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w700,
@@ -789,7 +838,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       "StatusTypeId": 13,
       "Discount": 1.1,
       "TotalCost": totalSum,
-      "Remarks": "test",
+      "Remarks": '${widget.Remarks}',
       "IsActive": true,
       "CreatedBy": userId,
       "CreatedDate": formattedcurrentDate,
@@ -807,6 +856,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       "OtherFileName": "",
       "OtherFileExtension": ".jpg",
       "OtherFileLocation": ""
+      ""
     };
     print(jsonEncode(orderData));
 

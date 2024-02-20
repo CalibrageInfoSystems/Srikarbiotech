@@ -1184,7 +1184,7 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
 
   @override
   Widget build(BuildContext context) {
-    String dateString = widget.data.lrDate;
+    String dateString = widget.data.createdDate;
     DateTime date = DateTime.parse(dateString);
     String formattedDate = DateFormat('dd MMM, yyyy').format(date);
 

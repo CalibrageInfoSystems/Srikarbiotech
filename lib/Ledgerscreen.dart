@@ -446,17 +446,17 @@ class Ledger_screen extends State<Ledgerscreen> {
     DateTime currentDate = DateTime.now();
     // DateTime initialDate;
     DateTime initialDate = selectedFromDate ?? currentDate;
-    if (controller.text.isNotEmpty) {
-      try {
-        initialDate = DateTime.parse(controller.text);
-      } catch (e) {
-        // Handle the case where the current text is not a valid date format
-        print("Invalid date format: $e");
-        initialDate = currentDate;
-      }
-    } else {
-      initialDate = currentDate;
-    }
+    // if (controller.text.isNotEmpty) {
+    //   try {
+    //     initialDate = DateTime.parse(controller.text);
+    //   } catch (e) {
+    //     // Handle the case where the current text is not a valid date format
+    //     print("Invalid date format: $e");
+    //     initialDate = currentDate;
+    //   }
+    // } else {
+    //   initialDate = currentDate;
+    // }
 
     try {
       DateTime? picked = await showDatePicker(

@@ -452,11 +452,11 @@ print('===>${jsonEncode(requestBody)}');
                 padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: GestureDetector(
                   onTap: () {
-                    // call clear filter method to clear the data
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(builder: (context) => HomeScreen()),
                     );
+
                   },
                   child: const Icon(
                     Icons.chevron_left,

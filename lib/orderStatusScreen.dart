@@ -306,6 +306,7 @@ class orderStatusScreen extends StatelessWidget {
     Order Amount: ${formattedOrderAmount}
     Party Name (Code): ${responseData['response']['partyName']} (${responseData['response']['partyCode']})
     Booking Place: ${responseData['response']['bookingPlace']}
+    Transport Name: ${responseData['response']['transportName']}
 """;
 
       await Share.share(orderDetails, subject: 'Order Details');

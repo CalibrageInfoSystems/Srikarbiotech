@@ -30,6 +30,7 @@ class Returntransportdetails extends StatefulWidget {
   final String lrdate;
   final String remarks;
   final double balance;
+  final String transportname;
 
   Returntransportdetails(
       {required this.cardName,
@@ -43,7 +44,8 @@ class Returntransportdetails extends StatefulWidget {
       required this.proprietorName,
       required this.gstRegnNo,
       required this.creditLine,
-      required this.balance});
+      required this.balance,
+      required this.transportname});
 
   @override
   State<Returntransportdetails> createState() => _createreturnorderPageState();
@@ -69,6 +71,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
   TextEditingController DateController = TextEditingController();
 
   TextEditingController LRNumberController = TextEditingController();
+  TextEditingController TransportController = TextEditingController();
   DateTime selectedDate = DateTime.now();
   int CompneyId = 0;
   @override
@@ -77,6 +80,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
     LRNumberController = TextEditingController(text: widget.lrnumber);
     DateController = TextEditingController(text: widget.lrdate);
     remarkstext = TextEditingController(text: widget.remarks);
+    TransportController = TextEditingController(text: widget.transportname);
   }
 
   @override
@@ -178,7 +182,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                             padding: EdgeInsets.only(
                                 top: 0.0, left: 0.0, right: 0.0),
                             child: Text(
-                              'LR Number',
+                              'LR Number *',
                               style: CommonUtils.Mediumtext_12,
                               textAlign: TextAlign.start,
                             ),
@@ -231,13 +235,77 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                         ],
                       ),
                     ),
+
                     Padding(
                       padding: EdgeInsets.only(left: 15, top: 15.0, right: 15),
                       child: buildDateInput(
                         context,
-                        'LR Date',
+                        'LR Date *',
                         DateController,
                         () => _selectDate(context, DateController),
+                      ),
+                    ),
+                    Container(
+                      padding:
+                      EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Padding(
+                            padding: EdgeInsets.only(
+                                top: 0.0, left: 0.0, right: 0.0),
+                            child: Text(
+                              'Transport Name *',
+                              style: CommonUtils.Mediumtext_12,
+                              textAlign: TextAlign.start,
+                            ),
+                          ),
+                          SizedBox(height: 2.0),
+                          //  SizedBox(height: 8.0),
+                          GestureDetector(
+                            onTap: () {
+                              // Handle the click event for the second text view
+                              print('first textview clicked');
+                            },
+                            child: Container(
+                              width: MediaQuery.of(context).size.width,
+                              height: 55.0,
+                              decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(5.0),
+                                border: Border.all(
+                                  color: Color(0xFFe78337),
+                                  width: 1,
+                                ),
+                              ),
+                              child: Row(
+                                children: [
+                                  Expanded(
+                                    child: Align(
+                                      alignment: Alignment.centerLeft,
+                                      child: Padding(
+                                        padding: EdgeInsets.only(
+                                            left: 10.0, top: 0.0),
+                                        child: TextFormField(
+                                          controller: TransportController,
+                                          keyboardType: TextInputType.name,
+                                          maxLength: 100,
+                                          style: CommonUtils.Mediumtext_o_14,
+                                          decoration: InputDecoration(
+                                            counterText: '',
+                                            hintText: 'Enter Transport Name',
+                                            hintStyle:
+                                            CommonUtils.hintstyle_o_14,
+                                            border: InputBorder.none,
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
                       ),
                     ),
                     Padding(
@@ -251,7 +319,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                 padding: EdgeInsets.only(
                                     top: 15.0, left: 0.0, right: 0.0),
                                 child: Text(
-                                  'Remarks',
+                                  'Remarks *',
                                   style: CommonUtils.Mediumtext_12,
                                   textAlign: TextAlign.start,
                                 ),
@@ -782,7 +850,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                       ),
                       child: const Center(
                         child: Text(
-                          'Go to Cart',
+                          'Save & Proceed',
                           style: CommonUtils.Buttonstyle,
                         ),
                       ),
@@ -1106,19 +1174,19 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
     TextEditingController controller,
   ) async {
     DateTime currentDate = DateTime.now();
-    DateTime initialDate;
-
-    if (controller.text.isNotEmpty) {
-      try {
-        initialDate = DateTime.parse(controller.text);
-      } catch (e) {
-        // Handle the case where the current text is not a valid date format
-        print("Invalid date format: $e");
-        initialDate = currentDate;
-      }
-    } else {
-      initialDate = currentDate;
-    }
+  //  DateTime initialDate;
+    DateTime initialDate = selectedDate ?? currentDate;
+    // if (controller.text.isNotEmpty) {
+    //   try {
+    //     initialDate = DateTime.parse(controller.text);
+    //   } catch (e) {
+    //     // Handle the case where the current text is not a valid date format
+    //     print("Invalid date format: $e");
+    //     initialDate = currentDate;
+    //   }
+    // } else {
+    //   initialDate = currentDate;
+    // }
 
     try {
       DateTime? picked = await showDatePicker(
@@ -1195,9 +1263,15 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       isValid = false;
       hasValidationFailed = true;
     }
+    if (isValid && TransportController.text.isEmpty) {
+      CommonUtils.showCustomToastMessageLong(
+          'Please Enter Transport Name', context, 1, 4);
+      isValid = false;
+      hasValidationFailed = true;
+    }
     if (isValid && remarkstext.text.isEmpty) {
       CommonUtils.showCustomToastMessageLong(
-          'Please Enter Return Order remarks', context, 1, 4);
+          'Please Enter Return Order Remarks', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
@@ -1236,6 +1310,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                   creditLine:
                       double.parse('${widget.creditLine}'), // Convert to double
                   balance: double.parse('${widget.balance}'),
+                transportname : '${widget.transportname}',
                 )),
       );
     }

@@ -906,26 +906,6 @@ class _ProductListState extends State<Createorderscreen> {
                                                     GestureDetector(
 
 
-                                                      // Inside the GestureDetector for deleting items
-                                                      // onTap: () {
-                                                      //   setState(() {
-                                                      //     // Reset the quantity to 1
-                                                      //     quantities[index] = 1;
-                                                      //     // Check if the index is valid for deletion
-                                                      //     if (index >= 0 && index < cartItems.length) {
-                                                      //       // Remove the item from the cart
-                                                      //       cartItems.removeAt(index);
-                                                      //       // Update related lists
-                                                      //       isItemAddedToCart.removeAt(index);
-                                                      //       textEditingControllers.removeAt(index);
-                                                      //       // Ensure the index doesn't exceed the bounds after removal
-                                                      //       if (index >= isItemAddedToCart.length) {
-                                                      //         index = isItemAddedToCart.length - 1;
-                                                      //       }
-                                                      //     }
-                                                      //     fetchproductlist(getgropcode);
-                                                      //   });
-                                                      // },
                                                       onTap: () {
                                                         // Update state to show "Add" button and reset quantity
                                                         setState(() {

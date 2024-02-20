@@ -98,7 +98,7 @@ class ReturnOrdersList {
   final String remarks;
   final bool isActive;
   final String createdBy;
-  final DateTime createdDate;
+  final String createdDate;
   final String updatedBy;
   final DateTime updatedDate;
 
@@ -154,7 +154,7 @@ class ReturnOrdersList {
         remarks: json["remarks"],
         isActive: json["isActive"],
         createdBy: json["createdBy"],
-        createdDate: DateTime.parse(json["createdDate"]),
+        createdDate: json["createdDate"],
         updatedBy: json["updatedBy"],
         updatedDate: DateTime.parse(json["updatedDate"]),
       );
@@ -182,7 +182,7 @@ class ReturnOrdersList {
     "remarks": remarks,
     "isActive": isActive,
     "createdBy": createdBy,
-    "createdDate": createdDate.toIso8601String(),
+    "createdDate": createdDate,
     "updatedBy": updatedBy,
     "updatedDate": updatedDate.toIso8601String(),
   };

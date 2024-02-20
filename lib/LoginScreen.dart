@@ -45,8 +45,8 @@ class _MyHomePageState extends State<LoginScreen> {
     print("Company ID: ${widget.companyId}");
     compneyid = widget.companyId;
     print("Company ID: $compneyid");
-   //  emailController.text = "Superadmin";
-   // passwordController.text = "Abcd@123";
+    emailController.text = "Superadmin";
+   passwordController.text = "Abcd@123";
 
   }
 
@@ -380,9 +380,11 @@ class _MyHomePageState extends State<LoginScreen> {
     final payload = {
       "Username": emailController.text,
       "Password": passwordController.text,
-      "CompanyId": compneyid
+      "CompanyId": compneyid,
+      "IsWeb": false
     };
 
+    print('object==${jsonEncode(payload)}');
     if (emailController.text.isEmpty) {
       CommonUtils.showCustomToastMessageLong(
           'Please Enter Email/Username', context, 1, 4);
@@ -432,8 +434,7 @@ class _MyHomePageState extends State<LoginScreen> {
         );
       } else {
         print('Login failed. Please check your credentials.');
-        CommonUtils.showCustomToastMessageLong(
-            'Login failed. Please check your login credentials.', context, 1, 4);
+        CommonUtils.showCustomToastMessageLong('Login failed. Please check your login credentials.', context, 1, 4);
       }
     } else {
       print('Login failed. Please check your credentials.');
