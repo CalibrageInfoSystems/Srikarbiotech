@@ -13,9 +13,13 @@ import 'Model/card_collection.dart';
 class ViewCollectionCheckOut extends StatefulWidget {
   final ListResult listResult;
   final int position;
+  final Widget statusBar;
 
   const ViewCollectionCheckOut(
-      {required this.listResult, required this.position});
+      {super.key,
+        required this.listResult,
+        required this.position,
+        required this.statusBar});
   //const ViewCollectionCheckOut({super.key});
 
   @override
@@ -69,14 +73,12 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
     String checkdateString = widget.listResult.checkDate;
     String checkdate = '';
 
-    if (checkdateString != null) {
-      try {
-        DateTime date2 = DateTime.parse(checkdateString);
-        checkdate = DateFormat('dd-MM-yyyy').format(date2);
-      } catch (e) {
-        print('Error parsing date: $e');
-        // Handle the error as needed, e.g., set a default date or display an error message
-      }
+    try {
+      DateTime date2 = DateTime.parse(checkdateString);
+      checkdate = DateFormat('dd-MM-yyyy').format(date2);
+    } catch (e) {
+      print('Error parsing date: $e');
+      // Handle the error as needed, e.g., set a default date or display an error message
     }
     List tableCellValues = [
       [
@@ -213,35 +215,31 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                       // Table
                       Row(
                         //  crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment:
-                        MainAxisAlignment.spaceBetween,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: [
                           Container(
                             padding: const EdgeInsets.all(10),
                             child: Column(
-                                mainAxisAlignment:
-                                MainAxisAlignment.start,
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.start,
+                                crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
-                                  Text(
+                                  const Text(
                                     'Collection ID',
                                     textAlign: TextAlign.start,
                                     style: CommonUtils.txSty_13B_Fb,
                                   ),
                                   Text(
-                                    '${widget.listResult.collectionNumber}',
-                                    style: TextStyle(
+                                    widget.listResult.collectionNumber,
+                                    style: const TextStyle(
                                         fontFamily: 'Roboto',
                                         fontSize: 13,
                                         color: Color(0xFFe58338),
-                                        fontWeight:
-                                        FontWeight.w600),
+                                        fontWeight: FontWeight.w600),
                                   ),
                                 ]),
                           ),
-                         _collectionStatus(widget.listResult.statusName),
-
+                          // _collectionStatus(widget.listResult.statusName),
+                          widget.statusBar,
                         ],
                       ),
                       if (payment_mode == "Online")
@@ -465,45 +463,55 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
   }
 
   Widget _collectionStatus(String statusName) {
+    final Color statusColor;
+    final Color statusBgColor;
+    switch (statusName) {
+      case 'Pending':
+        statusColor = const Color(0xFFe58338);
+        statusBgColor = const Color(0xFFe58338).withOpacity(0.2);
+        break;
+      case 'Received':
+        statusColor = Colors.green;
+        statusBgColor = Colors.green.withOpacity(0.2);
+        break;
+      case 'Reject':
+        statusColor = HexColor('#C42121');
+        statusBgColor = HexColor('#C42121').withOpacity(0.2);
+        break;
 
-      final Color statusColor;
-      final Color statusBgColor;
-      switch (statusName) {
-        case 'Pending':
-          statusColor = const Color(0xFFe58338);
-          statusBgColor = const Color(0xFFe58338).withOpacity(0.2);
-          break;
-        case 'Received':
-          statusColor = Colors.green;
-          statusBgColor = Colors.green.withOpacity(0.2);
-          break;
-        case 'Reject':
-          statusColor = HexColor('#C42121');
-          statusBgColor = HexColor('#C42121').withOpacity(0.2);
-          break;
-
-        default:
-          statusColor = Colors.black26;
-          statusBgColor = Colors.black26.withOpacity(0.2);
-          break;
-      }
-      return Container(
-        margin: const EdgeInsets.only(right: 10),
-        decoration: BoxDecoration(
-          color: statusBgColor,
-          borderRadius: BorderRadius.circular(14.0),
-        ),
-        padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
-        child: Text(
-          statusName,
-          style: TextStyle(
-            fontFamily: 'Roboto',
-            fontSize: 13,
+      default:
+        statusColor = Colors.black26;
+        statusBgColor = Colors.black26.withOpacity(0.2);
+        break;
+    }
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: statusBgColor,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            'assets/shipping-fast.svg',
+            fit: BoxFit.fill,
+            width: 15,
+            height: 15,
             color: statusColor,
           ),
-        ),
-      );
-    }
-
+          const SizedBox(
+            width: 5,
+          ),
+          Text(
+            statusName,
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 13,
+              color: statusColor,
+            ),
+          ),
+        ],
+      ),
+    );
   }
-
+}

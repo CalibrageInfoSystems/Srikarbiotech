@@ -156,13 +156,13 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                 List<ReturnOrdersList> data =
                     viewReturnOrdersProvider.returnOrdersProviderData;
 
-                    return WillPopScope(
-                    onWillPop: () async {
-                  // Clear the cart data here
-                      returnOrdersProvider.clearFilter();
+                return WillPopScope(
+                  onWillPop: () async {
+                    // Clear the cart data here
+                    returnOrdersProvider.clearFilter();
 
-                  return true; // Allow the back navigation
-                },
+                    return true; // Allow the back navigation
+                  },
                   child: Padding(
                     padding: const EdgeInsets.all(12),
                     child: Column(
@@ -788,7 +788,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         ),
                       ),
                     ),
-
                   ],
                 ),
 
@@ -1111,6 +1110,12 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
         statusColor = Colors.red;
         statusBgColor = Colors.red.shade100;
         break;
+      case 'Received':
+        assetPath = 'assets/srikar_biotech_logo.svg';
+        iconColor = Colors.grey;
+        statusColor = Colors.grey;
+        statusBgColor = Colors.grey.withOpacity(0.2);
+        break;
       default:
         assetPath = 'assets/sb_home.svg';
         iconColor = Colors.black26;
@@ -1127,6 +1132,77 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
     );
   }
 
+  Widget sendingSvgImagesAndColors(String statusName) {
+    String svgIcon;
+    Color svgIconBgColor;
+    switch (statusName) {
+      case "Shipped":
+        svgIcon = 'assets/shipping-fast.svg';
+        statusColor = const Color(0xFFe58338);
+        svgIconBgColor = const Color.fromARGB(255, 250, 214, 187);
+        break;
+      case 'Pending':
+        svgIcon = 'assets/shipping-timed.svg';
+        statusColor = const Color(0xFFc04f51);
+        svgIconBgColor = const Color.fromARGB(255, 241, 183, 184);
+        break;
+      case 'Delivered':
+        svgIcon = 'assets/box-circle-check.svg';
+        statusColor = Colors.green;
+        svgIconBgColor = Colors.green.shade100;
+        break;
+      case 'Partially Shipped':
+        svgIcon = 'assets/boxes.svg';
+        statusColor = Colors.purple;
+        svgIconBgColor = Colors.purple.shade100;
+        break;
+      case 'Rejected':
+        svgIcon = 'assets/shipping-timed.svg';
+        statusColor = Colors.red;
+        svgIconBgColor = Colors.red.shade100;
+        break;
+      case 'Received':
+        svgIcon = 'assets/srikar_biotech_logo.svg';
+        statusColor = Colors.grey;
+        svgIconBgColor = Colors.grey.withOpacity(0.2);
+        break;
+      default:
+        svgIcon = 'assets/sb_home.svg';
+        statusColor = Colors.black26;
+        svgIconBgColor = const Color.fromARGB(31, 124, 124, 124);
+        break;
+    }
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: svgIconBgColor,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            svgIcon,
+            fit: BoxFit.fill,
+            width: 15,
+            height: 15,
+            color: statusColor,
+          ),
+          const SizedBox(
+            width: 5,
+          ),
+          Text(
+            statusName,
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 13,
+              color: statusColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     String dateString = widget.data.createdDate;
@@ -1137,8 +1213,12 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
       onTap: () {
         Navigator.of(context).push(
           MaterialPageRoute(
-            builder: (context) =>
-                ReturnOrderDetailsPage(orderId: widget.data.id),
+            builder: (context) => ReturnOrderDetailsPage(
+              orderId: widget.data.id,
+              statusBar: sendingSvgImagesAndColors(
+                widget.data.statusName,
+              ),
+            ),
           ),
         );
       },

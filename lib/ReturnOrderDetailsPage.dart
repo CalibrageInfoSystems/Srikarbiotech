@@ -17,7 +17,9 @@ import 'HomeScreen.dart';
 
 class ReturnOrderDetailsPage extends StatefulWidget {
   final int orderId;
-  const ReturnOrderDetailsPage({super.key, required this.orderId});
+  final Widget statusBar;
+  const ReturnOrderDetailsPage(
+      {super.key, required this.orderId, required this.statusBar});
 
   @override
   State<ReturnOrderDetailsPage> createState() => _OrderDetailsPageState();
@@ -25,18 +27,6 @@ class ReturnOrderDetailsPage extends StatefulWidget {
 
 class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
   final _orangeColor = HexColor('#e58338');
-  final _titleTextStyle = const TextStyle(
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.w700,
-    color: Colors.black,
-    fontSize: 15,
-  );
-  final _dataTextStyle = const TextStyle(
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.w600,
-    color: Color.fromARGB(255, 185, 105, 0),
-    fontSize: 14,
-  );
 
   late Future<Map<String, dynamic>> apiData;
 
@@ -131,8 +121,10 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                         Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Padding(
-                              padding: const EdgeInsets.only(left: 5.0), // Adjust the left padding as needed
+                            const Padding(
+                              padding: EdgeInsets.only(
+                                  left:
+                                  5.0), // Adjust the left padding as needed
                               child: Text(
                                 'Order Details',
                                 style: CommonUtils.header_Styles16,
@@ -146,14 +138,17 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                     (index) => ShipmentDetailsCard(
                                   orderId: widget.orderId,
                                   data: returnOrderDetailsResultList[index],
+                                  statusBar: widget.statusBar,
                                 ),
                               ),
                             ),
                             const SizedBox(
                               height: 10,
                             ),
-                            Padding(
-                              padding: const EdgeInsets.only(left: 5.0), // Adjust the left padding as needed
+                            const Padding(
+                              padding: EdgeInsets.only(
+                                  left:
+                                  5.0), // Adjust the left padding as needed
                               child: Text(
                                 'Item Details',
                                 style: CommonUtils.header_Styles16,
@@ -164,7 +159,10 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                               shrinkWrap: true,
                               children: List.generate(
                                 returnOrderItemXrefList.length,
-                                    (index) => ItemCard(data: returnOrderItemXrefList[index]),
+                                    (index) => ItemCard(
+                                  data: returnOrderItemXrefList[index],
+                                  statusBar: widget.statusBar,
+                                ),
                               ),
                             ),
                             const SizedBox(
@@ -172,8 +170,6 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                             ),
                           ],
                         ),
-
-
 
                         // card 4
                         // payment details card
@@ -237,7 +233,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
               // Handle the click event for the home icon
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) =>  HomeScreen()),
+                MaterialPageRoute(builder: (context) => HomeScreen()),
               );
             },
             child: Image.asset(
@@ -255,8 +251,12 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
 class ShipmentDetailsCard extends StatefulWidget {
   final int orderId;
   final ReturnOrderDetailsResult data;
+  final Widget statusBar;
   const ShipmentDetailsCard(
-      {super.key, required this.orderId, required this.data});
+      {super.key,
+        required this.orderId,
+        required this.data,
+        required this.statusBar});
 
   @override
   State<ShipmentDetailsCard> createState() => _ShipmentDetailsCardState();
@@ -281,16 +281,6 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
   );
 
   final dividerForHorizontal = Container(
-    width: double.infinity,
-    height: 0.2,
-    color: Colors.grey,
-  );
-  final dividerForHorizontal1 = Container(
-    width: double.infinity,
-    height: 0.2,
-    color: Colors.grey,
-  );
-  final dividerForHorizontal2 = Container(
     width: double.infinity,
     height: 0.2,
     color: Colors.grey,
@@ -381,43 +371,12 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                               ),
                             ],
                           ),
-                          ClipRRect(
-                            borderRadius: BorderRadius.circular(5),
-                            child: Container(
-                              decoration: const BoxDecoration(
-                                color: Color.fromARGB(255, 243, 214, 175),
-                              ),
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 4, horizontal: 12),
-                              child: Row(
-                                children: [
-                                  // Icon(
-                                  //   Icons.shopify,
-                                  //   color: _orangeColor,
-                                  // ),
-                                  SvgPicture.asset(
-                                    'assets/shipping-fast.svg',
-                                    fit: BoxFit.fill,
-                                    width: 15,
-                                    height: 15,
-                                    color: _orangeColor,
-                                  ),
-                                  const SizedBox(
-                                    width: 5,
-                                  ),
-                                  Text(
-                                    'Shipped',
-                                    style: _dataTextStyle,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
+                          widget.statusBar,
                         ],
                       ),
                     ),
 
-                    dividerForHorizontal1,
+                    dividerForHorizontal,
 
                     // row two
                     Row(
@@ -465,7 +424,6 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                       ],
                     ),
 
-
                     dividerForHorizontal,
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -481,9 +439,9 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                                   'Transport Name',
                                   style: _titleTextStyle,
                                 ),
-                                SizedBox(height: 4),
+                                const SizedBox(height: 4),
                                 Text(
-                                '',
+                                  '',
                                   style: _dataTextStyle,
                                 ),
                               ],
@@ -493,7 +451,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                       ],
                     ),
 
-                    dividerForHorizontal1,
+                    dividerForHorizontal,
 
                     // row two
                     Row(
@@ -520,7 +478,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                         ),
                       ],
                     ),
-                    dividerForHorizontal1,
+                    dividerForHorizontal,
                     Padding(
                       padding: const EdgeInsets.symmetric(
                           horizontal: 12, vertical: 10),
@@ -749,11 +707,10 @@ class AttachmentImages extends StatelessWidget {
   }
 }
 
-
-
 class ItemCard extends StatelessWidget {
   final ReturnOrderItemXrefList data;
-  const ItemCard({super.key, required this.data});
+  final Widget statusBar;
+  const ItemCard({super.key, required this.data, required this.statusBar});
 
   @override
   Widget build(BuildContext context) {
@@ -769,8 +726,7 @@ class ItemCard extends StatelessWidget {
         ),
         width: double.infinity,
         padding: const EdgeInsets.all(12),
-        child:
-        Column(
+        child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[
             Text(
@@ -792,13 +748,13 @@ class ItemCard extends StatelessWidget {
                 ),
               ],
             ),
-            SizedBox(height: 5.0),
+            const SizedBox(height: 5.0),
             Container(
               width: double.infinity,
               height: 0.2,
               color: Colors.grey,
             ),
-            SizedBox(height: 5.0),
+            const SizedBox(height: 5.0),
             Row(
               children: [
                 if (data.remarks != null)
@@ -817,20 +773,19 @@ class ItemCard extends StatelessWidget {
                     ),
                   ),
                 if (data.remarks == null)
-                  Expanded(
+                  const Expanded(
                     child: SizedBox(), // Empty container to occupy space
                   ),
-                Spacer(), // Spacer to push statusName to the end
-                Text(
-                  data.statusName,
-                  style: CommonUtils.txSty_13O_F6,
-                ),
+                const Spacer(), // Spacer to push statusName to the end
+                // Text(
+                //   data.statusName,
+                //   style: CommonUtils.txSty_13O_F6,
+                // ),
+                statusBar
               ],
             ),
           ],
         ),
-
-
       ),
     );
   }

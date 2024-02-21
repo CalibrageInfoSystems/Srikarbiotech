@@ -35,6 +35,7 @@ class _home_Screen extends State<HomeScreen> {
   String? slpCode = "";
   String? userName = "";
   String? roleName = "";
+  String? fullname = "";
   Map<String, dynamic>? categories;
   List<String> categoriesList = [];
   @override
@@ -116,7 +117,7 @@ class _home_Screen extends State<HomeScreen> {
         ),
         drawer: Drawer(
           elevation: 16,
-          width: MediaQuery.of(context).size.width / 1.8,
+          width: MediaQuery.of(context).size.width / 1.5,
           shape: RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(40),
@@ -149,8 +150,8 @@ class _home_Screen extends State<HomeScreen> {
                               ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
                               : Image.asset(
                             'assets/srikar-seed.png',
-                            width: MediaQuery.of(context).size.height / 3,
-                            height: MediaQuery.of(context).size.height / 3,
+                            width: MediaQuery.of(context).size.height / 4,
+                            height: MediaQuery.of(context).size.height / 4,
                           ),
                         ),
                       ),
@@ -158,7 +159,7 @@ class _home_Screen extends State<HomeScreen> {
                       Column(
                         mainAxisSize: MainAxisSize.min,
                         children: [
-                          Text('$userName', style: CommonUtils.txSty_14B_Fb),
+                          Text('$fullname', style: CommonUtils.txSty_14B_Fb),
                           Text('($roleName)', style: TextStyle(fontSize: 11)),
                         ],
                       ),
@@ -218,7 +219,9 @@ class _home_Screen extends State<HomeScreen> {
     print('companyName: $companyName');
     // Fetch categories
     final categories = await SharedPreferencesHelper.getCategories();
-    print('companyName: ${categories!['response']['activityRights']}');
+
+    fullname = categories!['response']['fullName'];
+    print('companyName: $fullname');
 // Check if categories is not null
     if (categories != null) {
       print('Categories: $categories');

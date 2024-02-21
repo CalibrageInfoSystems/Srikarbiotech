@@ -691,7 +691,12 @@ class _OrderCardState extends State<OrderCard> {
                 proprietorName: widget.orderResult.proprietorName!,
                 partyGSTNumber: widget.orderResult.partyGSTNumber!,
                 ordernumber: widget.orderResult.orderNumber!,
-                partyAddress: widget.orderResult.partyAddress),
+                partyAddress: widget.orderResult.partyAddress,
+              statusBar: sendingSvgImagesAndColors(
+                widget.orderResult.statusTypeId,
+                widget.orderResult.statusName,
+              ),),
+
           ),
         );
       },
@@ -1201,5 +1206,83 @@ class _OrderCardState extends State<OrderCard> {
       print('Request failed with status: ${response.statusCode}');
     }
   }
+
+  Widget sendingSvgImagesAndColors(int statusTypeId, String statusName) {
+    String svgIcon;
+    Color svgIconBgColor;
+
+    switch (statusTypeId) {
+      case 1: // 'Pending'
+        svgIcon = 'assets/shipping-timed.svg';
+        statusColor = const Color(0xFFe58338);
+        svgIconBgColor = const Color(0xFFe58338).withOpacity(0.2);
+        break;
+      case 2: // 'Shipped'
+        svgIcon = 'assets/shipping-fast.svg';
+        statusColor = const Color(0xFF0d6efd);
+        svgIconBgColor = const Color(0xFF0d6efd).withOpacity(0.2);
+        break;
+      case 3: // 'Delivered'
+        svgIcon = 'assets/box-circle-check.svg';
+        statusColor = Colors.green;
+        svgIconBgColor = Colors.green.withOpacity(0.2);
+        break;
+      case 10: // 'Partially Shipped'
+        svgIcon = 'assets/boxes.svg';
+        statusColor = const Color(0xFF0dcaf0);
+        svgIconBgColor = const Color(0xFF0dcaf0).withOpacity(0.2);
+        break;
+      case 11: // 'Accepted'
+        svgIcon = 'assets/shipping-timed.svg';
+        statusColor = Colors.green;
+        svgIconBgColor = Colors.green.withOpacity(0.2);
+        break;
+      case 12: // 'Rejected'
+        svgIcon = 'assets/reject.svg';
+        statusColor = HexColor('#C42121');
+        svgIconBgColor = HexColor('#C42121').withOpacity(0.2);
+        break;
+      case 16: // 'Cancelled'
+        svgIcon = 'assets/order-cancel.svg';
+        statusColor = HexColor('#dc3545');
+        svgIconBgColor = HexColor('#dc3545').withOpacity(0.2);
+        break;
+      default:
+        svgIcon = 'assets/sb_home.svg';
+        statusColor = Colors.black26;
+        svgIconBgColor = Colors.black26.withOpacity(0.2);
+        break;
+    }
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: svgIconBgColor,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            svgIcon,
+            fit: BoxFit.fill,
+            width: 15,
+            height: 15,
+            color: statusColor,
+          ),
+          const SizedBox(
+            width: 5,
+          ),
+          Text(
+            statusName,
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 13,
+              color: statusColor,
+            ),
+          ),
+        ],
+      ),
+    );
+  }
+
 
 }

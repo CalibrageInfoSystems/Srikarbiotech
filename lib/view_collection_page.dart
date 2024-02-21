@@ -1163,7 +1163,11 @@ class _MyCardState extends State<MyCard> {
           MaterialPageRoute(
             builder: (context) => ViewCollectionCheckOut(
               listResult: widget.listResult,
-              position: widget.index, // Assuming you have the index available
+              position: widget.index,
+              statusBar: sendingSvgImagesAndColors(
+                widget.listResult.statusTypeId,
+                widget.listResult.statusName,
+              ), // Assuming you have the index available
             ),
           ),
         );
@@ -1208,7 +1212,9 @@ class _MyCardState extends State<MyCard> {
                           decoration: _iconBoxBorder,
                           child: Center(
                             child: getSvgImagesAndColors(
-                                widget.listResult.statusTypeId),
+                              // work
+                              widget.listResult.statusTypeId,
+                            ),
                           ),
                         ),
                       ),
@@ -1389,6 +1395,62 @@ class _MyCardState extends State<MyCard> {
       height: 50,
       fit: BoxFit.fill,
       color: iconColor,
+    );
+  }
+
+  Widget sendingSvgImagesAndColors(int statusTypeId, String statusName) {
+    String svgIcon;
+    Color svgIconBgColor;
+
+    switch (statusTypeId) {
+      case 7: // pending
+        svgIcon = 'assets/hourglass-start.svg';
+        statusColor = const Color(0xFFe58338);
+        svgIconBgColor = const Color(0xFFe58338).withOpacity(0.2);
+        break;
+      case 8: // Received
+        svgIcon = 'assets/sb_money-bill-wave.svg';
+        statusColor = Colors.green;
+        svgIconBgColor = Colors.green.withOpacity(0.2);
+        break;
+      case 9: // rejected
+        svgIcon = 'assets/sensor-alert.svg';
+        statusColor = HexColor('#C42121');
+        svgIconBgColor = HexColor('#C42121').withOpacity(0.2);
+        break;
+      default:
+        svgIcon = 'assets/sb_home.svg';
+        statusColor = Colors.black26;
+        svgIconBgColor = Colors.black26.withOpacity(0.2);
+    }
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: svgIconBgColor,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            svgIcon,
+            fit: BoxFit.fill,
+            width: 15,
+            height: 15,
+            color: statusColor,
+          ),
+          const SizedBox(
+            width: 5,
+          ),
+          Text(
+            statusName,
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 13,
+              color: statusColor,
+            ),
+          ),
+        ],
+      ),
     );
   }
 }
