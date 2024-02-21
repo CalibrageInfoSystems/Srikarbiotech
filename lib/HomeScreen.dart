@@ -1,3 +1,5 @@
+import 'dart:convert';
+
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
@@ -34,10 +36,11 @@ class _home_Screen extends State<HomeScreen> {
   String? userName = "";
   String? roleName = "";
   Map<String, dynamic>? categories;
+  List<String> categoriesList = [];
   @override
   void initState() {
     super.initState();
-    getshareddata();
+   // getshareddata();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
@@ -197,7 +200,7 @@ class _home_Screen extends State<HomeScreen> {
           ),
         ),
 
-        body: imageslider(),
+        body: imageslider(categoriesList),
       ),
     );
   }
@@ -213,6 +216,34 @@ class _home_Screen extends State<HomeScreen> {
     print('SLP Code: $slpCode');
     print('Company ID: $CompneyId');
     print('companyName: $companyName');
+    // Fetch categories
+    final categories = await SharedPreferencesHelper.getCategories();
+    print('companyName: ${categories!['response']['activityRights']}');
+// Check if categories is not null
+    if (categories != null) {
+      print('Categories: $categories');
+
+
+        // Access the "response" object and then the "activityRights" array
+        List<dynamic> activityRights = categories['response']['activityRights'];
+      print('activityRights: ${categories!['response']['activityRights']}');
+        // Extract the "name" values from the "activityRights" array
+        List<String> categoriesList = [];
+        for (var activityRight in activityRights) {
+          String name = activityRight['name'];
+          categoriesList.add(name);
+        }
+
+        // Print the extracted "name" values
+        print('Categories: $categoriesList');
+      }
+    else {
+      print('Error: Categories is null.');
+    }
+
+// Print the fetched categories
+
+
   }
 
   void logOutDialog() {
@@ -261,6 +292,8 @@ class BannerImages {
 }
 
 class imageslider extends StatefulWidget {
+  imageslider(List<String> categoriesList);
+
   @override
   _imagesliderState createState() => _imagesliderState();
 }
@@ -268,7 +301,7 @@ class imageslider extends StatefulWidget {
 class _imagesliderState extends State<imageslider> {
   int currentIndex = 0;
   List<BannerImages> imageList = [];
-
+  List<String> categoriesList = [];
   @override
   initState() {
     super.initState();
@@ -281,6 +314,26 @@ class _imagesliderState extends State<imageslider> {
 
   @override
   Widget build(BuildContext context) {
+    return FutureBuilder<Map<String, dynamic>?>(
+        future: SharedPreferencesHelper.getCategories(),
+    builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>?> categories) {
+    // if (snapshot.connectionState == ConnectionState.waiting) {
+    // return CircularProgressIndicator(); // Or any other loading indicator
+    // } else {
+    // if (snapshot.hasError || snapshot.data == null) {
+    // return Text('Error: Failed to fetch categories');
+    // } else {
+    // final categories = snapshot.data!;
+    // print('Categories: $categories');
+
+    List<dynamic> activityRights = categories.data!['response']['activityRights'];
+    print('activityRights: ${categories.data!['response']['activityRights']}');
+
+
+    for (var activityRight in activityRights) {
+    String name = activityRight['name'];
+    categoriesList.add(name);
+    }
     return Column(
       children: [
         Expanded(
@@ -518,6 +571,7 @@ class _imagesliderState extends State<imageslider> {
                                 ),
                               ),
                               // Second Container divided into two equal-sized containers
+
                               Expanded(
                                 child: Container(
                                   height: MediaQuery.of(context).size.height / 3, // Match height with the first container
@@ -571,7 +625,7 @@ class _imagesliderState extends State<imageslider> {
                               ),
                             ],
                           ),
-
+                          if(categoriesList.contains("CanSHApprovalRejectOrder"))
                           Row(
                             children: [
                               // First Container with single card view
@@ -625,6 +679,9 @@ class _imagesliderState extends State<imageslider> {
           ),
         ),
       ],
+    );
+    }
+
     );
   }
 

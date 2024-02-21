@@ -187,25 +187,10 @@ class _VieworderPageState extends State<Viewpendingorder> {
                     _viewOrdersSearchBarAndFilter(),
 
                     // select filter
+                    if (pendingsProvider.viewPendingData.isNotEmpty)
                     Row(
                       mainAxisAlignment: MainAxisAlignment.end,
                       children: [
-                        // GestureDetector(
-                        //   onTap: () {
-                        //     pendingsProvider.setSelectAllStatus();
-                        //   },
-                        //   child: Container(
-                        //     padding: const EdgeInsets.symmetric(
-                        //         vertical: 5, horizontal: 10),
-                        //     decoration: BoxDecoration(
-                        //         borderRadius: BorderRadius.circular(6),
-                        //         color:
-                        //         const Color.fromARGB(255, 197, 238, 198)),
-                        //     child: const Text('select'),
-                        //   ),
-                        // ),
-
-                        // select all
 
                           isSelectedAll
                               ? GestureDetector(
@@ -290,7 +275,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                               Padding(
                                 padding: EdgeInsets.all(5.0),
                                 child: Text(
-                                  'No Orders found!',
+                                  'No Pending Orders found!',
                                   style: CommonUtils.Mediumtext_14_cb,
                                 ),
                               ),
@@ -299,7 +284,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                         ),
                       ),
 
-
+                    if (pendingsProvider.viewPendingData.isNotEmpty)
                     Positioned(
                       left: 0,
                       right: 0,
@@ -310,8 +295,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                           print('Approve button clicked');
                           print('Approve button clicked ${pendingsProvider.getSelectedOrderIds().length}');
                           if (pendingsProvider.getSelectedOrderIds().length > 0) {
-                            showRemarksBottomSheet(
-                                context, pendingsProvider.getSelectedOrderIds());
+                            showRemarksBottomSheet(context, pendingsProvider.getSelectedOrderIds());
                           }{
 
                           }
@@ -327,22 +311,35 @@ class _VieworderPageState extends State<Viewpendingorder> {
                                 borderRadius: BorderRadius.circular(5),
                                 color: Color(0xFFe78337),
                               ),
-                              child: const Center(
-                                child: Text(
-                                  'Approve',
-                                  style: TextStyle(
+                              child: Row(
+                                mainAxisAlignment: MainAxisAlignment.center, // Aligns children horizontally to the center
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/check.svg',
+                                    height: 18,
+                                    width: 18,
+                                    fit: BoxFit.fitWidth,
                                     color: Colors.white,
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.w700,
-                                    fontFamily: 'Roboto',
                                   ),
-                                ),
+                                  SizedBox(width: 8.0),
+                                  Text(
+                                    'Approve',
+                                    style: TextStyle(
+                                      color: Colors.white,
+                                      fontSize: 18,
+                                      fontWeight: FontWeight.w700,
+                                      fontFamily: 'Roboto',
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
                           ),
                         ),
+
                       ),
-                    ),
+                      ),
+
 
                   ],
             ));
@@ -483,6 +480,12 @@ print('==>${jsonEncode(requestBody)}');
       if (response.statusCode == 200) {
         // Request successful, handle response here
         print('Request successful');
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+              builder: (context) =>
+                  Viewpendingorder()),
+        );
       } else {
         // Request failed, handle error here
         print('Request failed with status: ${response.statusCode}');
@@ -555,12 +558,7 @@ print('==>${jsonEncode(requestBody)}');
                           handleApprove(selectedOrderIds, remarks);
                           Navigator.of(context).pop();
 
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                              builder: (context) =>
-                                  Viewpendingorder()),
-                        );
+
                         // updateInvoiceStatus(ordernumber!, invoiceNo);
                         // Navigator.of(context).pop(); // Close the bottom sheet
                       },
@@ -745,11 +743,11 @@ class _OrderCardState extends State<OrderCard> {
                               left: 10, top: 0, bottom: 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                             children: [
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                MainAxisAlignment.spaceEvenly,
                                 children: [
                                   Expanded(
                                     child: Text(
@@ -909,7 +907,7 @@ class _OrderCardState extends State<OrderCard> {
                               height: 18,
                               width: 18,
                               fit: BoxFit.fitWidth,
-                              color: HexColor('#de4554'),
+                              color: HexColor('#ee1d23'),
                             ),
                             SizedBox(width: 8.0), // Add some spacing between icon and text
                             Text(
@@ -917,7 +915,7 @@ class _OrderCardState extends State<OrderCard> {
                               style: TextStyle(
                                 fontFamily: 'Roboto',
                                 fontWeight: FontWeight.bold,
-                                color: HexColor('#de4554'),
+                                color: HexColor('#ee1d23'),
                                 fontSize: 13,
                               ),
                             ),
@@ -1122,7 +1120,8 @@ class _OrderCardState extends State<OrderCard> {
                               Container(
                                 padding: const EdgeInsets.symmetric(
                                     horizontal: 10.0),
-                                child: Row(
+                                child:
+                                Row(
                                   children: [
                                     SvgPicture.asset(
                                       'assets/check.svg',
@@ -1190,6 +1189,13 @@ class _OrderCardState extends State<OrderCard> {
     if (response.statusCode == 200) {
       // Request successful, handle response here
       print('Request successful');
+      Navigator.push(
+        context,
+        MaterialPageRoute(
+            builder: (context) =>
+                Viewpendingorder()),
+      );
+
     } else {
       // Request failed, handle error here
       print('Request failed with status: ${response.statusCode}');
