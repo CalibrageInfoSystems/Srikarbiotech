@@ -51,4 +51,12 @@ class ViewPendingOrdersProvider extends ChangeNotifier {
   List<int> getSelectedOrderIds() {
     return selectedOrderIds;
   }
+  void  Clearpendingcheckbox() {
+  viewPendingData = [];
+checkBoxValues = List<bool>.generate(getLengthOfList, (index) => false);
+   selectedOrderIds = []; // List to store selected order IDs
+
+   isSelectedAll = false;
+  notifyListeners();
+  }
 }

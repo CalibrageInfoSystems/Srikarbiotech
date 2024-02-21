@@ -577,9 +577,9 @@ class _imagesliderState extends State<imageslider> {
                               // First Container with single card view
                               Expanded(
                                 child: Container(
-                                  height: MediaQuery.of(context).size.height / 12, // Match height with the first container
+                                  height: MediaQuery.of(context).size.height / 10, // Match height with the first container
                                   child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                     children: [
                                       Expanded(
                                         child:
@@ -927,7 +927,7 @@ class _imagesliderState extends State<imageslider> {
       onTap: onTap,
       child: Container(
         //height: 260 / 2,
-        height: MediaQuery.of(context).size.height / 6,
+        height: MediaQuery.of(context).size.height / 10,
         width: MediaQuery.of(context).size.width ,
         child: Card(
           color: color,

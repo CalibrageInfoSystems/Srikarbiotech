@@ -698,13 +698,15 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                           },
                         );
                       },
-                                              child: Container(
+                                              child:
+                                              Container(
                                                 decoration: BoxDecoration(
                                                   color: HexColor('#ffecee'), // Background color of the card
                                                   borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
                                                 ),
                                                 padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Adjust padding as needed
-                                                child: Row(
+                                                child:
+                                                Row(
                                                   children: [
                                                     SvgPicture.asset(
                                                       'assets/crosscircle.svg',
