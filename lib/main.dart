@@ -19,6 +19,7 @@ import 'HomeScreen.dart';
 import 'LoginScreen.dart';
 
 import 'ViewCollectionProvider.dart';
+import 'ViewPendingOrdersProvider.dart';
 
 void main() {
   runApp(
@@ -28,8 +29,9 @@ void main() {
         ChangeNotifierProvider(create: (context) => ViewCollectionProvider()),
         ChangeNotifierProvider(create: (context) => ViewOrdersProvider()),
         ChangeNotifierProvider(create: (context) => ViewReturnOrdersProvider()),
+        ChangeNotifierProvider(create: (context) => ViewPendingOrdersProvider()),
       ],
-      child: MyApp(),
+      child:  MyApp(),
     ),
   );
 }

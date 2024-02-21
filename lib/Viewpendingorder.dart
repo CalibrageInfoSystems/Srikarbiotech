@@ -8,7 +8,6 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
-import 'package:srikarbiotech/vieworders_provider.dart';
 import 'Common/CommonUtils.dart';
 import 'Common/SharedPrefsData.dart';
 import 'HomeScreen.dart';
@@ -16,6 +15,7 @@ import 'OrctResponse.dart';
 import 'OrderResponse.dart';
 import 'Payment_model.dart';
 import 'Services/api_config.dart';
+import 'ViewPendingOrdersProvider.dart';
 import 'order_details.dart';
 
 class Viewpendingorder extends StatefulWidget {
@@ -26,8 +26,6 @@ class Viewpendingorder extends StatefulWidget {
 }
 
 class _VieworderPageState extends State<Viewpendingorder> {
-  final _orangeColor = HexColor('#e58338');
-
   List<OrderResult> orderesponselist = [];
 
   List<OrderResult> filterorderesponselist = [];
@@ -35,10 +33,14 @@ class _VieworderPageState extends State<Viewpendingorder> {
   TextEditingController searchController = TextEditingController();
 
   late Future<List<OrderResult>?> apiData;
+  bool isSelectedAll = false;
 
-  late ViewOrdersProvider viewOrdersProvider;
+  late ViewPendingOrdersProvider viewPendingOrders;
   int companyId = 0;
   String? userId = "";
+
+  List<OrderResult> selectedOrders = [];
+  TextEditingController remarkstext = TextEditingController();
   @override
   void initState() {
     super.initState();
@@ -48,7 +50,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    viewOrdersProvider = Provider.of<ViewOrdersProvider>(context);
+    viewPendingOrders = Provider.of<ViewPendingOrdersProvider>(context);
   }
 
   void initializeData() {
@@ -56,33 +58,32 @@ class _VieworderPageState extends State<Viewpendingorder> {
     apiData.then((data) {
       if (data != null) {
         setState(() {
-          viewOrdersProvider.storeIntoViewOrderProvider(data);
+          viewPendingOrders.storeIntoViewPendingOrders(data);
         });
       } else {
-        print('Error initializing data: Invalid data format');
+        debugPrint('Error initializing data: Invalid data format');
       }
     }).catchError((error) {
-      print('Error initializing data: $error');
+      debugPrint('Error initializing data: $error');
     });
   }
 
   Future<List<OrderResult>> getorder() async {
     companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
-  String currentdate= DateFormat('yyyy-MM-dd').format(DateTime.now());
+    String currentdate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     DateTime oneWeekAgo = DateTime.now().subtract(const Duration(days: 7));
     String oneWeekdate = DateFormat('yyyy-MM-dd').format(oneWeekAgo);
 
     final url = Uri.parse(
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
     final requestBody = {
-    "PartyCode": null,
-    "StatusId": 1,
-    "FormDate": oneWeekdate,
-    "ToDate": currentdate,
-    "CompanyId": companyId,
-    "UserId": userId
-
+      "PartyCode": null,
+      "StatusId": 1,
+      "FormDate": oneWeekdate,
+      "ToDate": currentdate,
+      "CompanyId": companyId,
+      "UserId": userId
     };
 
     debugPrint('_______pending orders____1___');
@@ -104,7 +105,8 @@ class _VieworderPageState extends State<Viewpendingorder> {
         print('===========>$listResult');
 
         setState(() {
-          orderesponselist = listResult.map((json) => OrderResult.fromJson(json)).toList();
+          orderesponselist =
+              listResult.map((json) => OrderResult.fromJson(json)).toList();
           filterorderesponselist = List.from(orderesponselist);
         });
 
@@ -128,7 +130,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
   void filterOrderBasedOnProduct(String input) {
     apiData.then((data) {
       setState(() {
-        viewOrdersProvider.storeIntoViewOrderProvider(data!
+        viewPendingOrders.storeIntoViewPendingOrders(data!
             .where((item) =>
             item.partyName.toLowerCase().contains(input.toLowerCase()))
             .toList());
@@ -148,8 +150,8 @@ class _VieworderPageState extends State<Viewpendingorder> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ViewOrdersProvider>(
-      builder: (context, ordersProvider, _) => Scaffold(
+    return Consumer<ViewPendingOrdersProvider>(
+      builder: (context, pendingsProvider, _) => Scaffold(
         appBar: _appBar(),
         body: FutureBuilder(
           future: apiData,
@@ -161,7 +163,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                 child: Text('Error occurred: ${snapshot.error}'),
               );
             } else {
-              List<OrderResult> data = ordersProvider.viewOrderProviderData;
+              List<OrderResult> data = pendingsProvider.viewPendingData;
 
               return Padding(
                 padding: const EdgeInsets.all(10),
@@ -169,10 +171,70 @@ class _VieworderPageState extends State<Viewpendingorder> {
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     _viewOrdersSearchBarAndFilter(),
-                    const SizedBox(
-                      height: 10.0,
+
+                    // select filter
+                    Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        GestureDetector(
+                          onTap: () {
+                            pendingsProvider.setSelectAllStatus();
+                          },
+                          child: Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 5, horizontal: 10),
+                            decoration: BoxDecoration(
+                                borderRadius: BorderRadius.circular(6),
+                                color:
+                                const Color.fromARGB(255, 197, 238, 198)),
+                            child: const Text('select'),
+                          ),
+                        ),
+
+                        // select all
+                        if (pendingsProvider.getSelectAllStatus)
+                          isSelectedAll
+                              ? GestureDetector(
+                            onTap: () {
+                              pendingsProvider.toggleUnSelectAll();
+                              setState(() {
+                                isSelectedAll = false;
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: const Color.fromARGB(
+                                      255, 197, 238, 198)),
+                              child: const Text('unselect all'),
+                            ),
+                          )
+                              : GestureDetector(
+                            onTap: () {
+                              pendingsProvider.toggleSelectAll();
+                              setState(() {
+                                isSelectedAll = true;
+                              });
+                            },
+                            child: Container(
+                              padding: const EdgeInsets.symmetric(
+                                  vertical: 5, horizontal: 10),
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(6),
+                                  color: const Color.fromARGB(
+                                      255, 197, 238, 198)),
+                              child: const Text('select all'),
+                            ),
+                          )
+                      ],
                     ),
-                    if (ordersProvider.viewOrderProviderData.isNotEmpty)
+
+                    const SizedBox(
+                      height: 5.0,
+                    ),
+                    if (pendingsProvider.viewPendingData.isNotEmpty)
                       Expanded(
                         child: ListView.builder(
                           shrinkWrap: true,
@@ -185,8 +247,22 @@ class _VieworderPageState extends State<Viewpendingorder> {
                             DateFormat('dd MMM, yyyy').format(date);
 
                             return OrderCard(
-                                orderResult: data[index],
-                                formattedDate: formattedDate);
+                              orderIndex: index,
+                              orderResult: data[index],
+                              formattedDate: formattedDate,
+                              // Add isSelected parameter to determine if the item is selected
+                              isSelected: selectedOrders.contains(data[index]),
+                              // Pass a callback function to handle selection
+                              onSelected: (isSelected) {
+                                setState(() {
+                                  if (isSelected) {
+                                    selectedOrders.add(data[index]);
+                                  } else {
+                                    selectedOrders.remove(data[index]);
+                                  }
+                                });
+                              },
+                            );
                           },
                         ),
                       )
@@ -208,11 +284,33 @@ class _VieworderPageState extends State<Viewpendingorder> {
                             ],
                           ),
                         ),
-                      )
-                  ],
-                ),
-              );
-            }
+                      ),
+
+
+                        Positioned(
+                        left: 0,
+                        right: 0,
+            bottom: 0,
+            child: Container(
+            color: Colors.white,
+            padding: EdgeInsets.all(16),
+            child: SizedBox(
+            width: double.infinity,
+            child: ElevatedButton(
+            onPressed: () {
+
+              showRemarksBottomSheet(context, pendingsProvider.getSelectedOrderIds());
+
+            // Call the method to handle the approval action
+            },
+            child: Text('Approve'),
+            ),
+            ),
+            ),
+            ),
+            ],
+            ));
+          }
           },
         ),
       ),
@@ -234,10 +332,10 @@ class _VieworderPageState extends State<Viewpendingorder> {
                 child: GestureDetector(
                   onTap: () {
                     // Handle the click event for the back button
-                    viewOrdersProvider.clearFilter();
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(
+                          builder: (context) =>  HomeScreen()),
                     );
                   },
                   child: const Icon(
@@ -265,10 +363,10 @@ class _VieworderPageState extends State<Viewpendingorder> {
 
                 return GestureDetector(
                   onTap: () {
-                    viewOrdersProvider.clearFilter();
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(
+                          builder: (context) =>  HomeScreen()),
                     );
                   },
                   child: Image.asset(
@@ -313,7 +411,6 @@ class _VieworderPageState extends State<Viewpendingorder> {
               ),
             ),
           ),
-
         ],
       ),
     );
@@ -322,20 +419,196 @@ class _VieworderPageState extends State<Viewpendingorder> {
   Future<void> getshareddata() async {
     companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
   }
-}
 
+  void handleApprove(List<int> selectedOrderIds, String remarks) async {
+
+      // Construct the request body
+      var requestBody = {
+        "Id": selectedOrderIds.join(","), // Join the IDs with commas
+        "StatusTypeId": 17,
+        "Remarks": remarks,
+        "UpdatedBy": "e39536e2-89d3-4cc7-ae79-3dd5291ff156",
+        "UpdatedDate": "2024-02-20"
+      };
+print('==>${jsonEncode(requestBody)}');
+      // Make the HTTP POST request
+      var response = await http.post(
+        Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(requestBody),
+      );
+
+      // Check the response status
+      if (response.statusCode == 200) {
+        // Request successful, handle response here
+        print('Request successful');
+      } else {
+        // Request failed, handle error here
+        print('Request failed with status: ${response.statusCode}');
+      }
+    }
+
+  void showRemarksBottomSheet(BuildContext context, List<int> selectedOrderIds) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
+                  child: Text(
+                    'Remarks',
+                    style:CommonUtils.Mediumtext_o_14,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                Container(
+                  height: 70,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    border:
+                    Border.all(color: const Color(0xFFe78337), width: 1),
+                    borderRadius: BorderRadius.circular(5.0),
+                    color: Colors.white,
+                  ),
+                  child: TextFormField(
+                    controller: remarkstext,
+                    maxLength: 100,
+                    style: CommonUtils.Mediumtext_o_14,
+                    maxLines: null, // Set maxLines to null for multiline input
+                    decoration:  InputDecoration(
+                      counterText: '',
+                      hintText: 'Enter Remarks',
+                      hintStyle: CommonUtils.hintstyle_o_14,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 10.0,
+                        vertical: 0.0,
+                      ),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        String remarks = remarkstext.text.trim();
+                        if (remarks.isEmpty) {
+                          CommonUtils.showCustomToastMessageLong(
+                              'Please Enter Remarks', context, 1, 4);
+                        } else {
+                          // Call the API to update invoice status with remarks
+                          handleApprove(selectedOrderIds, remarks);
+                          Navigator.of(context).pop();
+
+                        }
+                        // updateInvoiceStatus(ordernumber!, invoiceNo);
+                        // Navigator.of(context).pop(); // Close the bottom sheet
+                      },
+                      child: Container(
+                        height: 35,
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8dac2),
+                          border: Border.all(
+                            color: const Color(0xFFe78337),
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: IntrinsicWidth(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/check.svg',
+                                      height: 18,
+                                      width: 18,
+                                      fit: BoxFit.fitWidth,
+                                      color: const Color(0xFFe78337),
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    const Text(
+                                      ' Submit',
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 12,
+                                        color: Color(0xFFe78337),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // ElevatedButton(
+                    //   onPressed: () {
+                    //     // Implement your logic to handle the remarks
+                    //     Navigator.of(context).pop(); // Close the bottom sheet
+                    //   },
+                    //   child: Text('Submit'),
+                    // ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+
+
+
+
+  }
 
 
 
 
 class OrderCard extends StatefulWidget {
+  final int orderIndex;
   final OrderResult orderResult;
   final String formattedDate;
+  final bool isSelected; // Add isSelected parameter
+  final ValueChanged<bool>? onSelected; // Add onSelected parameter
+
   const OrderCard({
-    super.key,
+    Key? key,
     required this.orderResult,
     required this.formattedDate,
-  });
+    required this.orderIndex,
+    required this.isSelected,
+    this.onSelected,
+  }) : super(key: key);
 
   @override
   State<OrderCard> createState() => _OrderCardState();
@@ -351,25 +624,18 @@ class _OrderCardState extends State<OrderCard> {
     borderRadius: BorderRadius.circular(5.0),
     color: Colors.white,
   );
-
-  late ViewOrdersProvider viewOrdersProvider;
-
+  TextEditingController remarkstext = TextEditingController();
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
-    viewOrdersProvider = Provider.of<ViewOrdersProvider>(context);
   }
 
 // start
 
   @override
   Widget build(BuildContext context) {
-    // String dateString = widget.listResult.date;
-    // DateTime date = DateTime.parse(dateString);
-    // String formattedDate = DateFormat('dd MMM, yyyy').format(date);
     return GestureDetector(
       onTap: () {
-        viewOrdersProvider.clearFilter();
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => Orderdetails(
@@ -396,7 +662,7 @@ class _OrderCardState extends State<OrderCard> {
         child: Card(
           elevation: 5,
           child: Container(
-            padding:  EdgeInsets.all(12),
+            padding: const EdgeInsets.all(12),
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               color: Colors.white,
@@ -439,12 +705,34 @@ class _OrderCardState extends State<OrderCard> {
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: [
-                              Text(
-                                widget.orderResult.partyName,
-                                style: CommonUtils.Mediumtext_14_cb,
-                                softWrap: true,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Text(
+                                      widget.orderResult.partyName,
+                                      style: CommonUtils.Mediumtext_14_cb,
+                                      softWrap: true,
+                                      maxLines: 2,
+                                      overflow: TextOverflow.visible,
+                                    ),
+                                  ),
+                                  Consumer<ViewPendingOrdersProvider>(
+                                    builder: (context, pendingOrders, _) {
+                                      return Checkbox(
+                                        activeColor: const Color(0xFFe78337),
+                                        value: pendingOrders.getCheckBoxValues[
+                                        widget.orderIndex],
+                                        onChanged: (bool? newValue) {
+                                          pendingOrders
+                                              .setCheckBoxStatusByIndex(
+                                              widget.orderIndex, newValue);
+                                        },
+                                      );
+                                    },
+                                  ),
+                                ],
                               ),
                               const SizedBox(
                                 height: 5.0,
@@ -475,10 +763,6 @@ class _OrderCardState extends State<OrderCard> {
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // const Text(
-                                  //   'Total Amount : ',
-                                  //   style: CommonUtils.txSty_13B_Fb,
-                                  // ),
                                   Text(
                                     '₹${formatNumber(widget.orderResult.totalCostWithGST!)}',
                                     style: CommonUtils.txSty_13O_F6,
@@ -559,13 +843,53 @@ class _OrderCardState extends State<OrderCard> {
                         ],
                       ),
                     ),
-                  ],
-                )
-              ],
+
+                  ]),
+                Container(
+                  width: double.infinity,
+                  height: 0.2,
+                  color: Colors.grey,
+                ),
+
+                const SizedBox(
+                  height: 5.0,
+                ),
+
+                // Clear button
+                GestureDetector(
+                  onTap: () {
+                    // showClearDialog();
+
+                    showRemarksBottomSheet(context,widget.orderResult.id);
+                  },
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.end,
+                    children: [
+                      Container(
+                        margin: const EdgeInsets.only(left: 5.0),
+                        padding: const EdgeInsets.symmetric(
+                            vertical: 3, horizontal: 7),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: statusBgColor,
+                        ),
+                        child: Center(
+                          child: Text(
+                            'Reject',
+                            style: TextStyle(
+                              fontSize: 11,
+                              color: statusColor,
+                            ),
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
+                )]),
             ),
-          ),
         ),
-      ),
+        ),
+
     );
   }
 
@@ -637,4 +961,170 @@ class _OrderCardState extends State<OrderCard> {
     NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
     return formatter.format(number);
   }
+
+  void showRemarksBottomSheet(BuildContext context, int id) {
+    showModalBottomSheet(
+      isScrollControlled: true,
+      context: context,
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
+        return Padding(
+          padding: EdgeInsets.only(
+            bottom: MediaQuery.of(context).viewInsets.bottom,
+          ),
+          child: Container(
+            padding: const EdgeInsets.all(20),
+            child: Column(
+              mainAxisSize: MainAxisSize.min,
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+
+                Padding(
+                  padding: EdgeInsets.only(
+                      top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
+                  child: Text(
+                    'Remarks',
+                    style:CommonUtils.Mediumtext_o_14,
+                    textAlign: TextAlign.start,
+                  ),
+                ),
+                Container(
+                  height: 70,
+                  width: MediaQuery.of(context).size.width,
+                  decoration: BoxDecoration(
+                    border:
+                    Border.all(color: const Color(0xFFe78337), width: 1),
+                    borderRadius: BorderRadius.circular(5.0),
+                    color: Colors.white,
+                  ),
+                  child: TextFormField(
+                    controller: remarkstext,
+                    maxLength: 100,
+                    style: CommonUtils.Mediumtext_o_14,
+                    maxLines: null, // Set maxLines to null for multiline input
+                    decoration:  InputDecoration(
+                      counterText: '',
+                      hintText: 'Enter Remarks',
+                      hintStyle: CommonUtils.hintstyle_o_14,
+                      contentPadding: EdgeInsets.symmetric(
+                        horizontal: 10.0,
+                        vertical: 0.0,
+                      ),
+                      border: InputBorder.none,
+                    ),
+                  ),
+                ),
+                const SizedBox(height: 20),
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.end,
+                  children: [
+                    GestureDetector(
+                      onTap: () {
+                        String remarks = remarkstext.text.trim();
+                        if (remarks.isEmpty) {
+                          CommonUtils.showCustomToastMessageLong(
+                              'Please Enter Remarks', context, 1, 4);
+                        } else {
+                          // Call the API to update invoice status with remarks
+                          handlereject(id, remarks);
+                          Navigator.of(context).pop();
+
+                        }
+                        // updateInvoiceStatus(ordernumber!, invoiceNo);
+                        // Navigator.of(context).pop(); // Close the bottom sheet
+                      },
+                      child: Container(
+                        height: 35,
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          color: const Color(0xFFF8dac2),
+                          border: Border.all(
+                            color: const Color(0xFFe78337),
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: IntrinsicWidth(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/check.svg',
+                                      height: 18,
+                                      width: 18,
+                                      fit: BoxFit.fitWidth,
+                                      color: const Color(0xFFe78337),
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    const Text(
+                                      ' Submit',
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 12,
+                                        color: Color(0xFFe78337),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
+                    // ElevatedButton(
+                    //   onPressed: () {
+                    //     // Implement your logic to handle the remarks
+                    //     Navigator.of(context).pop(); // Close the bottom sheet
+                    //   },
+                    //   child: Text('Submit'),
+                    // ),
+                  ],
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  void handlereject(int id, String remarks)  async {
+
+    // Construct the request body
+    var requestBody = {
+      "Id":id, // Join the IDs with commas
+      "StatusTypeId": 12,
+      "Remarks": remarks,
+      "UpdatedBy": "e39536e2-89d3-4cc7-ae79-3dd5291ff156",
+      "UpdatedDate": "2024-02-20"
+    };
+    print('==>${jsonEncode(requestBody)}');
+    // Make the HTTP POST request
+    var response = await http.post(
+      Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(requestBody),
+    );
+
+    // Check the response status
+    if (response.statusCode == 200) {
+      // Request successful, handle response here
+      print('Request successful');
+    } else {
+      // Request failed, handle error here
+      print('Request failed with status: ${response.statusCode}');
+    }
+  }
+
 }

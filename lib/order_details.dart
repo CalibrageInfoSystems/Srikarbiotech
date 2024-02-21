@@ -1924,8 +1924,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
     );
   }
 
-  void showRemarksBottomSheet(
-      BuildContext context, String invoiceNo, String invoicedateDate) {
+  void showRemarksBottomSheet(BuildContext context, String invoiceNo, String invoicedateDate) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
