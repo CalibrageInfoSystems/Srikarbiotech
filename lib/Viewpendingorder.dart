@@ -44,6 +44,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
   @override
   void initState() {
     super.initState();
+    Provider.of<ViewPendingOrdersProvider>(context, listen: false).resetCheckBoxValues();
     initializeData();
   }
 
@@ -105,6 +106,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
         final List<dynamic> listResult = data['response']['listResult'];
         print('===========>$listResult');
 
+
         setState(() {
           orderesponselist =
               listResult.map((json) => OrderResult.fromJson(json)).toList();
@@ -152,152 +154,154 @@ class _VieworderPageState extends State<Viewpendingorder> {
   @override
   Widget build(BuildContext context) {
 
-        return WillPopScope(
-        onWillPop: () async {
-          Navigator.pushReplacement(
-            context,
-            MaterialPageRoute(
-                builder: (context) =>  HomeScreen()),
+    return WillPopScope(
+      onWillPop: () async {
+        Navigator.pushReplacement(
+          context,
+          MaterialPageRoute(builder: (context) => HomeScreen()),
+        );
+        // viewPendingOrders.Clearpendingcheckbox();
+        return true;
+      },
+      child: Consumer<ViewPendingOrdersProvider>(
+        builder: (context, pendingsProvider, _) => Scaffold(
+          appBar: _appBar(),
+          body: FutureBuilder(
+            future: apiData,
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.waiting) {
+                return const Center(child: CircularProgressIndicator.adaptive());
+              } else if (snapshot.hasError) {
+                return Center(
+                  child: Text('Error occurred: ${snapshot.error}'),
+                );
+              } else {
+                List<OrderResult> data = pendingsProvider.viewPendingData;
 
-          );
-        //  viewPendingOrders.Clearpendingcheckbox();
+                return Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      _viewOrdersSearchBarAndFilter(),
 
-      return true;
-    },
-     child: Consumer<ViewPendingOrdersProvider>(
-      builder: (context, pendingsProvider, _) => Scaffold(
-        appBar: _appBar(),
-        body: FutureBuilder(
-          future: apiData,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator.adaptive());
-            } else if (snapshot.hasError) {
-              return Center(
-                child: Text('Error occurred: ${snapshot.error}'),
-              );
-            } else {
-              List<OrderResult> data = pendingsProvider.viewPendingData;
-
-              return Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _viewOrdersSearchBarAndFilter(),
-
-                    // select filter
-                    if (pendingsProvider.viewPendingData.isNotEmpty)
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.end,
-                      children: [
-
-                          isSelectedAll
-                              ? GestureDetector(
-                            onTap: () {
-                              pendingsProvider.toggleUnSelectAll();
-                              setState(() {
-                                isSelectedAll = false;
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 10),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color:Color(0xFFe78337)),
-                              child: const Text('Unselect All' , style: CommonUtils.Buttonstyle,),
-                            ),
-                          )
-                              : GestureDetector(
-                            onTap: () {
-                              pendingsProvider.toggleSelectAll();
-                              setState(() {
-                                isSelectedAll = true;
-                              });
-                            },
-                            child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  vertical: 5, horizontal: 10),
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color:Color(0xFFe78337)),
-                              child: const Text('Select All',
-                              style: CommonUtils.Buttonstyle,),
-                            ),
-                          )
-                      ],
-                    ),
-
-                    const SizedBox(
-                      height: 5.0,
-                    ),
-                    if (pendingsProvider.viewPendingData.isNotEmpty)
-                      Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: data.length,
-                          // Change this to the number of static items you want
-                          itemBuilder: (context, index) {
-                            String dateString = data[index].orderDate;
-                            DateTime date = DateTime.parse(dateString);
-                            String formattedDate =
-                            DateFormat('dd MMM, yyyy').format(date);
-
-                            return OrderCard(
-                              orderIndex: index,
-                              orderResult: data[index],
-                              formattedDate: formattedDate,
-                              // Add isSelected parameter to determine if the item is selected
-                              isSelected: selectedOrders.contains(data[index]),
-                              // Pass a callback function to handle selection
-                              onSelected: (isSelected) {
+                      // select filter
+                      if (pendingsProvider.viewPendingData.isNotEmpty)
+                        Row(
+                          mainAxisAlignment: MainAxisAlignment.end,
+                          children: [
+                            isSelectedAll
+                                ? GestureDetector(
+                              onTap: () {
+                                pendingsProvider.toggleUnSelectAll();
                                 setState(() {
-                                  if (isSelected) {
-                                    selectedOrders.add(data[index]);
-                                  } else {
-                                    selectedOrders.remove(data[index]);
-                                  }
+                                  isSelectedAll = false;
                                 });
                               },
-                            );
-                          },
-                        ),
-                      )
-                    else
-                      const Expanded(
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(5.0),
-                                child: Text(
-                                  'No Pending Orders found!',
-                                  style: CommonUtils.Mediumtext_14_cb,
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Color(0xFFe78337),
+                                ),
+                                child: const Text(
+                                  'Unselect All for Approve Orders',
+                                  style: CommonUtils.Buttonstyle,
                                 ),
                               ),
-                            ],
+                            )
+                                : GestureDetector(
+                              onTap: () {
+                                pendingsProvider.toggleSelectAll();
+                                setState(() {
+                                  isSelectedAll = true;
+                                });
+                              },
+                              child: Container(
+                                padding: const EdgeInsets.symmetric(
+                                    vertical: 5, horizontal: 10),
+                                decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(8),
+                                  color: Color(0xFFe78337),
+                                ),
+                                child: const Text(
+                                  'Select All for Approve Orders',
+                                  style: CommonUtils.Buttonstyle,
+                                ),
+                              ),
+                            )
+                          ],
+                        ),
+
+                      const SizedBox(
+                        height: 5.0,
+                      ),
+                      if (pendingsProvider.viewPendingData.isNotEmpty)
+                        Expanded(
+                          child: ListView.builder(
+                            shrinkWrap: true,
+                            itemCount: data.length,
+                            itemBuilder: (context, index) {
+                              String dateString = data[index].orderDate;
+                              DateTime date = DateTime.parse(dateString);
+                              String formattedDate =
+                              DateFormat('dd MMM, yyyy').format(date);
+
+                              return OrderCard(
+                                orderIndex: index,
+                                orderResult: data[index],
+                                formattedDate: formattedDate,
+                                // Add isSelected parameter to determine if the item is selected
+                                isSelected: selectedOrders.contains(data[index]),
+                                // Pass a callback function to handle selection
+                                onSelected: (isSelected) {
+                                  setState(() {
+                                    if (isSelected) {
+                                      selectedOrders.add(data[index]);
+                                    } else {
+                                      selectedOrders.remove(data[index]);
+                                    }
+                                  });
+                                },
+                              );
+                            },
+                          ),
+                        )
+                      else
+                        const Expanded(
+                          child: SizedBox(
+                            width: double.infinity,
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              crossAxisAlignment: CrossAxisAlignment.center,
+                              children: [
+                                Padding(
+                                  padding: EdgeInsets.all(5.0),
+                                  child: Text(
+                                    'No Pending Orders found!',
+                                    style: CommonUtils.Mediumtext_14_cb,
+                                  ),
+                                ),
+                              ],
+                            ),
                           ),
                         ),
-                      ),
 
-                    if (pendingsProvider.viewPendingData.isNotEmpty)
-                    Positioned(
-                      left: 0,
-                      right: 0,
-                      bottom: 0,
-                      child: GestureDetector(
-                        onTap: () {
+                      // Approve button
+                      GestureDetector(
+                        onTap: pendingsProvider.getSelectedOrderIds().isEmpty ? null : () {
                           // Add your logic here for when the button is clicked
                           print('Approve button clicked');
-                          print('Approve button clicked ${pendingsProvider.getSelectedOrderIds().length}');
+                          print('Selected order IDs: ${pendingsProvider.getSelectedOrderIds().length}');
                           if (pendingsProvider.getSelectedOrderIds().length > 0) {
-                            showRemarksBottomSheet(context, pendingsProvider.getSelectedOrderIds());
-                          }{
-
+                            showRemarksBottomSheet(
+                              context,
+                              pendingsProvider.getSelectedOrderIds(),
+                            );
+                          } else {
+                            // Handle case when no order is selected
+                            print('No orders selected');
                           }
                         },
                         child: Container(
@@ -309,10 +313,12 @@ class _VieworderPageState extends State<Viewpendingorder> {
                               padding: const EdgeInsets.all(10),
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
-                                color: Color(0xFFe78337),
+                                color: pendingsProvider.getSelectedOrderIds().isEmpty
+                                    ? Colors.grey // Change to your disabled button color
+                                    : Color(0xFFe78337),
                               ),
                               child: Row(
-                                mainAxisAlignment: MainAxisAlignment.center, // Aligns children horizontally to the center
+                                mainAxisAlignment: MainAxisAlignment.center,
                                 children: [
                                   SvgPicture.asset(
                                     'assets/check.svg',
@@ -336,18 +342,20 @@ class _VieworderPageState extends State<Viewpendingorder> {
                             ),
                           ),
                         ),
-
-                      ),
                       ),
 
-
-                  ],
-            ));
-          }
-          },
+                      //  SizedBox(height: 20), // Add some space between the button and other content
+                    ],
+                  ),
+                );
+              }
+            },
+          ),
         ),
       ),
-    ));
+    );
+
+
   }
 
   AppBar _appBar() {
@@ -371,7 +379,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                           builder: (context) =>  HomeScreen()),
 
                     );
-               //     viewPendingOrders.Clearpendingcheckbox();
+             //     viewPendingOrders.Clearpendingcheckbox();
                   },
                   child: const Icon(
                     Icons.chevron_left,
@@ -475,21 +483,29 @@ print('==>${jsonEncode(requestBody)}');
         },
         body: jsonEncode(requestBody),
       );
-
-      // Check the response status
       if (response.statusCode == 200) {
+        var responseBody = json.decode(response.body);
         // Request successful, handle response here
         print('Request successful');
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-              builder: (context) =>
-                  Viewpendingorder()),
-        );
+        if (responseBody['isSuccess'] == true ) {
+          CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 1, 4);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Viewpendingorder()),
+          );
+        }
+        else{
+
+          CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 1, 4);
+
+        }
       } else {
         // Request failed, handle error here
         print('Request failed with status: ${response.statusCode}');
+        // Show error message to the user
+        // You can use a modal dialog, a snackbar, or any other UI element to display the error message
       }
+
     }
 
   void showRemarksBottomSheet(BuildContext context, List<int> selectedOrderIds) {
@@ -524,8 +540,7 @@ print('==>${jsonEncode(requestBody)}');
                   height: 70,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
-                    border:
-                    Border.all(color: const Color(0xFFe78337), width: 1),
+                    border: Border.all(color: const Color(0xFFe78337), width: 1),
                     borderRadius: BorderRadius.circular(5.0),
                     color: Colors.white,
                   ),
@@ -534,8 +549,7 @@ print('==>${jsonEncode(requestBody)}');
                     maxLength: 100,
                     style: CommonUtils.Mediumtext_o_14,
                     maxLines: null, // Set maxLines to null for multiline input
-                    decoration:  InputDecoration(
-                      counterText: '',
+                    decoration: InputDecoration(
                       hintText: 'Enter Remarks',
                       hintStyle: CommonUtils.hintstyle_o_14,
                       contentPadding: EdgeInsets.symmetric(
@@ -543,13 +557,65 @@ print('==>${jsonEncode(requestBody)}');
                         vertical: 0.0,
                       ),
                       border: InputBorder.none,
+                      counterStyle: TextStyle(color: Colors.green), // Specify the color for the counter text
                     ),
                   ),
                 ),
+
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop(); // Close the bottom sheet
+                        // Show a new bottom sheet for entering remarks
+                      },
+                      child: Container(
+                        height: 35,
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          color: const Color(0xfffffece6),
+                          border: Border.all(
+                            color: const Color(0xFFe6504d),
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: IntrinsicWidth(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/crosscircle.svg',
+                                      height: 18,
+                                      width: 18,
+                                      fit: BoxFit.fitWidth,
+                                      color: const Color(0xFFe6504d),
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    const Text(
+                                      'Cancel',
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 12,
+                                        color: Color(0xFFe6504d),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                     GestureDetector(
                       onTap: () {
                         String remarks = remarkstext.text.trim();
@@ -675,293 +741,579 @@ class _OrderCardState extends State<OrderCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
+
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => Orderdetails(
-                orderid: widget.orderResult.id,
-                orderdate: widget.formattedDate,
-                totalCostWithGST: widget.orderResult.totalCostWithGST!,
-                bookingplace: widget.orderResult.bookingPlace,
-                transportmode: widget.orderResult.transportName,
-                lrnumber: 1,
-                lrdate: "",
-                statusname: widget.orderResult.statusName,
-                partyname: widget.orderResult.partyName,
-                partycode: widget.orderResult.partyCode,
-                proprietorName: widget.orderResult.proprietorName!,
-                partyGSTNumber: widget.orderResult.partyGSTNumber!,
-                ordernumber: widget.orderResult.orderNumber!,
-                partyAddress: widget.orderResult.partyAddress,
+              orderid: widget.orderResult.id,
+              orderdate: widget.formattedDate,
+              totalCostWithGST: widget.orderResult.totalCostWithGST!,
+              bookingplace: widget.orderResult.bookingPlace,
+              transportmode: widget.orderResult.transportName,
+              lrnumber: 1,
+              lrdate: "",
+              statusname: widget.orderResult.statusName,
+              partyname: widget.orderResult.partyName,
+              partycode: widget.orderResult.partyCode,
+              proprietorName: widget.orderResult.proprietorName!,
+              partyGSTNumber: widget.orderResult.partyGSTNumber!,
+              ordernumber: widget.orderResult.orderNumber!,
+              partyAddress: widget.orderResult.partyAddress,
               statusBar: sendingSvgImagesAndColors(
                 widget.orderResult.statusTypeId,
                 widget.orderResult.statusName,
-              ),),
-
+              ),
+            ),
           ),
         );
       },
-      child:
-      Container(
+      child: Container(
         margin: const EdgeInsets.only(bottom: 10),
         color: Colors.transparent,
         child: Card(
           elevation: 5,
           child: Container(
-            padding: const EdgeInsets.all(10),
+            padding: const EdgeInsets.all(12),
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               color: Colors.white,
-              borderRadius: BorderRadius.circular(8),
+              borderRadius: BorderRadius.circular(10),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
+            child: Row(
               children: [
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  decoration: CommonUtils.boxBorder,
-                  child: Row(
+                // Existing content wrapped in Expanded
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
                     children: [
-                      // starting icon of card
-                      Card(
-                        elevation: 3,
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: Container(
-                          height: 65,
-                          width: 65,
-                          padding: const EdgeInsets.all(10),
-                          decoration: _iconBoxBorder,
-                          child: Center(
-                            child: getSvgImagesAndColors(
-                              widget.orderResult.statusTypeId,
+                      Row(
+                        children: [
+                          // starting icon of card
+                          Card(
+                            elevation: 3,
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            child: Container(
+                              height: 65,
+                              width: 65,
+                              padding: const EdgeInsets.all(10),
+                              decoration: _iconBoxBorder,
+                              child: Center(
+                                child: getSvgImagesAndColors(
+                                  widget.orderResult.statusTypeId,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
 
-                      // beside info
-                      Expanded(
-                        child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 10, top: 0, bottom: 0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                            children: [
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceEvenly,
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      widget.orderResult.partyName,
-                                      style: CommonUtils.Mediumtext_14_cb,
-                                      softWrap: true,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.visible,
-                                    ),
-                                  ),
-                                  Consumer<ViewPendingOrdersProvider>(
-                                    builder: (context, pendingOrders, _) {
-                                      return Checkbox(
-                                        activeColor: const Color(0xFFe78337),
-                                        value: pendingOrders.getCheckBoxValues[widget.orderIndex],
-                                        onChanged: (bool? newValue) {
-                                          pendingOrders.setCheckBoxStatusByIndex(
-                                              widget.orderIndex, newValue);
-                                        },
-                                      );
-                                    },
-                                  ),
-                                ],
-                              ),
-
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                          // beside info
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.only(
+                                  left: 10, top: 0, bottom: 0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
-                                      const Text(
-                                        'Order ID : ',
-                                        style: CommonUtils.txSty_13B_Fb,
+                                      // Add Text
+                                      Expanded(
+                                        child: Text(
+                                          widget.orderResult.partyName,
+                                          style: CommonUtils.Mediumtext_14_cb,
+                                          softWrap: true,
+                                          maxLines: 2,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
                                       ),
-                                      Text(
-                                        widget.orderResult.orderNumber
-                                            .toString(),
-                                        style: CommonUtils.txSty_13O_F6,
+                                      // Add SizedBox to control the size of the Checkbox
+                                      SizedBox(
+                                        width: 24, // Adjust the width as needed
+                                        height: 24, // Adjust the height as needed
+                                        child: Consumer<ViewPendingOrdersProvider>(
+                                          builder: (context, pendingOrders, _) {
+                                            // Ensure that the index is within the valid range of the list
+                                            final int index = widget.orderIndex < pendingOrders.getCheckBoxValues.length
+                                                ? widget.orderIndex
+                                                : 0; // Provide a default value or handle it according to your logic
+
+                                            return Checkbox(
+                                              activeColor: const Color(0xFFe78337),
+                                              value: pendingOrders.getCheckBoxValues[index],
+                                              onChanged: (bool? newValue) {
+                                                pendingOrders.setCheckBoxStatusByIndex(index, newValue);
+                                              },
+                                            );
+                                          },
+                                        ),
                                       ),
                                     ],
                                   ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Text(
-                                    '₹${formatNumber(widget.orderResult.totalCostWithGST!)}',
-                                    style: CommonUtils.txSty_13O_F6,
-                                  ),
-                                  Text(
-                                    widget.formattedDate,
-                                    style: CommonUtils.txSty_13O_F6,
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
 
-                Row(
-                  children: [
-                   Container(
-                        margin: const EdgeInsets.only(left: 5.0),
-                        padding: const EdgeInsets.symmetric(
-                            vertical: 3, horizontal:5),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(10),
-                          color: statusBgColor,
-                        ),
-                        child: Row(
-                          mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Text(
-                              widget.orderResult.statusName,
-                              style: TextStyle(
-                                fontSize: 11,
-                                color: statusColor,
-                                // Add other text styles as needed
+
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Row(
+                                        children: [
+                                          const Text(
+                                            'Order ID : ',
+                                            style: CommonUtils.txSty_13B_Fb,
+                                          ),
+                                          Text(
+                                            widget.orderResult.orderNumber
+                                                .toString(),
+                                            style: CommonUtils.txSty_13O_F6,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      // const Text(
+                                      //   'Total Amount : ',
+                                      //   style: CommonUtils.txSty_13B_Fb,
+                                      // ),
+                                      Text(
+                                        '₹${formatNumber(widget.orderResult.totalCostWithGST!)}',
+                                        style: CommonUtils.txSty_13O_F6,
+                                      ),
+                                      Text(
+                                        widget.formattedDate,
+                                        style: CommonUtils.txSty_13O_F6,
+                                      ),
+                                    ],
+                                  )
+                                ],
                               ),
                             ),
-                          ],
-                        ),
-                      ),
-
-                    const SizedBox(
-                      width: 10.0,
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Row(
-                                children: [
-                                  const Text(
-                                    'No.of Items: ',
-                                    style: CommonUtils.txSty_13B_Fb,
-                                  ),
-                                  Text(
-                                    '${widget.orderResult.noOfItems}',
-                                    style: CommonUtils.txSty_13O_F6,
-                                  ),
-                                ],
-                              ),
-                            ],
                           )
                         ],
                       ),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 5.0,
-                ),
-                Container(
-                  width: double.infinity,
-                  height: 0.2,
-                  color: Colors.grey,
-                ),
-                const SizedBox(
-                  height: 5.0,
-                ),
-                // Clear button
-               Row(
-                  mainAxisAlignment: MainAxisAlignment.end,
-                  children: <Widget>[
-
-                    GestureDetector(
-                      onTap: () {
-                        // Show confirmation dialog
-                        showRemarksBottomSheet(context,widget.orderResult.id);
-                      },
-                      child:
-                      Container(
-                        decoration: BoxDecoration(
-                          color: HexColor('#ffecee'), // Background color of the card
-                          borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
-                        ),
-                        padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Adjust padding as needed
-                        child:
-                        Row(
-                          children: [
-                            SvgPicture.asset(
-                              'assets/crosscircle.svg',
-                              height: 18,
-                              width: 18,
-                              fit: BoxFit.fitWidth,
-                              color: HexColor('#ee1d23'),
+                      const SizedBox(
+                        height: 5.0,
+                      ),
+                      Row(
+                        children: [
+                          Container(
+                            margin: const EdgeInsets.only(left: 5.0),
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 3, horizontal: 7),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: statusBgColor,
                             ),
-                            SizedBox(width: 8.0), // Add some spacing between icon and text
-                            Text(
-                              'Reject',
-                              style: TextStyle(
-                                fontFamily: 'Roboto',
-                                fontWeight: FontWeight.bold,
-                                color: HexColor('#ee1d23'),
-                                fontSize: 13,
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  widget.orderResult.statusName,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: statusColor,
+                                    // Add other text styles as needed
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          const SizedBox(
+                            width: 10.0,
+                          ),
+                          Expanded(
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.end,
+                              children: [
+                                const Expanded(child: SizedBox()),
+                                Column(
+                                  crossAxisAlignment: CrossAxisAlignment.end,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        const Text(
+                                          'No.of Items: ',
+                                          style: CommonUtils.txSty_13B_Fb,
+                                        ),
+                                        Text(
+                                          '${widget.orderResult.noOfItems}',
+                                          style: CommonUtils.txSty_13O_F6,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                )
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+                      const SizedBox(
+                        height: 5.0,
+                      ),
+                      Container(
+                        width: double.infinity,
+                        height: 0.2,
+                        color: Colors.grey,
+                      ),
+                      const SizedBox(
+                        height: 5.0,
+                      ),
+                      // Clear button
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.end,
+                        children: <Widget>[
+
+                          GestureDetector(
+                            onTap: () {
+                              // Show confirmation dialog
+                              showRemarksBottomSheet(context,widget.orderResult.id);
+                            },
+                            child:
+                            Container(
+                              decoration: BoxDecoration(
+                                color: HexColor('#ffecee'), // Background color of the card
+                                borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
+                              ),
+                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Adjust padding as needed
+                              child:
+                              Row(
+                                children: [
+                                  SvgPicture.asset(
+                                    'assets/crosscircle.svg',
+                                    height: 18,
+                                    width: 18,
+                                    fit: BoxFit.fitWidth,
+                                    color: HexColor('#ee1d23'),
+                                  ),
+                                  SizedBox(width: 8.0), // Add some spacing between icon and text
+                                  Text(
+                                    'Reject',
+                                    style: TextStyle(
+                                      fontFamily: 'Roboto',
+                                      fontWeight: FontWeight.bold,
+                                      color: HexColor('#ee1d23'),
+                                      fontSize: 13,
+                                    ),
+                                  ),
+                                ],
                               ),
                             ),
-                          ],
-                        ),
+                          ),
+                          SizedBox(width: 10),
+                        ],
                       ),
-                    ),
-                    SizedBox(width: 10),
-                  ],
-                ),
 
-                // GestureDetector(
-                //   onTap: () {
-                //     // showClearDialog();
-                //     showRemarksBottomSheet(context,widget.orderResult.id);
-                //   },
-                //   child: Row(
-                //     mainAxisAlignment: MainAxisAlignment.end,
-                //     children: [
-                //       Container(
-                //         margin: const EdgeInsets.only(left: 5.0),
-                //         padding: const EdgeInsets.symmetric(
-                //             vertical: 5, horizontal: 10),
-                //         decoration: BoxDecoration(
-                //           borderRadius: BorderRadius.circular(8),
-                //           color:Color(0xFFe78337),
-                //         ),
-                //         child: Center(
-                //           child: Text('Reject' , style: CommonUtils.Buttonstyle,),
-                //         ),
-                //       ),
-                //     ],
-                //   ),
-                // ),
+
+                    ],
+                  ),
+                ),
               ],
             ),
           ),
         ),
       ),
-
     );
+
+    // return GestureDetector(
+    //   onTap: () {
+    //
+    //     Navigator.of(context).push(
+    //       MaterialPageRoute(
+    //         builder: (context) => Orderdetails(
+    //           orderid: widget.orderResult.id,
+    //           orderdate: widget.formattedDate,
+    //           totalCostWithGST: widget.orderResult.totalCostWithGST!,
+    //           bookingplace: widget.orderResult.bookingPlace,
+    //           transportmode: widget.orderResult.transportName,
+    //           lrnumber: 1,
+    //           lrdate: "",
+    //           statusname: widget.orderResult.statusName,
+    //           partyname: widget.orderResult.partyName,
+    //           partycode: widget.orderResult.partyCode,
+    //           proprietorName: widget.orderResult.proprietorName!,
+    //           partyGSTNumber: widget.orderResult.partyGSTNumber!,
+    //           ordernumber: widget.orderResult.orderNumber!,
+    //           partyAddress: widget.orderResult.partyAddress,
+    //           statusBar: sendingSvgImagesAndColors(
+    //             widget.orderResult.statusTypeId,
+    //             widget.orderResult.statusName,
+    //           ),
+    //         ),
+    //       ),
+    //     );
+    //   },
+    //   child: Container(
+    //     margin: const EdgeInsets.only(bottom: 10),
+    //     color: Colors.transparent,
+    //     child: Card(
+    //       elevation: 5,
+    //       child: Container(
+    //         padding: const EdgeInsets.all(12),
+    //         width: MediaQuery.of(context).size.width,
+    //         decoration: BoxDecoration(
+    //           color: Colors.white,
+    //           borderRadius: BorderRadius.circular(10),
+    //         ),
+    //         child: Row(
+    //             children: [
+    //         // Checkbox
+    //         Consumer<ViewPendingOrdersProvider>(
+    //         builder: (context, pendingOrders, _) {
+    //       return Checkbox(
+    //       activeColor: const Color(0xFFe78337),
+    //       value: pendingOrders.getCheckBoxValues[widget.orderIndex],
+    //       onChanged: (bool? newValue) {
+    //       pendingOrders.setCheckBoxStatusByIndex(
+    //       widget.orderIndex, newValue
+    //       );
+    //       },
+    //       );
+    //       },
+    //       ),
+    //       const SizedBox(width: 10), // Add some spacing between checkbox and content
+    //       // Existing content wrapped in Expanded
+    //       Expanded(
+    //         child: Column(
+    //           crossAxisAlignment: CrossAxisAlignment.start,
+    //           children: [
+    //             Container(
+    //               width: MediaQuery.of(context).size.width,
+    //               decoration: CommonUtils.boxBorder,
+    //               child: Row(
+    //                 children: [
+    //                   // starting icon of card
+    //                   Card(
+    //                     elevation: 3,
+    //                     color: Colors.white,
+    //                     shape: RoundedRectangleBorder(
+    //                       borderRadius: BorderRadius.circular(5.0),
+    //                     ),
+    //                     child: Container(
+    //                       height: 65,
+    //                       width: 65,
+    //                       padding: const EdgeInsets.all(10),
+    //                       decoration: _iconBoxBorder,
+    //                       child: Center(
+    //                         child: getSvgImagesAndColors(
+    //                           widget.orderResult.statusTypeId,
+    //                         ),
+    //                       ),
+    //                     ),
+    //                   ),
+    //
+    //                   // beside info
+    //                   Expanded(
+    //                     child: Padding(
+    //                       padding: const EdgeInsets.only(
+    //                           left: 10, top: 0, bottom: 0),
+    //                       child: Column(
+    //                         crossAxisAlignment: CrossAxisAlignment.start,
+    //                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+    //                         children: [
+    //                           Row(
+    //                             mainAxisAlignment:
+    //                             MainAxisAlignment.spaceEvenly,
+    //                             children: [
+    //                               Expanded(
+    //                                 child: Text(
+    //                                   widget.orderResult.partyName,
+    //                                   style: CommonUtils.Mediumtext_14_cb,
+    //                                   softWrap: true,
+    //                                   maxLines: 2,
+    //                                   overflow: TextOverflow.visible,
+    //                                 ),
+    //                               ),
+    //                               // Consumer<ViewPendingOrdersProvider>(
+    //                               //   builder: (context, pendingOrders, _) {
+    //                               //     return Checkbox(
+    //                               //       activeColor: const Color(0xFFe78337),
+    //                               //       value: pendingOrders.getCheckBoxValues[widget.orderIndex],
+    //                               //       onChanged: (bool? newValue) {
+    //                               //         pendingOrders.setCheckBoxStatusByIndex(
+    //                               //             widget.orderIndex, newValue);
+    //                               //       },
+    //                               //     );
+    //                               //   },
+    //                               // ),
+    //                             ],
+    //                           ),
+    //
+    //                           Row(
+    //                             mainAxisAlignment:
+    //                             MainAxisAlignment.spaceBetween,
+    //                             children: [
+    //                               Row(
+    //                                 children: [
+    //                                   const Text(
+    //                                     'Order ID : ',
+    //                                     style: CommonUtils.txSty_13B_Fb,
+    //                                   ),
+    //                                   Text(
+    //                                     widget.orderResult.orderNumber
+    //                                         .toString(),
+    //                                     style: CommonUtils.txSty_13O_F6,
+    //                                   ),
+    //                                 ],
+    //                               ),
+    //                             ],
+    //                           ),
+    //                           const SizedBox(
+    //                             height: 5.0,
+    //                           ),
+    //                           Row(
+    //                             mainAxisAlignment:
+    //                             MainAxisAlignment.spaceBetween,
+    //                             children: [
+    //                               Text(
+    //                                 '₹${formatNumber(widget.orderResult.totalCostWithGST!)}',
+    //                                 style: CommonUtils.txSty_13O_F6,
+    //                               ),
+    //                               Text(
+    //                                 widget.formattedDate,
+    //                                 style: CommonUtils.txSty_13O_F6,
+    //                               ),
+    //                             ],
+    //                           )
+    //                         ],
+    //                       ),
+    //                     ),
+    //                   )
+    //                 ],
+    //               ),
+    //             ),
+    //
+    //             Row(
+    //               children: [
+    //                Container(
+    //                     margin: const EdgeInsets.only(left: 5.0),
+    //                     padding: const EdgeInsets.symmetric(
+    //                         vertical: 3, horizontal:5),
+    //                     decoration: BoxDecoration(
+    //                       borderRadius: BorderRadius.circular(10),
+    //                       color: statusBgColor,
+    //                     ),
+    //                     child: Row(
+    //                       mainAxisAlignment: MainAxisAlignment.center,
+    //                       children: [
+    //                         Text(
+    //                           widget.orderResult.statusName,
+    //                           style: TextStyle(
+    //                             fontSize: 11,
+    //                             color: statusColor,
+    //                             // Add other text styles as needed
+    //                           ),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   ),
+    //
+    //                 const SizedBox(
+    //                   width: 10.0,
+    //                 ),
+    //                 Expanded(
+    //                   child: Row(
+    //                     mainAxisAlignment: MainAxisAlignment.end,
+    //                     children: [
+    //                       Column(
+    //                         crossAxisAlignment: CrossAxisAlignment.end,
+    //                         children: [
+    //                           Row(
+    //                             children: [
+    //                               const Text(
+    //                                 'No.of Items: ',
+    //                                 style: CommonUtils.txSty_13B_Fb,
+    //                               ),
+    //                               Text(
+    //                                 '${widget.orderResult.noOfItems}',
+    //                                 style: CommonUtils.txSty_13O_F6,
+    //                               ),
+    //                             ],
+    //                           ),
+    //                         ],
+    //                       )
+    //                     ],
+    //                   ),
+    //                 ),
+    //               ],
+    //             ),
+    //             const SizedBox(
+    //               height: 5.0,
+    //             ),
+    //             Container(
+    //               width: double.infinity,
+    //               height: 0.2,
+    //               color: Colors.grey,
+    //             ),
+    //             const SizedBox(
+    //               height: 5.0,
+    //             ),
+    //             // Clear button
+    //            Row(
+    //               mainAxisAlignment: MainAxisAlignment.end,
+    //               children: <Widget>[
+    //
+    //                 GestureDetector(
+    //                   onTap: () {
+    //                     // Show confirmation dialog
+    //                     showRemarksBottomSheet(context,widget.orderResult.id);
+    //                   },
+    //                   child:
+    //                   Container(
+    //                     decoration: BoxDecoration(
+    //                       color: HexColor('#ffecee'), // Background color of the card
+    //                       borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
+    //                     ),
+    //                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Adjust padding as needed
+    //                     child:
+    //                     Row(
+    //                       children: [
+    //                         SvgPicture.asset(
+    //                           'assets/crosscircle.svg',
+    //                           height: 18,
+    //                           width: 18,
+    //                           fit: BoxFit.fitWidth,
+    //                           color: HexColor('#ee1d23'),
+    //                         ),
+    //                         SizedBox(width: 8.0), // Add some spacing between icon and text
+    //                         Text(
+    //                           'Reject',
+    //                           style: TextStyle(
+    //                             fontFamily: 'Roboto',
+    //                             fontWeight: FontWeight.bold,
+    //                             color: HexColor('#ee1d23'),
+    //                             fontSize: 13,
+    //                           ),
+    //                         ),
+    //                       ],
+    //                     ),
+    //                   ),
+    //                 ),
+    //                 SizedBox(width: 10),
+    //               ],
+    //             ),
+    //
+    //
+    //           ],
+    //         ),
+    //       ),
+    //     ]),
+    //   ),
+    //
+    // )));
   }
 
   late Color statusColor;
@@ -1056,7 +1408,7 @@ class _OrderCardState extends State<OrderCard> {
                   padding: EdgeInsets.only(
                       top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
                   child: Text(
-                    'Remarks',
+                    'Remarks *',
                     style:CommonUtils.Mediumtext_o_14,
                     textAlign: TextAlign.start,
                   ),
@@ -1065,8 +1417,7 @@ class _OrderCardState extends State<OrderCard> {
                   height: 70,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
-                    border:
-                    Border.all(color: const Color(0xFFe78337), width: 1),
+                    border: Border.all(color: const Color(0xFFe78337), width: 1),
                     borderRadius: BorderRadius.circular(5.0),
                     color: Colors.white,
                   ),
@@ -1075,8 +1426,7 @@ class _OrderCardState extends State<OrderCard> {
                     maxLength: 100,
                     style: CommonUtils.Mediumtext_o_14,
                     maxLines: null, // Set maxLines to null for multiline input
-                    decoration:  InputDecoration(
-                      counterText: '',
+                    decoration: InputDecoration(
                       hintText: 'Enter Remarks',
                       hintStyle: CommonUtils.hintstyle_o_14,
                       contentPadding: EdgeInsets.symmetric(
@@ -1084,6 +1434,7 @@ class _OrderCardState extends State<OrderCard> {
                         vertical: 0.0,
                       ),
                       border: InputBorder.none,
+                      counterStyle: TextStyle(color: Colors.green), // Specify the color for the counter text
                     ),
                   ),
                 ),
@@ -1091,6 +1442,56 @@ class _OrderCardState extends State<OrderCard> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
+                    GestureDetector(
+                      onTap: () {
+                        Navigator.of(context).pop(); // Close the bottom sheet
+                        // Show a new bottom sheet for entering remarks
+                      },
+                      child: Container(
+                        height: 35,
+                        margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                        decoration: BoxDecoration(
+                          color: const Color(0xfffffece6),
+                          border: Border.all(
+                            color: const Color(0xFFe6504d),
+                            width: 1,
+                          ),
+                          borderRadius: BorderRadius.circular(8.0),
+                        ),
+                        child: IntrinsicWidth(
+                          child: Column(
+                            mainAxisAlignment: MainAxisAlignment.center,
+                            children: [
+                              Container(
+                                padding:
+                                const EdgeInsets.symmetric(horizontal: 10.0),
+                                child: Row(
+                                  children: [
+                                    SvgPicture.asset(
+                                      'assets/crosscircle.svg',
+                                      height: 18,
+                                      width: 18,
+                                      fit: BoxFit.fitWidth,
+                                      color: const Color(0xFFe6504d),
+                                    ),
+                                    const SizedBox(width: 8.0),
+                                    const Text(
+                                      'Cancel',
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 12,
+                                        color: Color(0xFFe6504d),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                      ),
+                    ),
                     GestureDetector(
                       onTap: () {
                         String remarks = remarkstext.text.trim();
@@ -1146,6 +1547,7 @@ class _OrderCardState extends State<OrderCard> {
                                       ),
                                     ),
                                   ],
+
                                 ),
                               ),
                             ],
@@ -1170,42 +1572,63 @@ class _OrderCardState extends State<OrderCard> {
     );
   }
 
-  void handlereject(int id, String remarks)  async {
+  void handlereject(int id, String remarks) async {
+    // Show loading indicator
+    // You can use a modal dialog, a snackbar, or a progress indicator to indicate that the request is in progress
 
-    // Construct the request body
-    var requestBody = {
-      "Id":id, // Join the IDs with commas
-      "StatusTypeId": 12,
-      "Remarks": remarks,
-      "UpdatedBy": "e39536e2-89d3-4cc7-ae79-3dd5291ff156",
-      "UpdatedDate": "2024-02-20"
-    };
-    print('==>${jsonEncode(requestBody)}');
-    // Make the HTTP POST request
-    var response = await http.post(
-      Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus'),
-      headers: <String, String>{
-        'Content-Type': 'application/json; charset=UTF-8',
-      },
-      body: jsonEncode(requestBody),
-    );
-
-    // Check the response status
-    if (response.statusCode == 200) {
-      // Request successful, handle response here
-      print('Request successful');
-      Navigator.push(
-        context,
-        MaterialPageRoute(
-            builder: (context) =>
-                Viewpendingorder()),
+    try {
+      // Construct the request body
+      var requestBody = {
+        "Id": id, // Join the IDs with commas
+        "StatusTypeId": 12,
+        "Remarks": remarks,
+        "UpdatedBy": "e39536e2-89d3-4cc7-ae79-3dd5291ff156",
+        "UpdatedDate": "2024-02-20"
+      };
+      print('==>${jsonEncode(requestBody)}');
+      // Make the HTTP POST request
+      var response = await http.post(
+        Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus'),
+        headers: <String, String>{
+          'Content-Type': 'application/json; charset=UTF-8',
+        },
+        body: jsonEncode(requestBody),
       );
 
-    } else {
-      // Request failed, handle error here
-      print('Request failed with status: ${response.statusCode}');
+      // Check the response status
+      if (response.statusCode == 200) {
+        var responseBody = json.decode(response.body);
+        // Request successful, handle response here
+        print('Request successful');
+        if (responseBody['isSuccess'] == true ) {
+          CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 1, 4);
+          Navigator.push(
+            context,
+            MaterialPageRoute(builder: (context) => Viewpendingorder()),
+          );
+        }
+        else{
+
+          CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 1, 4);
+
+        }
+      } else {
+        // Request failed, handle error here
+        print('Request failed with status: ${response.statusCode}');
+        // Show error message to the user
+        // You can use a modal dialog, a snackbar, or any other UI element to display the error message
+      }
+    } catch (e) {
+      // Exception occurred, handle it here
+      print('Exception occurred: $e');
+      // Show error message to the user
+      // You can use a modal dialog, a snackbar, or any other UI element to display the error message
+    } finally {
+      // Hide loading indicator
+      // You can dismiss the modal dialog, hide the snackbar, or remove the progress indicator here
     }
   }
+
 
   Widget sendingSvgImagesAndColors(int statusTypeId, String statusName) {
     String svgIcon;
@@ -1247,8 +1670,13 @@ class _OrderCardState extends State<OrderCard> {
         statusColor = HexColor('#dc3545');
         svgIconBgColor = HexColor('#dc3545').withOpacity(0.2);
         break;
+      case 17: // 'SH Approval'
+        svgIcon = 'assets/memo-circle-check.svg';
+        statusColor = HexColor('#039487');
+        svgIconBgColor = HexColor('#039487').withOpacity(0.2);
+        break;
       default:
-        svgIcon = 'assets/sb_home.svg';
+        svgIcon = 'assets/plus-small.svg';
         statusColor = Colors.black26;
         svgIconBgColor = Colors.black26.withOpacity(0.2);
         break;
@@ -1283,6 +1711,5 @@ class _OrderCardState extends State<OrderCard> {
       ),
     );
   }
-
 
 }

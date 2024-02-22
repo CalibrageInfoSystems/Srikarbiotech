@@ -434,7 +434,7 @@ class _MyHomePageState extends State<LoginScreen> {
         );
       } else {
         print('Login failed. Please check your credentials.');
-        CommonUtils.showCustomToastMessageLong('Login failed. Please check your login credentials.', context, 1, 4);
+        CommonUtils.showCustomToastMessageLong(jsonResponse['endUserMessage'], context, 1, 4);
       }
     } else {
       print('Login failed. Please check your credentials.');

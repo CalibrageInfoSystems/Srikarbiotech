@@ -1310,7 +1310,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                   creditLine:
                       double.parse('${widget.creditLine}'), // Convert to double
                   balance: double.parse('${widget.balance}'),
-                transportname : '${widget.transportname}',
+                transportname : TransportController.text,
                 )),
       );
     }

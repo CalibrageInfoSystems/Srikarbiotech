@@ -855,8 +855,8 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       "OtherFileString": '${widget.addlattchments}',
       "OtherFileName": "",
       "OtherFileExtension": ".jpg",
-      "OtherFileLocation": ""
-      ""
+      "OtherFileLocation": "",
+      "TransportName":'${widget.transportname}'
     };
     print(jsonEncode(orderData));
 
