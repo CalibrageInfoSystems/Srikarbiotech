@@ -215,7 +215,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                         child: TextFormField(
                                           controller: LRNumberController,
                                           keyboardType: TextInputType.name,
-                                          maxLength: 100,
+                                          maxLength: 15,
                                           style: CommonUtils.Mediumtext_o_14,
                                           decoration: InputDecoration(
                                             counterText: '',
@@ -288,7 +288,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                         child: TextFormField(
                                           controller: TransportController,
                                           keyboardType: TextInputType.name,
-                                          maxLength: 100,
+                                          maxLength: 50,
                                           style: CommonUtils.Mediumtext_o_14,
                                           decoration: InputDecoration(
                                             counterText: '',
@@ -865,34 +865,43 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
     );
   }
 
+
   void showBottomSheetForImageSelection(BuildContext context) {
     showModalBottomSheet(
-      backgroundColor: Color(0xFFFFFFFF),
-      shape: ShapeBorder.lerp(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        1,
-      ),
+      isScrollControlled: true,
       context: context,
-      builder: (context) {
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
         return Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.width / 4,
+          padding: const EdgeInsets.all(20),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            color: Color(0xFFF8dac2),
+          ),
           child: Row(
-            children: <Widget>[
+            children: [
               Expanded(
                 child: InkWell(
                   onTap: () {
                     pickImage(ImageSource.camera, context);
                   },
-                  child: const Center(
-                    child: Icon(
-                      Icons.camera_alt,
-                      size: 40,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      // margin: const EdgeInsets.only(bottom: 5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFe78337),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.camera_alt,
+                        size: 35,
+                      ),
                     ),
                   ),
                 ),
@@ -902,10 +911,18 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                   onTap: () {
                     pickImage(ImageSource.gallery, context);
                   },
-                  child: const Center(
-                    child: Icon(
-                      Icons.folder,
-                      size: 40,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      // margin: const EdgeInsets.only(bottom: 5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFe78337),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.folder,
+                        size: 35,
+                      ),
                     ),
                   ),
                 ),
@@ -916,6 +933,8 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       },
     );
   }
+
+
 
   pickImage(ImageSource source, BuildContext context) async {
     final pickedFile = await ImagePicker().pickImage(source: source);
@@ -938,34 +957,43 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
     }
   }
 
+
   void showBottomSheetForImageSelectionordereceipt(BuildContext context) {
     showModalBottomSheet(
-      backgroundColor: Color(0xFFFFFFFF),
-      shape: ShapeBorder.lerp(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        1,
-      ),
+      isScrollControlled: true,
       context: context,
-      builder: (context) {
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
         return Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.width / 4,
+          padding: const EdgeInsets.all(20),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            color: Color(0xFFF8dac2),
+          ),
           child: Row(
-            children: <Widget>[
+            children: [
               Expanded(
                 child: InkWell(
                   onTap: () {
                     pickImageordereceipt(ImageSource.camera, context);
                   },
-                  child: const Center(
-                    child: Icon(
-                      Icons.camera_alt,
-                      size: 40,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      // margin: const EdgeInsets.only(bottom: 5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFe78337),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.camera_alt,
+                        size: 35,
+                      ),
                     ),
                   ),
                 ),
@@ -975,10 +1003,18 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                   onTap: () {
                     pickImageordereceipt(ImageSource.gallery, context);
                   },
-                  child: const Center(
-                    child: Icon(
-                      Icons.folder,
-                      size: 40,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      // margin: const EdgeInsets.only(bottom: 5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFe78337),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.folder,
+                        size: 35,
+                      ),
                     ),
                   ),
                 ),
@@ -989,6 +1025,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       },
     );
   }
+
 
   pickImageordereceipt(ImageSource source, BuildContext context) async {
     final pickedFile1 = await ImagePicker().pickImage(source: source);
@@ -1011,34 +1048,43 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
     }
   }
 
+
   void showBottomSheetForImageSelectionaddlattachment(BuildContext context) {
     showModalBottomSheet(
-      backgroundColor: Color(0xFFFFFFFF),
-      shape: ShapeBorder.lerp(
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(20),
-        ),
-        1,
-      ),
+      isScrollControlled: true,
       context: context,
-      builder: (context) {
+      shape: const RoundedRectangleBorder(
+        borderRadius: BorderRadius.vertical(top: Radius.circular(20)),
+      ),
+      builder: (BuildContext context) {
         return Container(
           width: MediaQuery.of(context).size.width,
           height: MediaQuery.of(context).size.width / 4,
+          padding: const EdgeInsets.all(20),
+          decoration: const BoxDecoration(
+            borderRadius: BorderRadius.only(
+                topLeft: Radius.circular(20), topRight: Radius.circular(20)),
+            color: Color(0xFFF8dac2),
+          ),
           child: Row(
-            children: <Widget>[
+            children: [
               Expanded(
                 child: InkWell(
                   onTap: () {
                     pickImageddlattachment(ImageSource.camera, context);
                   },
-                  child: const Center(
-                    child: Icon(
-                      Icons.camera_alt,
-                      size: 40,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      // margin: const EdgeInsets.only(bottom: 5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFe78337),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.camera_alt,
+                        size: 35,
+                      ),
                     ),
                   ),
                 ),
@@ -1048,10 +1094,18 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                   onTap: () {
                     pickImageddlattachment(ImageSource.gallery, context);
                   },
-                  child: const Center(
-                    child: Icon(
-                      Icons.folder,
-                      size: 40,
+                  child: Center(
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      // margin: const EdgeInsets.only(bottom: 5),
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFe78337),
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: const Icon(
+                        Icons.folder,
+                        size: 35,
+                      ),
                     ),
                   ),
                 ),
@@ -1258,7 +1312,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
 
     if (isValid && DateController.text.isEmpty) {
       CommonUtils.showCustomToastMessageLong(
-          'Please Enter LR Date', context, 1, 4);
+          'Please Select LR Date', context, 1, 4);
 
       isValid = false;
       hasValidationFailed = true;
@@ -1315,6 +1369,11 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       );
     }
   }
+
+
+
+
+
 }
 
 // enum ImageSource {

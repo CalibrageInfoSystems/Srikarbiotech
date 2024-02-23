@@ -59,6 +59,9 @@ dependencies:
   quantity_input: ^1.0.0
   input_quantity: ^2.2.0
   card_swiper: ^3.0.1
+  flutter_expanded_tile: ^0.3.7
+
+
 
 
 dev_dependencies:
@@ -142,6 +145,7 @@ flutter:
     - assets/Srikar-GROUP.png
     - assets/box-check.svg
     - assets/memo-circle-check.svg
+    - assets/truck-check.svg
 
   # An image asset can refer to one or more resolution-specific "variants", see
   # https://flutter.dev/assets-and-images/#resolution-aware

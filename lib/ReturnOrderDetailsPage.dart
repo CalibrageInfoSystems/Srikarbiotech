@@ -1,4 +1,5 @@
 import 'dart:convert';
+import 'dart:io';
 
 import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
@@ -14,6 +15,9 @@ import 'package:srikarbiotech/Model/viewreturnorders_model.dart';
 import 'package:srikarbiotech/Model/viewreturnorders_model.dart';
 
 import 'HomeScreen.dart';
+import 'Model/ReturnOrderCredit.dart';
+import 'Model/ReturnOrderCredit.dart';
+import 'order_details.dart';
 
 class ReturnOrderDetailsPage extends StatefulWidget {
   final int orderId;
@@ -32,12 +36,16 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
 
   late List<ReturnOrderDetailsResult> returnOrderDetailsResultList = [];
   late List<ReturnOrderItemXrefList> returnOrderItemXrefList = [];
+  late List<ReturnOrderCredit> returnOrderCredits = [];
 
   @override
   void initState() {
     super.initState();
+
     apiData = getApiData();
     apiData.then((value) => initializingApiData(value));
+
+    ReturnOrderCreditmethod();
   }
 
   void initializingApiData(Map<String, dynamic> apiData) {
@@ -68,6 +76,11 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
     String apiUrl =
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderDetailsById/${widget.orderId}';
     final response = await http.get(Uri.parse(apiUrl));
+    debugPrint('###############');
+    debugPrint(response.body);
+    debugPrint('###############');
+    debugPrint('${widget.orderId}');
+
     if (response.statusCode == 200) {
       return jsonDecode(response.body);
     } else {
@@ -77,6 +90,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
 
   @override
   Widget build(BuildContext context) {
+    double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
       appBar: _appBar(),
       body: FutureBuilder(
@@ -138,35 +152,359 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                     (index) => ShipmentDetailsCard(
                                   orderId: widget.orderId,
                                   data: returnOrderDetailsResultList[index],
-                                  statusBar: widget.statusBar,
                                 ),
                               ),
                             ),
-                            const SizedBox(
-                              height: 10,
-                            ),
-                            const Padding(
-                              padding: EdgeInsets.only(
-                                  left:
-                                  5.0), // Adjust the left padding as needed
-                              child: Text(
-                                'Item Details',
-                                style: CommonUtils.header_Styles16,
+                            // const SizedBox(
+                            //   height: 10,
+                            // ),
+
+                            CustomReturnExpansionTile(
+                              title: const Text(
+                                "Item Details",
+                                style: TextStyle(
+                                    color: Colors
+                                        .white), // Adjust text color as needed
+                                maxLines: 2,
+                                overflow: TextOverflow.ellipsis,
                               ),
+                              content: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    width: MediaQuery.of(context).size.width,
+                                    padding: const EdgeInsets.only(
+                                        left: 10.0, right: 10.0),
+                                    //   height: screenHeight / 2,
+                                    decoration: BoxDecoration(
+                                      borderRadius: BorderRadius.circular(10),
+                                      //        color: Colors.white,
+                                    ),
+                                    child: ListView(
+                                      physics:
+                                      const NeverScrollableScrollPhysics(),
+                                      shrinkWrap: true,
+                                      children: List.generate(
+                                        returnOrderItemXrefList.length,
+                                            (index) => ItemCard(
+                                          data: returnOrderItemXrefList[index],
+                                          statusBar: widget.statusBar,
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                ],
+                              ),
+                              initiallyExpanded: false,
                             ),
-                            ListView(
-                              physics: const NeverScrollableScrollPhysics(),
-                              shrinkWrap: true,
-                              children: List.generate(
-                                returnOrderItemXrefList.length,
-                                    (index) => ItemCard(
-                                  data: returnOrderItemXrefList[index],
-                                  statusBar: widget.statusBar,
+
+                            const SizedBox(
+                              height: 5.0,
+                            ),
+                            if (returnOrderCredits.isNotEmpty)
+                              CustomReturnExpansionTile(
+                                title: const Text(
+                                  "Credit Note Details",
+                                  style: TextStyle(
+                                    color: Colors.white,
+                                  ),
+                                  overflow: TextOverflow.ellipsis,
                                 ),
+                                content: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      padding: const EdgeInsets.only(
+                                          left: 0.0, right: 0.0),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(10),
+                                      ),
+                                      child: ListView.builder(
+                                        shrinkWrap: true,
+                                        physics: const PageScrollPhysics(),
+                                        itemCount: returnOrderCredits.length,
+                                        itemBuilder: (context, index) {
+                                          ReturnOrderCredit credit =
+                                          returnOrderCredits[index];
+                                          String creditedDateStr = credit
+                                              .creditedDate; // Assuming `creditedDate` is a String representing the date.
+
+// Parse the creditedDate string into a DateTime object.
+                                          DateTime creditedDate =
+                                          DateTime.parse(creditedDateStr);
+
+// Format the DateTime object into the desired format 'dd MMM, yyyy'.
+                                          String formattedDate =
+                                          DateFormat('dd MMM, yyyy')
+                                              .format(creditedDate);
+
+                                          return Container(
+                                            width: screenWidth,
+                                            padding: const EdgeInsets.only(
+                                                left: 10.0, right: 10.0),
+                                            child: Card(
+                                              elevation: 7,
+                                              shape: RoundedRectangleBorder(
+                                                borderRadius:
+                                                BorderRadius.circular(10.0),
+                                              ),
+                                              child: Container(
+                                                width: double.infinity,
+                                                decoration: BoxDecoration(
+                                                  borderRadius:
+                                                  BorderRadius.circular(10),
+                                                  color: Colors.white,
+                                                ),
+                                                child: Column(
+                                                  crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                                  children: [
+                                                    Row(
+                                                      mainAxisAlignment:
+                                                      MainAxisAlignment
+                                                          .spaceBetween,
+                                                      children: <Widget>[
+                                                        Expanded(
+                                                          child: Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                12,
+                                                                vertical:
+                                                                10),
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                              children: [
+                                                                const Text(
+                                                                  'Credited Amount',
+                                                                  style: CommonUtils
+                                                                      .txSty_13B_Fb,
+                                                                ),
+                                                                Text(
+                                                                  '₹${formatNumber(credit.creditedAmount)}',
+                                                                  style:
+                                                                  TextStyle(
+                                                                    fontFamily:
+                                                                    'Roboto',
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                    color: HexColor(
+                                                                        '#e58338'),
+                                                                    fontSize:
+                                                                    13,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                        Container(
+                                                          width: 0.2,
+                                                          height: 60,
+                                                          color: Colors.grey,
+                                                        ),
+                                                        Expanded(
+                                                          child: Padding(
+                                                            padding:
+                                                            const EdgeInsets
+                                                                .symmetric(
+                                                                horizontal:
+                                                                12,
+                                                                vertical:
+                                                                10),
+                                                            child: Column(
+                                                              crossAxisAlignment:
+                                                              CrossAxisAlignment
+                                                                  .start,
+                                                              children: [
+                                                                const Text(
+                                                                  'Credited Date',
+                                                                  style: CommonUtils
+                                                                      .txSty_13B_Fb,
+                                                                ),
+                                                                Text(
+                                                                  formattedDate,
+                                                                  style:
+                                                                  TextStyle(
+                                                                    fontFamily:
+                                                                    'Roboto',
+                                                                    fontWeight:
+                                                                    FontWeight
+                                                                        .bold,
+                                                                    color: HexColor(
+                                                                        '#e58338'),
+                                                                    fontSize:
+                                                                    13,
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ],
+                                                    ),
+                                                    Visibility(
+                                                      visible:
+                                                      true, // Set to false if you want to hide the section when remarks are null
+                                                      child: Column(
+                                                        children: [
+                                                          Container(
+                                                            width:
+                                                            double.infinity,
+                                                            height: 0.2,
+                                                            color: Colors.grey,
+                                                          ),
+                                                          Row(
+                                                            mainAxisAlignment:
+                                                            MainAxisAlignment
+                                                                .spaceBetween,
+                                                            children: <Widget>[
+                                                              Expanded(
+                                                                child: Padding(
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                      12,
+                                                                      vertical:
+                                                                      10),
+                                                                  child: Column(
+                                                                    crossAxisAlignment:
+                                                                    CrossAxisAlignment
+                                                                        .start,
+                                                                    children: [
+                                                                      const Text(
+                                                                        'Remarks',
+                                                                        style: CommonUtils
+                                                                            .txSty_13B_Fb,
+                                                                      ),
+                                                                      Text(
+                                                                        credit
+                                                                            .remarks,
+                                                                        style:
+                                                                        TextStyle(
+                                                                          fontFamily:
+                                                                          'Roboto',
+                                                                          fontWeight:
+                                                                          FontWeight.bold,
+                                                                          color:
+                                                                          HexColor('#e58338'),
+                                                                          fontSize:
+                                                                          13,
+                                                                        ),
+                                                                      ),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ),
+                                                            ],
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    Container(
+                                                      width: double.infinity,
+                                                      height: 0.2,
+                                                      color: Colors.grey,
+                                                    ),
+                                                    Container(
+                                                      padding:
+                                                      const EdgeInsets.all(
+                                                          8.0),
+                                                      child: GestureDetector(
+                                                        onTap: () async {
+                                                          String? pdfUrl =
+                                                              credit.fileUrl;
+                                                          String? invoiceNo =
+                                                              "ReturnOrderCreditNoteFile";
+                                                          downloadFile(pdfUrl,
+                                                              invoiceNo);
+
+                                                          //Add your download functionality here
+                                                        },
+                                                        child: Container(
+                                                          height: 35,
+                                                          margin:
+                                                          const EdgeInsets
+                                                              .symmetric(
+                                                              horizontal:
+                                                              4.0),
+                                                          decoration:
+                                                          BoxDecoration(
+                                                            color: const Color(
+                                                                0xFFF8dac2),
+                                                            border: Border.all(
+                                                              color: const Color(
+                                                                  0xFFe78337),
+                                                              width: 1,
+                                                            ),
+                                                            borderRadius:
+                                                            BorderRadius
+                                                                .circular(
+                                                                8.0),
+                                                          ),
+                                                          child: IntrinsicWidth(
+                                                            child: Column(
+                                                              mainAxisAlignment:
+                                                              MainAxisAlignment
+                                                                  .center,
+                                                              children: [
+                                                                Container(
+                                                                  padding: const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                      5.0),
+                                                                  child: Row(
+                                                                    children: [
+                                                                      SvgPicture
+                                                                          .asset(
+                                                                        'assets/file-download.svg',
+                                                                        height:
+                                                                        18,
+                                                                        width:
+                                                                        18,
+                                                                        fit: BoxFit
+                                                                            .fitWidth,
+                                                                        color: Colors
+                                                                            .black,
+                                                                      ),
+                                                                      const SizedBox(
+                                                                          width:
+                                                                          8.0),
+                                                                      const Text(
+                                                                          'Download Credit Note',
+                                                                          style:
+                                                                          CommonUtils.Mediumtext_12),
+                                                                    ],
+                                                                  ),
+                                                                ),
+                                                              ],
+                                                            ),
+                                                          ),
+                                                        ),
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          );
+                                        },
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                initiallyExpanded: false,
                               ),
-                            ),
                             const SizedBox(
-                              height: 20,
+                              height: 5.0,
                             ),
                           ],
                         ),
@@ -233,7 +571,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
               // Handle the click event for the home icon
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
               );
             },
             child: Image.asset(
@@ -246,17 +584,144 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
       ),
     );
   }
+
+  Future<void> ReturnOrderCreditmethod() async {
+    final response = await http.get(Uri.parse(
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderCreditById/${widget.orderId}'));
+    if (response.statusCode == 200) {
+      final jsonData = json.decode(response.body);
+      final List<dynamic> listResult = jsonData['response']['listResult'];
+      setState(() {
+        returnOrderCredits =
+            listResult.map((data) => ReturnOrderCredit.fromJson(data)).toList();
+      });
+    } else {
+      throw Exception('Failed to load data');
+    }
+  }
+
+  String formatNumber(double number) {
+    NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+    return formatter.format(number);
+  }
+
+  Future<void> downloadFile(String url, String invoiceNo) async {
+    try {
+      // Send a GET request to the provided URL
+      http.Response response = await http.get(Uri.parse(url));
+
+      // Check if the request was successful (status code 200)
+      if (response.statusCode == 200) {
+        // Get the application documents directory
+
+        Directory appDocDir = Directory('/storage/emulated/0/Download');
+        String fileName = "srikar_invoice_$invoiceNo.pdf";
+
+        String filePath = '${appDocDir.path}/$fileName';
+        // Get the download directory
+
+        if (!appDocDir.existsSync()) {
+          appDocDir.createSync(recursive: true);
+        }
+        await File(filePath).writeAsBytes(response.bodyBytes);
+        // Create a File instance to save the PDF
+
+        // Show a message indicating successful download
+        // print('PDF downloaded successfully');
+        CommonUtils.showCustomToastMessageLong(
+            'Invoice Downloaded Successfully', context, 0, 4);
+        // You can use this file path to open the PDF file, or display it in your app
+
+        print('PDF path: $filePath');
+      } else {
+        // If the request was not successful, print an error message
+        print('Failed to download PDF: ${response.statusCode}');
+      }
+    } catch (e) {
+      // If an error occurs during the download process, print the error
+      print('Error downloading PDF: $e');
+    }
+  }
+}
+
+
+class CustomReturnExpansionTile extends StatefulWidget {
+  final Widget title;
+  final Widget content;
+  final bool initiallyExpanded;
+
+  const CustomReturnExpansionTile({
+    Key? key,
+    required this.title,
+    required this.content,
+    this.initiallyExpanded = false,
+  }) : super(key: key);
+
+  @override
+  _CustomExpansionTileState createState() => _CustomExpansionTileState();
+}
+
+class _CustomExpansionTileState extends State<CustomExpansionTile> {
+  late bool _isExpanded;
+
+  @override
+  void initState() {
+    super.initState();
+    _isExpanded = widget.initiallyExpanded;
+  }
+
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      elevation: 5,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: <Widget>[
+          GestureDetector(
+            onTap: () {
+              setState(() {
+                _isExpanded = !_isExpanded;
+              });
+            },
+            child: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10.0),
+                // borderRadius: BorderRadius.only(
+                //   topLeft: Radius.circular(8.0),
+                //   topRight: Radius.circular(8.0),
+                // ),
+                color: const Color(0xFFe78337), // Adjust the color as needed
+              ),
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(child: widget.title),
+                  Icon(
+                    _isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
+                    color: Colors.white,
+                  ),
+                ],
+              ),
+            ),
+          ),
+          if (_isExpanded) widget.content,
+        ],
+      ),
+    );
+  }
 }
 
 class ShipmentDetailsCard extends StatefulWidget {
   final int orderId;
   final ReturnOrderDetailsResult data;
-  final Widget statusBar;
-  const ShipmentDetailsCard(
-      {super.key,
-        required this.orderId,
-        required this.data,
-        required this.statusBar});
+  const ShipmentDetailsCard({
+    super.key,
+    required this.orderId,
+    required this.data,
+  });
 
   @override
   State<ShipmentDetailsCard> createState() => _ShipmentDetailsCardState();
@@ -371,7 +836,9 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                               ),
                             ],
                           ),
-                          widget.statusBar,
+                          // widget.statusBar,
+                          ItemCard.getSvgImagesAndColors(
+                              widget.data.statusTypeId, widget.data.statusName),
                         ],
                       ),
                     ),
@@ -424,32 +891,36 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                       ],
                     ),
 
-                    dividerForHorizontal,
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: <Widget>[
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 12, vertical: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                Text(
-                                  'Transport Name',
-                                  style: _titleTextStyle,
-                                ),
-                                const SizedBox(height: 4),
-                                Text(
-                                  '',
-                                  style: _dataTextStyle,
-                                ),
-                              ],
+                    //
+
+                    if (widget.data.transportName != null) ...[
+                      dividerForHorizontal,
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Text(
+                                    'Transport Name',
+                                    style: _titleTextStyle,
+                                  ),
+                                  const SizedBox(height: 4),
+                                  Text(
+                                    widget.data.transportName!,
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                      ],
-                    ),
+                        ],
+                      ),
+                    ],
 
                     dividerForHorizontal,
 
@@ -756,36 +1227,115 @@ class ItemCard extends StatelessWidget {
             ),
             const SizedBox(height: 5.0),
             Row(
+              crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 if (data.remarks != null)
-                  Expanded(
-                    child: Row(
+                  Flexible(
+                    child: Column(
                       children: [
-                        const Text(
-                          'Remarks:',
-                          style: CommonUtils.txSty_13B_Fb,
+                        Row(
+                          children: [
+                            const Text(
+                              'Remarks:',
+                              style: CommonUtils.txSty_13B_Fb,
+                            ),
+                            const SizedBox(width: 5),
+                            Expanded(
+                              child: Text(
+                                data.remarks!,
+                                style: CommonUtils.txSty_13O_F6,
+                              ),
+                            ),
+                          ],
                         ),
-                        Text(
-                          data.remarks!,
-                          style: CommonUtils.txSty_13O_F6,
-                        ),
+                        const SizedBox(height: 5.0),
+                        CommonUtils.dividerForHorizontal,
                       ],
                     ),
                   ),
-                if (data.remarks == null)
-                  const Expanded(
-                    child: SizedBox(), // Empty container to occupy space
-                  ),
-                const Spacer(), // Spacer to push statusName to the end
-                // Text(
-                //   data.statusName,
-                //   style: CommonUtils.txSty_13O_F6,
-                // ),
-                statusBar
               ],
+            ),
+            Padding(
+              padding: const EdgeInsets.only(top: 8),
+              child: Row(
+                mainAxisAlignment: MainAxisAlignment.end,
+                children: [
+                  getSvgImagesAndColors(data.statusTypeId, data.statusName),
+                ],
+              ),
             ),
           ],
         ),
+      ),
+    );
+  }
+
+  static Widget getSvgImagesAndColors(int statusTypeId, String statusName) {
+    String svgIcon;
+    Color statusColor;
+    Color svgIconBgColor;
+
+    switch (statusTypeId) {
+      case 1: // 'Pending'
+        svgIcon = 'assets/shipping-timed.svg';
+        statusColor = const Color(0xFFe58338);
+        svgIconBgColor = const Color(0xFFe58338).withOpacity(0.2);
+        break;
+      case 13: // 'Shipped'
+        svgIcon = 'assets/shipping-fast.svg';
+        statusColor =const Color(0xFFe58338);
+        svgIconBgColor = const Color(0xFFe58338).withOpacity(0.2);
+        break;
+      case 14: // 'Received'
+        svgIcon = 'assets/truck-check.svg';
+    statusColor = Colors.green;
+    svgIconBgColor = Colors.green.shade100;
+        break;
+      case 15: // 'Not Received'
+        svgIcon = 'assets/order-cancel.svg';
+        statusColor = Colors.red;
+        svgIconBgColor = Colors.red.shade100;
+        break;
+      case 18: // 'Partially Received'
+        svgIcon = 'assets/boxes.svg';
+        statusColor =const Color(0xFF31b3cc);
+        svgIconBgColor =const Color(0xFF31b3cc).withOpacity(0.2);
+        break;
+
+
+      default:
+        svgIcon = 'assets/plus-small.svg';
+        statusColor = Colors.black26;
+        svgIconBgColor = Colors.black26.withOpacity(0.2);
+        break;
+    }
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(16),
+        color: svgIconBgColor,
+      ),
+      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
+      child: Row(
+        children: [
+          SvgPicture.asset(
+            svgIcon,
+            fit: BoxFit.fill,
+            width: 15,
+            height: 15,
+            color: statusColor,
+          ),
+          const SizedBox(
+            width: 5,
+          ),
+          Text(
+            statusName,
+            style: TextStyle(
+              fontFamily: 'Roboto',
+              fontSize: 13,
+              color: statusColor,
+            ),
+          ),
+        ],
       ),
     );
   }
@@ -859,5 +1409,3 @@ class _PaymentDetailsCardState extends State<PaymentDetailsCard> {
     );
   }
 }
-
-// apply code in OrderDetailsPage

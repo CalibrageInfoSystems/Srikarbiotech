@@ -70,7 +70,11 @@ class CommonUtils {
       return false; // Not connected to the internet
     }
   }
-
+  static final dividerForHorizontal = Container(
+    width: double.infinity,
+    height: 0.2,
+    color: Colors.grey,
+  );
   static final decorationO_R10W1 = BoxDecoration(
       borderRadius: BorderRadius.circular(10),
       border: Border.all(
@@ -202,7 +206,12 @@ class CommonUtils {
     fontWeight: FontWeight.w700,
     color: Color(0xFFe78337),
   );
-
+  static const TextStyle header_Styles20 = TextStyle(
+    fontSize: 20,
+    fontFamily: "Roboto",
+    fontWeight: FontWeight.w700,
+    color:Colors.black,
+  );
   static const TextStyle header_Styles16 = TextStyle(
     fontSize: 16,
     fontFamily: "Roboto",

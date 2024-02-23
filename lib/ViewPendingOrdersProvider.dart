@@ -14,12 +14,18 @@ class ViewPendingOrdersProvider extends ChangeNotifier {
     isSelectedAll = !isSelectedAll;
     notifyListeners();
   }
+  // Initialize checkBoxValues with the same length as viewPendingData
+  void _initCheckBoxValues() {
+    checkBoxValues = List<bool>.filled(getLengthOfList, false);
+  }
 
   void storeIntoViewPendingOrders(List<OrderResult> items) {
     viewPendingData.clear();
     viewPendingData.addAll(items);
+    _initCheckBoxValues(); // Initialize checkBoxValues when data is updated
     notifyListeners();
   }
+
 
   int get getLengthOfList => viewPendingData.length;
 
@@ -54,7 +60,11 @@ class ViewPendingOrdersProvider extends ChangeNotifier {
 
   void resetCheckBoxValues() {
     checkBoxValues = List<bool>.filled(viewPendingData.length, false);
-    notifyListeners();
+    selectedOrderIds.clear(); // Clear selected order IDs
+    Future.microtask(() {
+      notifyListeners();
+    });
+
   }
 
 }

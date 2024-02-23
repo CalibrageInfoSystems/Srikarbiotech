@@ -845,6 +845,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
 
                   //_buildBody(context),
                   CustomExpansionTile(
+
                     title: const Text(
                       "Item Details",
                       style: TextStyle(
@@ -1741,7 +1742,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                     true &&
                                                     invoice.invoiceFileUrl !=
                                                         null,
-                                                child: Container(
+                                                child:
+                                                Container(
                                                   padding:
                                                   const EdgeInsets
                                                       .all(8.0),
@@ -1750,9 +1752,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                     onTap:
                                                         () async {
                                                       String?
-                                                      pdfUrl =
-                                                          invoice
-                                                              .invoiceFileUrl;
+                                                      pdfUrl = invoice.invoiceFileUrl;
                                                       String?
                                                       invoiceNo =
                                                           invoice
@@ -2450,7 +2450,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+     margin: const EdgeInsets.symmetric(horizontal: 16.0),
       elevation: 5,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,

@@ -61,10 +61,12 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Future<dynamic> forgotPassword(String forgotEmail) async {
-    String url =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/ForgotPassword';
+
+    String url = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/ForgotPassword';
     final requestHeaders = {'Content-Type': 'application/json'};
-    final requestBody = {"UserNameorEmail": forgotEmail, "CompanyId": 2};
+    final requestBody = {"UserNameorEmail": forgotEmail,
+      "CompanyId":  widget.companyId
+    };
     if (forgotEmail.isEmpty) {
       throw Exception('Please Enter Email/Username');
     }
@@ -76,7 +78,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       );
 
       if (response.statusCode == 200) {
+        forgotEmailController.text = "";
         return response.body;
+
       } else {
         throw Exception(
             'API call failed with status code: ${response.statusCode}');

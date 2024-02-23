@@ -104,6 +104,7 @@ class ReturnOrderDetailsResult {
   final String createdDate;
   final String updatedBy;
   final String updatedDate;
+  final String? transportName;
 
   ReturnOrderDetailsResult({
     required this.id,
@@ -135,6 +136,7 @@ class ReturnOrderDetailsResult {
     required this.createdDate,
     required this.updatedBy,
     required this.updatedDate,
+    required this.transportName,
   });
 
   factory ReturnOrderDetailsResult.fromJson(Map<String, dynamic> json) =>
@@ -168,6 +170,7 @@ class ReturnOrderDetailsResult {
         createdDate: json["createdDate"],
         updatedBy: json["updatedBy"],
         updatedDate: json["updatedDate"],
+        transportName: json["transportName"],
       );
 
   Map<String, dynamic> toJson() => {
@@ -200,6 +203,7 @@ class ReturnOrderDetailsResult {
     "createdDate": createdDate,
     "updatedBy": updatedBy,
     "updatedDate": updatedDate,
+    "transportName":transportName
   };
 }
 

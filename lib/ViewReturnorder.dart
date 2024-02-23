@@ -1092,30 +1092,30 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
         statusColor = const Color(0xFFc04f51);
         statusBgColor = const Color.fromARGB(255, 241, 183, 184);
         break;
-      case 'Delivered':
-        assetPath = 'assets/box-circle-check.svg';
+      case 'Received':
+        assetPath = 'assets/truck-check.svg';
         iconColor = Colors.green;
         statusColor = Colors.green;
         statusBgColor = Colors.green.shade100;
         break;
-      case 'Partially Shipped':
+      case 'Partially Received':
         assetPath = 'assets/boxes.svg';
-        iconColor = Colors.purple;
-        statusColor = Colors.purple;
-        statusBgColor = Colors.purple.shade100;
+        iconColor = const Color(0xFF31b3cc);
+        statusColor = const Color(0xFF31b3cc);
+        statusBgColor =const Color(0xFF31b3cc).withOpacity(0.2);
         break;
-      case 'Rejected':
-        assetPath = 'assets/shipping-timed.svg';
+      case 'Not Received':
+        assetPath = 'assets/order-cancel.svg';
         iconColor = Colors.red;
         statusColor = Colors.red;
         statusBgColor = Colors.red.shade100;
         break;
-      case 'Received':
-        assetPath = 'assets/srikar_biotech_logo.svg';
-        iconColor = Colors.grey;
-        statusColor = Colors.grey;
-        statusBgColor = Colors.grey.withOpacity(0.2);
-        break;
+      // case 'Received':
+      //   assetPath = 'assets/srikar_biotech_logo.svg';
+      //   iconColor = Colors.grey;
+      //   statusColor = Colors.grey;
+      //   statusBgColor = Colors.grey.withOpacity(0.2);
+      //   break;
       default:
         assetPath = 'assets/sb_home.svg';
         iconColor = Colors.black26;
@@ -1146,26 +1146,26 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
         statusColor = const Color(0xFFc04f51);
         svgIconBgColor = const Color.fromARGB(255, 241, 183, 184);
         break;
-      case 'Delivered':
-        svgIcon = 'assets/box-circle-check.svg';
+      case 'Received':
+        svgIcon ='assets/truck-check.svg';
         statusColor = Colors.green;
         svgIconBgColor = Colors.green.shade100;
         break;
-      case 'Partially Shipped':
+      case 'Partially Received':
         svgIcon = 'assets/boxes.svg';
-        statusColor = Colors.purple;
-        svgIconBgColor = Colors.purple.shade100;
+        statusColor =const Color(0xFF31b3cc);
+        svgIconBgColor =const Color(0xFF31b3cc).withOpacity(0.2);
         break;
-      case 'Rejected':
-        svgIcon = 'assets/shipping-timed.svg';
+      case 'Not Received':
+        svgIcon = 'assets/order-cancel.svg';
         statusColor = Colors.red;
         svgIconBgColor = Colors.red.shade100;
         break;
-      case 'Received':
-        svgIcon = 'assets/srikar_biotech_logo.svg';
-        statusColor = Colors.grey;
-        svgIconBgColor = Colors.grey.withOpacity(0.2);
-        break;
+      // case 'Received':
+      //   svgIcon = 'assets/srikar_biotech_logo.svg';
+      //   statusColor = Colors.grey;
+      //   svgIconBgColor = Colors.grey.withOpacity(0.2);
+      //   break;
       default:
         svgIcon = 'assets/sb_home.svg';
         statusColor = Colors.black26;

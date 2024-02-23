@@ -4,11 +4,12 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_expanded_tile/flutter_expanded_tile.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/ViewOrders.dart';
 
-import 'package:srikarbiotech/forgot_password_screen.dart';
+
 import 'package:srikarbiotech/view_collection_page.dart';
 
 import 'ChangePassword.dart';
@@ -23,6 +24,8 @@ import 'ViewReturnorder.dart';
 import 'Viewpendingorder.dart';
 
 class HomeScreen extends StatefulWidget {
+  const HomeScreen({super.key});
+
   @override
   _home_Screen createState() => _home_Screen();
 }
@@ -36,18 +39,24 @@ class _home_Screen extends State<HomeScreen> {
   String? userName = "";
   String? roleName = "";
   String? fullname = "";
+  String? phoneNumber = "";
+  String? email = "";
+  String? reporingManagerName = "";
   Map<String, dynamic>? categories;
   List<String> categoriesList = [];
+
+  late ExpandedTileController _expandedTileController;
+
   @override
   void initState() {
     super.initState();
-   // getshareddata();
+
+    _expandedTileController = ExpandedTileController(isExpanded: false);
+    // getshareddata();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
-
-
   }
 
   @override
@@ -76,41 +85,47 @@ class _home_Screen extends State<HomeScreen> {
 
                 Widget logoWidget = CompneyId == 1
                     ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
-                    : Image.asset('assets/srikar-seed.png', width: 60.0, height: 40.0);
+                    : Image.asset('assets/srikar-seed.png',
+                    width: 60.0, height: 40.0);
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                      padding: const EdgeInsets.symmetric(
+                          horizontal: 2, vertical: 2),
                       child: GestureDetector(
                         onTap: () {
                           Scaffold.of(context).openDrawer();
                         },
-                        child: Icon(Icons.menu, color: Color(0xFFe78337), size: 30,),
+                        child: const Icon(
+                          Icons.menu,
+                          color: Color(0xFFe78337),
+                          size: 30,
+                        ),
                       ),
                     ),
-                    SizedBox(width: 2.0),
+                    const SizedBox(width: 2.0),
                     SizedBox(
                       width: 50.0,
                       height: 50.0,
                       child: logoWidget,
                     ),
-                    SizedBox(width: 2.0),
+                    const SizedBox(width: 2.0),
                     Text(
                       '$companyName',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Color(0xFF414141),
                         fontWeight: FontWeight.w600,
                       ),
                     ),
-                    Spacer(),
-                    SizedBox(width: 10.0),
+                    const Spacer(),
+                    const SizedBox(width: 10.0),
                   ],
                 );
               } else {
-                return SizedBox.shrink();
+                return const SizedBox.shrink();
               }
             },
           ),
@@ -118,92 +133,280 @@ class _home_Screen extends State<HomeScreen> {
         drawer: Drawer(
           elevation: 16,
           width: MediaQuery.of(context).size.width / 1.5,
-          shape: RoundedRectangleBorder(
+          shape: const RoundedRectangleBorder(
             borderRadius: BorderRadius.only(
               topRight: Radius.circular(40),
               bottomRight: Radius.circular(40),
             ),
           ),
-          child: FutureBuilder(
-            future: getshareddata(),
-            builder: (context, snapshot) {
-              if (snapshot.connectionState == ConnectionState.done) {
-                if (snapshot.hasError) {
-                  return Text('Error: ${snapshot.error}');
-                }
-                // final companyName = snapshot.data['companyName'];
-                // final compneyId = snapshot.data['compneyId'];
-
-                return Container(
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.only(
-                      topRight: Radius.circular(20),
-                      bottomRight: Radius.circular(50),
+          child: SingleChildScrollView(
+            child: FutureBuilder(
+              future: getshareddata(),
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.done) {
+                  if (snapshot.hasError) {
+                    return Text('Error: ${snapshot.error}');
+                  }
+                  return Container(
+                    width: MediaQuery.of(context).size.width,
+                    height: MediaQuery.of(context).size.height,
+                    decoration: const BoxDecoration(
+                      borderRadius: BorderRadius.only(
+                        topRight: Radius.circular(20),
+                        bottomRight: Radius.circular(50),
+                      ),
+                      color: Colors.white10,
                     ),
-                    color: Colors.white10,
-                  ),
-                  child: Column(
-                    children: [
-                      DrawerHeader(
-                        child: Center(
-                          child: CompneyId == 1
-                              ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
-                              : Image.asset(
-                            'assets/srikar-seed.png',
-                            width: MediaQuery.of(context).size.height / 4,
-                            height: MediaQuery.of(context).size.height / 4,
+                    child: Column(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            children: [
+                              Container(
+                                margin: const EdgeInsets.only(left: 35),
+                                width: MediaQuery.of(context).size.height / 5,
+                                height: MediaQuery.of(context).size.height / 5,
+                                padding: const EdgeInsets.all(20),
+                                child: Center(
+                                  child: CompneyId == 1
+                                      ? SvgPicture.asset(
+                                      'assets/srikar_biotech_logo.svg')
+                                      : Image.asset(
+                                    'assets/srikar-seed.png',
+                                    // width: MediaQuery.of(context).size.height / 4,
+                                    // height:
+                                    //     MediaQuery.of(context).size.height / 4,
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                color: Colors.transparent,
+                                child: Column(
+                                  children: [
+                                    Text('$fullname',
+                                        style: CommonUtils.header_Styles18),
+                                    SizedBox(height: 2.0),
+                                    Text('$roleName',
+                                   style: CommonUtils.Mediumtext_12),
+                                    // Text('slpCode - $slpCode',
+                                    //     style: const TextStyle(fontSize: 12)),
+                                  ],
+                                ),
+                              ),
+                              const SizedBox(
+                                height: 10,
+                              ),
+                              Container(
+                                width: double.infinity,
+                                height: 0.2,
+                                color: Colors.grey,
+                              ),
+                              const SizedBox(
+                                height: 15,
+                              ),
+                              Container(
+                                padding:
+                                const EdgeInsets.symmetric(horizontal: 13),
+                                margin: const EdgeInsets.symmetric(vertical: 5),
+                                child: ExpandedTile(
+                                  controller: _expandedTileController,
+                                  theme: const ExpandedTileThemeData(
+                                    headerColor: Colors.transparent,
+                                    headerPadding: EdgeInsets.all(0),
+                                    headerSplashColor: Colors.transparent,
+                                    contentBackgroundColor: Colors.transparent,
+                                    // contentPadding: EdgeInsets.all(15),
+                                    // contentRadius: 12.0,
+                                  ),
+                                  leading: const Icon(
+                                    Icons.person,
+                                    size: 22,
+                                  ),
+
+                                  title: const Text(
+                                    ' User Profile',
+                                    style: CommonUtils.txSty_14B_Fb,
+                                  ),
+                                  content: Container(
+                                    color: Colors.transparent,
+                                    child: Column(
+                                      children: [
+                                        ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: Container(
+                                            padding: const EdgeInsets.all(10), // Adjust padding as needed
+                                            decoration: BoxDecoration(
+                                              color: Colors.blue.withOpacity(0.2),
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            child: const Icon(
+                                              Icons.code_outlined,
+                                              size: 20, // Reduce the size of the icon
+                                              color: Colors.blue,
+                                            ),
+                                          ),
+                                          title: Text(
+                                            '$slpCode',
+                                            style: CommonUtils.txSty_14B_Fb,
+                                          ),
+                                          subtitle: const Text(
+                                            'slpCode',
+                                            style: CommonUtils.Mediumtext_12,
+                                          ),
+                                        ),
+
+
+                                        ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: Container(
+                                            padding: const EdgeInsets.all(10), // Set padding to zero
+                                            decoration: BoxDecoration(
+                                              color: Colors.orange.withOpacity(0.2),
+                                              borderRadius: BorderRadius.circular(20),
+                                            ),
+                                            child: const Icon(
+                                              Icons.email_outlined,
+                                              size: 20,
+                                              color: Colors.orange,
+                                            ),
+                                          ),
+                                          title: Text(
+                                            addEllipsisIfNeeded(email as String),
+                                            style: CommonUtils.txSty_14B_Fb,
+                                          ),
+                                          subtitle: const Text(
+                                            'Email',
+                                            style: CommonUtils.Mediumtext_12,
+                                          ),
+                                        ),
+
+                                        ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: Container(
+                                              padding: const EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                color:
+                                                Colors.red.withOpacity(0.2),
+                                                borderRadius:
+                                                BorderRadius.circular(20),
+                                              ),
+                                              child: const Icon(
+                                                Icons.call,
+                                                size: 20,
+                                                color: Colors.red,
+                                              )),
+                                          title: Text('$phoneNumber',
+                                              style: CommonUtils.txSty_14B_Fb),
+                                          subtitle: const Text(
+                                            'Phone Number',
+                                            style: CommonUtils.Mediumtext_12,
+                                          ),
+                                        ),
+                                        ListTile(
+                                          contentPadding: EdgeInsets.zero,
+                                          leading: Container(
+                                              padding: const EdgeInsets.all(10),
+                                              decoration: BoxDecoration(
+                                                color: Colors.green
+                                                    .withOpacity(0.2),
+                                                borderRadius:
+                                                BorderRadius.circular(20),
+                                              ),
+                                              child: const Icon(
+                                                Icons.add_business_rounded,
+                                                size: 20,
+                                                color: Colors.green,
+                                              )),
+                                          title: Text('$companyName',
+                                              style: CommonUtils.txSty_14B_Fb),
+                                          subtitle: const Text(
+                                            'Company Name',
+                                            style: CommonUtils.Mediumtext_12,
+                                          ),
+                                        ),
+                                        if (reporingManagerName != null)
+                                          ListTile(
+                                            contentPadding: EdgeInsets.zero,
+                                            leading: Container(
+                                                padding:
+                                                const EdgeInsets.all(10),
+                                                decoration: BoxDecoration(
+                                                  color: const Color(0xFFe78337)
+                                                      .withOpacity(0.2),
+                                                  // color: const Color.fromARGB(
+                                                  //     255, 178, 236, 180),
+                                                  borderRadius:
+                                                  BorderRadius.circular(20),
+                                                ),
+                                                child: const Icon(
+                                                  Icons.manage_accounts_rounded,
+                                                  size: 20,
+                                                  color: Color(0xFFe78337),
+                                                )),
+                                            title: Text('$reporingManagerName',
+                                                style:
+                                                CommonUtils.txSty_14B_Fb),
+                                            subtitle: const Text(
+                                              'Reporing Manager Name',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                              ),
+                              ListTile(
+                                horizontalTitleGap: 0, // Remove spacing before the icon
+                                leading: const Icon(Icons.key),
+                                title: const Text(
+                                  'Change Password',
+                                  style: CommonUtils.txSty_14B_Fb,
+                                ),
+                                onTap: () {
+                                  Navigator.pop(context);
+                                  Navigator.of(context).push(
+                                    MaterialPageRoute(
+                                      builder: (context) => const ChangePassword(),
+                                    ),
+                                  );
+                                },
+                              ),
+
+
+                            ],
                           ),
                         ),
-                      ),
-                      SizedBox(height: 5),
-                      Column(
-                        mainAxisSize: MainAxisSize.min,
-                        children: [
-                          Text('$fullname', style: CommonUtils.txSty_14B_Fb),
-                          Text('($roleName)', style: TextStyle(fontSize: 11)),
-                        ],
-                      ),
-                      SizedBox(height: 5),
-                      Container(
-                        width: double.infinity,
-                        height: 0.2,
-                        color: Colors.grey,
-                      ),
-                      const SizedBox(
-                        height: 10,
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.key),
-                        title: Text('Change Password', style: CommonUtils.txSty_14B_Fb),
-                        onTap: () {
-                          Navigator.pop(context);
-                          Navigator.of(context).push(
-                            MaterialPageRoute(
-                              builder: (context) => ChangePassword(),
-                            ),
-                          );
-                        },
-                      ),
-                      ListTile(
-                        leading: Icon(Icons.logout),
-                        title: Text('Logout', style: CommonUtils.txSty_14B_Fb),
-                        onTap: () async {
-                          logOutDialog();
-                        },
-                      ),
-                    ],
-                  ),
-                );
-              } else {
-                return CircularProgressIndicator();
-              }
-            },
+                        ListTile(
+                          horizontalTitleGap: 0, // Remove spacing before the icon
+                          leading: const Icon(Icons.logout),
+                          title: const Text('Logout',
+                              style: CommonUtils.txSty_14B_Fb),
+                          onTap: () async {
+                            logOutDialog();
+                          },
+                        ),
+                      ],
+                    ),
+                  );
+                } else {
+                  return const CircularProgressIndicator();
+                }
+              },
+            ),
           ),
         ),
-
         body: imageslider(categoriesList),
       ),
     );
+  }
+
+  String addEllipsisIfNeeded(String inputString) {
+    if (inputString.length > 13) {
+      return '${inputString.substring(0, 12)}...';
+    } else {
+      return inputString;
+    }
   }
 
   Future<void> getshareddata() async {
@@ -213,40 +416,27 @@ class _home_Screen extends State<HomeScreen> {
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     userName = await SharedPrefsData.getStringFromSharedPrefs("userName");
     roleName = await SharedPrefsData.getStringFromSharedPrefs("roleName");
-    print('User ID: $userId');
-    print('SLP Code: $slpCode');
-    print('Company ID: $CompneyId');
-    print('companyName: $companyName');
-    // Fetch categories
     final categories = await SharedPreferencesHelper.getCategories();
 
     fullname = categories!['response']['fullName'];
-    print('companyName: $fullname');
-// Check if categories is not null
-    if (categories != null) {
-      print('Categories: $categories');
+    phoneNumber = categories['response']['phoneNumber'];
+    email = categories['response']['email'];
+    reporingManagerName = categories['response']['reporingManagerName'];
 
+    // Access the "response" object and then the "activityRights" array
+    List<dynamic> activityRights = categories['response']['activityRights'];
 
-        // Access the "response" object and then the "activityRights" array
-        List<dynamic> activityRights = categories['response']['activityRights'];
-      print('activityRights: ${categories!['response']['activityRights']}');
-        // Extract the "name" values from the "activityRights" array
-        List<String> categoriesList = [];
-        for (var activityRight in activityRights) {
-          String name = activityRight['name'];
-          categoriesList.add(name);
-        }
-
-        // Print the extracted "name" values
-        print('Categories: $categoriesList');
-      }
-    else {
-      print('Error: Categories is null.');
+    // Extract the "name" values from the "activityRights" array
+    List<String> categoriesList = [];
+    for (var activityRight in activityRights) {
+      String name = activityRight['name'];
+      categoriesList.add(name);
     }
 
+    // Print the extracted "name" values
+    print('Categories: $categoriesList');
+
 // Print the fetched categories
-
-
   }
 
   void logOutDialog() {
@@ -254,21 +444,21 @@ class _home_Screen extends State<HomeScreen> {
       context: context,
       builder: (BuildContext context) {
         return AlertDialog(
-          title: Text('Logout'),
-          content: Text('Are you sure you want to Logout?'),
+          title: const Text('Logout'),
+          content: const Text('Are you sure you want to Logout?'),
           actions: [
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
               },
-              child: Text('Cancel'),
+              child: const Text('Cancel'),
             ),
             TextButton(
               onPressed: () {
                 Navigator.of(context).pop();
                 onConfirmLogout();
               },
-              child: Text('Logout'),
+              child: const Text('Logout'),
             ),
           ],
         );
@@ -281,7 +471,7 @@ class _home_Screen extends State<HomeScreen> {
     CommonUtils.showCustomToastMessageLong("Logout Successful", context, 0, 3);
 
     Navigator.of(context).pushAndRemoveUntil(
-      MaterialPageRoute(builder: (context) => Companiesselection()),
+      MaterialPageRoute(builder: (context) => const Companiesselection()),
           (route) => false,
     );
   }
@@ -295,7 +485,7 @@ class BannerImages {
 }
 
 class imageslider extends StatefulWidget {
-  imageslider(List<String> categoriesList);
+  const imageslider(List<String> categoriesList, {super.key});
 
   @override
   _imagesliderState createState() => _imagesliderState();
@@ -319,373 +509,429 @@ class _imagesliderState extends State<imageslider> {
   Widget build(BuildContext context) {
     return FutureBuilder<Map<String, dynamic>?>(
         future: SharedPreferencesHelper.getCategories(),
-    builder: (BuildContext context, AsyncSnapshot<Map<String, dynamic>?> categories) {
-    // if (snapshot.connectionState == ConnectionState.waiting) {
-    // return CircularProgressIndicator(); // Or any other loading indicator
-    // } else {
-    // if (snapshot.hasError || snapshot.data == null) {
-    // return Text('Error: Failed to fetch categories');
-    // } else {
-    // final categories = snapshot.data!;
-    // print('Categories: $categories');
+        builder: (BuildContext context,
+            AsyncSnapshot<Map<String, dynamic>?> categories) {
+          // if (snapshot.connectionState == ConnectionState.waiting) {
+          // return CircularProgressIndicator(); // Or any other loading indicator
+          // } else {
+          // if (snapshot.hasError || snapshot.data == null) {
+          // return Text('Error: Failed to fetch categories');
+          // } else {
+          // final categories = snapshot.data!;
+          // print('Categories: $categories');
 
-    List<dynamic> activityRights = categories.data!['response']['activityRights'];
-    print('activityRights: ${categories.data!['response']['activityRights']}');
+          List<dynamic> activityRights =
+          categories.data!['response']['activityRights'];
+          print(
+              'activityRights: ${categories.data!['response']['activityRights']}');
 
-
-    for (var activityRight in activityRights) {
-    String name = activityRight['name'];
-    categoriesList.add(name);
-    }
-    return Column(
-      children: [
-        Expanded(
-          child: Padding(
-            padding: EdgeInsets.only(
-              left: 10.0,
-              right: 10.0,
-            ),
-            child: Column(
-              children: [
-                Expanded(
-                  //   child: SingleChildScrollView(
-                    child: Container(
-                      // width: MediaQuery.of(context).size.width,
-                      //  padding: EdgeInsets.all(20.0),
-
-                        height: MediaQuery.of(context).size.height,
-                        padding:
-                        EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
-                        width: MediaQuery.of(context).size.width,
-                        child: Stack(
-                          children: [
-                            Align(
-                              alignment: Alignment.topCenter,
-                              child: CarouselSlider(
-                                items: [
-                                  Image.asset(
-                                    'assets/slider1.png',
-                                    fit: BoxFit.fitWidth,
-                                    width: MediaQuery.of(context).size.width,
-                                  ),
-                                  Image.asset(
-                                    'assets/slider2.png',
-                                    fit: BoxFit.fitWidth,
-                                    width: MediaQuery.of(context).size.width,
-                                  ),
-                                  Image.asset(
-                                    'assets/slider3.png',
-                                    fit: BoxFit.fitWidth,
-                                    width: MediaQuery.of(context).size.width,
-                                  ),
-                                  // Add more static images as needed
-                                ],
-                                options: CarouselOptions(
-                                  scrollPhysics: const BouncingScrollPhysics(),
-                                  autoPlay: true,
-                                  height: MediaQuery.of(context).size.height,
-                                  aspectRatio: 23 / 9,
-                                  viewportFraction: 1,
-                                  onPageChanged: (index, reason) {
-                                    // Handle page change if needed
-                                    setState(() {
-                                      currentIndex = index;
-                                    });
-                                  },
-                                ),
-                              ),
-                            ),
-                            Container(
-                              width: MediaQuery.of(context).size.width,
-                              //  padding: EdgeInsets.all(20.0),
+          for (var activityRight in activityRights) {
+            String name = activityRight['name'];
+            categoriesList.add(name);
+          }
+          return Column(
+            children: [
+              Expanded(
+                child: Padding(
+                  padding: const EdgeInsets.only(
+                    left: 10.0,
+                    right: 10.0,
+                  ),
+                  child: Column(
+                    children: [
+                      Expanded(
+                        //   child: SingleChildScrollView(
+                          child: Container(
+                            // width: MediaQuery.of(context).size.width,
+                            //  padding: EdgeInsets.all(20.0),
 
                               height: MediaQuery.of(context).size.height,
-                              child: Align(
-                                alignment: Alignment.bottomCenter,
-                                child: Padding(
-                                  padding: EdgeInsets.only(bottom: 25.0),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: List.generate(
-                                      // Use the number of images from assets
-                                      3, // Replace with the actual number of assets
-                                          (index) => buildIndicator(index),
+                              padding: const EdgeInsets.only(
+                                  left: 10.0, right: 10.0, top: 10.0),
+                              width: MediaQuery.of(context).size.width,
+                              child: Stack(
+                                children: [
+                                  Align(
+                                    alignment: Alignment.topCenter,
+                                    child: CarouselSlider(
+                                      items: [
+                                        Image.asset(
+                                          'assets/slider1.png',
+                                          fit: BoxFit.fitWidth,
+                                          width:
+                                          MediaQuery.of(context).size.width,
+                                        ),
+                                        Image.asset(
+                                          'assets/slider2.png',
+                                          fit: BoxFit.fitWidth,
+                                          width:
+                                          MediaQuery.of(context).size.width,
+                                        ),
+                                        Image.asset(
+                                          'assets/slider3.png',
+                                          fit: BoxFit.fitWidth,
+                                          width:
+                                          MediaQuery.of(context).size.width,
+                                        ),
+                                        // Add more static images as needed
+                                      ],
+                                      options: CarouselOptions(
+                                        scrollPhysics:
+                                        const BouncingScrollPhysics(),
+                                        autoPlay: true,
+                                        height:
+                                        MediaQuery.of(context).size.height,
+                                        aspectRatio: 23 / 9,
+                                        viewportFraction: 1,
+                                        onPageChanged: (index, reason) {
+                                          // Handle page change if needed
+                                          setState(() {
+                                            currentIndex = index;
+                                          });
+                                        },
+                                      ),
                                     ),
                                   ),
-                                ),
+                                  SizedBox(
+                                    width: MediaQuery.of(context).size.width,
+                                    //  padding: EdgeInsets.all(20.0),
+
+                                    height: MediaQuery.of(context).size.height,
+                                    child: Align(
+                                      alignment: Alignment.bottomCenter,
+                                      child: Padding(
+                                        padding:
+                                        const EdgeInsets.only(bottom: 25.0),
+                                        child: Row(
+                                          mainAxisAlignment:
+                                          MainAxisAlignment.center,
+                                          children: List.generate(
+                                            // Use the number of images from assets
+                                            3, // Replace with the actual number of assets
+                                                (index) => buildIndicator(index),
+                                          ),
+                                        ),
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ))
+                        //  )
+                      ),
+                      const SizedBox(
+                        height: 5.0,
+                      ),
+                      Expanded(
+                          flex: 4,
+                          child: SingleChildScrollView(
+                            child: SizedBox(
+                              width: MediaQuery.of(context).size.width,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    children: [
+                                      // First Container with single card view
+                                      Expanded(
+                                        child: SizedBox(
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height /
+                                              3,
+                                          child: _customheightCard(
+                                            imageUrl: "receipt.svg",
+                                            item: "Ledger",
+                                            color: const Color(0xFFe78337),
+                                            item_1:
+                                            "All Incoming and Outgoing Transactions record",
+                                            color_1: const Color(0xFFF8dac2),
+                                            textcolor: Colors.white,
+                                            onTap: () {
+                                              Navigator.push(
+                                                context,
+                                                MaterialPageRoute(
+                                                  builder: (context) =>
+                                                      Selectpartyscreen(
+                                                          from: 'Ledger'),
+                                                ),
+                                              );
+                                            },
+                                          ),
+                                        ),
+                                      ),
+                                      // Second Container divided into two equal-sized containers
+                                      Expanded(
+                                        child: SizedBox(
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height /
+                                              3, // Match height with the first container
+                                          child: Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  child: _customcontainerCard(
+                                                    imageUrl:
+                                                    "shopping_cart_add.svg",
+                                                    item: "Create Order",
+                                                    item1: "Create a New Order",
+                                                    color:
+                                                    const Color(0xFFF8dac2),
+                                                    color_1:
+                                                    const Color(0xFFec9d62),
+                                                    textcolor:
+                                                    const Color(0xFFe78337),
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Selectpartyscreen(
+                                                                  from:
+                                                                  'CreateOrder'),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Expanded(
+                                                child: Container(
+                                                  child: _customcontainerCard(
+                                                    imageUrl: "bags-orders.svg",
+                                                    item: "View Orders",
+                                                    item1: "View All Order",
+                                                    color:
+                                                    const Color(0xFFb7dbc1),
+                                                    color_1:
+                                                    const Color(0xFF43a05a),
+                                                    textcolor:
+                                                    const Color(0xFF118730),
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                          const ViewOrders(),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                  const SizedBox(
+                                      height:
+                                      5), // Add some spacing between the rows
+                                  // Second Row
+                                  Row(
+                                    children: [
+                                      // First Container with single card view
+                                      Expanded(
+                                        child: SizedBox(
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height /
+                                              3, // Match height with the first container
+                                          child: Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  child: _customcontainerCard(
+                                                    imageUrl: "creditcard.svg",
+                                                    item: "Create Collections",
+                                                    item1:
+                                                    "Create a New Collection ",
+                                                    color:
+                                                    const Color(0xFFb7dbc1),
+                                                    color_1:
+                                                    const Color(0xFF43a05a),
+                                                    textcolor:
+                                                    const Color(0xFF118730),
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Selectpartyscreen(
+                                                                  from:
+                                                                  'CreateCollections'),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Expanded(
+                                                child: Container(
+                                                  child: _customcontainerCard(
+                                                    imageUrl:
+                                                    "arrows_repeat.svg",
+                                                    item: "Create Return order",
+                                                    item1: "Create a Reorder",
+                                                    color:
+                                                    const Color(0xFFF8dac2),
+                                                    color_1:
+                                                    const Color(0xFFec9d62),
+                                                    textcolor:
+                                                    const Color(0xFFe78337),
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                          builder: (context) =>
+                                                              Selectpartyscreen(
+                                                                  from:
+                                                                  'CreatereturnOrder'),
+                                                        ),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      // Second Container divided into two equal-sized containers
+
+                                      Expanded(
+                                        child: SizedBox(
+                                          height: MediaQuery.of(context)
+                                              .size
+                                              .height /
+                                              3, // Match height with the first container
+                                          child: Column(
+                                            mainAxisAlignment:
+                                            MainAxisAlignment.spaceBetween,
+                                            children: [
+                                              Expanded(
+                                                child: Container(
+                                                  child: _customcontainerCard(
+                                                    imageUrl:
+                                                    "album_collection.svg",
+                                                    item: "View Collections",
+                                                    item1:
+                                                    "View All Collections",
+                                                    color:
+                                                    const Color(0xFFF8dac2),
+                                                    color_1:
+                                                    const Color(0xFFec9d62),
+                                                    textcolor:
+                                                    const Color(0xFFe78337),
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                            const ViewCollectionPage()),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                              const SizedBox(height: 5),
+                                              Expanded(
+                                                child: Container(
+                                                  child: _customcontainerCard(
+                                                    imageUrl: "bags-orders.svg",
+                                                    item: "View Return order",
+                                                    item1: "View All Reorders",
+                                                    color:
+                                                    const Color(0xFFb7dbc1),
+                                                    color_1:
+                                                    const Color(0xFF43a05a),
+                                                    textcolor:
+                                                    const Color(0xFF118730),
+                                                    onTap: () {
+                                                      Navigator.push(
+                                                        context,
+                                                        MaterialPageRoute(
+                                                            builder: (context) =>
+                                                            const ViewReturnorder()),
+                                                      );
+                                                    },
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  if (categoriesList
+                                      .contains("CanSHApprovalRejectOrder"))
+                                    Row(
+                                      children: [
+                                        // First Container with single card view
+                                        Expanded(
+                                          child: SizedBox(
+                                            height: MediaQuery.of(context)
+                                                .size
+                                                .height /
+                                                10, // Match height with the first container
+                                            child: Column(
+                                              mainAxisAlignment:
+                                              MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child:
+                                                    _customcontainernewCard(
+                                                      imageUrl:
+                                                      "bags-orders.svg",
+                                                      item: "Approve Orders",
+                                                      item1:
+                                                      "View All Pending Orders ",
+                                                      color: const Color(
+                                                          0xFFb7dbc1),
+                                                      color_1: const Color(
+                                                          0xFF43a05a),
+                                                      textcolor: const Color(
+                                                          0xFF118730),
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(
+                                                              builder: (context) =>
+                                                              const Viewpendingorder()),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        // Second Container divided into two equal-sized containers
+                                      ],
+                                    ),
+                                ],
                               ),
                             ),
-                          ],
-                        ))
-                  //  )
+                          ))
+                      // width: 300.0,
+                    ],
+                  ),
                 ),
-                SizedBox(
-                  height: 5.0,
-                ),
-                Expanded(
-                  flex: 4,
-                  child:
-                  SingleChildScrollView(
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      child: Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Row(
-                            children: [
-                              // First Container with single card view
-                              Expanded(
-                                child: Container(
-                                  height: MediaQuery.of(context).size.height / 3,
-                                  child: _customheightCard(
-                                    imageUrl: "receipt.svg",
-                                    item: "Ledger",
-                                    color: Color(0xFFe78337),
-                                    item_1: "All Incoming and Outgoing Transactions record",
-                                    color_1: Color(0xFFF8dac2),
-                                    textcolor: Colors.white,
-                                    onTap: () {
-                                      Navigator.push(
-                                        context,
-                                        MaterialPageRoute(
-                                          builder: (context) => Selectpartyscreen(from: 'Ledger'),
-                                        ),
-                                      );
-                                    },
-                                  ),
-                                ),
-                              ),
-                              // Second Container divided into two equal-sized containers
-                              Expanded(
-                                child: Container(
-                                  height: MediaQuery.of(context).size.height / 3, // Match height with the first container
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          child: _customcontainerCard(
-                                            imageUrl: "shopping_cart_add.svg",
-                                            item: "Create Order",
-                                            item1: "Create a New Order",
-                                            color: Color(0xFFF8dac2),
-                                            color_1: Color(0xFFec9d62),
-                                            textcolor: Color(0xFFe78337),
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => Selectpartyscreen(from: 'CreateOrder'),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Expanded(
-                                        child: Container(
-                                          child: _customcontainerCard(
-                                            imageUrl: "bags-orders.svg",
-                                            item: "View Orders",
-                                            item1: "View All Order",
-                                            color: Color(0xFFb7dbc1),
-                                            color_1: Color(0xFF43a05a),
-                                            textcolor: Color(0xFF118730),
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) => ViewOrders(),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          SizedBox(height: 5), // Add some spacing between the rows
-                          // Second Row
-                          Row(
-                            children: [
-                              // First Container with single card view
-                              Expanded(
-                                child: Container(
-                                  height: MediaQuery.of(context).size.height / 3, // Match height with the first container
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child:
-                                        Container(
-                                          child: _customcontainerCard(
-                                            imageUrl: "creditcard.svg",
-                                            item: "Create Collections",
-                                            item1: "Create a New Collection ",
-                                            color: Color(0xFFb7dbc1),
-                                            color_1: Color(0xFF43a05a),
-                                            textcolor: Color(0xFF118730),
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Selectpartyscreen(
-                                                          from:
-                                                          'CreateCollections'),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Expanded(
-                                        child: Container(
-                                          child: _customcontainerCard(
-                                            imageUrl: "arrows_repeat.svg",
-                                            item: "Create Return order",
-                                            item1: "Create a Reorder",
-                                            color: Color(0xFFF8dac2),
-                                            color_1: Color(0xFFec9d62),
-                                            textcolor: Color(0xFFe78337),
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                  builder: (context) =>
-                                                      Selectpartyscreen(
-                                                          from:
-                                                          'CreatereturnOrder'),
-                                                ),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              // Second Container divided into two equal-sized containers
-
-                              Expanded(
-                                child: Container(
-                                  height: MediaQuery.of(context).size.height / 3, // Match height with the first container
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Expanded(
-                                        child: Container(
-                                          child: _customcontainerCard(
-                                            imageUrl: "album_collection.svg",
-                                            item: "View Collections",
-                                            item1: "View All Collections",
-                                            color: Color(0xFFF8dac2),
-                                            color_1: Color(0xFFec9d62),
-                                            textcolor: Color(0xFFe78337),
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ViewCollectionPage()),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                      SizedBox(height: 5),
-                                      Expanded(
-                                        child: Container(
-                                          child: _customcontainerCard(
-                                            imageUrl: "bags-orders.svg",
-                                            item: "View Return order",
-                                            item1: "View All Reorders",
-                                            color: Color(0xFFb7dbc1),
-                                            color_1: Color(0xFF43a05a),
-                                            textcolor: Color(0xFF118730),
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        ViewReturnorder()),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          if(categoriesList.contains("CanSHApprovalRejectOrder"))
-                          Row(
-                            children: [
-                              // First Container with single card view
-                              Expanded(
-                                child: Container(
-                                  height: MediaQuery.of(context).size.height / 10, // Match height with the first container
-                                  child: Column(
-                                    mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                    children: [
-                                      Expanded(
-                                        child:
-                                        Container(
-                                          child: _customcontainernewCard(
-                                            imageUrl: "bags-orders.svg",
-                                            item: "Approve Orders",
-                                            item1: "View All Pending Orders ",
-                                            color: Color(0xFFb7dbc1),
-                                            color_1: Color(0xFF43a05a),
-                                            textcolor: Color(0xFF118730),
-                                            onTap: () {
-                                              Navigator.push(
-                                                context,
-                                                MaterialPageRoute(
-                                                    builder: (context) =>
-                                                        Viewpendingorder()),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ),
-
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              // Second Container divided into two equal-sized containers
-
-                            ],
-                          ),
-                        ],
-                      ),
-                    ),
-                  )
-
-
-
-                )
-                // width: 300.0,
-              ],
-            ),
-          ),
-        ),
-      ],
-    );
-    }
-
-    );
+              ),
+            ],
+          );
+        });
   }
 
   _customheightCard({
@@ -701,7 +947,7 @@ class _imagesliderState extends State<imageslider> {
       onTap: onTap,
       child: SizedBox(
         //  height: MediaQuery.of(context).size.height * (4 / 9) - 250 / 2,
-        height: MediaQuery.of(context).size.height /3.3,
+        height: MediaQuery.of(context).size.height / 3.3,
         // height: height,
         width: MediaQuery.of(context).size.width / 2,
         child: Card(
@@ -710,25 +956,26 @@ class _imagesliderState extends State<imageslider> {
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
-            padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            padding:
+            const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
                 Container(
-                  margin: EdgeInsets.only(bottom: 0),
-                  padding: EdgeInsets.all(8),
+                  margin: const EdgeInsets.only(bottom: 0),
+                  padding: const EdgeInsets.all(8),
                   decoration: BoxDecoration(
                     color: color_1,
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: SvgPicture.asset(
-                    "assets/" + imageUrl,
+                    "assets/$imageUrl",
                     width: 30.0,
                     height: 30.0,
-                    color: Color(0xFF414141),
+                    color: const Color(0xFF414141),
                   ),
                 ),
-                SizedBox(height: 15),
+                const SizedBox(height: 15),
                 Container(
                   child: Align(
                     alignment: Alignment.topLeft,
@@ -753,7 +1000,7 @@ class _imagesliderState extends State<imageslider> {
                             color: textcolor,
                             fontFamily: "Roboto",
                             fontWeight: FontWeight.w600),
-                        children: [
+                        children: const [
                           // TextSpan(
                           //   text: 'All Incoming and\n',
                           // ),
@@ -772,7 +1019,7 @@ class _imagesliderState extends State<imageslider> {
                           TextSpan(
                               text:
                               'All Incoming and Outgoing Transactions record',
-                              style: TextStyle(height:2))
+                              style: TextStyle(height: 2))
                         ],
                       ),
                     ),
@@ -809,27 +1056,28 @@ class _imagesliderState extends State<imageslider> {
           RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
-            padding: EdgeInsets.only(left: 10, right: 15, top: 7, bottom: 3),
+            padding:
+            const EdgeInsets.only(left: 10, right: 15, top: 7, bottom: 3),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Container(
-                  margin: EdgeInsets.only(bottom: 6),
-                  padding: EdgeInsets.all(6),
+                  margin: const EdgeInsets.only(bottom: 6),
+                  padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: color_1,
                     borderRadius: BorderRadius.circular(15),
                   ),
                   child: SvgPicture.asset(
-                    "assets/" + imageUrl,
+                    "assets/$imageUrl",
                     width: 20.0,
                     height: 22.0,
-                    color: Color(0xFF414141),
+                    color: const Color(0xFF414141),
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Expanded(
                   child: Align(
                     alignment: Alignment.topLeft,
@@ -849,7 +1097,7 @@ class _imagesliderState extends State<imageslider> {
                 // ),
                 Text(
                   item1,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 12,
                       fontFamily: "Roboto",
                       fontWeight: FontWeight.w500,
@@ -887,36 +1135,38 @@ class _imagesliderState extends State<imageslider> {
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         //height: 260 / 2,
         height: MediaQuery.of(context).size.height / 6,
         width: MediaQuery.of(context).size.width / 2,
         child: Card(
           color: color,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
-            padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            padding:
+            const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 // SizedBox(height: 8),
                 Container(
-                  margin: EdgeInsets.only(bottom: 6),
-                  padding: EdgeInsets.all(6),
+                  margin: const EdgeInsets.only(bottom: 6),
+                  padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: color_1,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: SvgPicture.asset(
-                    "assets/" + imageUrl,
+                    "assets/$imageUrl",
                     width: 20.0,
                     height: 22.0,
-                    color: Color(0xFF414141),
+                    color: const Color(0xFF414141),
                   ),
                 ),
-                SizedBox(height: 8),
+                const SizedBox(height: 8),
                 Container(
                   child: Align(
                     alignment: Alignment.topLeft,
@@ -931,12 +1181,12 @@ class _imagesliderState extends State<imageslider> {
                     ),
                   ),
                 ),
-                SizedBox(
+                const SizedBox(
                   height: 5.0,
                 ),
                 Text(
                   item1,
-                  style: TextStyle(
+                  style: const TextStyle(
                       fontSize: 12,
                       fontFamily: "Roboto",
                       fontWeight: FontWeight.w500,
@@ -967,13 +1217,14 @@ class _imagesliderState extends State<imageslider> {
     return Container(
       width: 8,
       height: 8,
-      margin: EdgeInsets.symmetric(horizontal: 4),
+      margin: const EdgeInsets.symmetric(horizontal: 4),
       decoration: BoxDecoration(
         shape: BoxShape.circle,
         color: index == currentIndex ? Colors.orange : Colors.grey,
       ),
     );
   }
+
   _customcontainernewCard({
     required String imageUrl,
     required String item,
@@ -985,38 +1236,40 @@ class _imagesliderState extends State<imageslider> {
   }) {
     return GestureDetector(
       onTap: onTap,
-      child: Container(
+      child: SizedBox(
         //height: 260 / 2,
         height: MediaQuery.of(context).size.height / 10,
-        width: MediaQuery.of(context).size.width ,
+        width: MediaQuery.of(context).size.width,
         child: Card(
           color: color,
-          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape:
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
-            padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
-            child:
-            Row(
+            padding:
+            const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
                 // SizedBox(height: 8),
                 Container(
-                  margin: EdgeInsets.only(bottom: 6),
-                  padding: EdgeInsets.all(6),
+                  margin: const EdgeInsets.only(bottom: 6),
+                  padding: const EdgeInsets.all(6),
                   decoration: BoxDecoration(
                     color: color_1,
                     borderRadius: BorderRadius.circular(10),
                   ),
                   child: SvgPicture.asset(
-                    "assets/" + imageUrl,
+                    "assets/$imageUrl",
                     width: 20.0,
                     height: 22.0,
-                    color: Color(0xFF414141),
+                    color: const Color(0xFF414141),
                   ),
                 ),
-                SizedBox(width: 8),
-                Column( // Wrap item and item1 with a Column widget
+                const SizedBox(width: 8),
+                Column(
+                  // Wrap item and item1 with a Column widget
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
                     Container(
@@ -1033,12 +1286,12 @@ class _imagesliderState extends State<imageslider> {
                         ),
                       ),
                     ),
-                    SizedBox(
+                    const SizedBox(
                       height: 5.0,
                     ),
                     Text(
                       item1,
-                      style: TextStyle(
+                      style: const TextStyle(
                           fontSize: 12,
                           fontFamily: "Roboto",
                           fontWeight: FontWeight.w500,
@@ -1048,13 +1301,9 @@ class _imagesliderState extends State<imageslider> {
                 ),
               ],
             ),
-
-
           ),
         ),
       ),
     );
   }
-
-
 }

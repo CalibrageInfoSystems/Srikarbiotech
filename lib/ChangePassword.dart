@@ -7,6 +7,9 @@ import 'package:http/http.dart' as http;
 import 'package:srikarbiotech/Common/SharedPrefsData.dart';
 import 'package:srikarbiotech/HomeScreen.dart';
 
+import 'Common/Constants.dart';
+import 'Common/SharedPreferencesHelper.dart';
+import 'Companiesselection.dart';
 import 'Model/ForgotModel.dart';
 
 
@@ -100,6 +103,13 @@ print('===>${jsonEncode(requestBody)}');
         newPasswordController.text ="";
         confirmPasswordController.text ="";
 
+        SharedPreferencesHelper.putBool(Constants.IS_LOGIN, false);
+     //   CommonUtils.showCustomToastMessageLong("Logout Successful", context, 0, 3);
+
+        Navigator.of(context).pushAndRemoveUntil(
+          MaterialPageRoute(builder: (context) => Companiesselection()),
+              (route) => false,
+        );
         return response.body;
 
 

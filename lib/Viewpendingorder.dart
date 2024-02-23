@@ -41,6 +41,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
 
   List<OrderResult> selectedOrders = [];
   TextEditingController remarkstext = TextEditingController();
+
   @override
   void initState() {
     super.initState();
@@ -55,7 +56,6 @@ class _VieworderPageState extends State<Viewpendingorder> {
   }
 
   void initializeData() {
-
     apiData = getorder();
     apiData.then((data) {
       if (data != null) {
@@ -77,16 +77,8 @@ class _VieworderPageState extends State<Viewpendingorder> {
     DateTime oneWeekAgo = DateTime.now().subtract(const Duration(days: 7));
     String oneWeekdate = DateFormat('yyyy-MM-dd').format(oneWeekAgo);
 
-    final url = Uri.parse(
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
-    final requestBody = {
-      "PartyCode": null,
-      "StatusId": 1,
-      "FormDate": oneWeekdate,
-      "ToDate": currentdate,
-      "CompanyId": companyId,
-      "UserId": userId
-    };
+    final url = Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
+    final requestBody = {"PartyCode": null, "StatusId": 1, "FormDate": oneWeekdate, "ToDate": currentdate, "CompanyId": companyId, "UserId": userId};
 
     debugPrint('_______pending orders____1___');
     debugPrint(jsonEncode(requestBody));
@@ -106,10 +98,8 @@ class _VieworderPageState extends State<Viewpendingorder> {
         final List<dynamic> listResult = data['response']['listResult'];
         print('===========>$listResult');
 
-
         setState(() {
-          orderesponselist =
-              listResult.map((json) => OrderResult.fromJson(json)).toList();
+          orderesponselist = listResult.map((json) => OrderResult.fromJson(json)).toList();
           filterorderesponselist = List.from(orderesponselist);
         });
 
@@ -133,10 +123,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
   void filterOrderBasedOnProduct(String input) {
     apiData.then((data) {
       setState(() {
-        viewPendingOrders.storeIntoViewPendingOrders(data!
-            .where((item) =>
-            item.partyName.toLowerCase().contains(input.toLowerCase()))
-            .toList());
+        viewPendingOrders.storeIntoViewPendingOrders(data!.where((item) => item.partyName.toLowerCase().contains(input.toLowerCase())).toList());
       });
     });
   }
@@ -145,15 +132,13 @@ class _VieworderPageState extends State<Viewpendingorder> {
     final String searchTerm = searchController.text.toLowerCase();
     setState(() {
       filterorderesponselist = orderesponselist.where((dealer) {
-        return dealer.partyName.toLowerCase().contains(searchTerm) ||
-            dealer.partyGSTNumber!.toLowerCase().contains(searchTerm);
+        return dealer.partyName.toLowerCase().contains(searchTerm) || dealer.partyGSTNumber!.toLowerCase().contains(searchTerm);
       }).toList();
     });
   }
 
   @override
   Widget build(BuildContext context) {
-
     return WillPopScope(
       onWillPop: () async {
         Navigator.pushReplacement(
@@ -192,45 +177,43 @@ class _VieworderPageState extends State<Viewpendingorder> {
                           children: [
                             isSelectedAll
                                 ? GestureDetector(
-                              onTap: () {
-                                pendingsProvider.toggleUnSelectAll();
-                                setState(() {
-                                  isSelectedAll = false;
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Color(0xFFe78337),
-                                ),
-                                child: const Text(
-                                  'Unselect All for Approve Orders',
-                                  style: CommonUtils.Buttonstyle,
-                                ),
-                              ),
-                            )
+                                    onTap: () {
+                                      pendingsProvider.toggleUnSelectAll();
+                                      setState(() {
+                                        isSelectedAll = false;
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Color(0xFFe78337),
+                                      ),
+                                      child: const Text(
+                                        'Unselect All Orders',
+                                        style: CommonUtils.Buttonstyle,
+                                      ),
+                                    ),
+                                  )
                                 : GestureDetector(
-                              onTap: () {
-                                pendingsProvider.toggleSelectAll();
-                                setState(() {
-                                  isSelectedAll = true;
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: Color(0xFFe78337),
-                                ),
-                                child: const Text(
-                                  'Select All for Approve Orders',
-                                  style: CommonUtils.Buttonstyle,
-                                ),
-                              ),
-                            )
+                                    onTap: () {
+                                      pendingsProvider.toggleSelectAll();
+                                      setState(() {
+                                        isSelectedAll = true;
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: Color(0xFFe78337),
+                                      ),
+                                      child: const Text(
+                                        'Select All for Approve Orders',
+                                        style: CommonUtils.Buttonstyle,
+                                      ),
+                                    ),
+                                  )
                           ],
                         ),
 
@@ -245,8 +228,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                             itemBuilder: (context, index) {
                               String dateString = data[index].orderDate;
                               DateTime date = DateTime.parse(dateString);
-                              String formattedDate =
-                              DateFormat('dd MMM, yyyy').format(date);
+                              String formattedDate = DateFormat('dd MMM, yyyy').format(date);
 
                               return OrderCard(
                                 orderIndex: index,
@@ -289,21 +271,24 @@ class _VieworderPageState extends State<Viewpendingorder> {
                         ),
 
                       // Approve button
+                      if (pendingsProvider.viewPendingData.isNotEmpty)
                       GestureDetector(
-                        onTap: pendingsProvider.getSelectedOrderIds().isEmpty ? null : () {
-                          // Add your logic here for when the button is clicked
-                          print('Approve button clicked');
-                          print('Selected order IDs: ${pendingsProvider.getSelectedOrderIds().length}');
-                          if (pendingsProvider.getSelectedOrderIds().length > 0) {
-                            showRemarksBottomSheet(
-                              context,
-                              pendingsProvider.getSelectedOrderIds(),
-                            );
-                          } else {
-                            // Handle case when no order is selected
-                            print('No orders selected');
-                          }
-                        },
+                        onTap: pendingsProvider.getSelectedOrderIds().isEmpty
+                            ? null
+                            : () {
+                                // Add your logic here for when the button is clicked
+                                print('Approve button clicked');
+                                print('Selected order IDs: ${pendingsProvider.getSelectedOrderIds().length}');
+                                if (pendingsProvider.getSelectedOrderIds().length > 0) {
+                                  showRemarksBottomSheet(
+                                    context,
+                                    pendingsProvider.getSelectedOrderIds(),
+                                  );
+                                } else {
+                                  // Handle case when no order is selected
+                                  print('No orders selected');
+                                }
+                              },
                         child: Container(
                           color: Colors.white,
                           padding: EdgeInsets.all(16),
@@ -314,7 +299,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5),
                                 color: pendingsProvider.getSelectedOrderIds().isEmpty
-                                    ? Colors.grey // Change to your disabled button color
+                                    ? Color(0xFFe58338).withOpacity(0.2)// Change to your disabled button color
                                     : Color(0xFFe78337),
                               ),
                               child: Row(
@@ -325,13 +310,17 @@ class _VieworderPageState extends State<Viewpendingorder> {
                                     height: 18,
                                     width: 18,
                                     fit: BoxFit.fitWidth,
-                                    color: Colors.white,
+                                    color: pendingsProvider.getSelectedOrderIds().isEmpty
+                                        ? Colors.grey// Change to your disabled button color
+                                        : Colors.white,
                                   ),
                                   SizedBox(width: 8.0),
                                   Text(
                                     'Approve',
                                     style: TextStyle(
-                                      color: Colors.white,
+                                      color: pendingsProvider.getSelectedOrderIds().isEmpty
+                                          ? Colors.grey// Change to your disabled button color
+                                          : Colors.white,
                                       fontSize: 18,
                                       fontWeight: FontWeight.w700,
                                       fontFamily: 'Roboto',
@@ -354,8 +343,6 @@ class _VieworderPageState extends State<Viewpendingorder> {
         ),
       ),
     );
-
-
   }
 
   AppBar _appBar() {
@@ -375,11 +362,9 @@ class _VieworderPageState extends State<Viewpendingorder> {
                     // Handle the click event for the back button
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) =>  HomeScreen()),
-
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
                     );
-             //     viewPendingOrders.Clearpendingcheckbox();
+                    //     viewPendingOrders.Clearpendingcheckbox();
                   },
                   child: const Icon(
                     Icons.chevron_left,
@@ -408,15 +393,12 @@ class _VieworderPageState extends State<Viewpendingorder> {
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) =>  HomeScreen()),
+                      MaterialPageRoute(builder: (context) => HomeScreen()),
                     );
-              //
+                    //
                   },
                   child: Image.asset(
-                    companyId == 1
-                        ? 'assets/srikar-home-icon.png'
-                        : 'assets/seeds-home-icon.png',
+                    companyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
                     width: 30,
                     height: 30,
                   ),
@@ -449,8 +431,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                   hintStyle: CommonUtils.hintstyle_14,
                   suffixIcon: const Icon(Icons.search),
                   border: CommonUtils.searchBarOutPutInlineBorder,
-                  focusedBorder:
-                  CommonUtils.searchBarEnabledNdFocuedOutPutInlineBorder,
+                  focusedBorder: CommonUtils.searchBarEnabledNdFocuedOutPutInlineBorder,
                 ),
               ),
             ),
@@ -465,48 +446,43 @@ class _VieworderPageState extends State<Viewpendingorder> {
   }
 
   void handleApprove(List<int> selectedOrderIds, String remarks) async {
-
-      // Construct the request body
-      var requestBody = {
-        "Id": selectedOrderIds.join(","), // Join the IDs with commas
-        "StatusTypeId": 17,
-        "Remarks": remarks,
-        "UpdatedBy": "e39536e2-89d3-4cc7-ae79-3dd5291ff156",
-        "UpdatedDate": "2024-02-20"
-      };
-print('==>${jsonEncode(requestBody)}');
-      // Make the HTTP POST request
-      var response = await http.post(
-        Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus'),
-        headers: <String, String>{
-          'Content-Type': 'application/json; charset=UTF-8',
-        },
-        body: jsonEncode(requestBody),
-      );
-      if (response.statusCode == 200) {
-        var responseBody = json.decode(response.body);
-        // Request successful, handle response here
-        print('Request successful');
-        if (responseBody['isSuccess'] == true ) {
-          CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 1, 4);
-          Navigator.push(
-            context,
-            MaterialPageRoute(builder: (context) => Viewpendingorder()),
-          );
-        }
-        else{
-
-          CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 1, 4);
-
-        }
+    // Construct the request body
+    var requestBody = {
+      "Id": selectedOrderIds.join(","), // Join the IDs with commas
+      "StatusTypeId": 17,
+      "Remarks": remarks,
+      "UpdatedBy": "e39536e2-89d3-4cc7-ae79-3dd5291ff156",
+      "UpdatedDate": "2024-02-20"
+    };
+    print('==>${jsonEncode(requestBody)}');
+    // Make the HTTP POST request
+    var response = await http.post(
+      Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus'),
+      headers: <String, String>{
+        'Content-Type': 'application/json; charset=UTF-8',
+      },
+      body: jsonEncode(requestBody),
+    );
+    if (response.statusCode == 200) {
+      var responseBody = json.decode(response.body);
+      // Request successful, handle response here
+      print('Request successful');
+      if (responseBody['isSuccess'] == true) {
+        CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 0, 4);
+        Navigator.push(
+          context,
+          MaterialPageRoute(builder: (context) => Viewpendingorder()),
+        );
       } else {
-        // Request failed, handle error here
-        print('Request failed with status: ${response.statusCode}');
-        // Show error message to the user
-        // You can use a modal dialog, a snackbar, or any other UI element to display the error message
+        CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 1, 4);
       }
-
+    } else {
+      // Request failed, handle error here
+      print('Request failed with status: ${response.statusCode}');
+      // Show error message to the user
+      // You can use a modal dialog, a snackbar, or any other UI element to display the error message
     }
+  }
 
   void showRemarksBottomSheet(BuildContext context, List<int> selectedOrderIds) {
     showModalBottomSheet(
@@ -526,39 +502,42 @@ print('==>${jsonEncode(requestBody)}');
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Padding(
-                  padding: EdgeInsets.only(
-                      top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
+                  padding: EdgeInsets.only(top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
                   child: Text(
                     'Remarks',
-                    style:CommonUtils.Mediumtext_o_14,
+                    style: CommonUtils.Mediumtext_o_14,
                     textAlign: TextAlign.start,
                   ),
                 ),
                 Container(
-                  height: 70,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     border: Border.all(color: const Color(0xFFe78337), width: 1),
                     borderRadius: BorderRadius.circular(5.0),
                     color: Colors.white,
                   ),
-                  child: TextFormField(
-                    controller: remarkstext,
-                    maxLength: 100,
-                    style: CommonUtils.Mediumtext_o_14,
-                    maxLines: null, // Set maxLines to null for multiline input
-                    decoration: InputDecoration(
-                      hintText: 'Enter Remarks',
-                      hintStyle: CommonUtils.hintstyle_o_14,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 10.0,
-                        vertical: 0.0,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: remarkstext,
+                        maxLength: 100,
+                        style: CommonUtils.Mediumtext_o_14,
+                        maxLines: null,
+                        // Set maxLines to null for multiline input
+                        decoration: InputDecoration(
+                          hintText: 'Enter Remarks',
+                          hintStyle: CommonUtils.hintstyle_o_14,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 10.0,
+                            vertical: 0.0,
+                          ),
+                          border: InputBorder.none,
+                        ),
                       ),
-                      border: InputBorder.none,
-                      counterStyle: TextStyle(color: Colors.green), // Specify the color for the counter text
-                    ),
+                      SizedBox(height: 10), // Add space between TextFormField and counter
+
+                    ],
                   ),
                 ),
 
@@ -568,6 +547,7 @@ print('==>${jsonEncode(requestBody)}');
                   children: [
                     GestureDetector(
                       onTap: () {
+                        remarkstext.text ="";
                         Navigator.of(context).pop(); // Close the bottom sheet
                         // Show a new bottom sheet for entering remarks
                       },
@@ -587,8 +567,7 @@ print('==>${jsonEncode(requestBody)}');
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
@@ -620,10 +599,9 @@ print('==>${jsonEncode(requestBody)}');
                       onTap: () {
                         String remarks = remarkstext.text.trim();
 
-                          // Call the API to update invoice status with remarks
-                          handleApprove(selectedOrderIds, remarks);
-                          Navigator.of(context).pop();
-
+                        // Call the API to update invoice status with remarks
+                        handleApprove(selectedOrderIds, remarks);
+                        Navigator.of(context).pop();
 
                         // updateInvoiceStatus(ordernumber!, invoiceNo);
                         // Navigator.of(context).pop(); // Close the bottom sheet
@@ -644,8 +622,7 @@ print('==>${jsonEncode(requestBody)}');
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
@@ -689,15 +666,7 @@ print('==>${jsonEncode(requestBody)}');
       },
     );
   }
-
-
-
-
-
-  }
-
-
-
+}
 
 class OrderCard extends StatefulWidget {
   final int orderIndex;
@@ -730,6 +699,7 @@ class _OrderCardState extends State<OrderCard> {
     color: Colors.white,
   );
   TextEditingController remarkstext = TextEditingController();
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -741,7 +711,6 @@ class _OrderCardState extends State<OrderCard> {
   Widget build(BuildContext context) {
     return GestureDetector(
       onTap: () {
-
         Navigator.of(context).push(
           MaterialPageRoute(
             builder: (context) => Orderdetails(
@@ -811,8 +780,7 @@ class _OrderCardState extends State<OrderCard> {
                           // beside info
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 10, top: 0, bottom: 0),
+                              padding: const EdgeInsets.only(left: 10, top: 0, bottom: 0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -831,15 +799,13 @@ class _OrderCardState extends State<OrderCard> {
                                         ),
                                       ),
                                       // Add SizedBox to control the size of the Checkbox
+
                                       SizedBox(
                                         width: 24, // Adjust the width as needed
                                         height: 24, // Adjust the height as needed
                                         child: Consumer<ViewPendingOrdersProvider>(
                                           builder: (context, pendingOrders, _) {
-                                            // Ensure that the index is within the valid range of the list
-                                            final int index = widget.orderIndex < pendingOrders.getCheckBoxValues.length
-                                                ? widget.orderIndex
-                                                : 0; // Provide a default value or handle it according to your logic
+                                            final int index = widget.orderIndex ?? 0; // Provide a default value or handle it according to your logic
 
                                             return Checkbox(
                                               activeColor: const Color(0xFFe78337),
@@ -851,16 +817,32 @@ class _OrderCardState extends State<OrderCard> {
                                           },
                                         ),
                                       ),
+
+                                      // SizedBox(
+                                      //   width: 24, // Adjust the width as needed
+                                      //   height: 24, // Adjust the height as needed
+                                      //   child: Consumer<ViewPendingOrdersProvider>(
+                                      //     builder: (context, pendingOrders, _) {
+                                      //       // Ensure that the index is within the valid range of the list
+                                      //       final int index = widget.orderIndex < pendingOrders.getCheckBoxValues.length ? widget.orderIndex : 0; // Provide a default value or handle it according to your logic
+                                      //
+                                      //       return Checkbox(
+                                      //         activeColor: const Color(0xFFe78337),
+                                      //         value: pendingOrders.getCheckBoxValues[index],
+                                      //         onChanged: (bool? newValue) {
+                                      //           pendingOrders.setCheckBoxStatusByIndex(index, newValue);
+                                      //         },
+                                      //       );
+                                      //     },
+                                      //   ),
+                                      // ),
                                     ],
                                   ),
-
-
                                   const SizedBox(
                                     height: 5.0,
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
@@ -869,8 +851,7 @@ class _OrderCardState extends State<OrderCard> {
                                             style: CommonUtils.txSty_13B_Fb,
                                           ),
                                           Text(
-                                            widget.orderResult.orderNumber
-                                                .toString(),
+                                            widget.orderResult.orderNumber.toString(),
                                             style: CommonUtils.txSty_13O_F6,
                                           ),
                                         ],
@@ -881,8 +862,7 @@ class _OrderCardState extends State<OrderCard> {
                                     height: 5.0,
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       // const Text(
                                       //   'Total Amount : ',
@@ -909,28 +889,27 @@ class _OrderCardState extends State<OrderCard> {
                       ),
                       Row(
                         children: [
-                          Container(
-                            margin: const EdgeInsets.only(left: 5.0),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 3, horizontal: 7),
-                            decoration: BoxDecoration(
-                              borderRadius: BorderRadius.circular(10),
-                              color: statusBgColor,
-                            ),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Text(
-                                  widget.orderResult.statusName,
-                                  style: TextStyle(
-                                    fontSize: 11,
-                                    color: statusColor,
-                                    // Add other text styles as needed
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
+                          // Container(
+                          //   margin: const EdgeInsets.only(left: 5.0),
+                          //   padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 7),
+                          //   decoration: BoxDecoration(
+                          //     borderRadius: BorderRadius.circular(10),
+                          //     color: statusBgColor,
+                          //   ),
+                          //   child: Row(
+                          //     mainAxisAlignment: MainAxisAlignment.center,
+                          //     children: [
+                          //       Text(
+                          //         widget.orderResult.statusName,
+                          //         style: TextStyle(
+                          //           fontSize: 11,
+                          //           color: statusColor,
+                          //           // Add other text styles as needed
+                          //         ),
+                          //       ),
+                          //     ],
+                          //   ),
+                          // ),
                           const SizedBox(
                             width: 10.0,
                           ),
@@ -974,50 +953,73 @@ class _OrderCardState extends State<OrderCard> {
                       ),
                       // Clear button
                       Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
                         children: <Widget>[
-
-                          GestureDetector(
-                            onTap: () {
-                              // Show confirmation dialog
-                              showRemarksBottomSheet(context,widget.orderResult.id);
-                            },
-                            child:
-                            Container(
-                              decoration: BoxDecoration(
-                                color: HexColor('#ffecee'), // Background color of the card
-                                borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
-                              ),
-                              padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Adjust padding as needed
-                              child:
-                              Row(
-                                children: [
-                                  SvgPicture.asset(
-                                    'assets/crosscircle.svg',
-                                    height: 18,
-                                    width: 18,
-                                    fit: BoxFit.fitWidth,
-                                    color: HexColor('#ee1d23'),
+                          Container(
+                            margin: const EdgeInsets.only(left: 5.0),
+                            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 7),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: statusBgColor,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  widget.orderResult.statusName,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: statusColor,
+                                    // Add other text styles as needed
                                   ),
-                                  SizedBox(width: 8.0), // Add some spacing between icon and text
-                                  Text(
-                                    'Reject',
-                                    style: TextStyle(
-                                      fontFamily: 'Roboto',
-                                      fontWeight: FontWeight.bold,
-                                      color: HexColor('#ee1d23'),
-                                      fontSize: 13,
-                                    ),
+                                ),
+                              ],
+                            ),
+                          ),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.centerRight,
+                              child: GestureDetector(
+                                onTap: () {
+                                  // Show confirmation dialog
+                                  showRemarksBottomSheet(context, widget.orderResult.id);
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: HexColor('#ffecee'), // Background color of the card
+                                    border: Border.all(color: HexColor('#ee1d23')), // Add red border
+                                    borderRadius: BorderRadius.circular(8), // Adjust the radius as needed
                                   ),
-                                ],
+                                  padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Adjust padding as needed
+                                  child: Row(
+                                    mainAxisSize: MainAxisSize.min,
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/crosscircle.svg',
+                                        height: 18,
+                                        width: 18,
+                                        fit: BoxFit.fitWidth,
+                                        color: HexColor('#ee1d23'),
+                                      ),
+                                      SizedBox(width: 8.0), // Add some spacing between icon and text
+                                      Text(
+                                        'Reject',
+                                        style: TextStyle(
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
+                                          color: HexColor('#ee1d23'),
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
                               ),
                             ),
                           ),
-                          SizedBox(width: 10),
+
                         ],
                       ),
-
-
                     ],
                   ),
                 ),
@@ -1028,296 +1030,12 @@ class _OrderCardState extends State<OrderCard> {
       ),
     );
 
-    // return GestureDetector(
-    //   onTap: () {
-    //
-    //     Navigator.of(context).push(
-    //       MaterialPageRoute(
-    //         builder: (context) => Orderdetails(
-    //           orderid: widget.orderResult.id,
-    //           orderdate: widget.formattedDate,
-    //           totalCostWithGST: widget.orderResult.totalCostWithGST!,
-    //           bookingplace: widget.orderResult.bookingPlace,
-    //           transportmode: widget.orderResult.transportName,
-    //           lrnumber: 1,
-    //           lrdate: "",
-    //           statusname: widget.orderResult.statusName,
-    //           partyname: widget.orderResult.partyName,
-    //           partycode: widget.orderResult.partyCode,
-    //           proprietorName: widget.orderResult.proprietorName!,
-    //           partyGSTNumber: widget.orderResult.partyGSTNumber!,
-    //           ordernumber: widget.orderResult.orderNumber!,
-    //           partyAddress: widget.orderResult.partyAddress,
-    //           statusBar: sendingSvgImagesAndColors(
-    //             widget.orderResult.statusTypeId,
-    //             widget.orderResult.statusName,
-    //           ),
-    //         ),
-    //       ),
-    //     );
-    //   },
-    //   child: Container(
-    //     margin: const EdgeInsets.only(bottom: 10),
-    //     color: Colors.transparent,
-    //     child: Card(
-    //       elevation: 5,
-    //       child: Container(
-    //         padding: const EdgeInsets.all(12),
-    //         width: MediaQuery.of(context).size.width,
-    //         decoration: BoxDecoration(
-    //           color: Colors.white,
-    //           borderRadius: BorderRadius.circular(10),
-    //         ),
-    //         child: Row(
-    //             children: [
-    //         // Checkbox
-    //         Consumer<ViewPendingOrdersProvider>(
-    //         builder: (context, pendingOrders, _) {
-    //       return Checkbox(
-    //       activeColor: const Color(0xFFe78337),
-    //       value: pendingOrders.getCheckBoxValues[widget.orderIndex],
-    //       onChanged: (bool? newValue) {
-    //       pendingOrders.setCheckBoxStatusByIndex(
-    //       widget.orderIndex, newValue
-    //       );
-    //       },
-    //       );
-    //       },
-    //       ),
-    //       const SizedBox(width: 10), // Add some spacing between checkbox and content
-    //       // Existing content wrapped in Expanded
-    //       Expanded(
-    //         child: Column(
-    //           crossAxisAlignment: CrossAxisAlignment.start,
-    //           children: [
-    //             Container(
-    //               width: MediaQuery.of(context).size.width,
-    //               decoration: CommonUtils.boxBorder,
-    //               child: Row(
-    //                 children: [
-    //                   // starting icon of card
-    //                   Card(
-    //                     elevation: 3,
-    //                     color: Colors.white,
-    //                     shape: RoundedRectangleBorder(
-    //                       borderRadius: BorderRadius.circular(5.0),
-    //                     ),
-    //                     child: Container(
-    //                       height: 65,
-    //                       width: 65,
-    //                       padding: const EdgeInsets.all(10),
-    //                       decoration: _iconBoxBorder,
-    //                       child: Center(
-    //                         child: getSvgImagesAndColors(
-    //                           widget.orderResult.statusTypeId,
-    //                         ),
-    //                       ),
-    //                     ),
-    //                   ),
-    //
-    //                   // beside info
-    //                   Expanded(
-    //                     child: Padding(
-    //                       padding: const EdgeInsets.only(
-    //                           left: 10, top: 0, bottom: 0),
-    //                       child: Column(
-    //                         crossAxisAlignment: CrossAxisAlignment.start,
-    //                         mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-    //                         children: [
-    //                           Row(
-    //                             mainAxisAlignment:
-    //                             MainAxisAlignment.spaceEvenly,
-    //                             children: [
-    //                               Expanded(
-    //                                 child: Text(
-    //                                   widget.orderResult.partyName,
-    //                                   style: CommonUtils.Mediumtext_14_cb,
-    //                                   softWrap: true,
-    //                                   maxLines: 2,
-    //                                   overflow: TextOverflow.visible,
-    //                                 ),
-    //                               ),
-    //                               // Consumer<ViewPendingOrdersProvider>(
-    //                               //   builder: (context, pendingOrders, _) {
-    //                               //     return Checkbox(
-    //                               //       activeColor: const Color(0xFFe78337),
-    //                               //       value: pendingOrders.getCheckBoxValues[widget.orderIndex],
-    //                               //       onChanged: (bool? newValue) {
-    //                               //         pendingOrders.setCheckBoxStatusByIndex(
-    //                               //             widget.orderIndex, newValue);
-    //                               //       },
-    //                               //     );
-    //                               //   },
-    //                               // ),
-    //                             ],
-    //                           ),
-    //
-    //                           Row(
-    //                             mainAxisAlignment:
-    //                             MainAxisAlignment.spaceBetween,
-    //                             children: [
-    //                               Row(
-    //                                 children: [
-    //                                   const Text(
-    //                                     'Order ID : ',
-    //                                     style: CommonUtils.txSty_13B_Fb,
-    //                                   ),
-    //                                   Text(
-    //                                     widget.orderResult.orderNumber
-    //                                         .toString(),
-    //                                     style: CommonUtils.txSty_13O_F6,
-    //                                   ),
-    //                                 ],
-    //                               ),
-    //                             ],
-    //                           ),
-    //                           const SizedBox(
-    //                             height: 5.0,
-    //                           ),
-    //                           Row(
-    //                             mainAxisAlignment:
-    //                             MainAxisAlignment.spaceBetween,
-    //                             children: [
-    //                               Text(
-    //                                 '₹${formatNumber(widget.orderResult.totalCostWithGST!)}',
-    //                                 style: CommonUtils.txSty_13O_F6,
-    //                               ),
-    //                               Text(
-    //                                 widget.formattedDate,
-    //                                 style: CommonUtils.txSty_13O_F6,
-    //                               ),
-    //                             ],
-    //                           )
-    //                         ],
-    //                       ),
-    //                     ),
-    //                   )
-    //                 ],
-    //               ),
-    //             ),
-    //
-    //             Row(
-    //               children: [
-    //                Container(
-    //                     margin: const EdgeInsets.only(left: 5.0),
-    //                     padding: const EdgeInsets.symmetric(
-    //                         vertical: 3, horizontal:5),
-    //                     decoration: BoxDecoration(
-    //                       borderRadius: BorderRadius.circular(10),
-    //                       color: statusBgColor,
-    //                     ),
-    //                     child: Row(
-    //                       mainAxisAlignment: MainAxisAlignment.center,
-    //                       children: [
-    //                         Text(
-    //                           widget.orderResult.statusName,
-    //                           style: TextStyle(
-    //                             fontSize: 11,
-    //                             color: statusColor,
-    //                             // Add other text styles as needed
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   ),
-    //
-    //                 const SizedBox(
-    //                   width: 10.0,
-    //                 ),
-    //                 Expanded(
-    //                   child: Row(
-    //                     mainAxisAlignment: MainAxisAlignment.end,
-    //                     children: [
-    //                       Column(
-    //                         crossAxisAlignment: CrossAxisAlignment.end,
-    //                         children: [
-    //                           Row(
-    //                             children: [
-    //                               const Text(
-    //                                 'No.of Items: ',
-    //                                 style: CommonUtils.txSty_13B_Fb,
-    //                               ),
-    //                               Text(
-    //                                 '${widget.orderResult.noOfItems}',
-    //                                 style: CommonUtils.txSty_13O_F6,
-    //                               ),
-    //                             ],
-    //                           ),
-    //                         ],
-    //                       )
-    //                     ],
-    //                   ),
-    //                 ),
-    //               ],
-    //             ),
-    //             const SizedBox(
-    //               height: 5.0,
-    //             ),
-    //             Container(
-    //               width: double.infinity,
-    //               height: 0.2,
-    //               color: Colors.grey,
-    //             ),
-    //             const SizedBox(
-    //               height: 5.0,
-    //             ),
-    //             // Clear button
-    //            Row(
-    //               mainAxisAlignment: MainAxisAlignment.end,
-    //               children: <Widget>[
-    //
-    //                 GestureDetector(
-    //                   onTap: () {
-    //                     // Show confirmation dialog
-    //                     showRemarksBottomSheet(context,widget.orderResult.id);
-    //                   },
-    //                   child:
-    //                   Container(
-    //                     decoration: BoxDecoration(
-    //                       color: HexColor('#ffecee'), // Background color of the card
-    //                       borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
-    //                     ),
-    //                     padding: EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Adjust padding as needed
-    //                     child:
-    //                     Row(
-    //                       children: [
-    //                         SvgPicture.asset(
-    //                           'assets/crosscircle.svg',
-    //                           height: 18,
-    //                           width: 18,
-    //                           fit: BoxFit.fitWidth,
-    //                           color: HexColor('#ee1d23'),
-    //                         ),
-    //                         SizedBox(width: 8.0), // Add some spacing between icon and text
-    //                         Text(
-    //                           'Reject',
-    //                           style: TextStyle(
-    //                             fontFamily: 'Roboto',
-    //                             fontWeight: FontWeight.bold,
-    //                             color: HexColor('#ee1d23'),
-    //                             fontSize: 13,
-    //                           ),
-    //                         ),
-    //                       ],
-    //                     ),
-    //                   ),
-    //                 ),
-    //                 SizedBox(width: 10),
-    //               ],
-    //             ),
-    //
-    //
-    //           ],
-    //         ),
-    //       ),
-    //     ]),
-    //   ),
-    //
-    // )));
+
   }
 
   late Color statusColor;
   late Color statusBgColor;
+
   Widget getSvgImagesAndColors(int statusTypeCode) {
     String assetPath;
     late Color iconColor;
@@ -1403,47 +1121,52 @@ class _OrderCardState extends State<OrderCard> {
               mainAxisSize: MainAxisSize.min,
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-
                 Padding(
-                  padding: EdgeInsets.only(
-                      top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
+                  padding: EdgeInsets.only(top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
                   child: Text(
                     'Remarks *',
-                    style:CommonUtils.Mediumtext_o_14,
+                    style: CommonUtils.Mediumtext_o_14,
                     textAlign: TextAlign.start,
                   ),
                 ),
                 Container(
-                  height: 70,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
                     border: Border.all(color: const Color(0xFFe78337), width: 1),
                     borderRadius: BorderRadius.circular(5.0),
                     color: Colors.white,
                   ),
-                  child: TextFormField(
-                    controller: remarkstext,
-                    maxLength: 100,
-                    style: CommonUtils.Mediumtext_o_14,
-                    maxLines: null, // Set maxLines to null for multiline input
-                    decoration: InputDecoration(
-                      hintText: 'Enter Remarks',
-                      hintStyle: CommonUtils.hintstyle_o_14,
-                      contentPadding: EdgeInsets.symmetric(
-                        horizontal: 10.0,
-                        vertical: 0.0,
+                  child: Column(
+                    children: [
+                      TextFormField(
+                        controller: remarkstext,
+                        maxLength: 100,
+                        style: CommonUtils.Mediumtext_o_14,
+                        maxLines: null,
+                        // Set maxLines to null for multiline input
+                        decoration: InputDecoration(
+                          hintText: 'Enter Remarks',
+                          hintStyle: CommonUtils.hintstyle_o_14,
+                          contentPadding: EdgeInsets.symmetric(
+                            horizontal: 10.0,
+                            vertical: 0.0,
+                          ),
+                          border: InputBorder.none,
+                        ),
                       ),
-                      border: InputBorder.none,
-                      counterStyle: TextStyle(color: Colors.green), // Specify the color for the counter text
-                    ),
+                      SizedBox(height: 10), // Add space between TextFormField and counter
+
+                    ],
                   ),
                 ),
+
                 const SizedBox(height: 20),
                 Row(
                   mainAxisAlignment: MainAxisAlignment.end,
                   children: [
                     GestureDetector(
                       onTap: () {
+                        remarkstext.text ="";
                         Navigator.of(context).pop(); // Close the bottom sheet
                         // Show a new bottom sheet for entering remarks
                       },
@@ -1463,8 +1186,7 @@ class _OrderCardState extends State<OrderCard> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding:
-                                const EdgeInsets.symmetric(horizontal: 10.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
@@ -1496,14 +1218,12 @@ class _OrderCardState extends State<OrderCard> {
                       onTap: () {
                         String remarks = remarkstext.text.trim();
                         if (remarks.isEmpty) {
-                          CommonUtils.showCustomToastMessageLong(
-                              'Please Enter Remarks', context, 1, 4);
+                          CommonUtils.showCustomToastMessageLong('Please Enter Remarks', context, 1, 4);
                         } else {
                           // Call the API to update invoice status with remarks
                           handlereject(id, remarks);
-                          remarkstext.text ="";
+                          remarkstext.text = "";
                           Navigator.of(context).pop();
-
                         }
                         // updateInvoiceStatus(ordernumber!, invoiceNo);
                         // Navigator.of(context).pop(); // Close the bottom sheet
@@ -1524,10 +1244,8 @@ class _OrderCardState extends State<OrderCard> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
-                                child:
-                                Row(
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                child: Row(
                                   children: [
                                     SvgPicture.asset(
                                       'assets/check.svg',
@@ -1547,7 +1265,6 @@ class _OrderCardState extends State<OrderCard> {
                                       ),
                                     ),
                                   ],
-
                                 ),
                               ),
                             ],
@@ -1600,17 +1317,14 @@ class _OrderCardState extends State<OrderCard> {
         var responseBody = json.decode(response.body);
         // Request successful, handle response here
         print('Request successful');
-        if (responseBody['isSuccess'] == true ) {
-          CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 1, 4);
+        if (responseBody['isSuccess'] == true) {
+          CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 0, 4);
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => Viewpendingorder()),
           );
-        }
-        else{
-
+        } else {
           CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 1, 4);
-
         }
       } else {
         // Request failed, handle error here
@@ -1628,7 +1342,6 @@ class _OrderCardState extends State<OrderCard> {
       // You can dismiss the modal dialog, hide the snackbar, or remove the progress indicator here
     }
   }
-
 
   Widget sendingSvgImagesAndColors(int statusTypeId, String statusName) {
     String svgIcon;
@@ -1711,5 +1424,4 @@ class _OrderCardState extends State<OrderCard> {
       ),
     );
   }
-
 }
