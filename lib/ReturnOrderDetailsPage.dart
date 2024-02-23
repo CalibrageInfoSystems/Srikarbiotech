@@ -661,7 +661,7 @@ class CustomReturnExpansionTile extends StatefulWidget {
   _CustomExpansionTileState createState() => _CustomExpansionTileState();
 }
 
-class _CustomExpansionTileState extends State<CustomExpansionTile> {
+class _CustomExpansionTileState extends State<CustomReturnExpansionTile> {
   late bool _isExpanded;
 
   @override
@@ -673,7 +673,7 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
   @override
   Widget build(BuildContext context) {
     return Card(
-      margin: const EdgeInsets.symmetric(horizontal: 16.0),
+      // margin: const EdgeInsets.symmetric(horizontal: 16.0),
       elevation: 5,
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
