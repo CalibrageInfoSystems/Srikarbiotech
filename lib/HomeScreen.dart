@@ -9,9 +9,8 @@ import 'package:flutter_svg/svg.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/ViewOrders.dart';
 
-
 import 'package:srikarbiotech/view_collection_page.dart';
-
+import 'package:http/http.dart' as http;
 import 'ChangePassword.dart';
 import 'Common/CommonUtils.dart';
 import 'Common/Constants.dart';
@@ -20,6 +19,7 @@ import 'Common/SharedPrefsData.dart';
 import 'Companiesselection.dart';
 import 'LoginScreen.dart';
 import 'Selectpartyscreen.dart';
+import 'Services/api_config.dart';
 import 'ViewReturnorder.dart';
 import 'Viewpendingorder.dart';
 
@@ -83,18 +83,14 @@ class _home_Screen extends State<HomeScreen> {
                 }
                 // final companyName = snapshot.data['companyName'];
 
-                Widget logoWidget = CompneyId == 1
-                    ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
-                    : Image.asset('assets/srikar-seed.png',
-                    width: 60.0, height: 40.0);
+                Widget logoWidget = CompneyId == 1 ? SvgPicture.asset('assets/srikar_biotech_logo.svg') : Image.asset('assets/srikar-seed.png', width: 60.0, height: 40.0);
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.start,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 2, vertical: 2),
+                      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                       child: GestureDetector(
                         onTap: () {
                           Scaffold.of(context).openDrawer();
@@ -191,8 +187,8 @@ class _home_Screen extends State<HomeScreen> {
                                     child: CompneyId == 1
                                         ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
                                         : Image.asset(
-                                      'assets/srikar-seed.png',
-                                    ),
+                                            'assets/srikar-seed.png',
+                                          ),
                                   ),
                                 ),
                               ),
@@ -200,11 +196,9 @@ class _home_Screen extends State<HomeScreen> {
                                 color: Colors.transparent,
                                 child: Column(
                                   children: [
-                                    Text('$fullname',
-                                        style: CommonUtils.header_Styles18),
+                                    Text('$fullname', style: CommonUtils.header_Styles18),
                                     SizedBox(height: 2.0),
-                                    Text('$roleName',
-                                   style: CommonUtils.Mediumtext_12),
+                                    Text('$roleName', style: CommonUtils.Mediumtext_12),
                                     // Text('slpCode - $slpCode',
                                     //     style: const TextStyle(fontSize: 12)),
                                   ],
@@ -222,8 +216,7 @@ class _home_Screen extends State<HomeScreen> {
                                 height: 15,
                               ),
                               Container(
-                                padding:
-                                const EdgeInsets.symmetric(horizontal: 13),
+                                padding: const EdgeInsets.symmetric(horizontal: 13),
                                 margin: const EdgeInsets.symmetric(vertical: 5),
                                 child: ExpandedTile(
                                   controller: _expandedTileController,
@@ -240,7 +233,6 @@ class _home_Screen extends State<HomeScreen> {
                                     color: Colors.black,
                                     size: 22,
                                   ),
-
                                   title: const Text(
                                     ' User Profile',
                                     style: CommonUtils.txSty_14B_Fb,
@@ -272,8 +264,6 @@ class _home_Screen extends State<HomeScreen> {
                                             style: CommonUtils.Mediumtext_12,
                                           ),
                                         ),
-
-
                                         ListTile(
                                           contentPadding: EdgeInsets.zero,
                                           leading: Container(
@@ -297,24 +287,20 @@ class _home_Screen extends State<HomeScreen> {
                                             style: CommonUtils.Mediumtext_12,
                                           ),
                                         ),
-
                                         ListTile(
                                           contentPadding: EdgeInsets.zero,
                                           leading: Container(
                                               padding: const EdgeInsets.all(10),
                                               decoration: BoxDecoration(
-                                                color:
-                                                Colors.red.withOpacity(0.2),
-                                                borderRadius:
-                                                BorderRadius.circular(20),
+                                                color: Colors.red.withOpacity(0.2),
+                                                borderRadius: BorderRadius.circular(20),
                                               ),
                                               child: const Icon(
                                                 Icons.call,
                                                 size: 20,
                                                 color: Colors.red,
                                               )),
-                                          title: Text('$phoneNumber',
-                                              style: CommonUtils.txSty_14B_Fb),
+                                          title: Text('$phoneNumber', style: CommonUtils.txSty_14B_Fb),
                                           subtitle: const Text(
                                             'Phone Number',
                                             style: CommonUtils.Mediumtext_12,
@@ -325,18 +311,15 @@ class _home_Screen extends State<HomeScreen> {
                                           leading: Container(
                                               padding: const EdgeInsets.all(10),
                                               decoration: BoxDecoration(
-                                                color: Colors.green
-                                                    .withOpacity(0.2),
-                                                borderRadius:
-                                                BorderRadius.circular(20),
+                                                color: Colors.green.withOpacity(0.2),
+                                                borderRadius: BorderRadius.circular(20),
                                               ),
                                               child: const Icon(
                                                 Icons.add_business_rounded,
                                                 size: 20,
                                                 color: Colors.green,
                                               )),
-                                          title: Text('$companyName',
-                                              style: CommonUtils.txSty_14B_Fb),
+                                          title: Text('$companyName', style: CommonUtils.txSty_14B_Fb),
                                           subtitle: const Text(
                                             'Company Name',
                                             style: CommonUtils.Mediumtext_12,
@@ -346,24 +329,19 @@ class _home_Screen extends State<HomeScreen> {
                                           ListTile(
                                             contentPadding: EdgeInsets.zero,
                                             leading: Container(
-                                                padding:
-                                                const EdgeInsets.all(10),
+                                                padding: const EdgeInsets.all(10),
                                                 decoration: BoxDecoration(
-                                                  color: const Color(0xFFe78337)
-                                                      .withOpacity(0.2),
+                                                  color: const Color(0xFFe78337).withOpacity(0.2),
                                                   // color: const Color.fromARGB(
                                                   //     255, 178, 236, 180),
-                                                  borderRadius:
-                                                  BorderRadius.circular(20),
+                                                  borderRadius: BorderRadius.circular(20),
                                                 ),
                                                 child: const Icon(
                                                   Icons.manage_accounts_rounded,
                                                   size: 20,
                                                   color: Color(0xFFe78337),
                                                 )),
-                                            title: Text('$reporingManagerName',
-                                                style:
-                                                CommonUtils.txSty_14B_Fb),
+                                            title: Text('$reporingManagerName', style: CommonUtils.txSty_14B_Fb),
                                             subtitle: const Text(
                                               'Reporing Manager Name',
                                               style: CommonUtils.Mediumtext_12,
@@ -376,7 +354,10 @@ class _home_Screen extends State<HomeScreen> {
                               ),
                               ListTile(
                                 horizontalTitleGap: 0, // Remove spacing before the icon
-                                leading: const Icon(Icons.key, color: Colors.black,),
+                                leading: const Icon(
+                                  Icons.key,
+                                  color: Colors.black,
+                                ),
                                 title: const Text(
                                   'Change Password',
                                   style: CommonUtils.txSty_14B_Fb,
@@ -390,16 +371,16 @@ class _home_Screen extends State<HomeScreen> {
                                   );
                                 },
                               ),
-
-
                             ],
                           ),
                         ),
                         ListTile(
                           horizontalTitleGap: 0, // Remove spacing before the icon
-                          leading: const Icon(Icons.logout, color: Colors.black,),
-                          title: const Text('Logout',
-                              style: CommonUtils.txSty_14B_Fb),
+                          leading: const Icon(
+                            Icons.logout,
+                            color: Colors.black,
+                          ),
+                          title: const Text('Logout', style: CommonUtils.txSty_14B_Fb),
                           onTap: () async {
                             logOutDialog();
                           },
@@ -490,7 +471,7 @@ class _home_Screen extends State<HomeScreen> {
 
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const Companiesselection()),
-          (route) => false,
+      (route) => false,
     );
   }
 }
@@ -513,6 +494,9 @@ class _imagesliderState extends State<imageslider> {
   int currentIndex = 0;
   List<BannerImages> imageList = [];
   List<String> categoriesList = [];
+  int CompneyId = 0;
+  final CarouselController carouselController = CarouselController();
+
   late final Future<Map<String, dynamic>?> categoriesFuture = SharedPreferencesHelper.getCategories();
   @override
   initState() {
@@ -521,8 +505,42 @@ class _imagesliderState extends State<imageslider> {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
+    // getshareddata();
+    fetchImages();
     //  imageList.length = 3;
   }
+
+  Future<void> fetchImages() async {
+    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    final url = Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Banner/GetBannersDataInfo/$CompneyId/null');
+    print('url==>127: $url');
+    try {
+      final response = await http.get(url);
+
+      if (response.statusCode == 200) {
+        final jsonData = json.decode(response.body);
+
+        List<BannerImages> bannerImages = [];
+        for (var item in jsonData['response']['listResult']) {
+          bannerImages.add(BannerImages(FilePath: item['fileUrl'], Id: item['id']));
+        }
+
+        setState(() {
+          imageList = bannerImages;
+        });
+      } else {
+        // Handle error if the API request was not successful
+        print('Request failed with status: ${response.statusCode}');
+      }
+    } catch (error) {
+      // Handle any exception that occurred during the API call
+      print('Error: $error');
+    }
+  }
+
+  // Future<void> getshareddata() async {
+  //   CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+  // }
 
   @override
   Widget build(BuildContext context) {
@@ -557,85 +575,132 @@ class _imagesliderState extends State<imageslider> {
                     ),
                     child: Column(
                       children: [
-                        Expanded(
-                          //   child: SingleChildScrollView(
-                            child: Container(
-                              // width: MediaQuery.of(context).size.width,
-                              //  padding: EdgeInsets.all(20.0),
+                        Visibility(
+                            visible: imageList != null && imageList.isNotEmpty,
+                            child: Expanded(
+                                //   child: SingleChildScrollView(
+                                child: Container(
+                                    // width: MediaQuery.of(context).size.width,
+                                    //  padding: EdgeInsets.all(20.0),
 
-                                height: MediaQuery.of(context).size.height,
-                                padding:
-                                EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
-                                width: MediaQuery.of(context).size.width,
-                                child: Stack(
-                                  children: [
-                                    Align(
-                                      alignment: Alignment.topCenter,
-                                      child: CarouselSlider(
-                                        items: [
-                                          Image.asset(
-                                            'assets/slider1.png',
-                                            fit: BoxFit.fitWidth,
-                                            width: MediaQuery.of(context).size.width,
-                                          ),
-                                          Image.asset(
-                                            'assets/slider2.png',
-                                            fit: BoxFit.fitWidth,
-                                            width: MediaQuery.of(context).size.width,
-                                          ),
-                                          Image.asset(
-                                            'assets/slider3.png',
-                                            fit: BoxFit.fitWidth,
-                                            width: MediaQuery.of(context).size.width,
-                                          ),
-                                          // Add more static images as needed
-                                        ],
-                                        options: CarouselOptions(
-                                          scrollPhysics: const BouncingScrollPhysics(),
-                                          autoPlay: true,
-                                          height: MediaQuery.of(context).size.height,
-                                          aspectRatio: 23 / 9,
-                                          viewportFraction: 1,
-                                          onPageChanged: (index, reason) {
-                                            // Handle page change if needed
-                                            setState(() {
-                                              currentIndex = index;
-                                            });
-                                          },
-                                        ),
-                                      ),
-                                    ),
-                                    Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      //  padding: EdgeInsets.all(20.0),
+                                    height: MediaQuery.of(context).size.height,
+                                    padding: EdgeInsets.only(left: 10.0, right: 10.0, top: 10.0),
+                                    width: MediaQuery.of(context).size.width,
+                                    child: Stack(
+                                      children: [
+                                        // Align(
+                                        //   alignment: Alignment.topCenter,
+                                        //   child: CarouselSlider(
+                                        //     items: [
+                                        //       Image.asset(
+                                        //         'assets/slider1.png',
+                                        //         fit: BoxFit.fitWidth,
+                                        //         width: MediaQuery.of(context).size.width,
+                                        //       ),
+                                        //       Image.asset(
+                                        //         'assets/slider2.png',
+                                        //         fit: BoxFit.fitWidth,
+                                        //         width: MediaQuery.of(context).size.width,
+                                        //       ),
+                                        //       Image.asset(
+                                        //         'assets/slider3.png',
+                                        //         fit: BoxFit.fitWidth,
+                                        //         width: MediaQuery.of(context).size.width,
+                                        //       ),
+                                        //       // Add more static images as needed
+                                        //     ],
+                                        //     options: CarouselOptions(
+                                        //       scrollPhysics: const BouncingScrollPhysics(),
+                                        //       autoPlay: true,
+                                        //       height: MediaQuery.of(context).size.height,
+                                        //       aspectRatio: 23 / 9,
+                                        //       viewportFraction: 1,
+                                        //       onPageChanged: (index, reason) {
+                                        //         // Handle page change if needed
+                                        //         setState(() {
+                                        //           currentIndex = index;
+                                        //         });
+                                        //       },
+                                        //     ),
+                                        //   ),
+                                        // ),
+                                        // Container(
+                                        //   width: MediaQuery.of(context).size.width,
+                                        //   //  padding: EdgeInsets.all(20.0),
+                                        //
+                                        //   height: MediaQuery.of(context).size.height,
+                                        //   child: Align(
+                                        //     alignment: Alignment.bottomCenter,
+                                        //     child: Padding(
+                                        //       padding: EdgeInsets.only(bottom: 25.0),
+                                        //       child: Row(
+                                        //         mainAxisAlignment: MainAxisAlignment.center,
+                                        //         children: List.generate(
+                                        //           // Use the number of images from assets
+                                        //           3, // Replace with the actual number of assets
+                                        //           (index) => buildIndicator(index),
+                                        //         ),
+                                        //       ),
+                                        //     ),
+                                        //   ),
+                                        // ),
 
-                                      height: MediaQuery.of(context).size.height,
-                                      child: Align(
-                                        alignment: Alignment.bottomCenter,
-                                        child: Padding(
-                                          padding: EdgeInsets.only(bottom: 25.0),
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.center,
-                                            children: List.generate(
-                                              // Use the number of images from assets
-                                              3, // Replace with the actual number of assets
-                                                  (index) => buildIndicator(index),
+                                        Align(
+                                          alignment: Alignment.topCenter,
+                                          child: CarouselSlider(
+                                            items: imageList
+                                                .map((item) => Image.network(
+                                                      item.FilePath,
+                                                      fit: BoxFit.fitWidth,
+                                                      width: MediaQuery.of(context).size.width, // Set width to the device's width
+                                                    ))
+                                                .toList(),
+                                            carouselController: carouselController,
+                                            options: CarouselOptions(
+                                              scrollPhysics: const BouncingScrollPhysics(),
+                                              autoPlay: true,
+                                              height: MediaQuery.of(context).size.height,
+                                              aspectRatio: 23 / 9,
+                                              viewportFraction: 1,
+                                              onPageChanged: (index, reason) {
+                                                setState(() {
+                                                  currentIndex = index;
+                                                });
+                                              },
                                             ),
                                           ),
                                         ),
-                                      ),
-                                    ),
-                                  ],
-                                ))
-                          //  )
-                        ),
+
+                                        Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          //  padding: EdgeInsets.all(20.0),
+
+                                          height: MediaQuery.of(context).size.height,
+                                          child: Align(
+                                            alignment: Alignment.bottomCenter,
+                                            child: Padding(
+                                              padding: EdgeInsets.only(bottom: 25.0),
+                                              child: Row(
+                                                mainAxisAlignment: MainAxisAlignment.center,
+                                                children: imageList.asMap().entries.map((entry) {
+                                                  final index = entry.key;
+                                                  return buildIndicator(index);
+                                                }).toList(),
+                                              ),
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ))
+
+                                //  )
+                                )),
                         SizedBox(
                           height: 5.0,
                         ),
                         Expanded(
                             flex: 4,
-                            child:
-                            SingleChildScrollView(
+                            child: SingleChildScrollView(
                               child: Container(
                                 width: MediaQuery.of(context).size.width,
                                 child: Column(
@@ -732,8 +797,7 @@ class _imagesliderState extends State<imageslider> {
                                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                               children: [
                                                 Expanded(
-                                                  child:
-                                                  Container(
+                                                  child: Container(
                                                     child: _customcontainerCard(
                                                       imageUrl: "creditcard.svg",
                                                       item: "Create Collections",
@@ -745,10 +809,7 @@ class _imagesliderState extends State<imageslider> {
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                Selectpartyscreen(
-                                                                    from:
-                                                                    'CreateCollections'),
+                                                            builder: (context) => Selectpartyscreen(from: 'CreateCollections'),
                                                           ),
                                                         );
                                                       },
@@ -769,10 +830,7 @@ class _imagesliderState extends State<imageslider> {
                                                         Navigator.push(
                                                           context,
                                                           MaterialPageRoute(
-                                                            builder: (context) =>
-                                                                Selectpartyscreen(
-                                                                    from:
-                                                                    'CreatereturnOrder'),
+                                                            builder: (context) => Selectpartyscreen(from: 'CreatereturnOrder'),
                                                           ),
                                                         );
                                                       },
@@ -803,9 +861,7 @@ class _imagesliderState extends State<imageslider> {
                                                       onTap: () {
                                                         Navigator.push(
                                                           context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  ViewCollectionPage()),
+                                                          MaterialPageRoute(builder: (context) => ViewCollectionPage()),
                                                         );
                                                       },
                                                     ),
@@ -824,9 +880,7 @@ class _imagesliderState extends State<imageslider> {
                                                       onTap: () {
                                                         Navigator.push(
                                                           context,
-                                                          MaterialPageRoute(
-                                                              builder: (context) =>
-                                                                  ViewReturnorder()),
+                                                          MaterialPageRoute(builder: (context) => ViewReturnorder()),
                                                         );
                                                       },
                                                     ),
@@ -838,7 +892,7 @@ class _imagesliderState extends State<imageslider> {
                                         ),
                                       ],
                                     ),
-                                    if(categoriesList.contains("CanSHApprovalRejectOrder"))
+                                    if (categoriesList.contains("CanSHApprovalRejectOrder"))
                                       Row(
                                         children: [
                                           // First Container with single card view
@@ -849,8 +903,7 @@ class _imagesliderState extends State<imageslider> {
                                                 mainAxisAlignment: MainAxisAlignment.spaceEvenly,
                                                 children: [
                                                   Expanded(
-                                                    child:
-                                                    Container(
+                                                    child: Container(
                                                       child: _customcontainernewCard(
                                                         imageUrl: "bags-orders.svg",
                                                         item: "Approve Orders",
@@ -861,30 +914,23 @@ class _imagesliderState extends State<imageslider> {
                                                         onTap: () {
                                                           Navigator.push(
                                                             context,
-                                                            MaterialPageRoute(
-                                                                builder: (context) =>
-                                                                    Viewpendingorder()),
+                                                            MaterialPageRoute(builder: (context) => Viewpendingorder()),
                                                           );
                                                         },
                                                       ),
                                                     ),
                                                   ),
-
                                                 ],
                                               ),
                                             ),
                                           ),
                                           // Second Container divided into two equal-sized containers
-
                                         ],
                                       ),
                                   ],
                                 ),
                               ),
-                            )
-
-
-                        )
+                            ))
                         // width: 300.0,
                       ],
                     ),
@@ -893,7 +939,6 @@ class _imagesliderState extends State<imageslider> {
               ],
             );
           }
-
         });
   }
 
@@ -910,13 +955,12 @@ class _imagesliderState extends State<imageslider> {
       onTap: onTap,
       child: SizedBox(
         //  height: MediaQuery.of(context).size.height * (4 / 9) - 250 / 2,
-        height: MediaQuery.of(context).size.height /3.3,
+        height: MediaQuery.of(context).size.height / 3.3,
         // height: height,
         width: MediaQuery.of(context).size.width / 2,
         child: Card(
           color: color,
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
             padding: EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
@@ -957,11 +1001,7 @@ class _imagesliderState extends State<imageslider> {
                     alignment: Alignment.centerLeft,
                     child: RichText(
                       text: TextSpan(
-                        style: TextStyle(
-                            fontSize: 14,
-                            color: textcolor,
-                            fontFamily: "Roboto",
-                            fontWeight: FontWeight.w600),
+                        style: TextStyle(fontSize: 14, color: textcolor, fontFamily: "Roboto", fontWeight: FontWeight.w600),
                         children: [
                           // TextSpan(
                           //   text: 'All Incoming and\n',
@@ -978,10 +1018,7 @@ class _imagesliderState extends State<imageslider> {
                           // TextSpan(
                           //   text: 'Record',
                           // ),
-                          TextSpan(
-                              text:
-                              'All Incoming and Outgoing Transactions record',
-                              style: TextStyle(height:2))
+                          TextSpan(text: 'All Incoming and Outgoing Transactions record', style: TextStyle(height: 2))
                         ],
                       ),
                     ),
@@ -995,8 +1032,6 @@ class _imagesliderState extends State<imageslider> {
       ),
     );
   }
-
-
 
   _customwidthCard({
     required String imageUrl,
@@ -1016,12 +1051,10 @@ class _imagesliderState extends State<imageslider> {
         height: MediaQuery.of(context).size.height / 6,
         child: Card(
           color: color,
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
-            padding:
-            const EdgeInsets.only(left: 10, right: 15, top: 7, bottom: 3),
+            padding: const EdgeInsets.only(left: 10, right: 15, top: 7, bottom: 3),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -1048,11 +1081,7 @@ class _imagesliderState extends State<imageslider> {
                     child: Text(
                       item,
                       maxLines: 1,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: "Roboto",
-                          fontWeight: FontWeight.w700,
-                          color: textcolor),
+                      style: TextStyle(fontSize: 16, fontFamily: "Roboto", fontWeight: FontWeight.w700, color: textcolor),
                     ),
                   ),
                 ),
@@ -1061,11 +1090,7 @@ class _imagesliderState extends State<imageslider> {
                 // ),
                 Text(
                   item1,
-                  style: const TextStyle(
-                      fontSize: 12,
-                      fontFamily: "Roboto",
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF414141)),
+                  style: const TextStyle(fontSize: 12, fontFamily: "Roboto", fontWeight: FontWeight.w500, color: Color(0xFF414141)),
                 ),
                 // Expanded(
                 //   child: Align(
@@ -1105,12 +1130,10 @@ class _imagesliderState extends State<imageslider> {
         width: MediaQuery.of(context).size.width / 2,
         child: Card(
           color: color,
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
-            padding:
-            const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -1137,11 +1160,7 @@ class _imagesliderState extends State<imageslider> {
                     child: Text(
                       item,
                       maxLines: 1,
-                      style: TextStyle(
-                          fontSize: 16,
-                          fontFamily: "Roboto",
-                          fontWeight: FontWeight.w700,
-                          color: textcolor),
+                      style: TextStyle(fontSize: 16, fontFamily: "Roboto", fontWeight: FontWeight.w700, color: textcolor),
                     ),
                   ),
                 ),
@@ -1150,11 +1169,7 @@ class _imagesliderState extends State<imageslider> {
                 ),
                 Text(
                   item1,
-                  style: const TextStyle(
-                      fontSize: 12,
-                      fontFamily: "Roboto",
-                      fontWeight: FontWeight.w500,
-                      color: Color(0xFF414141)),
+                  style: const TextStyle(fontSize: 12, fontFamily: "Roboto", fontWeight: FontWeight.w500, color: Color(0xFF414141)),
                 ),
                 // Expanded(
                 //   child: Align(
@@ -1206,12 +1221,10 @@ class _imagesliderState extends State<imageslider> {
         width: MediaQuery.of(context).size.width,
         child: Card(
           color: color,
-          shape:
-          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
-            padding:
-            const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -1242,11 +1255,7 @@ class _imagesliderState extends State<imageslider> {
                         child: Text(
                           item,
                           maxLines: 1,
-                          style: TextStyle(
-                              fontSize: 16,
-                              fontFamily: "Roboto",
-                              fontWeight: FontWeight.w700,
-                              color: textcolor),
+                          style: TextStyle(fontSize: 16, fontFamily: "Roboto", fontWeight: FontWeight.w700, color: textcolor),
                         ),
                       ),
                     ),
@@ -1255,11 +1264,7 @@ class _imagesliderState extends State<imageslider> {
                     ),
                     Text(
                       item1,
-                      style: const TextStyle(
-                          fontSize: 12,
-                          fontFamily: "Roboto",
-                          fontWeight: FontWeight.w500,
-                          color: Color(0xFF414141)),
+                      style: const TextStyle(fontSize: 12, fontFamily: "Roboto", fontWeight: FontWeight.w500, color: Color(0xFF414141)),
                     ),
                   ],
                 ),
