@@ -162,20 +162,37 @@ class _home_Screen extends State<HomeScreen> {
                         Expanded(
                           child: Column(
                             children: [
-                              Container(
-                                margin: const EdgeInsets.only(left: 35),
-                                width: MediaQuery.of(context).size.height / 5,
-                                height: MediaQuery.of(context).size.height / 5,
-                                padding: const EdgeInsets.all(20),
-                                child: Center(
-                                  child: CompneyId == 1
-                                      ? SvgPicture.asset(
-                                      'assets/srikar_biotech_logo.svg')
-                                      : Image.asset(
-                                    'assets/srikar-seed.png',
-                                    // width: MediaQuery.of(context).size.height / 4,
-                                    // height:
-                                    //     MediaQuery.of(context).size.height / 4,
+                              // Container(
+                              //   margin: const EdgeInsets.only(left: 35),
+                              //   width: MediaQuery.of(context).size.height / 5,
+                              //   height: MediaQuery.of(context).size.height / 5,
+                              //   padding: const EdgeInsets.all(20),
+                              //   child: Center(
+                              //     child: CompneyId == 1
+                              //         ? SvgPicture.asset(
+                              //         'assets/srikar_biotech_logo.svg')
+                              //         : Image.asset(
+                              //       'assets/srikar-seed.png',
+                              //       // width: MediaQuery.of(context).size.height / 4,
+                              //       // height:
+                              //       //     MediaQuery.of(context).size.height / 4,
+                              //     ),
+                              //   ),
+                              // ),
+                              Align(
+                                alignment: Alignment.topCenter,
+                                child: Container(
+                                  margin: CompneyId == 1 ? const EdgeInsets.only(left: 35.0) : EdgeInsets.zero,
+                                  width: MediaQuery.of(context).size.height / 5,
+                                  height: MediaQuery.of(context).size.height / 5,
+                                  padding: const EdgeInsets.all(20),
+                                  // padding: CompneyId == 1 ? const EdgeInsets.all(20) : EdgeInsets.zero,
+                                  child: Center(
+                                    child: CompneyId == 1
+                                        ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
+                                        : Image.asset(
+                                      'assets/srikar-seed.png',
+                                    ),
                                   ),
                                 ),
                               ),
@@ -220,6 +237,7 @@ class _home_Screen extends State<HomeScreen> {
                                   ),
                                   leading: const Icon(
                                     Icons.person,
+                                    color: Colors.black,
                                     size: 22,
                                   ),
 
@@ -250,7 +268,7 @@ class _home_Screen extends State<HomeScreen> {
                                             style: CommonUtils.txSty_14B_Fb,
                                           ),
                                           subtitle: const Text(
-                                            'slpCode',
+                                            'SlpCode',
                                             style: CommonUtils.Mediumtext_12,
                                           ),
                                         ),
@@ -358,7 +376,7 @@ class _home_Screen extends State<HomeScreen> {
                               ),
                               ListTile(
                                 horizontalTitleGap: 0, // Remove spacing before the icon
-                                leading: const Icon(Icons.key),
+                                leading: const Icon(Icons.key, color: Colors.black,),
                                 title: const Text(
                                   'Change Password',
                                   style: CommonUtils.txSty_14B_Fb,
@@ -379,7 +397,7 @@ class _home_Screen extends State<HomeScreen> {
                         ),
                         ListTile(
                           horizontalTitleGap: 0, // Remove spacing before the icon
-                          leading: const Icon(Icons.logout),
+                          leading: const Icon(Icons.logout, color: Colors.black,),
                           title: const Text('Logout',
                               style: CommonUtils.txSty_14B_Fb),
                           onTap: () async {

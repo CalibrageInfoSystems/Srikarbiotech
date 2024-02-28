@@ -44,13 +44,13 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
   );
 
   List tableCellTitles = [
-    ['Date', 'Payment Mode', 'Credit Bank', 'Purpose', 'Remarks'],
-    ['Amount', 'Credit Account No', 'UTR Number', 'Category', '']
+    ['Date', 'Payment Mode', 'Credit Bank', 'Purpose'],
+    ['Total Amount', 'Credit Account No', 'UTR Number', 'Category', '']
     // ['Date', 'Payment Mode', 'Cheque Date', 'Purpose', '']
   ];
   List tableCellTitles2 = [
-    ['Date', 'Payment Mode', 'Cheque Date', 'Purpose', 'Remarks'],
-    ['Amount', 'Cheque Number', 'Cheque Issued Bank', 'Category', '']
+    ['Date', 'Payment Mode', 'Cheque Date', 'Purpose'],
+    ['Total Amount', 'Cheque Number', 'Cheque Issued Bank', 'Category', '']
     // ['Date', 'Payment Mode', 'Cheque Date', 'Purpose', '']
   ];
   int CompneyId = 0;
@@ -89,7 +89,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
         widget.listResult.remarks
       ],
       [
-        widget.listResult.amount,
+        '₹${formatNumber( widget.listResult.amount)}',
         widget.listResult.creditAccountNo,
         widget.listResult.utrNumber,
         widget.listResult.categoryName,
@@ -105,7 +105,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
         widget.listResult.remarks
       ],
       [
-        widget.listResult.amount,
+        '₹${formatNumber( widget.listResult.amount)}',
         widget.listResult.checkNumber,
         widget.listResult.checkIssuedBank,
         widget.listResult.categoryName,
@@ -249,7 +249,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                             color: Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          children: List.generate(5, (index) {
+                          children: List.generate(4, (index) {
                             return TableRow(
                               children: [
                                 TableCell(
@@ -276,8 +276,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                   child: Container(
                                     padding: _tableCellPadding,
                                     child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
+                                      crossAxisAlignment: CrossAxisAlignment.start,
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles[1][index],
@@ -286,12 +285,15 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                         const SizedBox(height: 5),
                                         Text(
                                           tableCellValues[1][index].toString(),
+                                          // '₹${formatNumber(tableCellValues[1][index].toString() as double)}',
                                           style: CommonUtils.txSty_13O_F6,
                                         )
                                       ],
                                     ),
                                   ),
                                 ),
+
+
                               ],
                             );
                           }),
@@ -305,7 +307,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                             color: Colors.grey.shade200,
                             borderRadius: BorderRadius.circular(10),
                           ),
-                          children: List.generate(5, (index) {
+                          children: List.generate(4, (index) {
                             return TableRow(
                               children: [
                                 TableCell(
@@ -317,12 +319,12 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles2[0][index],
-                                          style: _titleTextStyle,
+                                          style: CommonUtils.txSty_14B_Fb,
                                         ),
                                         const SizedBox(height: 5),
                                         Text(
                                           tableCellValues2[0][index].toString(),
-                                          style: _dataTextStyle,
+                                          style: CommonUtils.txSty_13O_F6,
                                         )
                                       ],
                                     ),
@@ -337,12 +339,12 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                                       children: <Widget>[
                                         Text(
                                           tableCellTitles2[1][index],
-                                          style: _titleTextStyle,
+                                          style: CommonUtils.txSty_14B_Fb,
                                         ),
                                         const SizedBox(height: 5),
                                         Text(
                                           tableCellValues2[1][index].toString(),
-                                          style: _dataTextStyle,
+                                          style: CommonUtils.txSty_13O_F6,
                                         )
                                       ],
                                     ),
@@ -352,10 +354,46 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                             );
                           }),
                         ),
+                      Visibility(
+                        visible: widget.listResult.remarks != null,
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            if (widget.listResult.remarks != null)
+                              Container(
+                                padding: const EdgeInsets.all(10),
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.start,
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Remarks',
+                                      textAlign: TextAlign.start,
+                                      style: CommonUtils.txSty_13B_Fb,
+                                    ),
+                                    const SizedBox(
+                                      height: 2,
+                                    ),
+                                    Text(
+                                      widget.listResult.remarks!,
+                                      style: const TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontSize: 13,
+                                        color: Color(0xFFe58338),
+                                        fontWeight: FontWeight.w600,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                          ],
+                        ),
+                      ),
+
 
                       // Space
                       const SizedBox(
-                        height: 20,
+                        height: 10,
                       ),
 
                       // Attachment
@@ -373,7 +411,11 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                             child: ClipRRect(
                               borderRadius: BorderRadius.circular(10),
                               child: GestureDetector(
-                                onTap: _showZoomedDialog,
+                                onTap: (){
+                                  showZoomedAttachments(
+                                      widget.listResult.fileUrl);
+                                }
+                                ,
                                 child: widget.listResult.fileUrl != null
                                     ? Image.network(
                                   widget.listResult.fileUrl,
@@ -514,4 +556,68 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
       ),
     );
   }
+
+  String formatNumber(double number) {
+    NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+    return formatter.format(number);
+  }
+
+
+  void showZoomedAttachments(String imageString) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10), color: Colors.white),
+            width: double.infinity,
+            height: 500,
+            child: Stack(
+              children: [
+                Center(
+                  child: PhotoViewGallery.builder(
+                    itemCount: 1,
+                    builder: (context, index) {
+                      return PhotoViewGalleryPageOptions(
+                        imageProvider: NetworkImage(imageString),
+                        minScale: PhotoViewComputedScale.contained,
+                        maxScale: PhotoViewComputedScale.covered,
+                      );
+                    },
+                    scrollDirection: Axis.vertical,
+                    scrollPhysics: const PageScrollPhysics(),
+                    allowImplicitScrolling: true,
+                    backgroundDecoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Container(
+                      padding: const EdgeInsets.all(5),
+                      decoration: BoxDecoration(
+                          color: Colors.red.withOpacity(0.2),
+                          borderRadius: BorderRadius.circular(20)),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.red,
+                        size: 16,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
 }

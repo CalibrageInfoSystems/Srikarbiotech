@@ -1249,7 +1249,7 @@ class _MyCardState extends State<MyCard> {
                                   Row(
                                     children: [
                                       Text(
-                                        'Collection Id: ',
+                                        'Collection Id:',
                                         style: _textStyle,
                                       ),
                                       Text(

@@ -65,12 +65,24 @@ class Selectparty_screen extends State<Selectpartyscreen> {
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(response.body);
-        final List<dynamic> listResult = data['response']['listResult'];
+        final dynamic listResult = data['response']['listResult'];
 
-        setState(() {
-          dealers = listResult.map((json) => Dealer.fromJson(json)).toList();
-          filteredDealers = List.from(dealers);
-        });
+        if (listResult != null) {
+          final List<dynamic> listResult = data['response']['listResult'];
+
+          setState(() {
+            dealers = listResult.map((json) => Dealer.fromJson(json)).toList();
+            filteredDealers = List.from(dealers);
+          });
+        } else {
+          // Handle the case where listResult is null
+          print("listResult is null");
+          // You might want to set dealers to an empty list or do any other appropriate action.
+          setState(() {
+            dealers = [];
+            filteredDealers = [];
+          });
+        }
 
         setState(() {
           _isLoading = false;
@@ -81,7 +93,6 @@ class Selectparty_screen extends State<Selectpartyscreen> {
       }
     } catch (e) {
       // Handle exceptions here
-      Text('Error occurred: ${e}');
       print('Error in fetchData: $e');
       setState(() {
         _isLoading = false;
@@ -207,8 +218,12 @@ class Selectparty_screen extends State<Selectpartyscreen> {
         Expanded(
           child: _isLoading
               ? Center(
-                  child: CircularProgressIndicator(),
-                )
+            child: CircularProgressIndicator(),
+          )
+              : filteredDealers.isEmpty // Check if filteredDealers is empty
+              ? Center(
+            child: Text('No Data Found',style: CommonUtils.Mediumtext_12,), // Display this text when filteredDealers is empty
+          )
               : ListView.builder(
                   itemCount: filteredDealers.length,
                   itemBuilder: (context, index) {

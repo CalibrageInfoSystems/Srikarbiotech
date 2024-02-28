@@ -5,6 +5,7 @@ import 'package:collection/collection.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
@@ -357,13 +358,23 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                                 currentPaymode; // Update the selectedPaymode outside the build method
                                           });
                                           payid = currentPaymode.typeCdId;
-                                          Selected_PaymentMode =
-                                              currentPaymode.desc;
+                                          Selected_PaymentMode = currentPaymode.desc;
                                           print('payid:$payid');
                                           print(
                                               'Selected Payment Mode: ${currentPaymode.desc}, TypeCdId: $payid');
                                           print(
                                               'Selected Payment Mode: ${Selected_PaymentMode}, TypeCdId: $payid');
+                                          if(Selected_PaymentMode == 'Online'){
+                                           checknumbercontroller.text ="";
+                                           checkissuedbankcontroller.text = "";
+                                           checkDateController.text= "";
+                                          }
+                                          if(Selected_PaymentMode == 'Cheque'){
+                                            accountnumcontroller.text ="";
+                                            creditbankcontroller.text ="";
+                                            utrcontroller.text= "";
+
+                                          }
                                         },
                                         child: Container(
                                           // color: Color(0xFFF8dac2),
@@ -1717,23 +1728,36 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
 
 
   pickImage(ImageSource source, BuildContext context) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-        print('===> _imageFile: $_imageFile');
-      });
-      filename = basename(_imageFile!.path);
-      fileExtension = extension(_imageFile!.path);
-      List<int> imageBytes = await _imageFile!.readAsBytes();
-      base64Image = base64Encode(imageBytes);
+    try {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+          print('===> _imageFile: $_imageFile');
+        });
+        filename = basename(_imageFile!.path);
+        fileExtension = extension(_imageFile!.path);
+        List<int> imageBytes = await _imageFile!.readAsBytes();
+        Uint8List compressedBytes = Uint8List.fromList(imageBytes);
+        compressedBytes = await FlutterImageCompress.compressWithList(
+          compressedBytes,
+          minHeight: 800,
+          minWidth: 800,
+          quality: 80,
+        );
 
-      print('===> Filename: $filename');
-      print('===> File Extension: $fileExtension');
-      print('===> Base64 Image: $base64Image');
+        base64Image = base64Encode(compressedBytes);
 
-      // Dismiss the bottom sheet after picking an image
-      Navigator.pop(context);
+        print('===> Filename: $filename');
+        print('===> File Extension: $fileExtension');
+        print('===> Base64 Image: $base64Image');
+
+        // Dismiss the bottom sheet after picking an image
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print('Error picking image: $e');
+      // Handle error gracefully, show error message or retry logic.
     }
   }
 

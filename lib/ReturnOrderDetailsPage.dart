@@ -586,19 +586,31 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
   }
 
   Future<void> ReturnOrderCreditmethod() async {
-    final response = await http.get(Uri.parse(
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderCreditById/${widget.orderId}'));
+    final response = await http.get(Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderCreditById/${widget.orderId}'));
+
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
-      final List<dynamic> listResult = jsonData['response']['listResult'];
-      setState(() {
-        returnOrderCredits =
-            listResult.map((data) => ReturnOrderCredit.fromJson(data)).toList();
-      });
+
+      if (jsonData['response'] != null && jsonData['response']['listResult'] != null) {
+        final List<dynamic>? listResult = jsonData['response']['listResult'];
+
+        if (listResult != null) {
+          setState(() {
+            returnOrderCredits = listResult.map((data) => ReturnOrderCredit.fromJson(data)).toList();
+          });
+        } else {
+          // Handle the case where listResult is null
+          // Maybe show a message to the user or handle it accordingly
+        }
+      } else {
+        // Handle the case where jsonData['response'] or jsonData['response']['listResult'] is null
+        // Maybe show a message to the user or handle it accordingly
+      }
     } else {
       throw Exception('Failed to load data');
     }
   }
+
 
   String formatNumber(double number) {
     NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
@@ -629,7 +641,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
         // Show a message indicating successful download
         // print('PDF downloaded successfully');
         CommonUtils.showCustomToastMessageLong(
-            'Invoice Downloaded Successfully', context, 0, 4);
+            'Credit Note Downloaded Successfully', context, 0, 4);
         // You can use this file path to open the PDF file, or display it in your app
 
         print('PDF path: $filePath');

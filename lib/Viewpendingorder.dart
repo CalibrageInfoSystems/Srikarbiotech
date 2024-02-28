@@ -447,12 +447,14 @@ class _VieworderPageState extends State<Viewpendingorder> {
 
   void handleApprove(List<int> selectedOrderIds, String remarks) async {
     // Construct the request body
+    userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
+    String currentdate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     var requestBody = {
       "Id": selectedOrderIds.join(","), // Join the IDs with commas
       "StatusTypeId": 17,
       "Remarks": remarks,
-      "UpdatedBy": "e39536e2-89d3-4cc7-ae79-3dd5291ff156",
-      "UpdatedDate": "2024-02-20"
+      "UpdatedBy": userId,
+      "UpdatedDate": currentdate
     };
     print('==>${jsonEncode(requestBody)}');
     // Make the HTTP POST request
@@ -1292,15 +1294,16 @@ class _OrderCardState extends State<OrderCard> {
   void handlereject(int id, String remarks) async {
     // Show loading indicator
     // You can use a modal dialog, a snackbar, or a progress indicator to indicate that the request is in progress
-
+   String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
+ String currentdate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     try {
       // Construct the request body
       var requestBody = {
         "Id": id, // Join the IDs with commas
         "StatusTypeId": 12,
         "Remarks": remarks,
-        "UpdatedBy": "e39536e2-89d3-4cc7-ae79-3dd5291ff156",
-        "UpdatedDate": "2024-02-20"
+        "UpdatedBy": userId,
+        "UpdatedDate":currentdate
       };
       print('==>${jsonEncode(requestBody)}');
       // Make the HTTP POST request

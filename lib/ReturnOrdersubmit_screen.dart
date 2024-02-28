@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:card_swiper/card_swiper.dart';
+import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -10,6 +11,8 @@ import 'package:hexcolor/hexcolor.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
 import 'package:permission_handler/permission_handler.dart';
+import 'package:photo_view/photo_view.dart';
+import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
 import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
@@ -44,22 +47,24 @@ class ReturnOrdersubmit_screen extends StatefulWidget {
   final double balance;
   final String transportname;
 
-  ReturnOrdersubmit_screen(
-      {required this.cardName,
-      required this.cardCode,
-      required this.address,
-      required this.state,
-      required this.phone,
-      required this.proprietorName,
-      required this.gstRegnNo,
-      required this.LrNumber,
-      required this.Lrdate,
-      required this.Remarks,
-      required this.LRAttachment,
-      required this.ReturnOrderReceipt,
-      required this.addlattchments,
-      required this.creditLine,
-      required this.balance,required this.transportname});
+  const ReturnOrdersubmit_screen(
+      {super.key,
+        required this.cardName,
+        required this.cardCode,
+        required this.address,
+        required this.state,
+        required this.phone,
+        required this.proprietorName,
+        required this.gstRegnNo,
+        required this.LrNumber,
+        required this.Lrdate,
+        required this.Remarks,
+        required this.LRAttachment,
+        required this.ReturnOrderReceipt,
+        required this.addlattchments,
+        required this.creditLine,
+        required this.balance,
+        required this.transportname});
   @override
   returnOrder_submit_screen createState() => returnOrder_submit_screen();
 }
@@ -91,6 +96,8 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     height: 60,
     color: Colors.grey,
   );
+
+  List attachments = [];
   List<ReturnOrderItemXrefType> cartItems = [];
   List<String> cartlistItems = [];
   List<TextEditingController> textEditingControllers = [];
@@ -104,6 +111,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
   double totalSum = 0.0;
   String LrDate1 = "";
   String LrDate2 = "";
+  int currentIndex = 0;
 // late String lrattachment, ReturnOrderReceipt, addlattchments;
   @override
   initState() {
@@ -118,10 +126,29 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       'data:image/png;base64,${widget.ReturnOrderReceipt}',
       'data:image/png;base64,${widget.addlattchments}',
     ];
-    print('Cart Items globalCartLength: $globalCartLength');
-    print('cardName: ${widget.cardName}');
-    print('cardCode: ${widget.cardCode}');
-    print('address: ${widget.address}');
+
+    // work
+    setAttachments(
+      att1: widget.LRAttachment,
+      att2: widget.ReturnOrderReceipt,
+      att3: widget.addlattchments,
+    );
+  }
+
+  void setAttachments({
+    required String att1,
+    required String att2,
+    required String att3,
+  }) {
+    if (att1.isNotEmpty) {
+      attachments.add(att1);
+    }
+    if (att2.isNotEmpty) {
+      attachments.add(att2);
+    }
+    if (att3.isNotEmpty) {
+      attachments.add(att3);
+    }
   }
 
   @override
@@ -142,7 +169,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     // String formattedDate = DateFormat('dd MMM, yyyy').format(date);
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFe78337),
+        backgroundColor: const Color(0xFFe78337),
         automaticallyImplyLeading: false,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -151,23 +178,22 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
                       Navigator.of(context).pop();
                     },
-                    child: Icon(
+                    child: const Icon(
                       Icons.chevron_left,
                       size: 30.0,
                       color: Colors.white,
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
-                Text(
+                const SizedBox(width: 8.0),
+                const Text(
                   'Return Order Submission ',
-
                   style: TextStyle(
                     color: Colors.white,
                     fontSize: 18,
@@ -178,14 +204,15 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       // Access the cart data from the provider
-                      cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
+                      cartItems = Provider.of<CartProvider>(context)
+                          .getReturnCartItems();
                       // Update the globalCartLength
                       globalCartLength = cartItems.length;
                     }
                     // Always return a widget in the builder
                     return Text(
                       '($globalCartLength)',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                       ),
@@ -205,7 +232,8 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                       // Handle the click event for the home icon
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()),
                       );
                     },
                     child: Image.asset(
@@ -218,7 +246,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                   );
                 } else {
                   // Return a placeholder or loading indicator
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 }
               },
             ),
@@ -230,7 +258,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+              padding: const EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -243,35 +271,31 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                     Colors.white,
                     BorderRadius.circular(5.0),
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                 ],
               ),
             ),
             Container(
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+              padding: const EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
               child: IntrinsicHeight(
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-
                   child: Container(
-
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
                       color: Colors.white,
                     ),
-                    padding: EdgeInsets.all(10.0),
-
+                    padding: const EdgeInsets.all(10.0),
                     width: MediaQuery.of(context).size.width,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         Row(
                           children: [
-                            Expanded(
+                            const Expanded(
                               child: Text(
                                 'Credit Limit',
                                 style: TextStyle(
@@ -285,7 +309,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                             Expanded(
                               child: Text(
                                 '₹${widget.creditLine}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color(0xFF5f5f5f),
                                   fontFamily: "Roboto",
                                   fontWeight: FontWeight.w700,
@@ -296,11 +320,12 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 5.0), // Add some space between rows
+                        const SizedBox(
+                            height: 5.0), // Add some space between rows
                         // Third Row: Outstanding Amount
                         Row(
                           children: [
-                            Expanded(
+                            const Expanded(
                               child: Text(
                                 'Outstanding Amount',
                                 style: TextStyle(
@@ -314,7 +339,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                             Expanded(
                               child: Text(
                                 '₹${widget.balance}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color(0xFF5f5f5f),
                                   fontFamily: "Roboto",
                                   fontWeight: FontWeight.w700,
@@ -325,14 +350,13 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                             ),
                           ],
                         ),
-
                       ],
                     ),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             FutureBuilder(
               future: Future.value(),
               builder: (context, snapshot) {
@@ -340,7 +364,8 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                 //   return CircularProgressIndicator();
                 // } else
                 // if (snapshot.connectionState == ConnectionState.done) {
-              cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
+                cartItems =
+                    Provider.of<CartProvider>(context).getReturnCartItems();
 
                 return buildListView(cartItems, ValueKey(cartItems));
 
@@ -366,10 +391,11 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
             //     }
             //   },
             // ),
-            SizedBox(height: 10),
+            const SizedBox(height: 10),
             Container(
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+              padding:
+              const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
               child: IntrinsicHeight(
                 child: Card(
                   elevation: 5,
@@ -401,27 +427,28 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                                     MaterialPageRoute(
                                         builder: (context) =>
                                             Returntransportdetails(
-                                              cardName: '${widget.cardName}',
-                                              cardCode: '${widget.cardCode}',
-                                              address: '${widget.address}',
-                                              state: '${widget.state}',
-                                              phone: '${widget.phone}',
+                                              cardName: widget.cardName,
+                                              cardCode: widget.cardCode,
+                                              address: widget.address,
+                                              state: widget.state,
+                                              phone: widget.phone,
                                               proprietorName:
-                                                  '${widget.proprietorName}',
-                                              gstRegnNo: '${widget.gstRegnNo}',
-                                              lrnumber: '${widget.LrNumber}',
-                                              lrdate: '${widget.Lrdate}',
-                                              remarks: '${widget.Remarks}',
+                                              widget.proprietorName,
+                                              gstRegnNo: widget.gstRegnNo,
+                                              lrnumber: widget.LrNumber,
+                                              lrdate: widget.Lrdate,
+                                              remarks: widget.Remarks,
                                               creditLine: double.parse(
                                                   '${widget.creditLine}'), // Convert to double
                                               balance: double.parse(
                                                   '${widget.balance}'),
-                                                transportname :'${widget.transportname}',
+                                              transportname:
+                                              widget.transportname,
                                             )),
                                   );
                                 },
                                 child: Container(
-                                  padding: EdgeInsets.all(
+                                  padding: const EdgeInsets.all(
                                       8), // Adjust padding as needed
                                   child: SvgPicture.asset(
                                     'assets/edit.svg', // Replace 'your_icon.svg' with your SVG asset path
@@ -451,9 +478,9 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                                       'LR Number',
                                       style: _titleTextStyle,
                                     ),
-                                    SizedBox(height: 4),
+                                    const SizedBox(height: 4),
                                     Text(
-                                      '${widget.LrNumber}',
+                                      widget.LrNumber,
                                       style: _dataTextStyle,
                                     ),
                                   ],
@@ -472,7 +499,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                                       'LR Date',
                                       style: _titleTextStyle,
                                     ),
-                                    SizedBox(height: 4),
+                                    const SizedBox(height: 4),
                                     Text(
                                       LrDate1,
                                       style: _dataTextStyle,
@@ -499,9 +526,9 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                                       'Transport Name',
                                       style: _titleTextStyle,
                                     ),
-                                    SizedBox(height: 4),
+                                    const SizedBox(height: 4),
                                     Text(
-                                      '${widget.transportname}',
+                                      widget.transportname,
                                       style: _dataTextStyle,
                                     ),
                                   ],
@@ -526,9 +553,9 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                                       'Remarks',
                                       style: _titleTextStyle,
                                     ),
-                                    SizedBox(height: 4),
+                                    const SizedBox(height: 4),
                                     Text(
-                                      '${widget.Remarks}',
+                                      widget.Remarks,
                                       style: _dataTextStyle,
                                     ),
                                   ],
@@ -573,17 +600,19 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                                   //     imageString: widget.LRAttachment,
                                   //     imageList: base64ImageStrings,
                                   //   ),
-                                  // );
+                                  // ); // work
 
-                                  showDialog(
-                                    context: context,
-                                    builder: (context) => ImageSliderDialog(
-                                      LRAttachment: widget.LRAttachment,
-                                      ReturnOrderReceipt:
-                                          widget.ReturnOrderReceipt,
-                                      addlattchments: widget.addlattchments,
-                                    ),
-                                  );
+                                  showAttachmentsDialog(attachments);
+
+                                  // showDialog(
+                                  //   context: context,
+                                  //   builder: (context) => ImageSliderDialog(
+                                  //     LRAttachment: widget.LRAttachment,
+                                  //     ReturnOrderReceipt:
+                                  //         widget.ReturnOrderReceipt,
+                                  //     addlattchments: widget.addlattchments,
+                                  //   ),
+                                  // );
                                 },
                                 child: Row(
                                   mainAxisSize: MainAxisSize.min,
@@ -683,8 +712,8 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
           print('clicked ');
         },
         child: Padding(
-          padding:
-              EdgeInsets.only(top: 0.0, left: 14.0, right: 14.0, bottom: 10.0),
+          padding: const EdgeInsets.only(
+              top: 0.0, left: 14.0, right: 14.0, bottom: 10.0),
           child: Container(
             alignment: Alignment.bottomCenter,
             width: MediaQuery.of(context).size.width,
@@ -700,9 +729,9 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                   height: 55.0,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(6.0),
-                    color: Color(0xFFe78337),
+                    color: const Color(0xFFe78337),
                   ),
-                  child: Row(
+                  child: const Row(
                       crossAxisAlignment: CrossAxisAlignment.center,
                       mainAxisAlignment: MainAxisAlignment.center,
                       children: [
@@ -736,13 +765,13 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
   }
 
   Widget buildListView(List<ReturnOrderItemXrefType> cartItems, Key key) {
-   // updateTotalSum(cartItems);
+    // updateTotalSum(cartItems);
 
     return ListView.builder(
       // key: UniqueKey(),
       key: key,
       shrinkWrap: true,
-      physics: PageScrollPhysics(),
+      physics: const PageScrollPhysics(),
       scrollDirection: Axis.vertical,
       itemCount: cartItems.length,
       itemBuilder: (context, index) {
@@ -753,29 +782,27 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         }
         double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
         double price = cartItem.price ?? 0.0;
-       // double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
-      //  double totalPrice = orderQty * price * numInSale;
+        // double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
+        //  double totalPrice = orderQty * price * numInSale;
 
         // Update totalSumNotifier with the correct value
-
 
         return CartItemWidget(
           cartItem: cartItem,
           onDelete: () {
             setState(() {
               cartItems.removeAt(index);
-             // Update totalSumIncludingGst after removing an item
+              // Update totalSumIncludingGst after removing an item
             });
           },
           cartItems: cartItems,
           onQuantityChanged: () {
-           // updateTotalSumIncludingGst(); // Update totalSumIncludingGst when quantity changes
+            // updateTotalSumIncludingGst(); // Update totalSumIncludingGst when quantity changes
           },
         );
       },
     );
   }
-
 
   double calculateTotalSum(List<ReturnOrderItemXrefType> cartItems) {
     double sum = 0.0;
@@ -798,7 +825,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     // Format the date as 'yyyy-MM-dd'
     String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
     print('Formatted Date: $formattedcurrentDate');
-    final String apiUrl =
+    const String apiUrl =
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/AddReturnOrder';
     List<Map<String, dynamic>> returnorderItemList = cartItems.map((cartItem) {
       double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
@@ -825,38 +852,38 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       "CompanyId": CompneyId,
       "ReturnOrderNumber": "",
       "ReturnOrderDate": formattedcurrentDate,
-      "partyCode": '${widget.cardCode}',
-      "PartyName": '${widget.cardName}',
-      "PartyAddress": '${widget.address}',
-      "PartyState": '${widget.state}',
-      "PartyPhoneNumber": '${widget.phone}',
-      "PartyGSTNumber": '${widget.gstRegnNo}',
-      "ProprietorName": '${widget.proprietorName}',
+      "partyCode": widget.cardCode,
+      "PartyName": widget.cardName,
+      "PartyAddress": widget.address,
+      "PartyState": widget.state,
+      "PartyPhoneNumber": widget.phone,
+      "PartyGSTNumber": widget.gstRegnNo,
+      "ProprietorName": widget.proprietorName,
       "PartyOutStandingAmount": '${widget.balance}',
-      "LRNumber": '${widget.LrNumber}',
-      "LRDate": '$LrDate2',
+      "LRNumber": widget.LrNumber,
+      "LRDate": LrDate2,
       "StatusTypeId": 13,
       "Discount": 1.1,
       "TotalCost": totalSum,
-      "Remarks": '${widget.Remarks}',
+      "Remarks": widget.Remarks,
       "IsActive": true,
       "CreatedBy": userId,
       "CreatedDate": formattedcurrentDate,
       "UpdatedBy": userId,
       "UpdatedDate": formattedcurrentDate,
-      "LRFileString": '${widget.LRAttachment}',
+      "LRFileString": widget.LRAttachment,
       "LRFileName": "",
       "LRFileExtension": ".jpg",
       "LRFileLocation": "",
-      "OrderFileString": '${widget.ReturnOrderReceipt}',
+      "OrderFileString": widget.ReturnOrderReceipt,
       "OrderFileName": "",
       "OrderFileExtension": ".jpg",
       "OrderFileLocation": "",
-      "OtherFileString": '${widget.addlattchments}',
+      "OtherFileString": widget.addlattchments,
       "OtherFileName": "",
       "OtherFileExtension": ".jpg",
       "OtherFileLocation": "",
-      "TransportName":'${widget.transportname}'
+      "TransportName": widget.transportname
     };
     print(jsonEncode(orderData));
 
@@ -873,7 +900,8 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         // Successful request
         final responseData = jsonDecode(response.body);
         print(responseData);
-        String returnOrderNumber = responseData['response']['returnOrderNumber'];
+        String returnOrderNumber =
+        responseData['response']['returnOrderNumber'];
 
 // Navigate to the next screen while passing the returnOrderNumber
 
@@ -919,6 +947,157 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
 
     return formattedDate;
   }
+
+  void showAttachmentsDialog(List data) {
+    showDialog(
+      context: context,
+      builder: (context) {
+        return AlertDialog(
+          title: const Text('Attachments'),
+          elevation: 5.0,
+          contentPadding: const EdgeInsets.all(5.0),
+          content: SizedBox(
+            height: 120,
+            width: 300,
+            child: Stack(
+              children: [
+                CarouselSlider(
+                  items: data.map((base64String) {
+                    Uint8List imgBytes = base64Decode(base64String);
+                    return GestureDetector(
+                      onTap: () {
+                        _showZoomedAttachments(imgBytes);
+                      },
+                      child: Image.memory(
+                        imgBytes,
+                        fit: BoxFit.cover,
+                      ),
+                    );
+                  }).toList(),
+                  options: CarouselOptions(
+                    scrollPhysics: const BouncingScrollPhysics(),
+                    autoPlay: true,
+                    enableInfiniteScroll: false,
+                    height: MediaQuery.of(context).size.height,
+                    aspectRatio: 23 / 9,
+                    viewportFraction: 1,
+                    onPageChanged: (index, reason) {
+                      // Handle page change if needed
+                      setState(() {
+                        currentIndex = index;
+                      });
+                    },
+                  ),
+                ),
+                SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: MediaQuery.of(context).size.height,
+                  child: Align(
+                    alignment: Alignment.bottomCenter,
+                    child: Padding(
+                      padding: const EdgeInsets.only(bottom: 25.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.center,
+                        children: List.generate(
+                          data.length,
+                              (index) {
+                            return buildIndicator(index);
+                          },
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+          actions: [
+            TextButton(
+              onPressed: () {
+                Navigator.pop(context);
+              },
+              child: const Text('Close'),
+            ),
+          ],
+        );
+      },
+    );
+  }
+
+  void _showZoomedAttachments(Uint8List imgBytes) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10), color: Colors.white),
+            width: double.infinity,
+            height: 500,
+            child: Stack(
+              children: [
+                Center(
+                  child: PhotoViewGallery.builder(
+                    itemCount: 1,
+                    builder: (context, index) {
+                      return PhotoViewGalleryPageOptions(
+                        imageProvider: MemoryImage(imgBytes),
+                        minScale: PhotoViewComputedScale.contained,
+                        maxScale: PhotoViewComputedScale.covered,
+                      );
+                    },
+                    scrollDirection: Axis.vertical,
+                    scrollPhysics: const PageScrollPhysics(),
+                    allowImplicitScrolling: true,
+                    backgroundDecoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Container(
+                      padding: const EdgeInsets.all(3.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(5),
+                        decoration: BoxDecoration(
+                            color: Colors.red.withOpacity(0.2),
+                            borderRadius: BorderRadius.circular(20)),
+                        child: const Icon(
+                          Icons.close,
+                          color: Colors.red,
+                          size: 16,
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
+    );
+  }
+
+  Widget buildIndicator(int index) {
+    return Container(
+      width: 8,
+      height: 8,
+      margin: const EdgeInsets.symmetric(horizontal: 4),
+      decoration: BoxDecoration(
+        shape: BoxShape.circle,
+        color: index == currentIndex ? Colors.orange : Colors.grey,
+      ),
+    );
+  }
 }
 
 class CartItemWidget extends StatefulWidget {
@@ -930,12 +1109,13 @@ class CartItemWidget extends StatefulWidget {
   final VoidCallback
   onQuantityChanged; // Callback function to notify when quantity changes
 
-  CartItemWidget({
-    required this.cartItem,
-    required this.onDelete,
-    required this.cartItems,
-    required this.onQuantityChanged // Initialize here
-  });
+  const CartItemWidget(
+      {super.key,
+        required this.cartItem,
+        required this.onDelete,
+        required this.cartItems,
+        required this.onQuantityChanged // Initialize here
+      });
 
   @override
   _CartItemWidgetState createState() => _CartItemWidgetState();
@@ -959,7 +1139,6 @@ class _CartItemWidgetState extends State<CartItemWidget> {
 
     _textController = TextEditingController(text: _orderQty.toString());
 
-
     // Initialize totalSumNotifier in initState
   }
 
@@ -976,10 +1155,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
 
     // Calculate total sum including GST
 
-
     widget.onQuantityChanged();
-
-
 
     return Padding(
       padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
@@ -998,8 +1174,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
               '${widget.cartItem.itemName}',
               style: CommonUtils.Mediumtext_14,
             ),
-            SizedBox(height: 8.0),
-            Row(
+            const SizedBox(height: 8.0),
+            const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
                 // Expanded(
@@ -1014,13 +1190,13 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 // ),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
+                SizedBox(
                   width: (totalWidth - 40) / 2,
-                  child: Container(
+                  child: SizedBox(
                     width: (totalWidth - 40) / 2,
                     child: PlusMinusButtons(
                       addQuantity: () {
@@ -1035,7 +1211,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                           // Call the updateQuantity method in your model class
                           widget.cartItem.updateQuantity(_orderQty);
 
-                          widget.onQuantityChanged(); // Call onQuantityChanged callback
+                          widget
+                              .onQuantityChanged(); // Call onQuantityChanged callback
                         });
                       },
                       deleteQuantity: () {
@@ -1052,7 +1229,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                             _textController.text = _orderQty.toString();
                             widget.cartItem.updateQuantity(_orderQty);
 
-                            widget.onQuantityChanged(); // Call onQuantityChanged callback
+                            widget
+                                .onQuantityChanged(); // Call onQuantityChanged callback
                           }
                         });
                       },
@@ -1082,7 +1260,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 GestureDetector(
                   onTap: () {
                     widget.onDelete();
@@ -1091,15 +1269,15 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                     height: 36,
                     width: 40,
                     decoration: BoxDecoration(
-                      color: Color(0xFFF8dac2),
+                      color: const Color(0xFFF8dac2),
                       border: Border.all(
-                        color: Color(0xFFe78337),
+                        color: const Color(0xFFe78337),
                         width: 1.0,
                       ),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4.0),
                       child: Align(
                         alignment: Alignment.center,
                         child: Row(
@@ -1118,7 +1296,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 ),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
           ]),
         ),
       ),
@@ -1156,7 +1334,7 @@ class PlusMinusButtons extends StatelessWidget {
   final ValueChanged<int> onQuantityChanged;
   final ValueChanged<int> updateTotalPrice;
 
-  PlusMinusButtons({
+  const PlusMinusButtons({
     Key? key,
     required this.addQuantity,
     required this.deleteQuantity,
@@ -1172,12 +1350,12 @@ class PlusMinusButtons extends StatelessWidget {
       width: MediaQuery.of(context).size.width / 2.3,
       height: 38,
       decoration: BoxDecoration(
-        color: Color(0xFFe78337),
+        color: const Color(0xFFe78337),
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Card(
-        color: Color(0xFFe78337),
-        margin: EdgeInsets.symmetric(horizontal: 0.0),
+        color: const Color(0xFFe78337),
+        margin: const EdgeInsets.symmetric(horizontal: 0.0),
         child: Row(
           children: [
             IconButton(
@@ -1195,14 +1373,14 @@ class PlusMinusButtons extends StatelessWidget {
             Expanded(
               child: Align(
                 alignment: Alignment.center,
-                child: Container(
+                child: SizedBox(
                   height: 36,
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: Container(
                       alignment: Alignment.center,
                       width: MediaQuery.of(context).size.width / 5,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                       ),
                       child: TextField(
@@ -1212,7 +1390,7 @@ class PlusMinusButtons extends StatelessWidget {
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(5),
                         ],
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           enabledBorder: InputBorder.none,
@@ -1256,103 +1434,106 @@ class PlusMinusButtons extends StatelessWidget {
   }
 }
 
-class ImageSliderDialog extends StatelessWidget {
+class ImageSliderDialog extends StatefulWidget {
   final String LRAttachment;
   final String ReturnOrderReceipt;
   final String addlattchments;
 
-  ImageSliderDialog({
+  const ImageSliderDialog({
+    super.key,
     required this.LRAttachment,
     required this.ReturnOrderReceipt,
     required this.addlattchments,
   });
 
   @override
+  State<ImageSliderDialog> createState() => _ImageSliderDialogState();
+}
+
+class _ImageSliderDialogState extends State<ImageSliderDialog> {
+  List attachments = [];
+
+  @override
+  void initState() {
+    setAttachments(
+        widget.LRAttachment, widget.ReturnOrderReceipt, widget.addlattchments);
+    super.initState();
+  }
+
+  @override
   Widget build(BuildContext context) {
     return Dialog(
-      child: SizedBox(
-        height: MediaQuery.of(context).size.height / 1.5,
-        width: MediaQuery.of(context).size.width / 1.1,
-        child: Swiper(
-          itemBuilder: (BuildContext context, int index) {
-            // Get the base64 string based on the index
-            String base64ImageString;
-            if (index == 0) {
-              base64ImageString = LRAttachment;
-            } else if (index == 1) {
-              base64ImageString = ReturnOrderReceipt;
-            } else {
-              base64ImageString = addlattchments;
-            }
-            // Decode and display the image
-            return Image.memory(
-              base64.decode(
-                base64ImageString.split(',').last,
+      child: Container(
+        padding: const EdgeInsets.all(5),
+        decoration: BoxDecoration(
+          borderRadius: BorderRadius.circular(10),
+          color: Colors.white,
+        ),
+        width: double.infinity,
+        height: 500,
+        child: Stack(
+          children: [
+            Center(
+              child: SizedBox(
+                width: 300,
+                child: PhotoViewGallery.builder(
+                  itemCount: getAttchementsLength,
+                  builder: (context, index) {
+                    return PhotoViewGalleryPageOptions(
+                      imageProvider: MemoryImage(
+                        base64Decode(attachments[index]),
+                      ),
+                      minScale: PhotoViewComputedScale.covered,
+                      maxScale: PhotoViewComputedScale.covered * 2,
+                    );
+                  },
+                  scrollDirection: Axis.horizontal,
+                  scrollPhysics: const BouncingScrollPhysics(),
+                  allowImplicitScrolling: true,
+                  backgroundDecoration: const BoxDecoration(
+                    color: Colors.white,
+                  ),
+                ),
               ),
-              fit: BoxFit.cover,
-            );
-          },
-          itemCount: 3, // Number of images
-          pagination: SwiperPagination(), // Add pagination dots
-          control: SwiperControl(), // Add next and previous arrow buttons
+            ),
+            Positioned(
+              top: 0,
+              right: 0,
+              child: GestureDetector(
+                onTap: () => Navigator.of(context).pop(),
+                child: Container(
+                  padding: const EdgeInsets.all(3.0),
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(20),
+                  ),
+                  child: const Icon(
+                    Icons.close,
+                    color: Colors.red,
+                  ),
+                ),
+              ),
+            ),
+          ],
         ),
       ),
     );
+  } // work
+
+  int get getAttchementsLength => attachments.length;
+
+  void setAttachments(
+      String att1,
+      String att2,
+      String att3,
+      ) {
+    if (att1.isNotEmpty) {
+      attachments.add(att1);
+    }
+    if (att2.isNotEmpty) {
+      attachments.add(att2);
+    }
+    if (att3.isNotEmpty) {
+      attachments.add(att3);
+    }
   }
 }
-// class ImageDialog extends StatelessWidget {
-//   final String imageString;
-//   final List<String> imageList;
-//
-//   ImageDialog({required this.imageString, required this.imageList});
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Dialog(
-//       child: Column(
-//         mainAxisSize: MainAxisSize.min,
-//         children: [
-//           Image.memory(
-//             base64Decode(imageString.split(',').last),
-//             width: 300, // Adjust the width as needed
-//           ),
-//           SizedBox(height: 10),
-//           if (imageList.length > 1) ...[
-//             Container(
-//               height: 200,
-//               child: ListView.builder(
-//                 itemCount: imageList.length,
-//                 itemBuilder: (context, index) {
-//                   if (imageList[index] != imageString) {
-//                     return GestureDetector(
-//                       onTap: () {
-//                         // Show the tapped image
-//                         Navigator.pop(context);
-//                         showDialog(
-//                           context: context,
-//                           builder: (context) => ImageDialog(
-//                             imageString: imageList[index],
-//                             imageList: imageList,
-//                           ),
-//                         );
-//                       },
-//                       child: Image.memory(
-//                         base64Decode(imageList[index].split(',').last),
-//                         width: 100,
-//                         height: 100,
-//                         fit: BoxFit.cover,
-//                       ),
-//                     );
-//                   } else {
-//                     return SizedBox(); // Skip the current image
-//                   }
-//                 },
-//                 scrollDirection: Axis.horizontal,
-//               ),
-//             ),
-//           ],
-//         ],
-//       ),
-//     );
-//   }
-// }

@@ -1,8 +1,10 @@
 import 'dart:convert';
+import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:image_picker/image_picker.dart';
@@ -935,27 +937,62 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
   }
 
 
-
   pickImage(ImageSource source, BuildContext context) async {
-    final pickedFile = await ImagePicker().pickImage(source: source);
-    if (pickedFile != null) {
-      setState(() {
-        _imageFile = File(pickedFile.path);
-        print('===> _imageFile: $_imageFile');
-      });
-      filename = basename(_imageFile!.path);
-      fileExtension = extension(_imageFile!.path);
-      List<int> imageBytes = await _imageFile!.readAsBytes();
-      base64Image = base64Encode(imageBytes);
+    try {
+      final pickedFile = await ImagePicker().pickImage(source: source);
+      if (pickedFile != null) {
+        setState(() {
+          _imageFile = File(pickedFile.path);
+          print('===> _imageFile: $_imageFile');
+        });
+        filename = basename(_imageFile!.path);
+        fileExtension = extension(_imageFile!.path);
+        List<int> imageBytes = await _imageFile!.readAsBytes();
 
-      print('===> Filename: $filename');
-      print('===> File Extension: $fileExtension');
-      print('===> Base64 Image: $base64Image');
+        Uint8List compressedBytes = Uint8List.fromList(imageBytes);
+        compressedBytes = await FlutterImageCompress.compressWithList(
+          compressedBytes,
+          minHeight: 800,
+          minWidth: 800,
+          quality: 80,
+        );
 
-      // Dismiss the bottom sheet after picking an image
-      Navigator.pop(context);
+        base64Image = base64Encode(compressedBytes);
+     //   base64Image = base64Encode(imageBytes);
+
+        print('===> Filename: $filename');
+        print('===> File Extension: $fileExtension');
+        print('===> Base64 Image: $base64Image');
+
+        // Dismiss the bottom sheet after picking an image
+        Navigator.pop(context);
+      }
+    } catch (e) {
+      print('Error picking image: $e');
+      // Handle error gracefully, show error message or retry logic.
     }
   }
+
+  // pickImage(ImageSource source, BuildContext context) async {
+  //   final pickedFile = await ImagePicker().pickImage(source: source);
+  //   if (pickedFile != null) {
+  //     setState(() {
+  //       _imageFile = File(pickedFile.path);
+  //       print('===> _imageFile: $_imageFile');
+  //     });
+  //     filename = basename(_imageFile!.path);
+  //     fileExtension = extension(_imageFile!.path);
+  //     List<int> imageBytes = await _imageFile!.readAsBytes();
+  //     base64Image = base64Encode(imageBytes);
+  //
+  //     print('===> Filename: $filename');
+  //     print('===> File Extension: $fileExtension');
+  //     print('===> Base64 Image: $base64Image');
+  //
+  //     // Dismiss the bottom sheet after picking an image
+  //     Navigator.pop(context);
+  //   }
+  // }
 
 
   void showBottomSheetForImageSelectionordereceipt(BuildContext context) {
@@ -1037,7 +1074,17 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       filenameorderreciept = basename(_imageFileorderreciept!.path);
       fileExtensionorderreciept = extension(_imageFileorderreciept!.path);
       List<int> imageBytes1 = await _imageFileorderreciept!.readAsBytes();
-      base64Imageorderreciept = base64Encode(imageBytes1);
+
+      Uint8List compressedBytes = Uint8List.fromList(imageBytes1);
+      compressedBytes = await FlutterImageCompress.compressWithList(
+        compressedBytes,
+        minHeight: 800,
+        minWidth: 800,
+        quality: 80,
+      );
+
+      base64Imageorderreciept = base64Encode(compressedBytes);
+ //     base64Imageorderreciept = base64Encode(imageBytes1);
 
       print('===> filenameorderreciept: $filenameorderreciept');
       print('===> File Extension: $fileExtensionorderreciept');
@@ -1127,7 +1174,17 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       filenameaddlattchments = basename(_imageFileaddlattchments!.path);
       fileExtensionaddlattchments = extension(_imageFileaddlattchments!.path);
       List<int> imageBytes2 = await _imageFileaddlattchments!.readAsBytes();
-      base64Imageaddlattchments = base64Encode(imageBytes2);
+
+      Uint8List compressedBytes = Uint8List.fromList(imageBytes2);
+      compressedBytes = await FlutterImageCompress.compressWithList(
+        compressedBytes,
+        minHeight: 800,
+        minWidth: 800,
+        quality: 80,
+      );
+
+      base64Imageaddlattchments = base64Encode(compressedBytes);
+    //  base64Imageaddlattchments = base64Encode(imageBytes2);
 
       print('===> filenameaddlattchments: $filenameaddlattchments');
       print('===> File Extension: $fileExtensionaddlattchments');

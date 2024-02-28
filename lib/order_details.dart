@@ -1394,9 +1394,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                             .txSty_13B_Fb,
                                                       ),
                                                       Text(
-                                                        formatNumber(
-                                                            invoice
-                                                                .totalInvoiceAmount),
+                                                        '₹${formatNumber(invoice.totalInvoiceAmount)}',
                                                         style:
                                                         TextStyle(
                                                           fontFamily:

@@ -972,27 +972,36 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                     child: Center(
                       child: GestureDetector(
                         onTap: () {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Returntransportdetails(
-                                cardName: widget.cardName,
-                                cardCode: widget.cardCode,
-                                address: widget.address,
-                                state: widget.state,
-                                phone: widget.phone,
-                                proprietorName: widget.proprietorName,
-                                gstRegnNo: widget.gstRegnNo,
-                                creditLine: double.parse('${widget.creditLine}'),
-                                balance: double.parse('${widget.balance}'),
-                                lrnumber: '',
-                                lrdate: '',
-                                remarks: '',
-                                  transportname:''
+                          if (globalCartLength > 0) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) =>
+                                    Returntransportdetails(
+                                        cardName: widget.cardName,
+                                        cardCode: widget.cardCode,
+                                        address: widget.address,
+                                        state: widget.state,
+                                        phone: widget.phone,
+                                        proprietorName: widget.proprietorName,
+                                        gstRegnNo: widget.gstRegnNo,
+                                        creditLine: double.parse('${widget.creditLine}'),
+                                        balance: double.parse('${widget.balance}'),
+                                        lrnumber: '',
+                                        lrdate: '',
+                                        remarks: '',
+                                        transportname: ''
 
+                                    ),
                               ),
-                            ),
-                          );
+                            );
+                          }
+
+                          else {
+                          CommonUtils.showCustomToastMessageLong(
+                          'Please Select Atleast One Product', context, 1, 4);
+
+                          }
                         },
                         child: Container(
                           width: MediaQuery.of(context).size.width,

@@ -532,12 +532,7 @@ class Ledger_screen extends State<Ledgerscreen> {
   Future<void> downloadData() async {
     bool isValid = true;
     bool hasValidationFailed = false;
-    String fromdate = DateFormat('yyyy-MM-dd').format(selectedFromDate!);
-    String todate = DateFormat('yyyy-MM-dd').format(selectedToDate!);
-    String pdffromdate = DateFormat('ddMMyyyy').format(selectedFromDate!);
-    String pdftodate = DateFormat('ddMMyyyy').format(selectedToDate!);
-    print('pdffromdate: $pdffromdate');
-    print('pdftodate: $pdftodate');
+
 
     if (isValid && fromDateController.text.isEmpty) {
       CommonUtils.showCustomToastMessageLong(
@@ -551,7 +546,12 @@ class Ledger_screen extends State<Ledgerscreen> {
       isValid = false;
       hasValidationFailed = true;
     }
-
+    String fromdate = DateFormat('yyyy-MM-dd').format(selectedFromDate!);
+    String todate = DateFormat('yyyy-MM-dd').format(selectedToDate!);
+    String pdffromdate = DateFormat('ddMMyyyy').format(selectedFromDate!);
+    String pdftodate = DateFormat('ddMMyyyy').format(selectedToDate!);
+    print('pdffromdate: $pdffromdate');
+    print('pdftodate: $pdftodate');
     if (isValid && todate.compareTo(fromdate) < 0) {
       CommonUtils.showCustomToastMessageLong(
           "To Date is less than From Date", context, 1, 5);

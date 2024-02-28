@@ -213,6 +213,7 @@ print('===>${jsonEncode(requestBody)}');
                                         child: TextFormField(
                                           controller: currentPasswordController,
                                           obscureText: true,
+                                          maxLength: 20,
                                           validator: (value) {
                                             if (value!.isEmpty) {
                                               return 'Please enter your current password';
@@ -221,6 +222,7 @@ print('===>${jsonEncode(requestBody)}');
                                           },
                                           style: CommonUtils.Mediumtext_o_14,
                                           decoration: const InputDecoration(
+                                            counterText :"",
                                             hintText: 'Enter Current Password',
                                             hintStyle: CommonUtils.hintstyle_14,
                                             border: InputBorder.none,
@@ -285,6 +287,7 @@ print('===>${jsonEncode(requestBody)}');
                                         child: TextFormField(
                                           controller: newPasswordController,
                                           obscureText: true,
+                                          maxLength: 20,
                                           validator: (value) {
                                             if (value!.isEmpty) {
                                               return 'Please enter your new password';
@@ -293,6 +296,7 @@ print('===>${jsonEncode(requestBody)}');
                                           },
                                           style: CommonUtils.Mediumtext_o_14,
                                           decoration: const InputDecoration(
+                                            counterText :"",
                                             hintText: 'Enter New Password',
                                             hintStyle: CommonUtils.hintstyle_14,
                                             border: InputBorder.none,
@@ -356,6 +360,7 @@ print('===>${jsonEncode(requestBody)}');
                                             left: 10.0, top: 0.0),
                                         child: TextFormField(
                                           controller: confirmPasswordController,
+                                          maxLength: 20,
                                           obscureText: true,
                                           validator: (value) {
                                             if (value!.isEmpty) {
@@ -365,6 +370,7 @@ print('===>${jsonEncode(requestBody)}');
                                           },
                                           style: CommonUtils.Mediumtext_o_14,
                                           decoration: const InputDecoration(
+                                            counterText :"",
                                             hintText: 'Enter Confirm Password',
                                             hintStyle: CommonUtils.hintstyle_14,
                                             border: InputBorder.none,

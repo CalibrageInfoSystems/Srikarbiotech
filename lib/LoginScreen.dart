@@ -45,8 +45,8 @@ class _MyHomePageState extends State<LoginScreen> {
     print("Company ID: ${widget.companyId}");
     compneyid = widget.companyId;
     print("Company ID: $compneyid");
-    emailController.text = "Superadmin";
-   passwordController.text = "Abcd@123";
+   //  emailController.text = "Superadmin";
+   // passwordController.text = "Abcd@123";
 
   }
 
@@ -164,6 +164,7 @@ class _MyHomePageState extends State<LoginScreen> {
                                             controller: emailController,
                                             keyboardType:
                                                 TextInputType.emailAddress,
+                                            maxLength: 30,
                                             validator: (value) {
                                               if (value!.isEmpty) {
                                                 return 'Please enter your Email/Username';
@@ -172,6 +173,7 @@ class _MyHomePageState extends State<LoginScreen> {
                                             },
                                             style: CommonUtils.Mediumtext_o_14,
                                             decoration: InputDecoration(
+                                              counterText:"",
                                               hintText:
                                                   'Enter Email or Username',
                                               hintStyle:
@@ -251,6 +253,7 @@ class _MyHomePageState extends State<LoginScreen> {
                                           child: TextFormField(
                                             controller: passwordController,
                                             obscureText: true,
+                                            maxLength: 20,
                                             validator: (value) {
                                               if (value!.isEmpty) {
                                                 return 'Please enter your password';
@@ -259,6 +262,7 @@ class _MyHomePageState extends State<LoginScreen> {
                                             },
                                             style: CommonUtils.Mediumtext_o_14,
                                             decoration: InputDecoration(
+                                              counterText: "",
                                               hintText: 'Enter Password',
                                               hintStyle:
                                                   CommonUtils.hintstyle_14,
@@ -288,7 +292,10 @@ class _MyHomePageState extends State<LoginScreen> {
                               child: Center(
                                 child: GestureDetector(
                                   onTap: () {
+                                    FocusManager.instance.primaryFocus?.unfocus();
+
                                     _login();
+
                                   },
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,

@@ -198,6 +198,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                               left: 10.0, top: 0.0),
                                           child: TextFormField(
                                             controller: forgotEmailController,
+                                            maxLength: 30,
                                             keyboardType:
                                             TextInputType.emailAddress,
                                             validator: (value) {
@@ -208,6 +209,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                             },
                                             style: CommonUtils.Mediumtext_o_14,
                                             decoration: const InputDecoration(
+                                              counterText :"",
                                               hintText:
                                               'Enter Email or Username',
                                               hintStyle:
