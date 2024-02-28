@@ -364,30 +364,33 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
                             if (widget.listResult.remarks != null && widget.listResult.remarks.isNotEmpty)
-                              Container(
-                                padding: const EdgeInsets.all(10),
-                                child: Column(
-                                  mainAxisAlignment: MainAxisAlignment.start,
-                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                  children: [
-                                    const Text(
-                                      'Remarks',
-                                      textAlign: TextAlign.start,
-                                      style: CommonUtils.txSty_13B_Fb,
-                                    ),
-                                    const SizedBox(
-                                      height: 2,
-                                    ),
-                                    Text(
-                                      widget.listResult.remarks,
-                                      style: const TextStyle(
-                                        fontFamily: 'Roboto',
-                                        fontSize: 13,
-                                        color: Color(0xFFe58338),
-                                        fontWeight: FontWeight.w600,
+                              Flexible(
+                                // Add Flexible widget here
+                                child: Container(
+                                  padding: const EdgeInsets.all(10),
+                                  child: Column(
+                                    mainAxisAlignment: MainAxisAlignment.start,
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Remarks',
+                                        textAlign: TextAlign.start,
+                                        style: CommonUtils.txSty_13B_Fb,
                                       ),
-                                    ),
-                                  ],
+                                      const SizedBox(
+                                        height: 2,
+                                      ),
+                                      Text(
+                                        widget.listResult.remarks,
+                                        style: const TextStyle(
+                                          fontFamily: 'Roboto',
+                                          fontSize: 13,
+                                          color: Color(0xFFe58338),
+                                          fontWeight: FontWeight.w600,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
                                 ),
                               ),
                           ],
