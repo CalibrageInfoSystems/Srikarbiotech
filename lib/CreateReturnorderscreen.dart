@@ -489,19 +489,22 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                             }
 
                             final productresp = filteredproducts[index];
+
+
                             if (globalCartLength > 0) {
                               String itemcode = productresp.itemCode!;
-
-// Check if the current item is already added to the cart
                               for (var cartItem in cartProvider.getReturnCartItems()) {
                                 if (cartItem.itemCode == itemcode) {
                                   isItemAddedToCart[index] = true;
                                   textEditingControllers[index].text = cartItem.orderQty.toString();
+                                  int productIndex = filteredproducts.indexWhere((product) => product.itemCode == itemcode);
+                                  if (productIndex != -1) {
+                                    quantities[productIndex] = cartItem.orderQty!;
+                                  }
                                   print('previousscreen:${textEditingControllers[index].text}');
                                   break; // Exit the loop once the item is found in the cart
                                 }
-                              }
-                            }
+                              }}
                             return GestureDetector(
                                 onTap: () {
                                   print(
@@ -662,7 +665,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                                 quantities[index]--;
                                                                 if (globalCartLength > 1) {
                                                                   String itemcode = productresp.itemCode!;
-                                                                  for (var cartItem in cartProvider.getCartItems()) {
+                                                                  for (var cartItem in cartProvider.getReturnCartItems()) {
                                                                     if (cartItem.itemCode == itemcode) {
                                                                       cartItem.updateQuantity(quantities[index]);
                                                                     }}}});
@@ -722,7 +725,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                               quantities[index]++;
                                                               if (globalCartLength > 1) {
                                                                 String itemcode = productresp.itemCode!;
-                                                                for (var cartItem in cartProvider.getCartItems()) {
+                                                                for (var cartItem in cartProvider.getReturnCartItems()) {
                                                                   if (cartItem.itemCode == itemcode) {
                                                                     cartItem.updateQuantity(quantities[index]);}}}
                                                             });
@@ -892,6 +895,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
 
 
                                                       onTap: () {
+                                                        FocusManager.instance.primaryFocus?.unfocus();
                                                         // Update state to show "Add" button and reset quantity
                                                         setState(() {
                                                           isItemAddedToCart[index] = false;

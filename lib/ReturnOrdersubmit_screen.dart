@@ -271,7 +271,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                     Colors.white,
                     BorderRadius.circular(5.0),
                   ),
-                  const SizedBox(height: 16.0),
+                  // const SizedBox(height: 5.0),
                 ],
               ),
             ),
@@ -356,7 +356,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                 ),
               ),
             ),
-            const SizedBox(height: 5),
+            // const SizedBox(height: 5),
             FutureBuilder(
               future: Future.value(),
               builder: (context, snapshot) {
@@ -391,11 +391,11 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
             //     }
             //   },
             // ),
-            const SizedBox(height: 10),
+            // const SizedBox(height: 10),
             Container(
               width: MediaQuery.of(context).size.width,
               padding:
-              const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+              const EdgeInsets.only(top: 0.0, left: 10.0, right: 10.0),
               child: IntrinsicHeight(
                 child: Card(
                   elevation: 5,
@@ -788,11 +788,15 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         // Update totalSumNotifier with the correct value
 
         return CartItemWidget(
+          key: UniqueKey(), // Ensure each item has a unique key
           cartItem: cartItem,
           onDelete: () {
             setState(() {
               cartItems.removeAt(index);
-              // Update totalSumIncludingGst after removing an item
+
+              textEditingControllers.removeAt(index);
+
+
             });
           },
           cartItems: cartItems,
@@ -1162,7 +1166,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
         elevation: 5.0,
         color: Colors.white,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(8.0),
+          borderRadius: BorderRadius.circular(5.0),
         ),
         child: Container(
           color: Colors.white,
