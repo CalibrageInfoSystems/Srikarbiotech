@@ -195,7 +195,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
+              padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -1576,7 +1576,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
         context: context,
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: initialDate,
-        firstDate: DateTime(2000),
+        firstDate: currentDate,
         lastDate: DateTime(2101),
       );
 
@@ -1622,7 +1622,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
         context: context,
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: initialDate,
-        firstDate: DateTime(2000),
+        firstDate: currentDate,
         lastDate: DateTime(2101),
       );
 

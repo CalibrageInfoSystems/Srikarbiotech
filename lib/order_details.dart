@@ -1811,7 +1811,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                 const Padding(
                   padding: EdgeInsets.only(top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
                   child: Text(
-                    'Remarks',
+                    'Remarks *',
                     style: CommonUtils.Mediumtext_o_14,
                     textAlign: TextAlign.start,
                   ),

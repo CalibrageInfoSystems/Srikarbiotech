@@ -149,8 +149,13 @@ class _VieworderPageState extends State<ViewOrders> {
               );
             } else {
               List<OrderResult> data = ordersProvider.viewOrderProviderData;
-
-              return Padding(
+              return WillPopScope(
+                  onWillPop: () async {
+                    // Clear the cart data here
+                    viewOrdersProvider.clearFilter();
+                    return true; // Allow the back navigation
+                  },
+              child: Padding(
                 padding: const EdgeInsets.all(10),
                 child: Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
@@ -195,7 +200,7 @@ class _VieworderPageState extends State<ViewOrders> {
                       )
                   ],
                 ),
-              );
+              ));
             }
           },
         ),

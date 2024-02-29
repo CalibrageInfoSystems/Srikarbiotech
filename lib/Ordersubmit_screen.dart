@@ -928,10 +928,12 @@ if(responseData['isSuccess']) {
         print('totalSumNotifier: ${totalSumNotifier.value}');
 
         return CartItemWidget(
+          key: UniqueKey(), // Ensure each item has a unique key
           cartItem: cartItem,
           onDelete: () {
             setState(() {
               cartItems.removeAt(index);
+              textEditingControllers.removeAt(index);
               updateTotalSumIncludingGst(); // Update totalSumIncludingGst after removing an item
             });
           },
@@ -1046,7 +1048,6 @@ if(responseData['isSuccess']) {
 // In CartItemWidget
 
 // In CartItemWidget
-
 class CartItemWidget extends StatefulWidget {
   final OrderItemXrefType cartItem;
   final Function onDelete;
@@ -1054,8 +1055,7 @@ class CartItemWidget extends StatefulWidget {
   final List<OrderItemXrefType> cartItems;
   final ValueNotifier<double> totalSumNotifier;
   final ValueNotifier<double> totalGstAmountNotifier;
-  final VoidCallback
-      onQuantityChanged; // Callback function to notify when quantity changes
+  final VoidCallback onQuantityChanged;
 
   CartItemWidget({
     required this.cartItem,
@@ -1064,12 +1064,14 @@ class CartItemWidget extends StatefulWidget {
     required this.cartItems,
     required this.totalSumNotifier,
     required this.totalGstAmountNotifier,
-    required this.onQuantityChanged, // Initialize here
-  });
+    required this.onQuantityChanged,
+    required UniqueKey key,
+  }) : super(key: key);
 
   @override
   _CartItemWidgetState createState() => _CartItemWidgetState();
 }
+
 
 class _CartItemWidgetState extends State<CartItemWidget> {
   late TextEditingController _textController;

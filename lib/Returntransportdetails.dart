@@ -326,34 +326,64 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                   textAlign: TextAlign.start,
                                 ),
                               ),
+
                               Container(
-                                height: 120,
                                 width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
-                                  border: Border.all(
-                                      color: Color(0xFFe78337), width: 1),
+                                  border: Border.all(color: const Color(0xFFe78337), width: 1),
                                   borderRadius: BorderRadius.circular(5.0),
                                   color: Colors.white,
                                 ),
-                                child:
-                                TextFormField(
-                                  controller: remarkstext,
-                                  maxLength: 100,
-                                  style: CommonUtils.Mediumtext_o_14,
-                                  maxLines:
-                                      null, // Set maxLines to null for multiline input
-                                  decoration: InputDecoration(
-                                    counterText: '',
-                                    hintText: 'Enter Return Order remarks',
-                                    hintStyle: CommonUtils.hintstyle_o_14,
-                                    contentPadding: EdgeInsets.symmetric(
-                                      horizontal: 10.0,
-                                      vertical: 0.0,
+                                child: Column(
+                                  children: [
+                                    TextFormField(
+                                      controller: remarkstext,
+                                      maxLength: 100,
+                                      style: CommonUtils.Mediumtext_o_14,
+                                      maxLines: null,
+                                      // Set maxLines to null for multiline input
+                                      decoration: InputDecoration(
+                                        hintText: 'Enter Return Order remarks',
+                                        hintStyle: CommonUtils.hintstyle_o_14,
+                                        contentPadding: EdgeInsets.symmetric(
+                                          horizontal: 10.0,
+                                          vertical: 0.0,
+                                        ),
+                                        border: InputBorder.none,
+                                      ),
                                     ),
-                                    border: InputBorder.none,
-                                  ),
+                                    SizedBox(height: 10), // Add space between TextFormField and counter
+
+                                  ],
                                 ),
                               ),
+                              // Container(
+                              //
+                              //   width: MediaQuery.of(context).size.width,
+                              //   decoration: BoxDecoration(
+                              //     border: Border.all(
+                              //         color: Color(0xFFe78337), width: 1),
+                              //     borderRadius: BorderRadius.circular(5.0),
+                              //     color: Colors.white,
+                              //   ),
+                              //   child:
+                              //   TextFormField(
+                              //     controller: remarkstext,
+                              //     maxLength: 100,
+                              //     style: CommonUtils.Mediumtext_o_14,
+                              //     maxLines: null, // Set maxLines to null for multiline input
+                              //     decoration: InputDecoration(
+                              //       // counterText: '',
+                              //       hintText: 'Enter Return Order remarks',
+                              //       hintStyle: CommonUtils.hintstyle_o_14,
+                              //       contentPadding: EdgeInsets.symmetric(
+                              //         horizontal: 10.0,
+                              //         vertical: 0.0,
+                              //       ),
+                              //       border: InputBorder.none,
+                              //     ),
+                              //   ),
+                              // ),
                             ],
                           )),
                     ),
@@ -1360,7 +1390,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
   void validate(BuildContext context) {
     bool isValid = true;
     bool hasValidationFailed = false;
-    if (isValid && LRNumberController.text.isEmpty) {
+    if (isValid && LRNumberController.text.trim().isEmpty) {
       CommonUtils.showCustomToastMessageLong(
           'Please Enter LR Number', context, 1, 4);
       isValid = false;
@@ -1374,13 +1404,13 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       isValid = false;
       hasValidationFailed = true;
     }
-    if (isValid && TransportController.text.isEmpty) {
+    if (isValid && TransportController.text.trim().isEmpty) {
       CommonUtils.showCustomToastMessageLong(
           'Please Enter Transport Name', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
-    if (isValid && remarkstext.text.isEmpty) {
+    if (isValid && remarkstext.text.trim().isEmpty) {
       CommonUtils.showCustomToastMessageLong(
           'Please Enter Return Order Remarks', context, 1, 4);
       isValid = false;

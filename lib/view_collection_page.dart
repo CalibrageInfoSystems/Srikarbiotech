@@ -86,8 +86,9 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
     DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
 
     try {
-      final url = Uri.parse(
-          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollectionsbyMobileSearch');
+      // final url = Uri.parse(
+      //     'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollectionsbyMobileSearch');
+      final url = Uri.parse(baseUrl + GetCollectionsbyMobileSearch);
       final requestBodyObj = {
         "PurposeName": viewProvider.getApiPurpose,
         "StatusId": viewProvider.getApiStatusId,
@@ -148,7 +149,13 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
               if (snapshot.hasData) {
                 // List<ListResult> data = snapshot.data!;
                 List<ListResult> data = viewCollectionProvider.providerData;
-                return Padding(
+                return WillPopScope(
+                    onWillPop: () async {
+                      // Clear the cart data here
+                      viewCollectionProvider.clearFilter();
+                      return true; // Allow the back navigation
+                    },
+                child: Padding(
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -189,7 +196,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                         ),
                     ],
                   ),
-                );
+                ));
               } else {
                 return const Center(
                   child: Text('No data available'),
@@ -219,7 +226,8 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                     viewProvider.clearFilter();
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
                     );
                   },
                   child: const Icon(
@@ -250,7 +258,8 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                     // Handle the click event for the home icon
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
                     );
                   },
                   child: Image.asset(
@@ -412,9 +421,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
   Future<void> fetchdropdownitems() async {
     savedCompanyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-    final apiUrl =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'
-        '$savedCompanyId';
+    // final apiUrl =
+    //     'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'
+    //     '$savedCompanyId';
+    final apiUrl = '$baseUrl$GetPurposes$savedCompanyId';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -436,8 +446,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> getpaymentmethods() async {
-    final response = await http.get(Uri.parse(
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Master/GetAllTypeCdDmt/3'));
+    final response = await http.get(Uri.parse(baseUrl + GetAllTypeCdDmt));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -1056,8 +1065,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     debugPrint('Converted to date: $selectformattedtodate');
     debugPrint('Converted from date: $selectformattedfromdate');
     try {
-      final url = Uri.parse(
-          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollectionsbyMobileSearch');
+      // final url = Uri.parse(
+      //     'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollectionsbyMobileSearch');
+      final url = Uri.parse(baseUrl + GetCollectionsbyMobileSearch);
       final requestBodyObj = {
         "PurposeName": viewProvider.getApiPurpose,
         "StatusId": viewProvider.getApiStatusId,
@@ -1225,8 +1235,8 @@ class _MyCardState extends State<MyCard> {
                         // width: ,
                         width: MediaQuery.of(context).size.width / 1.6,
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                              left: 10, top: 0, bottom: 0),
+                          padding:
+                          const EdgeInsets.only(left: 5, top: 0, bottom: 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1260,6 +1270,20 @@ class _MyCardState extends State<MyCard> {
                                   ),
                                 ],
                               ),
+                              // ListTile(
+                              //   title: Text(
+                              //     widget.listResult.collectionNumber,
+                              //     style: CommonUtils.txSty_13O_F6,
+                              //   ),
+                              //   subtitle: const Text(
+                              //     'Collection Id:',
+                              //     style: TextStyle(
+                              //       fontSize: 10,
+                              //       fontWeight: FontWeight.bold,
+                              //       color: Colors.grey,
+                              //     ),
+                              //   ),
+                              // ),
                               const SizedBox(
                                 height: 5.0,
                               ),

@@ -57,8 +57,7 @@ class Selectparty_screen extends State<Selectpartyscreen> {
         _isLoading = true;
       });
 
-      final apiUrl =
-          baseUrl + GetAllDealersBySlpCode + '$CompneyId' + "/" + '$slpCode';
+      final apiUrl = baseUrl + GetAllDealersBySlpCode + '$CompneyId' + "/" + '$slpCode';
       print("apiUrl: ${apiUrl}");
 
       final response = await http.get(Uri.parse(apiUrl));

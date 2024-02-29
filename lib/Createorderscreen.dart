@@ -1,5 +1,6 @@
 import 'dart:convert';
 import 'package:badges/badges.dart';
+import 'package:collection/collection.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -514,6 +515,10 @@ class _ProductListState extends State<Createorderscreen> {
                                 if (cartItem.itemCode == itemcode) {
                                   isItemAddedToCart[index] = true;
                                   textEditingControllers[index].text = cartItem.orderQty.toString();
+                                  int productIndex = filteredproducts.indexWhere((product) => product.itemCode == itemcode);
+                                  if (productIndex != -1) {
+                                    quantities[productIndex] = cartItem.orderQty!;
+                                  }
                                   print('previousscreen:${textEditingControllers[index].text}');
                                   break; // Exit the loop once the item is found in the cart
                                 }
@@ -704,6 +709,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                                     ],
                                                                     onChanged: (value) {
                                                                       setState(() {
+                                                                        print('globalCartLength===plus>$globalCartLength');
                                                                       //  quantities[index] = 1;
                                                                       quantities[index] = int.parse(value.isEmpty ? '1' : value);
                                                                         if (globalCartLength > 1) {
@@ -728,17 +734,44 @@ class _ProductListState extends State<Createorderscreen> {
                                                             width: 20.0,
                                                             height: 20.0,
                                                           ),
-                                                          onPressed: () {
+
+                                                          onPressed: () async {
+                                                            // Increment the quantity
                                                             setState(() {
                                                               quantities[index]++;
-                                                              if (globalCartLength > 1) {
-                                                                String itemcode = productresp.itemCode!;
-                                                                for (var cartItem in cartProvider.getCartItems()) {
-                                                                  if (cartItem.itemCode == itemcode) {
-                                                                    cartItem.updateQuantity(quantities[index]);}}}
                                                             });
+
+                                                            // Update the stored quantity in SharedPreferences
+                                                            final cartProvider = Provider.of<CartProvider>(context, listen: false);
+                                                            SharedPreferences prefs = await SharedPreferences.getInstance();
+                                                            await prefs.setInt('quantity_$index', quantities[index]);
+
+                                                            // Update the quantity in the cart if the item is already in the cart
+                                                            String itemCode = productresp.itemCode!;
+                                                            OrderItemXrefType? cartItem = cartProvider.getCartItems().firstWhereOrNull((item) => item.itemCode == itemCode);
+                                                            if (cartItem != null) {
+                                                              cartItem.updateQuantity(quantities[index]);
+                                                              // Save the updated cart items to SharedPreferences
+                                                              await cartProvider.saveCartItemsToSharedPreferences(cartProvider.getCartItems());
+                                                            }
+
+                                                            // Update the text field with the new quantity
                                                             textEditingControllers[index].text = quantities[index].toString();
                                                           },
+
+
+                                                          // onPressed: () {
+                                                          //   setState(() {
+                                                          //     quantities[index]++;
+                                                          //     if (globalCartLength > 1) {
+                                                          //       String itemcode = productresp.itemCode!;
+                                                          //       for (var cartItem in cartProvider.getCartItems()) {
+                                                          //         if (cartItem.itemCode == itemcode) {
+                                                          //           cartItem.updateQuantity(quantities[index]);}}}
+                                                          //
+                                                          //   });
+                                                          //   textEditingControllers[index].text = quantities[index].toString();
+                                                          // },
                                                           alignment: Alignment.centerLeft,
                                                           iconSize: 30.0,
                                                         ),
@@ -902,59 +935,87 @@ class _ProductListState extends State<Createorderscreen> {
                                                                   width: 6.0),
                                                             ],),),),),),
                                                   SizedBox(width: 8.0),
-                                                  if (isItemAddedToCart[index]) // Render delete button only when item is added to cart
-                                                    GestureDetector(
+                                                  GestureDetector(
+                                                    onTap: () {
+                                                      FocusManager.instance.primaryFocus?.unfocus();
+                                                      // Find the index of the item in the cart based on the product code
+                                                      int deleteIndex = cartItems.indexWhere(
+                                                            (item) => item.itemCode == productresp.itemCode,
+                                                      );
 
+                                                      if (deleteIndex != -1) {
+                                                        // Remove the item from the cart
+                                                        cartItems.removeAt(deleteIndex);
+                                                        textEditingControllers.removeAt(deleteIndex);
 
-                                                      onTap: () {
-                                                        // Update state to show "Add" button and reset quantity
+                                                        // Update the quantities list to remove the deleted item
                                                         setState(() {
-                                                          isItemAddedToCart[index] = false;
-                                                          quantities[index] = 1;
+                                                          quantities.removeAt(deleteIndex);
                                                         });
 
-                                                        // Find the index of the item in the cart based on the product code
-                                                        int deleteIndex = cartItems.indexWhere(
-                                                              (item) => item.itemCode == productresp.itemCode,
-                                                        );
-
-                                                        if (deleteIndex != -1) {
-                                                          // Remove the item from the cart
-                                                          cartItems.removeAt(deleteIndex);
-                                                          textEditingControllers.removeAt(deleteIndex);
+                                                        // Update the text editing controllers list to sync with quantities list
+                                                        for (int i = 0; i < textEditingControllers.length; i++) {
+                                                          textEditingControllers[i].text = quantities[i].toString();
                                                         }
+                                                      }
 
-                                                        fetchproductlist(getgropcode);
-                                                      },
-                                                      child: Container(
-                                                        height: 36,
-                                                        width: 40,
-                                                        decoration: BoxDecoration(
-                                                          color: Color(0xFFF8dac2),
-                                                          border: Border.all(
-                                                            color: Color(0xFFe78337),
-                                                            width: 1.0,
-                                                          ),
-                                                          borderRadius: BorderRadius.circular(8.0),
+                                                      // Fetch the product list again
+                                            fetchproductlist(getgropcode);
+                                                    },
+
+
+
+
+//                                                     onTap: () {
+//                                                       // Update state to show "Add" button and reset quantity for the selected item
+//                                                       setState(() {
+//                                                         isItemAddedToCart[index] = false;
+//                                                  quantities[index] = 1;
+//                                                       });
+//
+//                                                       // Find the index of the item in the cart based on the product code
+//                                                       int deleteIndex = cartItems.indexWhere(
+//                                                             (item) => item.itemCode == productresp.itemCode,
+//                                                       );
+// //
+//                                                       if (deleteIndex != -1) {
+//                                                         // Remove the item from the cart
+//                                                         cartItems.removeAt(deleteIndex);
+//                                                         textEditingControllers.removeAt(deleteIndex);
+//                                                       }
+//
+//                                                       fetchproductlist(getgropcode);
+//                                                     },
+                                                    child: Container(
+                                                      height: 36,
+                                                      width: 40,
+                                                      decoration: BoxDecoration(
+                                                        color: Color(0xFFF8dac2),
+                                                        border: Border.all(
+                                                          color: Color(0xFFe78337),
+                                                          width: 1.0,
                                                         ),
-                                                        child: Padding(
-                                                          padding: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                          child: Align(
-                                                            alignment: Alignment.center,
-                                                            child: Row(
-                                                              mainAxisAlignment: MainAxisAlignment.center,
-                                                              children: [
-                                                                Icon(
-                                                                  Icons.delete,
-                                                                  size: 18.0,
-                                                                  color: Colors.red,
-                                                                ),
-                                                              ],
-                                                            ),
+                                                        borderRadius: BorderRadius.circular(8.0),
+                                                      ),
+                                                      child: Padding(
+                                                        padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                                                        child: Align(
+                                                          alignment: Alignment.center,
+                                                          child: Row(
+                                                            mainAxisAlignment: MainAxisAlignment.center,
+                                                            children: [
+                                                              Icon(
+                                                                Icons.delete,
+                                                                size: 18.0,
+                                                                color: Colors.red,
+                                                              ),
+                                                            ],
                                                           ),
                                                         ),
                                                       ),
                                                     ),
+                                                  ),
+
                                                 ],
                                               ),
                                             )

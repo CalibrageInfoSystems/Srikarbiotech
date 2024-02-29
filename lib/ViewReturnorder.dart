@@ -159,8 +159,8 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                 return WillPopScope(
                   onWillPop: () async {
                     // Clear the cart data here
-                    returnOrdersProvider.clearFilter();
-
+                     returnOrdersProvider.clearFilter();
+                  //  viewOrdersProvider.clearFilter();
                     return true; // Allow the back navigation
                   },
                   child: Padding(
