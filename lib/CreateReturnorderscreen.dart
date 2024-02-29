@@ -663,7 +663,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                             if (quantities[index] > 1) {
                                                               setState(() {
                                                                 quantities[index]--;
-                                                                if (globalCartLength > 1) {
+                                                                if (globalCartLength > 0) {
                                                                   String itemcode = productresp.itemCode!;
                                                                   for (var cartItem in cartProvider.getReturnCartItems()) {
                                                                     if (cartItem.itemCode == itemcode) {
@@ -698,7 +698,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                                       setState(() {
                                                                         //  quantities[index] = 1;
                                                                         quantities[index] = int.parse(value.isEmpty ? '1' : value);
-                                                                        if (globalCartLength > 1) {
+                                                                        if (globalCartLength > 0) {
                                                                           String itemcode = productresp.itemCode!;
                                                                           for (var cartItem in cartProvider.getCartItems()) {
                                                                             if (cartItem.itemCode == itemcode) {
@@ -723,7 +723,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                                           onPressed: () {
                                                             setState(() {
                                                               quantities[index]++;
-                                                              if (globalCartLength > 1) {
+                                                              if (globalCartLength > 0) {
                                                                 String itemcode = productresp.itemCode!;
                                                                 for (var cartItem in cartProvider.getReturnCartItems()) {
                                                                   if (cartItem.itemCode == itemcode) {
@@ -752,7 +752,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
 
                                                               String itemGrpCod;
 
-                                                              if (CompneyId == 1 || globalCartLength > 1) {
+                                                              if (CompneyId == 1 || globalCartLength > 0) {
                                                                 itemGrpCod = productresp.itmsGrpCod!;
                                                               } else {
                                                                 itemGrpCod = productresp.itmsGrpCod!;
@@ -806,7 +806,7 @@ class _ProductListState extends State<CreateReturnorderscreen> {
 
                                                               String itemGrpCod;
 
-                                                              if (CompneyId == 2 || globalCartLength > 1) {
+                                                              if (CompneyId == 2 || globalCartLength > 0) {
                                                                 itemGrpCod = productresp.itmsGrpCod!;
                                                               } else {
                                                                 itemGrpCod = productresp.itmsGrpCod!;

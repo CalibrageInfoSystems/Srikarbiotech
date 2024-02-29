@@ -61,6 +61,7 @@ dependencies:
   card_swiper: ^3.0.1
   flutter_expanded_tile: ^0.3.7
   flutter_image_compress: ^2.1.0
+  autocomplete_textfield: ^2.0.1
 
 
 

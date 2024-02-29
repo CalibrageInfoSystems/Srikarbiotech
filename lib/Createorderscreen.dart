@@ -683,7 +683,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                               if (quantities[index] > 1) {
                                                                 setState(() {
                                                                   quantities[index]--;
-                                                                  if (globalCartLength > 1) {
+                                                                  if (globalCartLength > 0) {
                                                                     String itemcode = productresp.itemCode!;
                                                                     for (var cartItem in cartProvider.getCartItems()) {
                                                                       if (cartItem.itemCode == itemcode) {
@@ -718,7 +718,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                                         setState(() {
                                                                           //  quantities[index] = 1;
                                                                           quantities[index] = int.parse(value.isEmpty ? '1' : value);
-                                                                          if (globalCartLength > 1) {
+                                                                          if (globalCartLength > 0) {
                                                                             String itemcode = productresp.itemCode!;
                                                                             for (var cartItem in cartProvider.getCartItems()) {
                                                                               if (cartItem.itemCode == itemcode) {
@@ -743,7 +743,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                             onPressed: () {
                                                               setState(() {
                                                                 quantities[index]++;
-                                                                if (globalCartLength > 1) {
+                                                                if (globalCartLength > 0) {
                                                                   String itemcode = productresp.itemCode!;
                                                                   for (var cartItem in cartProvider.getCartItems()) {
                                                                     if (cartItem.itemCode == itemcode) {
@@ -767,12 +767,12 @@ class _ProductListState extends State<Createorderscreen> {
                                                                 isSelectedList[index] = !isSelectedList[index];
                                                               });
 
-                                                              if (isSelectedList[index]) {
+                                                              if (isSelectedList[index] && quantities[index] > 0 ) {
                                                                 print('Adding ${quantities[index]} of ${filteredproducts[index].itemName} to the cart');
 
                                                                 String itemGrpCod;
 
-                                                                if (CompneyId == 1 || globalCartLength > 1) {
+                                                                if (CompneyId == 1 || globalCartLength > 0) {
                                                                   itemGrpCod = productresp.itmsGrpCod!;
                                                                 } else {
                                                                   itemGrpCod = productresp.itmsGrpCod!;
@@ -813,7 +813,12 @@ class _ProductListState extends State<Createorderscreen> {
                                                                       4);
                                                                   setState(() {
                                                                     isSelectedList[index] = false;
-                                                                  });}}}
+                                                                  });}}
+                                                            }
+                                                            else{
+                                                              CommonUtils.showCustomToastMessageLong('Quantity should be greater than 0 to add item to cart', context, 1,
+                                                                  2);
+                                                            }
                                                           }
                                                           else if (CompneyId == 2) {
                                                             if (!isItemAddedToCart[index]) {
@@ -822,14 +827,13 @@ class _ProductListState extends State<Createorderscreen> {
                                                                 index];
                                                               });
 
-                                                              if (isSelectedList[
-                                                              index]) {
+                                                              if (isSelectedList[index] &&  quantities[index] > 0) {
                                                                 print(
                                                                     'Adding ${quantities[index]} of ${filteredproducts[index].itemName} to the cart');
 
                                                                 String itemGrpCod;
 
-                                                                if (CompneyId == 2 || globalCartLength > 1) {
+                                                                if (CompneyId == 2 || globalCartLength > 0) {
                                                                   itemGrpCod = productresp.itmsGrpCod!;
                                                                 } else {
                                                                   itemGrpCod = productresp.itmsGrpCod!;
@@ -865,6 +869,10 @@ class _ProductListState extends State<Createorderscreen> {
                                                                   isItemAddedToCart[index] = true;
                                                                 });
 
+                                                              }
+                                                              else{
+                                                                CommonUtils.showCustomToastMessageLong('Quantity should be greater than 0 to add item to cart', context, 1,
+                                                                    2);
                                                               }
                                                             }
                                                           }

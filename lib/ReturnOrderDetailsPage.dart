@@ -1078,82 +1078,81 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
       ),
     );
   }
-
+  int currentPage = 0;
   void showAttachmentsDialog(List<ReturnOrdersImageList> data) {
     showDialog(
       context: context,
-      builder: (context) {
-        return AlertDialog(
-          title: const Text('Attachments'),
-          elevation: 5.0,
-          contentPadding: const EdgeInsets.all(5.0),
-          content: SizedBox(
-            height: 120,
-            width: 300,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+            width: double.infinity,
+            height: 500,
             child: Stack(
               children: [
-                CarouselSlider(
-                  items: data.map((imageUrl) {
-                    return GestureDetector(
-                      onTap: () {
-                        _showZoomedAttachments(imageUrl.imageString);
-                      },
-                      child: Image.network(
-                        imageUrl.imageString,
-                        fit: BoxFit.cover,
-                      ),
-                    );
-                  }).toList(),
-                  options: CarouselOptions(
-                    scrollPhysics: const BouncingScrollPhysics(),
-                    autoPlay: true,
-                    enableInfiniteScroll: false,
-                    height: MediaQuery.of(context).size.height,
-                    aspectRatio: 23 / 9,
-                    viewportFraction: 1,
-                    onPageChanged: (index, reason) {
-                      // Handle page change if needed
-                      setState(() {
-                        currentIndex = index;
-                      });
+                Center(
+                  child: PhotoViewGallery.builder(
+                    itemCount: data.length,
+                    builder: (context, index) {
+                      return PhotoViewGalleryPageOptions(
+                        imageProvider: NetworkImage(data[index].imageString),
+                        minScale: PhotoViewComputedScale.contained,
+                        maxScale: PhotoViewComputedScale.covered,
+                      );
+                    },
+                    scrollDirection: Axis.horizontal,
+                    scrollPhysics: const PageScrollPhysics(),
+                    allowImplicitScrolling: true,
+                    backgroundDecoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    onPageChanged: (index) {
+                      currentPage = index;
+                      // Provider.of<ViewReturnOrdersProvider>(context)
+                      //     .changeIndex = index;
                     },
                   ),
-
-                  // CarouselOptions(
-                  //   scrollPhysics:
-                  //       const BouncingScrollPhysics(),
-                  //   autoPlay: false,
-                  //   enableInfiniteScroll: false,
-                  //   viewportFraction: 1.0,
-                  //   height: MediaQuery.of(context)
-                  //       .size
-                  //       .height,
-                  //   aspectRatio: 23 / 9,
-                  //   onPageChanged: (index, reason) {
-                  //     setState(() {
-                  //       currentIndex = index;
-                  //     });
-                  //   },
-                  // ),
                 ),
-                SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  //  padding: EdgeInsets.all(20.0),
-
-                  height: MediaQuery.of(context).size.height,
-                  child: Align(
-                    alignment: Alignment.bottomCenter,
-                    child: Padding(
-                      padding: const EdgeInsets.only(bottom: 25.0),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: List.generate(
-                          // Use the number of images from assets
-                          data.length, // Replace with the actual number of assets
-                              (index) {
-                            return buildIndicator(index);
-                          },
-                        ),
+                Align(
+                  alignment: Alignment.bottomCenter,
+                  child: Container(
+                    padding: const EdgeInsets.symmetric(vertical: 10),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.center,
+                      children: List.generate(data.length, (index) {
+                        debugPrint('currentPage2: $currentPage');
+                        return Container(
+                          width: 8.0,
+                          height: 8.0,
+                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                          decoration: BoxDecoration(
+                            shape: BoxShape.circle,
+                            color:Colors.red,
+                          ),
+                        );
+                      }),
+                    ),
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Container(
+                      padding: const EdgeInsets.all(3.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.red.withOpacity(0.2),
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.red,
+                        size: 15,
                       ),
                     ),
                   ),
@@ -1161,18 +1160,104 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
               ],
             ),
           ),
-          actions: [
-            TextButton(
-              onPressed: () {
-                Navigator.pop(context);
-              },
-              child: const Text('Close'),
-            ),
-          ],
         );
       },
     );
   }
+  // void showAttachmentsDialog(List<ReturnOrdersImageList> data) {
+  //   showDialog(
+  //     context: context,
+  //     builder: (context) {
+  //       return AlertDialog(
+  //         title: const Text('Attachments'),
+  //         elevation: 5.0,
+  //         contentPadding: const EdgeInsets.all(5.0),
+  //         content: SizedBox(
+  //           height: 120,
+  //           width: 300,
+  //           child: Stack(
+  //             children: [
+  //               CarouselSlider(
+  //                 items: data.map((imageUrl) {
+  //                   return GestureDetector(
+  //                     onTap: () {
+  //                       _showZoomedAttachments(imageUrl.imageString);
+  //                     },
+  //                     child: Image.network(
+  //                       imageUrl.imageString,
+  //                       fit: BoxFit.cover,
+  //                     ),
+  //                   );
+  //                 }).toList(),
+  //                 options: CarouselOptions(
+  //                   scrollPhysics: const BouncingScrollPhysics(),
+  //                   autoPlay: true,
+  //                   enableInfiniteScroll: false,
+  //                   height: MediaQuery.of(context).size.height,
+  //                   aspectRatio: 23 / 9,
+  //                   viewportFraction: 1,
+  //                   onPageChanged: (index, reason) {
+  //                     // Handle page change if needed
+  //                     setState(() {
+  //                       currentIndex = index;
+  //                     });
+  //                   },
+  //                 ),
+  //
+  //                 // CarouselOptions(
+  //                 //   scrollPhysics:
+  //                 //       const BouncingScrollPhysics(),
+  //                 //   autoPlay: false,
+  //                 //   enableInfiniteScroll: false,
+  //                 //   viewportFraction: 1.0,
+  //                 //   height: MediaQuery.of(context)
+  //                 //       .size
+  //                 //       .height,
+  //                 //   aspectRatio: 23 / 9,
+  //                 //   onPageChanged: (index, reason) {
+  //                 //     setState(() {
+  //                 //       currentIndex = index;
+  //                 //     });
+  //                 //   },
+  //                 // ),
+  //               ),
+  //               SizedBox(
+  //                 width: MediaQuery.of(context).size.width,
+  //                 //  padding: EdgeInsets.all(20.0),
+  //
+  //                 height: MediaQuery.of(context).size.height,
+  //                 child: Align(
+  //                   alignment: Alignment.bottomCenter,
+  //                   child: Padding(
+  //                     padding: const EdgeInsets.only(bottom: 25.0),
+  //                     child: Row(
+  //                       mainAxisAlignment: MainAxisAlignment.center,
+  //                       children: List.generate(
+  //                         // Use the number of images from assets
+  //                         data.length, // Replace with the actual number of assets
+  //                             (index) {
+  //                           return buildIndicator(index);
+  //                         },
+  //                       ),
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //         actions: [
+  //           TextButton(
+  //             onPressed: () {
+  //               Navigator.pop(context);
+  //             },
+  //             child: const Text('Close'),
+  //           ),
+  //         ],
+  //       );
+  //     },
+  //   );
+  // }
 }
 
 class AttachmentImages extends StatelessWidget {

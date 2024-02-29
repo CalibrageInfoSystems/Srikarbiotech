@@ -174,8 +174,8 @@ class orderStatusScreen extends StatelessWidget {
                       child: SvgPicture.asset(
                         'assets/share.svg',
                         color: Color(0xFFe78337),
-                        width: 25,
-                        height: 25,
+                        width: 20,
+                        height: 20,
                       ),
                     ),
                   )
@@ -260,98 +260,81 @@ class orderStatusScreen extends StatelessWidget {
   //     print('Exception: $e');
   //   }
   // }
+//   Future<void> _shareorderdetails(Map<String, dynamic> responseData) async {
+//     try {
+//
+//
+// // Retrieve orderDate from responseData
+//       String orderDate = responseData['response']['orderDate'];
+//
+// // Parse the orderDate string into a DateTime object
+//       DateTime dateTime = DateTime.parse(orderDate);
+//
+// // Define the desired date format
+//       DateFormat formatter = DateFormat('dd-MM-yyyy');
+//
+// // Format the DateTime object to the desired format
+//       String formattedOrderDate = formatter.format(dateTime);
+//
+//       // Format the order amount with Rupee symbol
+//       NumberFormat amountFormatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+//       String formattedOrderAmount = '₹${amountFormatter.format(responseData['response']['totalCostWithGST'])}';
+//
+//       String orderDetails =
+//               "Order ID: * " + responseData['response']['orderNumber'] + " * \n" +
+//               "Order Date: *" + formattedOrderDate + " * \n" +
+//               "Order Amount: * " + formattedOrderAmount + " * \n" +
+//               "Party Name (Code): *" + responseData['response']['partyName'] + " (" + responseData['response']['partyCode'] + ") * \n" +
+//               "Booking Place: * " + responseData['response']['bookingPlace'] + " *\n" +
+//               "Transport Name: * " + responseData['response']['transportName']+ " *\n";
+//
+//
+//
+//       await Share.share(orderDetails, subject: 'Order Details');
+//     } catch (error) {
+//       print('Error sharing order details: $error');
+//     }
+//   }
+//
+//   import 'package:intl/intl.dart';
+//   import 'package:share/share.dart';
+
   Future<void> _shareorderdetails(Map<String, dynamic> responseData) async {
     try {
-      // Extract relevant data from the response
-    //   String orderDetails = """
-    //   Item Name: ${responseData['response']['orderItemXrefTypeList'][0]['itemName']}
-    //   Number of Pieces: ${responseData['response']['orderItemXrefTypeList'][0]['noOfPcs']}
-    //   Order Quantity: ${responseData['response']['orderItemXrefTypeList'][0]['orderQty']}
-    //   Price: ${responseData['response']['orderItemXrefTypeList'][0]['price']}
-    //   Order Number: ${responseData['response']['orderNumber']}
-    //   Order Date: ${responseData['response']['orderDate']}
-    //   Party Code: ${responseData['response']['partyCode']}
-    //   Party Name: ${responseData['response']['partyName']}
-    //   Party Address: ${responseData['response']['partyAddress']}
-    //   Party State: ${responseData['response']['partyState']}
-    //   Party GST Number: ${responseData['response']['partyGSTNumber']}
-    //   Proprietor Name: ${responseData['response']['proprietorName']}
-    //   Outstanding Amount: ${responseData['response']['partyOutStandingAmount']}
-    //   Booking Place: ${responseData['response']['bookingPlace']}
-    //   Transport Name: ${responseData['response']['transportName']}
-    //   End User Message: ${responseData['endUserMessage']}
-    // """;
+      if (responseData != null && responseData.containsKey('response')) {
+        Map<String, dynamic> response = responseData['response'];
+        String orderDate = response['returnOrderDate'];
+        DateTime dateTime = DateTime.parse(orderDate);
+        DateFormat formatter = DateFormat('dd-MM-yyyy');
+        String formattedOrderDate = formatter.format(dateTime);
+        String orderNumber = response['returnOrderNumber'];
+        String partyName = response['partyName'];
+        String partyCode = response['partyCode'];
+        String bookingPlace = response['bookingPlace'];
+        String transportName = response['transportName'];
 
-// Retrieve orderDate from responseData
-      String orderDate = responseData['response']['orderDate'];
+        NumberFormat amountFormatter =
+        NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+        double totalCost = response['totalCost'];
+        String formattedOrderAmount = '₹${amountFormatter.format(totalCost)}';
 
-// Parse the orderDate string into a DateTime object
-      DateTime dateTime = DateTime.parse(orderDate);
+        String orderDetails =
+               "Order ID: *$orderNumber* \n" +
+                "Order Date: *$formattedOrderDate* \n" +
+                "Order Amount: *$formattedOrderAmount* \n" +
+                "Party Name (Code): *$partyName ($partyCode)* \n" +
+                "Booking Place: *$bookingPlace* \n" +
+                "Transport Name: *$transportName* \n";
 
-// Define the desired date format
-      DateFormat formatter = DateFormat('dd-MM-yyyy');
-
-// Format the DateTime object to the desired format
-      String formattedOrderDate = formatter.format(dateTime);
-
-      // Format the order amount with Rupee symbol
-      NumberFormat amountFormatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
-      String formattedOrderAmount = '₹${amountFormatter.format(responseData['response']['totalCostWithGST'])}';
-
-
-// Now you can use formattedOrderDate in your string template
-      String orderDetails = """
-    Order ID: ${responseData['response']['orderNumber']}
-    Order Date: ${formattedOrderDate}
-    Order Amount: ${formattedOrderAmount}
-    Party Name (Code): ${responseData['response']['partyName']} (${responseData['response']['partyCode']})
-    Booking Place: ${responseData['response']['bookingPlace']}
-    Transport Name: ${responseData['response']['transportName']}
-""";
-
-      await Share.share(orderDetails, subject: 'Order Details');
+        await Share.share(orderDetails, subject: 'Order Details');
+      } else {
+        print('Invalid or incomplete response.');
+      }
     } catch (error) {
       print('Error sharing order details: $error');
     }
   }
 
-  // Future<void> saveDataToTextDocument(String data) async {
-  //   try {
-  //     Directory directory = Directory('/storage/emulated/0/Download');
-  //     String fileName = "order_details.txt";
-  //     String filePath = '${directory.path}/$fileName';
-  //
-  //     final file = File(filePath);
-  //
-  //     // Write formattedData to the file
-  //     await file.writeAsString(data);
-  //
-  //     // Share the order details
-  //     await _shareFile(filePath);
-  //   } catch (e) {
-  //     // Handle exceptions
-  //     print('Exception: $e');
-  //   }
-  // }
-  //
-  // Future<void> _shareFile(String filePath) async {
-  //   try {
-  //     // Check if the file exists
-  //     File file = File(filePath);
-  //     if (await file.exists()) {
-  //       // Read the content of the file
-  //       String fileContent = await file.readAsString();
-  //
-  //       // Share the file content using Share package
-  //       await Share.share(fileContent, subject: 'Order Details');
-  //     } else {
-  //       print('File not found: $filePath');
-  //     }
-  //   } catch (error) {
-  //     print('Error sharing order details: $error');
-  //   }
-  // }
-  //
 
 
 
