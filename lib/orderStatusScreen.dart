@@ -303,11 +303,16 @@ class orderStatusScreen extends StatelessWidget {
     try {
       if (responseData != null && responseData.containsKey('response')) {
         Map<String, dynamic> response = responseData['response'];
-        String orderDate = response['returnOrderDate'];
-        DateTime dateTime = DateTime.parse(orderDate);
-        DateFormat formatter = DateFormat('dd-MM-yyyy');
-        String formattedOrderDate = formatter.format(dateTime);
-        String orderNumber = response['returnOrderNumber'];
+        String orderDate = response['orderDate'];
+
+
+        DateTime date = DateTime.parse(orderDate);
+        String formattedOrderDate = DateFormat('dd MMM, yyyy').format(date);
+
+        // DateTime dateTime = DateTime.parse(orderDate);
+        // DateFormat formatter = DateFormat('dd-MM-yyyy');
+        // String formattedOrderDate = formatter.format(dateTime);
+        String orderNumber = response['orderNumber'];
         String partyName = response['partyName'];
         String partyCode = response['partyCode'];
         String bookingPlace = response['bookingPlace'];

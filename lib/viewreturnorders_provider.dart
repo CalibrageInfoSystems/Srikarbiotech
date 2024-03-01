@@ -15,6 +15,10 @@ class ViewReturnOrdersProvider extends ChangeNotifier {
   String toDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
   bool filterIconStatus = false;
 
+  final TextEditingController _partyController = TextEditingController();
+
+  TextEditingController get getPartyController => _partyController;
+
   bool get filterStatus => filterIconStatus;
   set filterStatus(bool newStatus) {
     filterIconStatus = newStatus;
@@ -93,12 +97,23 @@ class ViewReturnOrdersProvider extends ChangeNotifier {
     apiPartyCode = null;
     apiStatusId = null;
 
+    _partyController.clear();
+
     notifyListeners();
   }
 
   void storeIntoReturnOrdersProvider(List<ReturnOrdersList> items) {
     returnOrdersProviderData.clear();
     returnOrdersProviderData.addAll(items);
+    notifyListeners();
+  }
+
+  int _changePage = 0;
+
+  int get changeIndex => _changePage;
+
+  set changeIndex(int index) {
+    _changePage = index;
     notifyListeners();
   }
 }
