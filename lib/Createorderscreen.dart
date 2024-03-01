@@ -529,30 +529,52 @@ class _ProductListState extends State<Createorderscreen> {
                                       children: [
                                         Row(
                                           children: [
-                                            Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              mainAxisAlignment: MainAxisAlignment.start,
-                                              children: [
-                                                RichText(
-                                                  overflow: TextOverflow.ellipsis,
-                                                  maxLines: 1,
-                                                  text: TextSpan(
-                                                    text: '${productresp.itemName.toString()}\n',
-                                                    style: TextStyle(
-                                                      color: Color(0xFF424242),
-                                                      fontSize: 16,
-                                                      fontFamily: "Roboto",
-                                                      fontWeight: FontWeight.w700,
-                                                    ),
-                                                  ),
-                                                ),
-                                                SizedBox(
-                                                  height: 8.0,
-                                                ),
-                                                Row(
-                                                  // crossAxisAlignment: CrossAxisAlignment.start,
-                                                  // mainAxisAlignment: MainAxisAlignment.start,
+                                            Expanded(
+                                              flex: 6,
+                                              child: Container(
+                                                child: Column(
+                                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                                  mainAxisAlignment: MainAxisAlignment.start,
                                                   children: [
+                                                    RichText(
+                                                      overflow: TextOverflow.clip,
+                                                      //    maxLines: 2,
+                                                      text: TextSpan(
+                                                        text: '${productresp.itemName.toString()}',
+                                                        style: TextStyle(
+                                                          color: Color(0xFF424242),
+                                                          fontSize: 16,
+                                                          fontFamily: "Roboto",
+                                                          fontWeight: FontWeight.w700,
+                                                        ),
+                                                      ),
+                                                    ),
+
+                                                    // Container(
+                                                    //   child: Text(
+                                                    //     '${productresp.itemName.toString()}\n',
+                                                    //     style: TextStyle(
+                                                    //       color: Color(0xFF424242),
+                                                    //       fontSize: 16,
+                                                    //       // height: 2,
+                                                    //       fontFamily: "Roboto",
+                                                    //       fontWeight: FontWeight.w700,
+                                                    //     ),
+                                                    //   ),
+                                                    // ),
+                                                    // Text(
+                                                    //   '${productresp.itemName.toString()}',
+                                                    //   style: TextStyle(
+                                                    //     color: Color(0xFF424242),
+                                                    //     fontSize: 16,
+                                                    //     height: 1.5,
+                                                    //     fontFamily: "Roboto",
+                                                    //     fontWeight: FontWeight.w700,
+                                                    //   ),
+                                                    // ),
+                                                    SizedBox(
+                                                      height: 5.0,
+                                                    ),
                                                     Container(
                                                       child: Text(
                                                         '${productresp.itmsGrpNam.toString()}',
@@ -564,83 +586,79 @@ class _ProductListState extends State<Createorderscreen> {
                                                         ),
                                                       ),
                                                     ),
-                                                    // Spacer(),
+
                                                     // Row(
-                                                    //   crossAxisAlignment: CrossAxisAlignment.end,
-                                                    //   mainAxisAlignment: MainAxisAlignment.end,
+                                                    //   // crossAxisAlignment: CrossAxisAlignment.start,
+                                                    //   // mainAxisAlignment: MainAxisAlignment.start,
                                                     //   children: [
-                                                    //     Container(
-                                                    //       child: Row(
-                                                    //         crossAxisAlignment: CrossAxisAlignment.end,
-                                                    //         mainAxisAlignment: MainAxisAlignment.end,
-                                                    //         children: [
-                                                    //           Text(
-                                                    //             '${productresp.ugpCode.toString()}',
-                                                    //             style: TextStyle(
-                                                    //               color: Color(0xFFe78337),
-                                                    //               fontFamily: "Roboto",
-                                                    //               fontWeight: FontWeight.w600,
-                                                    //               fontSize: 12.0,
-                                                    //             ),
-                                                    //           )
-                                                    //         ],
-                                                    //       ),
-                                                    //     )
+                                                    //     // Spacer(),
+                                                    //     // Row(
+                                                    //     //   crossAxisAlignment: CrossAxisAlignment.end,
+                                                    //     //   mainAxisAlignment: MainAxisAlignment.end,
+                                                    //     //   children: [
+                                                    //     //     Container(
+                                                    //     //       child: Row(
+                                                    //     //         crossAxisAlignment: CrossAxisAlignment.end,
+                                                    //     //         mainAxisAlignment: MainAxisAlignment.end,
+                                                    //     //         children: [
+                                                    //     //           Text(
+                                                    //     //             '${productresp.ugpCode.toString()}',
+                                                    //     //             style: TextStyle(
+                                                    //     //               color: Color(0xFFe78337),
+                                                    //     //               fontFamily: "Roboto",
+                                                    //     //               fontWeight: FontWeight.w600,
+                                                    //     //               fontSize: 12.0,
+                                                    //     //             ),
+                                                    //     //           )
+                                                    //     //         ],
+                                                    //     //       ),
+                                                    //     //     )
+                                                    //     //   ],
+                                                    //     // ),
                                                     //   ],
                                                     // ),
-                                                  ],
-                                                ),
-                                                SizedBox(
-                                                  height: 5.0,
-                                                ),
-                                                Row(
-                                                  children: [
-                                                    RichText(
-                                                      maxLines: 1,
-                                                      text: TextSpan(
-                                                        text: '₹${productresp.price.toString()}',
-                                                        style: TextStyle(
-                                                          color: Color(0xFFe78337),
-                                                          fontFamily: "Roboto",
-                                                          fontWeight: FontWeight.w600,
-                                                          fontSize: 16.0,
-                                                        ),
-                                                        // children: [
-                                                        //   TextSpan(
-                                                        //     text: '',
-                                                        //     style: TextStyle(
-                                                        //       color: Color(0xFF8b8b8b),
-                                                        //       fontWeight: FontWeight.bold,
-                                                        //       fontSize: 13.0,
-                                                        //       // decoration: TextDecoration.lineThrough,
-                                                        //     ),
-                                                        //   ),
-                                                        // ],
-                                                      ),
-                                                    ),
                                                     SizedBox(
-                                                      width: 15.0,
+                                                      height: 5.0,
                                                     ),
-                                                    Container(
-                                                      child: Row(
-                                                        crossAxisAlignment: CrossAxisAlignment.end,
-                                                        mainAxisAlignment: MainAxisAlignment.end,
-                                                        children: [
-                                                          Text(
-                                                            '${productresp.ugpCode.toString()}',
+                                                    Row(
+                                                      children: [
+                                                        RichText(
+                                                          maxLines: 1,
+                                                          text: TextSpan(
+                                                            text: '₹${productresp.price.toString()}',
                                                             style: TextStyle(
                                                               color: Color(0xFFe78337),
                                                               fontFamily: "Roboto",
                                                               fontWeight: FontWeight.w600,
-                                                              fontSize: 12.0,
+                                                              fontSize: 16.0,
                                                             ),
-                                                          )
-                                                        ],
-                                                      ),
-                                                    )
+                                                          ),
+                                                        ),
+                                                        SizedBox(
+                                                          width: 15.0,
+                                                        ),
+                                                        Container(
+                                                          child: Row(
+                                                            crossAxisAlignment: CrossAxisAlignment.end,
+                                                            mainAxisAlignment: MainAxisAlignment.end,
+                                                            children: [
+                                                              Text(
+                                                                '${productresp.ugpCode.toString()}',
+                                                                style: TextStyle(
+                                                                  color: Color(0xFFe78337),
+                                                                  fontFamily: "Roboto",
+                                                                  fontWeight: FontWeight.w600,
+                                                                  fontSize: 12.0,
+                                                                ),
+                                                              )
+                                                            ],
+                                                          ),
+                                                        )
+                                                      ],
+                                                    ),
                                                   ],
                                                 ),
-                                              ],
+                                              ),
                                             ),
                                             Spacer(),
                                             Image.asset(
@@ -649,9 +667,9 @@ class _ProductListState extends State<Createorderscreen> {
                                             )
                                           ],
                                         ),
-                                        // SizedBox(
-                                        //   height: 5.0,
-                                        // ),
+                                        SizedBox(
+                                          height: 5.0,
+                                        ),
                                         Row(
                                           crossAxisAlignment: CrossAxisAlignment.start,
                                           mainAxisAlignment: MainAxisAlignment.start,
