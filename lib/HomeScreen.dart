@@ -645,49 +645,49 @@ class _imagesliderState extends State<imageslider> {
                                         //     ),
                                         //   ),
                                         // ),
-                                        FutureBuilder(
-                                          future: Future.value(), // Replace yourAsyncFunction with the actual function that returns a Future
-                                          builder: (context, snapshot) {
-                                            if (snapshot.connectionState == ConnectionState.waiting) {
-                                              return Center(
-                                                child: CircularProgressIndicator(),
-                                              );
-                                            } else if (snapshot.connectionState == ConnectionState.done) {
-                                              if (snapshot.hasError) {
-                                                return Text('Error: ${snapshot.error}');
-                                              } else {
-                                                return Align(
-                                                  alignment: Alignment.topCenter,
-                                                  child: CarouselSlider(
-                                                    items: imageList
-                                                        .map((item) => Image.network(
-                                                              item.FilePath,
-                                                              fit: BoxFit.fitWidth,
-                                                              width: MediaQuery.of(context).size.width,
-                                                            ))
-                                                        .toList(),
-                                                    carouselController: carouselController,
-                                                    options: CarouselOptions(
-                                                      scrollPhysics: const BouncingScrollPhysics(),
-                                                      autoPlay: true,
-                                                      height: MediaQuery.of(context).size.height,
-                                                      aspectRatio: 23 / 9,
-                                                      viewportFraction: 1,
-                                                      onPageChanged: (index, reason) {
-                                                        setState(() {
-                                                          currentIndex = index;
-                                                        });
-                                                      },
-                                                    ),
-                                                  ),
-                                                );
-                                              }
-                                            } else {
-                                              return Text('ConnectionState: ${snapshot.connectionState}');
-                                            }
-                                          },
+                                        // FutureBuilder(
+                                        //   future: Future.value(), // Replace yourAsyncFunction with the actual function that returns a Future
+                                        //   builder: (context, snapshot) {
+                                        //     if (snapshot.connectionState == ConnectionState.waiting) {
+                                        //       return Center(
+                                        //         child: CircularProgressIndicator(),
+                                        //       );
+                                        //     } else if (snapshot.connectionState == ConnectionState.done) {
+                                        //       if (snapshot.hasError) {
+                                        //         return Text('Error: ${snapshot.error}');
+                                        //       } else {
+                                        //         return
+                                        //       }
+                                        //     } else {
+                                        //       return Text('ConnectionState: ${snapshot.connectionState}');
+                                        //     }
+                                        //   },
+                                        // ),
+                                        Align(
+                                          alignment: Alignment.topCenter,
+                                          child: CarouselSlider(
+                                            items: imageList
+                                                .map((item) => Image.network(
+                                                      item.FilePath,
+                                                      fit: BoxFit.fitWidth,
+                                                      width: MediaQuery.of(context).size.width,
+                                                    ))
+                                                .toList(),
+                                            carouselController: carouselController,
+                                            options: CarouselOptions(
+                                              scrollPhysics: const BouncingScrollPhysics(),
+                                              autoPlay: true,
+                                              height: MediaQuery.of(context).size.height,
+                                              aspectRatio: 23 / 9,
+                                              viewportFraction: 1,
+                                              onPageChanged: (index, reason) {
+                                                setState(() {
+                                                  currentIndex = index;
+                                                });
+                                              },
+                                            ),
+                                          ),
                                         ),
-
                                         Container(
                                           width: MediaQuery.of(context).size.width,
                                           //  padding: EdgeInsets.all(20.0),
