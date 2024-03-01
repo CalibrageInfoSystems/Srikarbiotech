@@ -1,9 +1,9 @@
 import 'dart:convert';
 
-import 'package:autocomplete_textfield/autocomplete_textfield.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
@@ -34,7 +34,6 @@ class _VieworderPageState extends State<ViewOrders> {
   List<OrderResult> filterorderesponselist = [];
 
   TextEditingController searchController = TextEditingController();
-
 
   late Future<List<OrderResult>?> apiData;
 
@@ -75,8 +74,16 @@ class _VieworderPageState extends State<ViewOrders> {
     // String formattedOneWeekBackDate =
     //     DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
 
-    final url = Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
-    final requestBody = {"PartyCode": viewOrdersProvider.getApiPartyCode, "StatusId": viewOrdersProvider.getApiStatusId, "FormDate": viewOrdersProvider.apiFromDate, "ToDate": viewOrdersProvider.apiToDate, "CompanyId": companyId, "UserId": userId};
+    final url = Uri.parse(
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
+    final requestBody = {
+      "PartyCode": viewOrdersProvider.getApiPartyCode,
+      "StatusId": viewOrdersProvider.getApiStatusId,
+      "FormDate": viewOrdersProvider.apiFromDate,
+      "ToDate": viewOrdersProvider.apiToDate,
+      "CompanyId": companyId,
+      "UserId": userId
+    };
 
     debugPrint('_______view orders____1___');
     debugPrint(jsonEncode(requestBody));
@@ -97,7 +104,8 @@ class _VieworderPageState extends State<ViewOrders> {
         print('===========>$listResult');
 
         setState(() {
-          orderesponselist = listResult.map((json) => OrderResult.fromJson(json)).toList();
+          orderesponselist =
+              listResult.map((json) => OrderResult.fromJson(json)).toList();
           filterorderesponselist = List.from(orderesponselist);
         });
 
@@ -121,7 +129,10 @@ class _VieworderPageState extends State<ViewOrders> {
   void filterOrderBasedOnProduct(String input) {
     apiData.then((data) {
       setState(() {
-        viewOrdersProvider.storeIntoViewOrderProvider(data!.where((item) => item.partyName.toLowerCase().contains(input.toLowerCase())).toList());
+        viewOrdersProvider.storeIntoViewOrderProvider(data!
+            .where((item) =>
+            item.partyName.toLowerCase().contains(input.toLowerCase()))
+            .toList());
       });
     });
   }
@@ -130,7 +141,8 @@ class _VieworderPageState extends State<ViewOrders> {
     final String searchTerm = searchController.text.toLowerCase();
     setState(() {
       filterorderesponselist = orderesponselist.where((dealer) {
-        return dealer.partyName.toLowerCase().contains(searchTerm) || dealer.partyGSTNumber!.toLowerCase().contains(searchTerm);
+        return dealer.partyName.toLowerCase().contains(searchTerm) ||
+            dealer.partyGSTNumber!.toLowerCase().contains(searchTerm);
       }).toList();
     });
   }
@@ -157,52 +169,55 @@ class _VieworderPageState extends State<ViewOrders> {
                     viewOrdersProvider.clearFilter();
                     return true; // Allow the back navigation
                   },
-              child: Padding(
-                padding: const EdgeInsets.all(10),
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    _viewOrdersSearchBarAndFilter(),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    if (ordersProvider.viewOrderProviderData.isNotEmpty)
-                      Expanded(
-                        child: ListView.builder(
-                          shrinkWrap: true,
-                          itemCount: data.length,
-                          // Change this to the number of static items you want
-                          itemBuilder: (context, index) {
-                            String dateString = data[index].orderDate;
-                            DateTime date = DateTime.parse(dateString);
-                            String formattedDate = DateFormat('dd MMM, yyyy').format(date);
+                  child: Padding(
+                    padding: const EdgeInsets.all(10),
+                    child: Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: [
+                        _viewOrdersSearchBarAndFilter(),
+                        const SizedBox(
+                          height: 10.0,
+                        ),
+                        if (ordersProvider.viewOrderProviderData.isNotEmpty)
+                          Expanded(
+                            child: ListView.builder(
+                              shrinkWrap: true,
+                              itemCount: data.length,
+                              // Change this to the number of static items you want
+                              itemBuilder: (context, index) {
+                                String dateString = data[index].orderDate;
+                                DateTime date = DateTime.parse(dateString);
+                                String formattedDate =
+                                DateFormat('dd MMM, yyyy').format(date);
 
-                            return OrderCard(orderResult: data[index], formattedDate: formattedDate);
-                          },
-                        ),
-                      )
-                    else
-                      const Expanded(
-                        child: SizedBox(
-                          width: double.infinity,
-                          child: Column(
-                            mainAxisAlignment: MainAxisAlignment.center,
-                            crossAxisAlignment: CrossAxisAlignment.center,
-                            children: [
-                              Padding(
-                                padding: EdgeInsets.all(5.0),
-                                child: Text(
-                                  'No Orders found!',
-                                  style: CommonUtils.Mediumtext_14_cb,
-                                ),
+                                return OrderCard(
+                                    orderResult: data[index],
+                                    formattedDate: formattedDate);
+                              },
+                            ),
+                          )
+                        else
+                          const Expanded(
+                            child: SizedBox(
+                              width: double.infinity,
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                crossAxisAlignment: CrossAxisAlignment.center,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.all(5.0),
+                                    child: Text(
+                                      'No Orders found!',
+                                      style: CommonUtils.Mediumtext_14_cb,
+                                    ),
+                                  ),
+                                ],
                               ),
-                            ],
-                          ),
-                        ),
-                      )
-                  ],
-                ),
-              ));
+                            ),
+                          )
+                      ],
+                    ),
+                  ));
             }
           },
         ),
@@ -228,7 +243,8 @@ class _VieworderPageState extends State<ViewOrders> {
                     viewOrdersProvider.clearFilter();
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
                     );
                   },
                   child: const Icon(
@@ -259,11 +275,14 @@ class _VieworderPageState extends State<ViewOrders> {
                     viewOrdersProvider.clearFilter();
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
                     );
                   },
                   child: Image.asset(
-                    companyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
+                    companyId == 1
+                        ? 'assets/srikar-home-icon.png'
+                        : 'assets/seeds-home-icon.png',
                     width: 30,
                     height: 30,
                   ),
@@ -290,13 +309,16 @@ class _VieworderPageState extends State<ViewOrders> {
             child: SizedBox(
               height: 45,
               child: TextField(
+                cursorColor: CommonUtils.orangeColor,
                 onChanged: (input) => filterOrderBasedOnProduct(input),
                 decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.only(top: 10, left: 15),
                   hintText: 'Order Search',
                   hintStyle: CommonUtils.hintstyle_14,
                   suffixIcon: const Icon(Icons.search),
                   border: CommonUtils.searchBarOutPutInlineBorder,
-                  focusedBorder: CommonUtils.searchBarEnabledNdFocuedOutPutInlineBorder,
+                  focusedBorder:
+                  CommonUtils.searchBarEnabledNdFocuedOutPutInlineBorder,
                 ),
               ),
             ),
@@ -306,16 +328,23 @@ class _VieworderPageState extends State<ViewOrders> {
           ),
           GestureDetector(
             onTap: () {
-              // Handle the click action here
               showModalBottomSheet(
+                isScrollControlled: true,
                 context: context,
-                builder: (context) => const FilterBottomSheet(),
+                builder: (context) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                  child: const FilterBottomSheet(),
+                ),
               );
             },
             child: Container(
               height: 45,
               width: 45,
-              decoration: viewOrdersProvider.filterStatus ? CommonUtils.borderForAppliedFilter : CommonUtils.borderForFilter,
+              decoration: viewOrdersProvider.filterStatus
+                  ? CommonUtils.borderForAppliedFilter
+                  : CommonUtils.borderForFilter,
               child: Center(
                 child: SvgPicture.asset(
                   'assets/apps-sort.svg',
@@ -348,9 +377,14 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   final _primaryOrange = const Color(0xFFe58338);
   int selectedChipIndex = 1;
 
-  final _titleTextStyle = const TextStyle(color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold);
+  final _titleTextStyle = const TextStyle(
+      color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold);
 
-  final _clearTextStyle = const TextStyle(color: Color(0xFFe58338), fontSize: 16, decoration: TextDecoration.underline, decorationColor: Color(0xFFe58338));
+  final _clearTextStyle = const TextStyle(
+      color: Color(0xFFe58338),
+      fontSize: 16,
+      decoration: TextDecoration.underline,
+      decorationColor: Color(0xFFe58338));
 
   DateTime toDate = DateTime.now();
   DateTime fromDate = DateTime.now();
@@ -399,7 +433,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> getpaymentmethods() async {
-    final response = await http.get(Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Master/GetAllTypeCdDmt/1'));
+    final response = await http.get(Uri.parse(
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Master/GetAllTypeCdDmt/1'));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -412,9 +447,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> _selectDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
@@ -455,11 +490,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Widget buildDateToInput(
-    BuildContext context,
-    String labelText,
-    TextEditingController controller,
-    VoidCallback onTap,
-  ) {
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      VoidCallback onTap,
+      ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -471,7 +506,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             textAlign: TextAlign.start,
           ),
         ),
-        const SizedBox(height: 4.0), // Add space between labelText and TextFormField
+        const SizedBox(
+            height: 4.0), // Add space between labelText and TextFormField
         GestureDetector(
           onTap: onTap,
           child: Container(
@@ -523,9 +559,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> _selectfromDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
@@ -567,11 +603,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Widget buildDateInputfromdate(
-    BuildContext context,
-    String labelText,
-    TextEditingController controller,
-    VoidCallback onTap,
-  ) {
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      VoidCallback onTap,
+      ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -583,7 +619,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             textAlign: TextAlign.start,
           ),
         ),
-        const SizedBox(height: 4.0), // Add space between labelText and TextFormField
+        const SizedBox(
+            height: 4.0), // Add space between labelText and TextFormField
         GestureDetector(
           onTap: onTap,
           child: Container(
@@ -638,7 +675,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   Future<void> fetchData() async {
     slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
     savedCompanyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-    final response = await http.get(Uri.parse(baseUrl + GetAllDealersBySlpCode + '$savedCompanyId' + "/" + '$slpCode'));
+    final response = await http.get(Uri.parse(baseUrl +
+        GetAllDealersBySlpCode +
+        '$savedCompanyId' +
+        "/" +
+        '$slpCode'));
 
     // print("apiUrl: ${apiUrl}");
     if (response.statusCode == 200) {
@@ -661,281 +702,340 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     return Consumer<ViewOrdersProvider>(
       builder: (context, provider, _) => SingleChildScrollView(
           child: Padding(
-        padding: const EdgeInsets.all(20),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          mainAxisSize: MainAxisSize.min,
-          children: <Widget>[
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: <Widget>[
-                Text(
-                  'Filter By',
-                  style: _titleTextStyle,
-                ),
-                GestureDetector(
-                  onTap: () {
-                    provider.clearFilter();
-                  },
-                  child: Text(
-                    'Clear all filters',
-                    style: _clearTextStyle,
-                  ),
-                ),
-              ],
-            ),
-            Container(
-              margin: const EdgeInsets.only(top: 5, bottom: 12),
-              child: const Divider(
-                height: 5,
-              ),
-            ),
-            Column(
+            padding: const EdgeInsets.all(20),
+            child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
-                  child: Text(
-                    'Party',
-                    style: CommonUtils.txSty_13O_F6,
-                  ),
-                ),
-                const SizedBox(
-                  height: 4.0,
-                ),
-
-                Container(
-                  height: 40.0,
-                  decoration: CommonUtils.decorationO_R10W1,
-                  child: DropdownButtonHideUnderline(
-                    child: ButtonTheme(
-                      alignedDropdown: true,
-                      child: DropdownButton<int>(
-                        hint: Text(
-                          'Select Party',
-                          style: CommonUtils.txSty_13O_F6,
-                        ),
-                        value: provider.dropDownParty,
-                        onChanged: (int? value) {
-                          setState(() {
-                            selectedCardCode = value!;
-                            provider.dropDownParty = value;
-                            if (selectedCardCode != -1) {
-                              selectedValue = dropdownItems[selectedCardCode]['cardCode'];
-                              selectedName = dropdownItems[selectedCardCode]['cardName'];
-                              provider.getApiPartyCode = dropdownItems[selectedCardCode]['cardCode'];
-                              print("selectedValue:$selectedValue");
-                              print("selectedName:$selectedName");
-                            } else {
-                              print("==========");
-                              print(selectedValue);
-                              print(selectedName);
-                            }
-                            // isDropdownValid = selectedTypeCdId != -1;
-                          });
-                        },
-                        items: dropdownItems.asMap().entries.map((entry) {
-                          final index = entry.key;
-                          final item = entry.value;
-                          return DropdownMenuItem<int>(
-                              value: index,
-                              child: Text(
-                                item['cardName'],
-                                overflow: TextOverflow.visible,
-                                // wrapText: true,
-                              ));
-                        }).toList(),
-                        style: CommonUtils.txSty_13O_F6,
-                        iconSize: 20,
-                        icon: null,
-                        isExpanded: true,
-                        underline: const SizedBox(),
+              mainAxisSize: MainAxisSize.min,
+              children: <Widget>[
+                Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: <Widget>[
+                    Text(
+                      'Filter By',
+                      style: _titleTextStyle,
+                    ),
+                    GestureDetector(
+                      onTap: () {
+                        provider.clearFilter();
+                      },
+                      child: Text(
+                        'Clear all filters',
+                        style: _clearTextStyle,
                       ),
                     ),
+                  ],
+                ),
+                Container(
+                  margin: const EdgeInsets.only(top: 5, bottom: 12),
+                  child: const Divider(
+                    height: 5,
                   ),
+                ),
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.only(left: 5.0),
+                      child: Text(
+                        'Party',
+                        style: CommonUtils.txSty_13O_F6,
+                      ),
+                    ),
+                    const SizedBox(
+                      height: 4.0,
+                    ),
+                    Container(
+                      padding: const EdgeInsets.only(
+                        right: 5,
+                        top: 18,
+                      ),
+                      height: 40.0,
+                      decoration: CommonUtils.decorationO_R10W1,
+                      child: TypeAheadField(
+                        controller: provider.getPartyController,
+                        builder: (context, controller, focusNode) => TextField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          autofocus: false,
+                          style: CommonUtils.Mediumtext_12_0,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              hintText: 'Select Party',
+                              hintStyle: CommonUtils.Mediumtext_12_0),
+                        ),
+                        itemBuilder: (context, value) {
+                          return ListTile(
+                            dense: true,
+                            title: Text(
+                              value,
+                              style: CommonUtils.Mediumtext_12_0,
+                            ),
+                          );
+                        },
+                        onSelected: (selectedValue) {
+                          provider.getPartyController.text = selectedValue;
+                        },
+                        suggestionsCallback: (search) {
+                          if (search == '') {
+                            return null;
+                          }
+                          final filteredSuggestions = dropdownItems
+                              .where((party) => party['cardName']
+                              .toLowerCase()
+                              .startsWith(search.toLowerCase()))
+                              .map((party) => party['cardName'])
+                              .toList();
+                          if (filteredSuggestions.isEmpty) {
+                            return ['No party found'];
+                          }
+
+                          return filteredSuggestions;
+                        },
+                      ),
+
+                      // DropdownButtonHideUnderline(
+                      //   child: ButtonTheme(
+                      //     alignedDropdown: true,
+                      //     child: DropdownButton<int>(
+                      //       hint: Text(
+                      //         'Select Party',
+                      //         style: CommonUtils.txSty_13O_F6,
+                      //       ),
+                      //       value: provider.dropDownParty,
+                      //       onChanged: (int? value) {
+                      //         setState(() {
+                      //           selectedCardCode = value!;
+                      //           provider.dropDownParty = value;
+                      //           if (selectedCardCode != -1) {
+                      //             selectedValue =
+                      //                 dropdownItems[selectedCardCode]['cardCode'];
+                      //             selectedName =
+                      //                 dropdownItems[selectedCardCode]['cardName'];
+                      //             provider.getApiPartyCode =
+                      //                 dropdownItems[selectedCardCode]['cardCode'];
+                      //             print("selectedValue:$selectedValue");
+                      //             print("selectedName:$selectedName");
+                      //           } else {
+                      //             print("==========");
+                      //             print(selectedValue);
+                      //             print(selectedName);
+                      //           }
+                      //           // isDropdownValid = selectedTypeCdId != -1;
+                      //         });
+                      //       },
+                      //       items: dropdownItems.asMap().entries.map((entry) {
+                      //         final index = entry.key;
+                      //         final item = entry.value;
+                      //         return DropdownMenuItem<int>(
+                      //             value: index,
+                      //             child: Text(
+                      //               item['cardName'],
+                      //               overflow: TextOverflow.visible,
+                      //               // wrapText: true,
+                      //             ));
+                      //       }).toList(),
+                      //       style: CommonUtils.txSty_13O_F6,
+                      //       iconSize: 20,
+                      //       icon: null,
+                      //       isExpanded: true,
+                      //       underline: const SizedBox(),
+                      //     ),
+                      //   ),
+                      // ),
+                    ),
+                    const SizedBox(
+                      height: 10.0,
+                    ),
+                  ],
+                ),
+
+                const SizedBox(
+                  height: 10.0,
+                ),
+                SizedBox(
+                  height: 40,
+                  child: apiResponse == null
+                      ? const Center(child: CircularProgressIndicator.adaptive())
+                      : ListView.builder(
+                    scrollDirection: Axis.horizontal,
+                    shrinkWrap: true,
+                    itemCount: apiResponse!.listResult.length +
+                        1, // Add 1 for the "All" option
+                    itemBuilder: (BuildContext context, int index) {
+                      bool isSelected = index == provider.dropDownStatus;
+                      PaymentMode currentPaymode;
+
+                      // Handle the "All" option
+                      if (index == 0) {
+                        currentPaymode = PaymentMode(
+                          // Provide default values or handle the null case as needed
+                          typeCdId: null,
+                          classTypeId: 3,
+                          name: 'All',
+                          desc: 'All',
+                          tableName: 'all',
+                          columnName: 'all',
+                          sortOrder: 0,
+                          isActive: true,
+                        );
+                      } else {
+                        currentPaymode = apiResponse!.listResult[
+                        index - 1]; // Adjust index for actual data
+                      }
+                      return GestureDetector(
+                        onTap: () {
+                          setState(() {
+                            provider.dropDownStatus = index;
+                            selectedPaymode = currentPaymode;
+                          });
+                          payid = currentPaymode.typeCdId;
+                          provider.getApiStatusId = currentPaymode.typeCdId;
+                          Selected_PaymentMode = currentPaymode.desc;
+                          print('payid:$payid');
+                        },
+                        child: Container(
+                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                          decoration: BoxDecoration(
+                            color: isSelected
+                                ? const Color(0xFFe78337)
+                                : const Color(0xFFe78337).withOpacity(0.1),
+                            border: Border.all(
+                              color: isSelected
+                                  ? const Color(0xFFe78337)
+                                  : const Color(0xFFe78337),
+                              width: 1.0,
+                            ),
+                            borderRadius: BorderRadius.circular(8.0),
+                          ),
+                          child: IntrinsicWidth(
+                            child: Column(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10.0),
+                                  child: Row(
+                                    children: [
+                                      Text(
+                                        currentPaymode.desc.toString(),
+                                        style: TextStyle(
+                                          color: isSelected
+                                              ? Colors.white
+                                              : Colors.black,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                      );
+                    },
+                  ),
+                ),
+
+                const SizedBox(
+                  height: 10.0,
+                ),
+
+                // From date
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    buildDateInputfromdate(
+                      context,
+                      'From Date',
+                      fromdateController,
+                          () => _selectfromDate(context, fromdateController),
+                    ),
+                  ],
                 ),
                 const SizedBox(
                   height: 10.0,
                 ),
-              ],
-            ),
 
-            const SizedBox(
-              height: 10.0,
-            ),
-            SizedBox(
-              height: 40,
-              child: apiResponse == null
-                  ? const Center(child: CircularProgressIndicator.adaptive())
-                  : ListView.builder(
-                      scrollDirection: Axis.horizontal,
-                      shrinkWrap: true,
-                      itemCount: apiResponse!.listResult.length + 1, // Add 1 for the "All" option
-                      itemBuilder: (BuildContext context, int index) {
-                        bool isSelected = index == provider.dropDownStatus;
-                        PaymentMode currentPaymode;
-
-                        // Handle the "All" option
-                        if (index == 0) {
-                          currentPaymode = PaymentMode(
-                            // Provide default values or handle the null case as needed
-                            typeCdId: null,
-                            classTypeId: 3,
-                            name: 'All',
-                            desc: 'All',
-                            tableName: 'all',
-                            columnName: 'all',
-                            sortOrder: 0,
-                            isActive: true,
-                          );
-                        } else {
-                          currentPaymode = apiResponse!.listResult[index - 1]; // Adjust index for actual data
-                        }
-                        return GestureDetector(
-                          onTap: () {
-                            setState(() {
-                              provider.dropDownStatus = index;
-                              selectedPaymode = currentPaymode;
-                            });
-                            payid = currentPaymode.typeCdId;
-                            provider.getApiStatusId = currentPaymode.typeCdId;
-                            Selected_PaymentMode = currentPaymode.desc;
-                            print('payid:$payid');
-                          },
-                          child: Container(
-                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                            decoration: BoxDecoration(
-                              color: isSelected ? const Color(0xFFe78337) : const Color(0xFFe78337).withOpacity(0.1),
-                              border: Border.all(
-                                color: isSelected ? const Color(0xFFe78337) : const Color(0xFFe78337),
-                                width: 1.0,
-                              ),
-                              borderRadius: BorderRadius.circular(8.0),
-                            ),
-                            child: IntrinsicWidth(
-                              child: Column(
-                                mainAxisAlignment: MainAxisAlignment.center,
-                                children: [
-                                  Container(
-                                    padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                    child: Row(
-                                      children: [
-                                        Text(
-                                          currentPaymode.desc.toString(),
-                                          style: TextStyle(
-                                            color: isSelected ? Colors.white : Colors.black,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
-                        );
-                      },
+                // To Date
+                Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    //333
+                    buildDateToInput(
+                      context,
+                      'To Date',
+                      todateController,
+                          () => _selectDate(context, todateController),
                     ),
-            ),
-
-            const SizedBox(
-              height: 10.0,
-            ),
-
-            // From date
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                buildDateInputfromdate(
-                  context,
-                  'From Date',
-                  fromdateController,
-                  () => _selectfromDate(context, fromdateController),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10.0,
-            ),
-
-            // To Date
-            Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                //333
-                buildDateToInput(
-                  context,
-                  'To Date',
-                  todateController,
-                  () => _selectDate(context, todateController),
-                ),
-              ],
-            ),
-            const SizedBox(
-              height: 10.0,
-            ),
-            Row(
-              children: [
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      Navigator.of(context).pop();
-                    },
-                    style: ElevatedButton.styleFrom(
-                      textStyle: const TextStyle(
-                        color: Colors.red,
-                      ),
-                      side: const BorderSide(
-                        color: Colors.red,
-                      ),
-                      backgroundColor: Colors.white,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
-                        ),
-                      ),
-                    ),
-                    child: const Text(
-                      'Cancel',
-                      style: TextStyle(
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
+                  ],
                 ),
                 const SizedBox(
-                  width: 20,
+                  height: 10.0,
                 ),
-                Expanded(
-                  child: ElevatedButton(
-                    onPressed: () {
-                      //apply
-                      getAppliedFilterData(context);
-                    },
-                    style: ElevatedButton.styleFrom(
-                      textStyle: const TextStyle(
-                        color: Colors.white,
-                      ),
-                      backgroundColor: _primaryOrange,
-                      shape: const RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
+                Row(
+                  children: [
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          Navigator.of(context).pop();
+                        },
+                        style: ElevatedButton.styleFrom(
+                          textStyle: const TextStyle(
+                            color: Colors.red,
+                          ),
+                          side: const BorderSide(
+                            color: Colors.red,
+                          ),
+                          backgroundColor: Colors.white,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          'Cancel',
+                          style: TextStyle(
+                            color: Colors.red,
+                          ),
                         ),
                       ),
                     ),
-                    child: const Text(
-                      'Apply',
-                      style: TextStyle(
-                        color: Colors.white,
+                    const SizedBox(
+                      width: 20,
+                    ),
+                    Expanded(
+                      child: ElevatedButton(
+                        onPressed: () {
+                          //apply
+                          getAppliedFilterData(context);
+                        },
+                        style: ElevatedButton.styleFrom(
+                          textStyle: const TextStyle(
+                            color: Colors.white,
+                          ),
+                          backgroundColor: _primaryOrange,
+                          shape: const RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                        ),
+                        child: const Text(
+                          'Apply',
+                          style: TextStyle(
+                            color: Colors.white,
+                          ),
+                        ),
                       ),
                     ),
-                  ),
+                  ],
                 ),
               ],
             ),
-          ],
-        ),
-      )),
+          )),
     );
   }
 
@@ -947,13 +1047,15 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     selectformattedtodate = DateFormat('yyyy-MM-dd').format(todate);
 
 // Convert the fromdateController text to 'yyyy-MM-dd'
-    DateTime pickedFromDate = DateFormat('dd-MM-yyyy').parse(fromdateController.text);
+    DateTime pickedFromDate =
+    DateFormat('dd-MM-yyyy').parse(fromdateController.text);
     selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
     print('Converted to date: $selectformattedtodate');
     print('Converted from date: $selectformattedfromdate');
     print('getAppliedFilterData called');
     try {
-      final url = Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
+      final url = Uri.parse(
+          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
       final requestBody = {
         "PartyCode": viewOrdersProvider.getApiPartyCode,
         "StatusId": viewOrdersProvider.getApiStatusId,
@@ -980,26 +1082,30 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           List<dynamic>? data = jsonResponse['response']['listResult'];
 
           if (data != null) {
-            List<OrderResult> result = data.map((item) => OrderResult.fromJson(item)).toList();
+            List<OrderResult> result =
+            data.map((item) => OrderResult.fromJson(item)).toList();
             viewOrdersProvider.storeIntoViewOrderProvider(result);
           } else {
             print('listResult is null');
             List<OrderResult> emptyList = [];
             viewOrdersProvider.storeIntoViewOrderProvider(emptyList);
-            CommonUtils.showCustomToastMessageLong('No Order found!', context, 2, 2);
+            CommonUtils.showCustomToastMessageLong(
+                'No Order found!', context, 2, 2);
           }
         } else {
           print('Request failed: ${jsonResponse['endUserMessage']}');
           List<OrderResult> emptyList = [];
           viewOrdersProvider.storeIntoViewOrderProvider(emptyList);
-          CommonUtils.showCustomToastMessageLong('No Order found!', context, 2, 2);
+          CommonUtils.showCustomToastMessageLong(
+              'No Order found!', context, 2, 2);
         }
       } else {
         print('Failed to fetch data: ${response.statusCode}');
       }
     } catch (e) {
       print('Error: $e');
-      CommonUtils.showCustomToastMessageLong('Something went wrong', context, 2, 2);
+      CommonUtils.showCustomToastMessageLong(
+          'Something went wrong', context, 2, 2);
     }
     Navigator.of(context).pop();
   }
@@ -1122,7 +1228,8 @@ class _OrderCardState extends State<OrderCard> {
                       // beside info
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 10, top: 0, bottom: 0),
+                          padding: const EdgeInsets.only(
+                              left: 10, top: 0, bottom: 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1138,7 +1245,8 @@ class _OrderCardState extends State<OrderCard> {
                                 height: 5.0,
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
                                     children: [
@@ -1147,7 +1255,8 @@ class _OrderCardState extends State<OrderCard> {
                                         style: CommonUtils.txSty_13B_Fb,
                                       ),
                                       Text(
-                                        widget.orderResult.orderNumber.toString(),
+                                        widget.orderResult.orderNumber
+                                            .toString(),
                                         style: CommonUtils.txSty_13O_F6,
                                       ),
                                     ],
@@ -1158,7 +1267,8 @@ class _OrderCardState extends State<OrderCard> {
                                 height: 5.0,
                               ),
                               Row(
-                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
                                 children: [
                                   // const Text(
                                   //   'Total Amount : ',
@@ -1188,7 +1298,8 @@ class _OrderCardState extends State<OrderCard> {
                   children: [
                     Container(
                       margin: const EdgeInsets.only(left: 5.0),
-                      padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 7),
+                      padding: const EdgeInsets.symmetric(
+                          vertical: 3, horizontal: 7),
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(10),
                         color: statusBgColor,

@@ -2,6 +2,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -159,8 +160,8 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                 return WillPopScope(
                   onWillPop: () async {
                     // Clear the cart data here
-                     returnOrdersProvider.clearFilter();
-                  //  viewOrdersProvider.clearFilter();
+                    returnOrdersProvider.clearFilter();
+                    //  viewOrdersProvider.clearFilter();
                     return true; // Allow the back navigation
                   },
                   child: Padding(
@@ -240,7 +241,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
             onTap: () {
               Navigator.pushReplacement(
                 context,
-                MaterialPageRoute(builder: (context) => HomeScreen()),
+                MaterialPageRoute(builder: (context) => const HomeScreen()),
               );
             },
             child: Image.asset(
@@ -265,9 +266,11 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
             child: SizedBox(
               height: 45,
               child: TextField(
+                cursorColor: CommonUtils.orangeColor,
                 onChanged: (input) =>
                     filterRecordsBasedOnPartyName(input), // search
                 decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.only(top: 10, left: 15),
                   hintText: 'Order Search',
                   hintStyle: _hintTextStyle,
                   suffixIcon: const Icon(Icons.search),
@@ -290,8 +293,14 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
             child: GestureDetector(
               onTap: () {
                 showModalBottomSheet(
+                  isScrollControlled: true,
                   context: context,
-                  builder: (context) => const FilterBottomSheet(), //here
+                  builder: (context) => Padding(
+                    padding: EdgeInsets.only(
+                      bottom: MediaQuery.of(context).viewInsets.bottom,
+                    ),
+                    child: const FilterBottomSheet(),
+                  ),
                 );
               },
               child: Center(
@@ -737,56 +746,101 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     ),
                     Container(
                       height: 40.0,
+                      padding: const EdgeInsets.only(top: 18),
                       decoration: CommonUtils.decorationO_R10W1,
-                      child: DropdownButtonHideUnderline(
-                        child: ButtonTheme(
-                          alignedDropdown: true,
-                          child: DropdownButton<int>(
-                            hint: Text(
-                              'Select Party',
-                              style: CommonUtils.txSty_13O_F6,
-                            ),
-                            value: provider.dropDownParty,
-                            onChanged: (int? value) {
-                              setState(() {
-                                selectedCardCode = value!;
-                                provider.dropDownParty = value;
-                                if (selectedCardCode != -1) {
-                                  selectedValue =
-                                  dropdownItems[selectedCardCode]['cardCode'];
-                                  selectedName =
-                                  dropdownItems[selectedCardCode]['cardName'];
-                                  provider.getApiPartyCode =
-                                  dropdownItems[selectedCardCode]['cardCode'];
-                                  print("selectedValue:$selectedValue");
-                                  print("selectedName:$selectedName");
-                                } else {
-                                  print("==========");
-                                  print(selectedValue);
-                                  print(selectedName);
-                                }
-                                // isDropdownValid = selectedTypeCdId != -1;
-                              });
-                            },
-                            items: dropdownItems.asMap().entries.map((entry) {
-                              final index = entry.key;
-                              final item = entry.value;
-                              return DropdownMenuItem<int>(
-                                  value: index,
-                                  child: Text(
-                                    item['cardName'],
-                                    overflow: TextOverflow.visible,
-                                    // wrapText: true,
-                                  ));
-                            }).toList(),
-                            style: CommonUtils.txSty_13O_F6,
-                            iconSize: 20,
-                            icon: null,
-                            isExpanded: true,
-                            underline: const SizedBox(),
-                          ),
+                      child: TypeAheadField(
+                        controller: provider.getPartyController,
+                        builder: (context, controller, focusNode) => TextField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          autofocus: false,
+                          style: CommonUtils.Mediumtext_12_0,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              hintText: 'Select Party',
+                              hintStyle: CommonUtils.Mediumtext_12_0),
                         ),
+                        itemBuilder: (context, value) {
+                          return ListTile(
+                            dense: true,
+                            title: Text(
+                              value,
+                              style: CommonUtils.Mediumtext_12_0,
+                            ),
+                          );
+                        },
+                        onSelected: (selectedValue) {
+                          provider.getPartyController.text = selectedValue;
+                        },
+                        suggestionsCallback: (search) {
+                          if (search == '') {
+                            return null;
+                          }
+                          final filteredSuggestions = dropdownItems
+                              .where((party) => party['cardName']
+                              .toLowerCase()
+                              .startsWith(search.toLowerCase()))
+                              .map((party) => party['cardName'])
+                              .toList();
+                          if (filteredSuggestions.isEmpty) {
+                            return ['No party found'];
+                          }
+
+                          return filteredSuggestions;
+                        },
                       ),
+
+                      // DropdownButtonHideUnderline(
+                      //   child: ButtonTheme(
+                      //     alignedDropdown: true,
+                      //     child: DropdownButton<int>(
+                      //       hint: Text(
+                      //         'Select Party',
+                      //         style: CommonUtils.txSty_13O_F6,
+                      //       ),
+                      //       value: provider.dropDownParty,
+                      //       onChanged: (int? value) {
+                      //         setState(() {
+                      //           selectedCardCode = value!;
+                      //           provider.dropDownParty = value;
+                      //           if (selectedCardCode != -1) {
+                      //             selectedValue =
+                      //                 dropdownItems[selectedCardCode]['cardCode'];
+                      //             selectedName =
+                      //                 dropdownItems[selectedCardCode]['cardName'];
+                      //             provider.getApiPartyCode =
+                      //                 dropdownItems[selectedCardCode]['cardCode'];
+                      //             print("selectedValue:$selectedValue");
+                      //             print("selectedName:$selectedName");
+                      //           } else {
+                      //             print("==========");
+                      //             print(selectedValue);
+                      //             print(selectedName);
+                      //           }
+                      //           // isDropdownValid = selectedTypeCdId != -1;
+                      //         });
+                      //       },
+                      //       items: dropdownItems.asMap().entries.map((entry) {
+                      //         final index = entry.key;
+                      //         final item = entry.value;
+                      //         return DropdownMenuItem<int>(
+                      //             value: index,
+                      //             child: Text(
+                      //               item['cardName'],
+                      //               overflow: TextOverflow.visible,
+                      //               // wrapText: true,
+                      //             ));
+                      //       }).toList(),
+                      //       style: CommonUtils.txSty_13O_F6,
+                      //       iconSize: 20,
+                      //       icon: null,
+                      //       isExpanded: true,
+                      //       underline: const SizedBox(),
+                      //     ),
+                      //   ),
+                      // ),
                     ),
                   ],
                 ),
@@ -1102,7 +1156,7 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
         assetPath = 'assets/boxes.svg';
         iconColor = const Color(0xFF31b3cc);
         statusColor = const Color(0xFF31b3cc);
-        statusBgColor =const Color(0xFF31b3cc).withOpacity(0.2);
+        statusBgColor = const Color(0xFF31b3cc).withOpacity(0.2);
         break;
       case 'Not Received':
         assetPath = 'assets/order-cancel.svg';
@@ -1110,12 +1164,12 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
         statusColor = Colors.red;
         statusBgColor = Colors.red.shade100;
         break;
-      // case 'Received':
-      //   assetPath = 'assets/srikar_biotech_logo.svg';
-      //   iconColor = Colors.grey;
-      //   statusColor = Colors.grey;
-      //   statusBgColor = Colors.grey.withOpacity(0.2);
-      //   break;
+    // case 'Received':
+    //   assetPath = 'assets/srikar_biotech_logo.svg';
+    //   iconColor = Colors.grey;
+    //   statusColor = Colors.grey;
+    //   statusBgColor = Colors.grey.withOpacity(0.2);
+    //   break;
       default:
         assetPath = 'assets/sb_home.svg';
         iconColor = Colors.black26;
@@ -1147,25 +1201,25 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
         svgIconBgColor = const Color.fromARGB(255, 241, 183, 184);
         break;
       case 'Received':
-        svgIcon ='assets/truck-check.svg';
+        svgIcon = 'assets/truck-check.svg';
         statusColor = Colors.green;
         svgIconBgColor = Colors.green.shade100;
         break;
       case 'Partially Received':
         svgIcon = 'assets/boxes.svg';
-        statusColor =const Color(0xFF31b3cc);
-        svgIconBgColor =const Color(0xFF31b3cc).withOpacity(0.2);
+        statusColor = const Color(0xFF31b3cc);
+        svgIconBgColor = const Color(0xFF31b3cc).withOpacity(0.2);
         break;
       case 'Not Received':
         svgIcon = 'assets/order-cancel.svg';
         statusColor = Colors.red;
         svgIconBgColor = Colors.red.shade100;
         break;
-      // case 'Received':
-      //   svgIcon = 'assets/srikar_biotech_logo.svg';
-      //   statusColor = Colors.grey;
-      //   svgIconBgColor = Colors.grey.withOpacity(0.2);
-      //   break;
+    // case 'Received':
+    //   svgIcon = 'assets/srikar_biotech_logo.svg';
+    //   statusColor = Colors.grey;
+    //   svgIconBgColor = Colors.grey.withOpacity(0.2);
+    //   break;
       default:
         svgIcon = 'assets/sb_home.svg';
         statusColor = Colors.black26;

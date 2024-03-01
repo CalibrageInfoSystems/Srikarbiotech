@@ -249,7 +249,7 @@ class ReturnorderStatusScreen extends StatelessWidget {
 
         DateTime? dateTime = DateTime.tryParse(returnOrderDate);
         String formattedOrderDate = dateTime != null
-            ? DateFormat('dd-MM-yyyy').format(dateTime)
+            ? DateFormat('dd MMM, yyyy').format(dateTime)
             : 'Invalid Date';
 
 

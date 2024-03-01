@@ -4,6 +4,7 @@ import 'dart:convert';
 
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
+import 'package:flutter_typeahead/flutter_typeahead.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:http/http.dart' as http;
 import 'package:intl/intl.dart';
@@ -149,13 +150,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
               if (snapshot.hasData) {
                 // List<ListResult> data = snapshot.data!;
                 List<ListResult> data = viewCollectionProvider.providerData;
-                return WillPopScope(
-                    onWillPop: () async {
-                      // Clear the cart data here
-                      viewCollectionProvider.clearFilter();
-                      return true; // Allow the back navigation
-                    },
-                child: Padding(
+                return Padding(
                   padding: const EdgeInsets.all(12),
                   child: Column(
                     crossAxisAlignment: CrossAxisAlignment.start,
@@ -196,7 +191,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                         ),
                     ],
                   ),
-                ));
+                );
               } else {
                 return const Center(
                   child: Text('No data available'),
@@ -310,8 +305,14 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
             onTap: () {
               // Handle the click action here
               showModalBottomSheet(
+                isScrollControlled: true,
                 context: context,
-                builder: (context) => const FilterBottomSheet(),
+                builder: (context) => Padding(
+                  padding: EdgeInsets.only(
+                    bottom: MediaQuery.of(context).viewInsets.bottom,
+                  ),
+                  child: const FilterBottomSheet(),
+                ),
               );
             },
             child: Container(
@@ -365,6 +366,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   final _primaryOrange = const Color(0xFFe58338);
   int selectedChipIndex = 1;
 
+  final TextEditingController _typeAheadPartyController =
+  TextEditingController();
+  final TextEditingController _typeAheadPurposeController =
+  TextEditingController();
+
   final _titleTextStyle = const TextStyle(
       color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold);
 
@@ -403,6 +409,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     getpaymentmethods();
     fetchdropdownitems();
     super.initState();
+  }
+
+  @override
+  void dispose() {
+    _typeAheadPartyController.dispose();
+    _typeAheadPurposeController.dispose();
+    super.dispose();
   }
 
   late ViewCollectionProvider viewProvider;
@@ -756,55 +769,103 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     ),
                     Container(
                       height: 40.0,
-                      decoration: CommonUtils.decorationO_R10W1,
-                      child: DropdownButtonHideUnderline(
-                        child: ButtonTheme(
-                          alignedDropdown: true,
-                          child: DropdownButton<int>(
-                            hint: Text(
-                              'Select Party',
-                              style: CommonUtils.txSty_13O_F6,
-                            ),
-                            value: provider.dropDownParty,
-                            onChanged: (int? value) {
-                              setState(() {
-                                selectedCardCode = value!;
-                                provider.dropDownParty = value;
-                                if (selectedCardCode != -1) {
-                                  selectedValue =
-                                  dropdownItems[selectedCardCode]['cardCode'];
-                                  selectedName =
-                                  dropdownItems[selectedCardCode]['cardName'];
-                                  provider.getApiPartyCode =
-                                  dropdownItems[selectedCardCode]['cardCode'];
-                                  debugPrint("selectedValue:$selectedValue");
-                                  debugPrint("selectedName:$selectedName");
-                                } else {
-                                  debugPrint("==========");
-                                  debugPrint(selectedValue);
-                                  debugPrint(selectedName);
-                                }
-                                // isDropdownValid = selectedTypeCdId != -1;
-                              });
-                            },
-                            items: dropdownItems.asMap().entries.map((entry) {
-                              final index = entry.key;
-                              final item = entry.value;
-                              return DropdownMenuItem<int>(
-                                  value: index,
-                                  child: Text(
-                                    item['cardName'],
-                                    overflow: TextOverflow.visible,
-                                  ));
-                            }).toList(),
-                            style: CommonUtils.txSty_13O_F6,
-                            iconSize: 20,
-                            icon: null,
-                            isExpanded: true,
-                            underline: const SizedBox(),
-                          ),
-                        ),
+                      padding: const EdgeInsets.only(
+                        right: 5,
+                        top: 18,
                       ),
+                      decoration: CommonUtils.decorationO_R10W1,
+                      child: TypeAheadField(
+                        controller: provider.getPartyController,
+                        builder: (context, controller, focusNode) => TextField(
+                          controller: controller,
+                          focusNode: focusNode,
+                          autofocus: false,
+                          style: CommonUtils.Mediumtext_12_0,
+                          decoration: const InputDecoration(
+                              border: OutlineInputBorder(
+                                borderSide: BorderSide.none,
+                              ),
+                              hintText: 'Select Party',
+                              hintStyle: CommonUtils.Mediumtext_12_0),
+                        ),
+                        itemBuilder: (context, value) {
+                          return ListTile(
+                            dense: true,
+                            title: Text(
+                              value,
+                              style: CommonUtils.Mediumtext_12_0,
+                            ),
+                          );
+                        },
+                        onSelected: (selectedValue) {
+                          provider.getPartyController.text = selectedValue;
+                        },
+                        suggestionsCallback: (search) {
+                          if (search == '') {
+                            return null;
+                          }
+                          final filteredSuggestions = dropdownItems
+                              .where((party) => party['cardName']
+                              .toLowerCase()
+                              .startsWith(search.toLowerCase()))
+                              .map((party) => party['cardName'])
+                              .toList();
+                          if (filteredSuggestions.isEmpty) {
+                            return ['No party found'];
+                          }
+
+                          return filteredSuggestions;
+                        },
+                      ),
+                      // DropdownButtonHideUnderline(
+                      //   child: ButtonTheme(
+                      //     alignedDropdown: true,
+                      //     child:
+                      //     DropdownButton<int>(
+                      //       hint: Text(
+                      //         'Select Party',
+                      //         style: CommonUtils.txSty_13O_F6,
+                      //       ),
+                      //       value: provider.dropDownParty,
+                      //       onChanged: (int? value) {
+                      //         setState(() {
+                      //           selectedCardCode = value!;
+                      //           provider.dropDownParty = value;
+                      //           if (selectedCardCode != -1) {
+                      //             selectedValue =
+                      //                 dropdownItems[selectedCardCode]['cardCode'];
+                      //             selectedName =
+                      //                 dropdownItems[selectedCardCode]['cardName'];
+                      //             provider.getApiPartyCode =
+                      //                 dropdownItems[selectedCardCode]['cardCode'];
+                      //             debugPrint("selectedValue:$selectedValue");
+                      //             debugPrint("selectedName:$selectedName");
+                      //           } else {
+                      //             debugPrint("==========");
+                      //             debugPrint(selectedValue);
+                      //             debugPrint(selectedName);
+                      //           }
+                      //           // isDropdownValid = selectedTypeCdId != -1;
+                      //         });
+                      //       },
+                      //       items: dropdownItems.asMap().entries.map((entry) {
+                      //         final index = entry.key;
+                      //         final item = entry.value;
+                      //         return DropdownMenuItem<int>(
+                      //             value: index,
+                      //             child: Text(
+                      //               item['cardName'],
+                      //               overflow: TextOverflow.visible,
+                      //             ));
+                      //       }).toList(),
+                      //       style: CommonUtils.txSty_13O_F6,
+                      //       iconSize: 20,
+                      //       icon: null,
+                      //       isExpanded: true,
+                      //       underline: const SizedBox(),
+                      //     ),
+                      //   ),
+                      // ),
                     ),
                     const SizedBox(
                       height: 10.0,
@@ -820,47 +881,100 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       height: 4.0,
                     ),
                     Container(
-                        height: 40.0,
-                        padding: const EdgeInsets.only(left: 15, right: 5),
-                        decoration: CommonUtils.decorationO_R10W1,
-                        child: purposeList.isEmpty
-                            ? LoadingAnimationWidget.newtonCradle(
-                          color: Colors.blue,
-                          size: 40.0,
-                        )
-                            : DropdownButton<String>(
-                          hint: Text(
-                            'Select Purpose',
-                            style: CommonUtils.txSty_13O_F6,
-                          ),
-                          value: provider.dropDownPurpose,
-                          onChanged: (String? newValue) {
-                            setState(() {
-                              selectedPurpose = newValue;
-                              provider.dropDownPurpose = newValue;
-                              selectedPurposeObj = purposeList.firstWhere(
-                                    (purpose) => purpose.fldValue == newValue,
-                                orElse: () => Purpose(
-                                    fldValue: '', descr: '', purposeName: ''),
-                              );
-                              purposename = selectedPurposeObj!.fldValue;
-                              provider.getApiPurpose = newValue;
-                            });
-                          },
-                          items: purposeList.map((Purpose purpose) {
-                            return DropdownMenuItem<String>(
-                              value: purpose.fldValue,
-                              child: Text(
-                                purpose.purposeName,
-                                style: CommonUtils.txSty_13O_F6,
-                              ),
+                      height: 40.0,
+                      padding: const EdgeInsets.only(left: 15, right: 5),
+                      decoration: CommonUtils.decorationO_R10W1,
+                      child: purposeList.isEmpty
+                          ? LoadingAnimationWidget.newtonCradle(
+                        color: Colors.blue,
+                        size: 40.0,
+                      )
+                          : DropdownButton<String>(
+                        hint: Text(
+                          'Select Purpose',
+                          style: CommonUtils.txSty_13O_F6,
+                        ),
+                        value: provider.dropDownPurpose,
+                        onChanged: (String? newValue) {
+                          setState(() {
+                            selectedPurpose = newValue;
+                            provider.dropDownPurpose = newValue;
+                            selectedPurposeObj = purposeList.firstWhere(
+                                  (purpose) => purpose.fldValue == newValue,
+                              orElse: () => Purpose(
+                                  fldValue: '', descr: '', purposeName: ''),
                             );
-                          }).toList(),
-                          icon: const Icon(Icons.arrow_drop_down),
-                          iconSize: 20,
-                          isExpanded: true,
-                          underline: const SizedBox(),
-                        ))
+                            purposename = selectedPurposeObj!.fldValue;
+                            provider.getApiPurpose = newValue;
+                          });
+                        },
+                        items: purposeList.map((Purpose purpose) {
+                          return DropdownMenuItem<String>(
+                            value: purpose.fldValue,
+                            child: Text(
+                              purpose.purposeName,
+                              style: CommonUtils.txSty_13O_F6,
+                            ),
+                          );
+                        }).toList(),
+                        icon: const Icon(Icons.arrow_drop_down),
+                        iconSize: 20,
+                        isExpanded: true,
+                        underline: const SizedBox(),
+                      ),
+                    ),
+                    // Container(
+                    //   height: 40.0,
+                    //   padding: const EdgeInsets.only(
+                    //     right: 5,
+                    //     top: 18,
+                    //   ),
+                    //   decoration: CommonUtils.decorationO_R10W1,
+                    //   child: TypeAheadField(
+                    //     controller: _typeAheadPurposeController,
+                    //     builder: (context, controller, focusNode) => TextField(
+                    //       controller: controller,
+                    //       focusNode: focusNode,
+                    //       autofocus: false,
+                    //       style: CommonUtils.hintstyle_13,
+                    //       decoration: const InputDecoration(
+                    //           border: OutlineInputBorder(
+                    //             borderSide: BorderSide.none,
+                    //           ),
+                    //           hintText: 'Select Purpose',
+                    //           hintStyle: CommonUtils.hintstyle_13),
+                    //     ),
+                    //     itemBuilder: (context, value) {
+                    //       return ListTile(
+                    //         dense: true,
+                    //         title: Text(
+                    //           value,
+                    //           style: CommonUtils.hintstyle_12,
+                    //         ),
+                    //       );
+                    //     },
+                    //     onSelected: (selectedValue) {
+                    //       _typeAheadPurposeController.text = selectedValue;
+                    //     },
+                    //     suggestionsCallback: (search) {
+                    //       if (search == '') {
+                    //         return null;
+                    //       }
+                    //       final filteredSuggestions = purposeList
+                    //           .where((purpose) => purpose.fldValue
+                    //               .toLowerCase()
+                    //               .startsWith(search.toLowerCase()))
+                    //           .map((purpose) => purpose.fldValue)
+                    //           .toList();
+
+                    //       if (filteredSuggestions.isEmpty) {
+                    //         return ['No purpose found'];
+                    //       }
+
+                    //       return filteredSuggestions;
+                    //     },
+                    //   ),
+                    // ),
                   ],
                 ),
 
@@ -874,8 +988,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       : ListView.builder(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
-                    itemCount: apiResponse!.listResult.length +
-                        1, // Add 1 for the "All" option
+                    itemCount: apiResponse!.listResult.length + 1,
                     itemBuilder: (BuildContext context, int index) {
                       bool isSelected = index == provider.dropDownStatus;
                       PaymentMode currentPaymode;
@@ -1121,6 +1234,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     }
     Navigator.of(context).pop();
   }
+
+  List<Purpose> getSuggestions(String query) {
+    return purposeList.where((purpose) {
+      return purpose.purposeName.toLowerCase().contains(query.toLowerCase());
+    }).toList();
+  }
 }
 
 class MyCard extends StatefulWidget {
@@ -1222,7 +1341,6 @@ class _MyCardState extends State<MyCard> {
                           decoration: _iconBoxBorder,
                           child: Center(
                             child: getSvgImagesAndColors(
-                              // work
                               widget.listResult.statusTypeId,
                             ),
                           ),

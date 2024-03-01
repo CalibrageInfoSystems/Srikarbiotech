@@ -16,6 +16,10 @@ class ViewCollectionProvider extends ChangeNotifier {
   String toDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
   bool filterIconStatus = false;
 
+  final TextEditingController _partyController = TextEditingController();
+
+  TextEditingController get getPartyController => _partyController;
+
   bool get filterStatus => filterIconStatus;
   set filterStatus(bool newStatus) {
     filterIconStatus = newStatus;
@@ -93,6 +97,8 @@ class ViewCollectionProvider extends ChangeNotifier {
     apiPurpose = null;
     apiPartyCode = null;
     apiStatusId = null;
+
+    _partyController.clear();
 
     notifyListeners();
   }
