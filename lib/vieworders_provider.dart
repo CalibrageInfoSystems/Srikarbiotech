@@ -17,7 +17,14 @@ class ViewOrdersProvider extends ChangeNotifier {
 
   final TextEditingController _partyController = TextEditingController();
 
+  String partyCode = '';
+
   TextEditingController get getPartyController => _partyController;
+
+  String get getPartyCode => partyCode;
+  set getPartyCode(String newCode) {
+    partyCode = newCode;
+  }
 
   bool get filterStatus => filterIconStatus;
   set filterStatus(bool newStatus) {

@@ -59,12 +59,8 @@ class _VieworderPageState extends State<ViewOrders> {
         setState(() {
           viewOrdersProvider.storeIntoViewOrderProvider(data);
         });
-      } else {
-        print('Error initializing data: Invalid data format');
-      }
-    }).catchError((error) {
-      print('Error initializing data: $error');
-    });
+      } else {}
+    }).catchError((error) {});
   }
 
   Future<List<OrderResult>> getorder() async {
@@ -85,8 +81,7 @@ class _VieworderPageState extends State<ViewOrders> {
       "UserId": userId
     };
 
-    debugPrint('_______view orders____1___');
-    debugPrint(jsonEncode(requestBody));
+    debugPrint('_______view orders____1___${jsonEncode(requestBody)}');
 
     final response = await http.post(
       url,
@@ -101,7 +96,6 @@ class _VieworderPageState extends State<ViewOrders> {
 
       if (data['response']['listResult'] != null) {
         final List<dynamic> listResult = data['response']['listResult'];
-        print('===========>$listResult');
 
         setState(() {
           orderesponselist =
@@ -110,13 +104,11 @@ class _VieworderPageState extends State<ViewOrders> {
         });
 
         if (filterorderesponselist.isEmpty) {
-          print('No records found.');
           // Display a message or set a variable to show a message in your UI.
         }
 
         return filterorderesponselist;
       } else {
-        print('ListResult is null.');
         // Handle the case where "listResult" is null.
         // You can return an empty list or handle it based on your application's requirements.
         return [];
@@ -391,6 +383,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   String? selectedValue;
 
   List<dynamic> dropdownItems = [];
+  // List<dynamic> partyInfo = [];
+  late final partyInfo;
   PaymentMode? selectedPaymode;
   int? payid;
   late String selectedName;
@@ -439,7 +433,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     if (response.statusCode == 200) {
       setState(() {
         apiResponse = ApiResponse.fromJson(jsonDecode(response.body));
-        print('========>apiResponse$apiResponse');
       });
     } else {
       throw Exception('Failed to load data');
@@ -457,7 +450,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       try {
         initialDate = DateTime.parse(controller.text);
       } catch (e) {
-        print("Invalid date format: $e");
         initialDate = currentDate;
       }
     } else {
@@ -480,13 +472,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         // Save selected dates as DateTime objects
         selectedDate = picked;
 
-        // Print formatted date
+        //
         selectformattedtodate = DateFormat('yyyy-MM-dd').format(picked);
-        print("selectformatted_todate: $selectformattedtodate");
       }
-    } catch (e) {
-      print("Error selecting date: $e");
-    }
+    } catch (e) {}
   }
 
   Widget buildDateToInput(
@@ -566,11 +555,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     DateTime initialDate;
 
     if (controller.text.isNotEmpty) {
-      print('###########controller.text: ${controller.text}');
       try {
         initialDate = DateTime.parse(controller.text);
       } catch (e) {
-        print("Invalid date format: $e");
         initialDate = currentDate;
       }
     } else {
@@ -593,13 +580,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         // Save selected dates as DateTime objects
         selectedfromdateDate = picked;
 
-        // Print formatted date
-        // print("fromattedfromdate: ${DateFormat('yyyy-MM-dd').format(picked)}");
+        //
+        //
         selectformattedfromdate = DateFormat('yyyy-MM-dd').format(picked);
       }
-    } catch (e) {
-      print("Error selecting date: $e");
-    }
+    } catch (e) {}
   }
 
   Widget buildDateInputfromdate(
@@ -681,7 +666,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         "/" +
         '$slpCode'));
 
-    // print("apiUrl: ${apiUrl}");
+    //
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body);
 
@@ -697,6 +682,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     }
   }
 
+  bool isPartyCodeIsEmpty = false;
   @override
   Widget build(BuildContext context) {
     return Consumer<ViewOrdersProvider>(
@@ -745,10 +731,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       height: 4.0,
                     ),
                     Container(
-                      padding: const EdgeInsets.only(
-                        right: 5,
-                        top: 18,
-                      ),
                       height: 40.0,
                       decoration: CommonUtils.decorationO_R10W1,
                       child: TypeAheadField(
@@ -759,8 +741,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           autofocus: false,
                           style: CommonUtils.Mediumtext_12_0,
                           decoration: const InputDecoration(
+                              contentPadding: EdgeInsets.only(top: 18, left: 15),
                               border: OutlineInputBorder(
                                 borderSide: BorderSide.none,
+                                // borderSide: BorderSide(color: Colors.grey),
                               ),
                               hintText: 'Select Party',
                               hintStyle: CommonUtils.Mediumtext_12_0),
@@ -769,13 +753,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           return ListTile(
                             dense: true,
                             title: Text(
-                              value,
+                              '${isPartyCodeIsEmpty ? value : value['cardName']}',
                               style: CommonUtils.Mediumtext_12_0,
                             ),
                           );
-                        },
-                        onSelected: (selectedValue) {
-                          provider.getPartyController.text = selectedValue;
                         },
                         suggestionsCallback: (search) {
                           if (search == '') {
@@ -785,13 +766,24 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                               .where((party) => party['cardName']
                               .toLowerCase()
                               .startsWith(search.toLowerCase()))
-                              .map((party) => party['cardName'])
                               .toList();
+
+                          isPartyCodeIsEmpty = false;
+                          // partyInfo = dropdownItems.where((party) =>
+                          //     party['cardName']
+                          //         .toLowerCase()
+                          //         .startsWith(search.toLowerCase()));
                           if (filteredSuggestions.isEmpty) {
+                            isPartyCodeIsEmpty = true;
                             return ['No party found'];
                           }
 
                           return filteredSuggestions;
+                        },
+                        onSelected: (selectedValue) {
+                          provider.getPartyController.text =
+                          selectedValue['cardName'];
+                          provider.getPartyCode = selectedValue['cardCode'];
                         },
                       ),
 
@@ -815,12 +807,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       //                 dropdownItems[selectedCardCode]['cardName'];
                       //             provider.getApiPartyCode =
                       //                 dropdownItems[selectedCardCode]['cardCode'];
-                      //             print("selectedValue:$selectedValue");
-                      //             print("selectedName:$selectedName");
+                      //
+                      //
                       //           } else {
-                      //             print("==========");
-                      //             print(selectedValue);
-                      //             print(selectedName);
+                      //
+                      //
+                      //
                       //           }
                       //           // isDropdownValid = selectedTypeCdId != -1;
                       //         });
@@ -893,7 +885,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           payid = currentPaymode.typeCdId;
                           provider.getApiStatusId = currentPaymode.typeCdId;
                           Selected_PaymentMode = currentPaymode.desc;
-                          print('payid:$payid');
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -1050,14 +1041,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     DateTime pickedFromDate =
     DateFormat('dd-MM-yyyy').parse(fromdateController.text);
     selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
-    print('Converted to date: $selectformattedtodate');
-    print('Converted from date: $selectformattedfromdate');
-    print('getAppliedFilterData called');
+
     try {
       final url = Uri.parse(
           'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
       final requestBody = {
-        "PartyCode": viewOrdersProvider.getApiPartyCode,
+        "PartyCode": viewOrdersProvider.getPartyCode,
         "StatusId": viewOrdersProvider.getApiStatusId,
         "FormDate": viewOrdersProvider.apiFromDate,
         "ToDate": viewOrdersProvider.apiToDate,
@@ -1065,8 +1054,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         "UserId": userId
       };
 
-      debugPrint('_______view orders____2___');
-      debugPrint(jsonEncode(requestBody));
+      debugPrint('_______view orders____2___${jsonEncode(requestBody)}');
 
       final response = await http.post(
         url,
@@ -1086,24 +1074,19 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             data.map((item) => OrderResult.fromJson(item)).toList();
             viewOrdersProvider.storeIntoViewOrderProvider(result);
           } else {
-            print('listResult is null');
             List<OrderResult> emptyList = [];
             viewOrdersProvider.storeIntoViewOrderProvider(emptyList);
             CommonUtils.showCustomToastMessageLong(
                 'No Order found!', context, 2, 2);
           }
         } else {
-          print('Request failed: ${jsonResponse['endUserMessage']}');
           List<OrderResult> emptyList = [];
           viewOrdersProvider.storeIntoViewOrderProvider(emptyList);
           CommonUtils.showCustomToastMessageLong(
               'No Order found!', context, 2, 2);
         }
-      } else {
-        print('Failed to fetch data: ${response.statusCode}');
-      }
+      } else {}
     } catch (e) {
-      print('Error: $e');
       CommonUtils.showCustomToastMessageLong(
           'Something went wrong', context, 2, 2);
     }

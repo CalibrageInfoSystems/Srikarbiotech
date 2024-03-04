@@ -100,7 +100,8 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
         "UserId": userId
       };
 
-      debugPrint('_______view collection____2___${jsonEncode(requestBodyObj)}');
+      debugPrint('_______view collection____1___${jsonEncode(requestBodyObj)}');
+
       final response = await http.post(
         url,
         body: json.encode(requestBodyObj),
@@ -119,7 +120,6 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
               .toList();
           return result;
         } else {
-          debugPrint('listResult is null.');
           // Handle the case where "listResult" is null.
           // You can return an empty list or handle it based on your application's requirements.
           return [];
@@ -337,8 +337,6 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   Future<void> getshareddata() async {
     companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
-
-    debugPrint('Company ID: $companyId');
   }
 
   void initializeData() {
@@ -348,9 +346,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
         filteredData.addAll(data);
         viewProvider.storeIntoProvider(data);
       });
-    }).catchError((error) {
-      debugPrint('catchError: $error');
-    });
+    }).catchError((error) {});
   }
 }
 
@@ -453,9 +449,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       } else {
         throw Exception('Failed to load data');
       }
-    } catch (e) {
-      debugPrint('Error: $e');
-    }
+    } catch (e) {}
   }
 
   Future<void> getpaymentmethods() async {
@@ -464,7 +458,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     if (response.statusCode == 200) {
       setState(() {
         apiResponse = ApiResponse.fromJson(jsonDecode(response.body));
-        debugPrint('========>apiResponse$apiResponse');
       });
     } else {
       throw Exception('Failed to load data');
@@ -482,7 +475,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       try {
         initialDate = DateTime.parse(controller.text);
       } catch (e) {
-        debugPrint("Invalid date format: $e");
         initialDate = currentDate;
       }
     } else {
@@ -504,13 +496,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         // Save selected dates as DateTime objects
         selectedDate = picked;
 
-        // debugPrint formatted date
+        //
         selectformattedtodate = DateFormat('yyyy-MM-dd').format(picked);
-        debugPrint("selectformatted_todate: $selectformattedtodate");
       }
-    } catch (e) {
-      debugPrint("Error selecting date: $e");
-    }
+    } catch (e) {}
   }
 
   Widget buildDateToInput(
@@ -590,11 +579,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     DateTime initialDate;
 
     if (controller.text.isNotEmpty) {
-      debugPrint('###########controller.text: ${controller.text}');
       try {
         initialDate = DateTime.parse(controller.text);
       } catch (e) {
-        debugPrint("Invalid date format: $e");
         initialDate = currentDate;
       }
     } else {
@@ -616,13 +603,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         // Save selected dates as DateTime objects
         selectedfromdateDate = picked;
 
-        // debugPrint formatted date
-        // debugPrint("fromattedfromdate: ${DateFormat('yyyy-MM-dd').format(picked)}");
+        //
+        //
         selectformattedfromdate = DateFormat('yyyy-MM-dd').format(picked);
       }
-    } catch (e) {
-      debugPrint("Error selecting date: ${e.toString()}");
-    }
+    } catch (e) {}
   }
 
   Widget buildDateInputfromdate(
@@ -704,7 +689,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         "/" +
         '$slpCode'));
 
-    // debugPrint("apiUrl: ${apiUrl}");
+    //
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body);
 
@@ -720,6 +705,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     }
   }
 
+  bool isPartyCodeIsEmpty = false;
   @override
   Widget build(BuildContext context) {
     return Consumer<ViewCollectionProvider>(
@@ -792,13 +778,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           return ListTile(
                             dense: true,
                             title: Text(
-                              value,
+                              '${isPartyCodeIsEmpty ? value : value['cardName']}',
                               style: CommonUtils.Mediumtext_12_0,
                             ),
                           );
-                        },
-                        onSelected: (selectedValue) {
-                          provider.getPartyController.text = selectedValue;
                         },
                         suggestionsCallback: (search) {
                           if (search == '') {
@@ -808,15 +791,66 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                               .where((party) => party['cardName']
                               .toLowerCase()
                               .startsWith(search.toLowerCase()))
-                              .map((party) => party['cardName'])
                               .toList();
+
+                          isPartyCodeIsEmpty = false;
                           if (filteredSuggestions.isEmpty) {
+                            isPartyCodeIsEmpty = true;
                             return ['No party found'];
                           }
 
                           return filteredSuggestions;
                         },
+                        onSelected: (selectedValue) {
+                          provider.getPartyController.text =
+                          selectedValue['cardName'];
+                          provider.getPartyCode = selectedValue['cardCode'];
+                        },
                       ),
+
+                      // TypeAheadField(
+                      //   controller: provider.getPartyController,
+                      //   builder: (context, controller, focusNode) => TextField(
+                      //     controller: controller,
+                      //     focusNode: focusNode,
+                      //     autofocus: false,
+                      //     style: CommonUtils.hintstyle_13,
+                      //     decoration: const InputDecoration(
+                      //         border: OutlineInputBorder(
+                      //           borderSide: BorderSide.none,
+                      //         ),
+                      //         hintText: 'Select Party',
+                      //         hintStyle: CommonUtils.hintstyle_13),
+                      //   ),
+                      //   itemBuilder: (context, value) {
+                      //     return ListTile(
+                      //       dense: true,
+                      //       title: Text(
+                      //         value,
+                      //         style: CommonUtils.hintstyle_12,
+                      //       ),
+                      //     );
+                      //   },
+                      //   onSelected: (selectedValue) {
+                      //     provider.getPartyController.text = selectedValue;
+                      //   },
+                      //   suggestionsCallback: (search) {
+                      //     if (search == '') {
+                      //       return null;
+                      //     }
+                      //     final filteredSuggestions = dropdownItems
+                      //         .where((party) => party['cardName']
+                      //             .toLowerCase()
+                      //             .startsWith(search.toLowerCase()))
+                      //         .map((party) => party['cardName'])
+                      //         .toList();
+                      //     if (filteredSuggestions.isEmpty) {
+                      //       return ['No party found'];
+                      //     }
+
+                      //     return filteredSuggestions;
+                      //   },
+                      // ),
                       // DropdownButtonHideUnderline(
                       //   child: ButtonTheme(
                       //     alignedDropdown: true,
@@ -838,12 +872,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       //                 dropdownItems[selectedCardCode]['cardName'];
                       //             provider.getApiPartyCode =
                       //                 dropdownItems[selectedCardCode]['cardCode'];
-                      //             debugPrint("selectedValue:$selectedValue");
-                      //             debugPrint("selectedName:$selectedName");
+                      //
+                      //
                       //           } else {
-                      //             debugPrint("==========");
-                      //             debugPrint(selectedValue);
-                      //             debugPrint(selectedName);
+                      //
+                      //
+                      //
                       //           }
                       //           // isDropdownValid = selectedTypeCdId != -1;
                       //         });
@@ -1017,7 +1051,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           payid = currentPaymode.typeCdId;
                           provider.getApiStatusId = currentPaymode.typeCdId;
                           Selected_PaymentMode = currentPaymode.desc;
-                          debugPrint('payid:$payid');
                         },
                         child: Container(
                           margin: const EdgeInsets.symmetric(horizontal: 4.0),
@@ -1175,8 +1208,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     DateTime pickedFromDate =
     DateFormat('dd-MM-yyyy').parse(fromdateController.text);
     selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
-    debugPrint('Converted to date: $selectformattedtodate');
-    debugPrint('Converted from date: $selectformattedfromdate');
+
     try {
       // final url = Uri.parse(
       //     'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollectionsbyMobileSearch');
@@ -1184,14 +1216,15 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       final requestBodyObj = {
         "PurposeName": viewProvider.getApiPurpose,
         "StatusId": viewProvider.getApiStatusId,
-        "PartyCode": viewProvider.getApiPartyCode,
+        "PartyCode": viewProvider.getPartyCode,
         "FormDate": viewProvider.apiFromDate,
         "ToDate": viewProvider.apiToDate,
         "CompanyId": companyId,
         "UserId": userId
       };
 
-      debugPrint('_______view collection____1___${jsonEncode(requestBodyObj)}');
+      debugPrint(
+          '_______view collection____222___${jsonEncode(requestBodyObj)}');
       final response = await http.post(
         url,
         body: json.encode(requestBodyObj),
@@ -1211,24 +1244,19 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             data.map((item) => ListResult.fromJson(item)).toList();
             viewProvider.storeIntoProvider(result);
           } else {
-            debugPrint('listResult is null');
             List<ListResult> emptyList = [];
             viewProvider.storeIntoProvider(emptyList);
             CommonUtils.showCustomToastMessageLong(
                 'No collection found!', context, 2, 2);
           }
         } else {
-          debugPrint('Request failed: ${jsonResponse['endUserMessage']}');
           List<ListResult> emptyList = [];
           viewProvider.storeIntoProvider(emptyList);
           CommonUtils.showCustomToastMessageLong(
               'No collection found!', context, 2, 2);
         }
-      } else {
-        debugPrint('Failed to fetch data: ${response.statusCode}');
-      }
+      } else {}
     } catch (e) {
-      debugPrint('Error: $e');
       CommonUtils.showCustomToastMessageLong(
           'Something went wrong', context, 2, 2);
     }
@@ -1285,214 +1313,221 @@ class _MyCardState extends State<MyCard> {
     String dateString = widget.listResult.date;
     DateTime date = DateTime.parse(dateString);
     String formattedDate = DateFormat('dd MMM, yyyy').format(date);
-    return GestureDetector(
-      onTap: () {
+    return WillPopScope(
+      onWillPop: () async {
+        // Clear the cart data here
         viewProvider.clearFilter();
-        Navigator.of(context).push(
-          MaterialPageRoute(
-            builder: (context) => ViewCollectionCheckOut(
-              listResult: widget.listResult,
-              position: widget.index,
-              statusBar: sendingSvgImagesAndColors(
-                widget.listResult.statusTypeId,
-                widget.listResult.statusName,
-              ), // Assuming you have the index available
-            ),
-          ),
-        );
+        return true; // Allow the back navigation
       },
-      child: Container(
-        margin: const EdgeInsets.only(bottom: 10),
-        color: Colors.transparent,
-        child: Card(
-          elevation: 5,
-          child: Container(
-            padding:
-            // const EdgeInsets.only(left: 12, right: 5, top: 12, bottom: 12),
-            const EdgeInsets.all(12),
-            //   width: double.infinity,
-            width: MediaQuery.of(context).size.width,
-            decoration: BoxDecoration(
-              color: Colors.white,
-              borderRadius: BorderRadius.circular(10),
+      child: GestureDetector(
+        onTap: () {
+          viewProvider.clearFilter();
+          Navigator.of(context).push(
+            MaterialPageRoute(
+              builder: (context) => ViewCollectionCheckOut(
+                listResult: widget.listResult,
+                position: widget.index,
+                statusBar: sendingSvgImagesAndColors(
+                  widget.listResult.statusTypeId,
+                  widget.listResult.statusName,
+                ), // Assuming you have the index available
+              ),
             ),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  // height: 70,
-                  // width: double.infinity,
-                  // margin: const EdgeInsets.only(bottom: 12),
-                  width: MediaQuery.of(context).size.width,
-                  decoration: _boxBorder,
-                  child: Row(
-                    children: [
-                      // starting icon of card
-                      Card(
-                        elevation: 3,
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: Container(
-                          height: 65,
-                          width: 65,
-                          padding: const EdgeInsets.all(10),
-                          decoration: _iconBoxBorder,
-                          child: Center(
-                            child: getSvgImagesAndColors(
-                              widget.listResult.statusTypeId,
+          );
+        },
+        child: Container(
+          margin: const EdgeInsets.only(bottom: 10),
+          color: Colors.transparent,
+          child: Card(
+            elevation: 5,
+            child: Container(
+              padding:
+              // const EdgeInsets.only(left: 12, right: 5, top: 12, bottom: 12),
+              const EdgeInsets.all(12),
+              //   width: double.infinity,
+              width: MediaQuery.of(context).size.width,
+              decoration: BoxDecoration(
+                color: Colors.white,
+                borderRadius: BorderRadius.circular(10),
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    // height: 70,
+                    // width: double.infinity,
+                    // margin: const EdgeInsets.only(bottom: 12),
+                    width: MediaQuery.of(context).size.width,
+                    decoration: _boxBorder,
+                    child: Row(
+                      children: [
+                        // starting icon of card
+                        Card(
+                          elevation: 3,
+                          color: Colors.white,
+                          shape: RoundedRectangleBorder(
+                            borderRadius: BorderRadius.circular(5.0),
+                          ),
+                          child: Container(
+                            height: 65,
+                            width: 65,
+                            padding: const EdgeInsets.all(10),
+                            decoration: _iconBoxBorder,
+                            child: Center(
+                              child: getSvgImagesAndColors(
+                                widget.listResult.statusTypeId,
+                              ),
                             ),
                           ),
                         ),
-                      ),
 
-                      // beside info
-                      SizedBox(
-                        //height: 90,
-                        // width: ,
-                        width: MediaQuery.of(context).size.width / 1.6,
-                        child: Padding(
-                          padding:
-                          const EdgeInsets.only(left: 5, top: 0, bottom: 0),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                            children: [
-                              // here
-                              Text(
-                                widget.listResult.partyName,
-                                style: CommonUtils.Mediumtext_14_cb,
-                                softWrap: true,
-                                maxLines: 2,
-                                overflow: TextOverflow.ellipsis,
-                              ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Row(
-                                    children: [
-                                      Text(
-                                        'Collection Id:',
-                                        style: _textStyle,
-                                      ),
-                                      Text(
-                                        widget.listResult.collectionNumber,
-                                        style: CommonUtils.txSty_13O_F6,
-                                      ),
-                                    ],
-                                  ),
-                                ],
-                              ),
-                              // ListTile(
-                              //   title: Text(
-                              //     widget.listResult.collectionNumber,
-                              //     style: CommonUtils.txSty_13O_F6,
-                              //   ),
-                              //   subtitle: const Text(
-                              //     'Collection Id:',
-                              //     style: TextStyle(
-                              //       fontSize: 10,
-                              //       fontWeight: FontWeight.bold,
-                              //       color: Colors.grey,
-                              //     ),
-                              //   ),
-                              // ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
-                              Row(
-                                children: [
-                                  Text(
-                                    'Payment Mode: ',
-                                    style: _textStyle,
-                                  ),
-                                  Text(
-                                    widget.listResult.paymentTypeName,
-                                    style: CommonUtils.txSty_13O_F6,
-                                  ),
-                                ],
-                              )
-                            ],
-                          ),
-                        ),
-                      )
-                    ],
-                  ),
-                ),
-                const SizedBox(
-                  height: 5.0,
-                ),
-                Row(
-                  children: [
-                    Container(
-                      width: 65,
-                      margin: const EdgeInsets.only(left: 5.0),
-                      padding: const EdgeInsets.symmetric(vertical: 3),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: statusBgColor,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            widget.listResult.statusName,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: statusColor,
-                              // Add other text styles as needed
+                        // beside info
+                        SizedBox(
+                          //height: 90,
+                          // width: ,
+                          width: MediaQuery.of(context).size.width / 1.6,
+                          child: Padding(
+                            padding: const EdgeInsets.only(
+                                left: 5, top: 0, bottom: 0),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                // here
+                                Text(
+                                  widget.listResult.partyName,
+                                  style: CommonUtils.Mediumtext_14_cb,
+                                  softWrap: true,
+                                  maxLines: 2,
+                                  overflow: TextOverflow.ellipsis,
+                                ),
+                                const SizedBox(
+                                  height: 5.0,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Row(
+                                      children: [
+                                        Text(
+                                          'Collection Id:',
+                                          style: _textStyle,
+                                        ),
+                                        Text(
+                                          widget.listResult.collectionNumber,
+                                          style: CommonUtils.txSty_13O_F6,
+                                        ),
+                                      ],
+                                    ),
+                                  ],
+                                ),
+                                // ListTile(
+                                //   title: Text(
+                                //     widget.listResult.collectionNumber,
+                                //     style: CommonUtils.txSty_13O_F6,
+                                //   ),
+                                //   subtitle: const Text(
+                                //     'Collection Id:',
+                                //     style: TextStyle(
+                                //       fontSize: 10,
+                                //       fontWeight: FontWeight.bold,
+                                //       color: Colors.grey,
+                                //     ),
+                                //   ),
+                                // ),
+                                const SizedBox(
+                                  height: 5.0,
+                                ),
+                                Row(
+                                  children: [
+                                    Text(
+                                      'Payment Mode: ',
+                                      style: _textStyle,
+                                    ),
+                                    Text(
+                                      widget.listResult.paymentTypeName,
+                                      style: CommonUtils.txSty_13O_F6,
+                                    ),
+                                  ],
+                                )
+                              ],
                             ),
                           ),
-                        ],
+                        )
+                      ],
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 5.0,
+                  ),
+                  Row(
+                    children: [
+                      Container(
+                        width: 65,
+                        margin: const EdgeInsets.only(left: 5.0),
+                        padding: const EdgeInsets.symmetric(vertical: 3),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(10),
+                          color: statusBgColor,
+                        ),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Text(
+                              widget.listResult.statusName,
+                              style: TextStyle(
+                                fontSize: 11,
+                                color: statusColor,
+                                // Add other text styles as needed
+                              ),
+                            ),
+                          ],
+                        ),
                       ),
-                    ),
-                    const SizedBox(
-                      width: 10.0,
-                    ),
-                    Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Row(
-                            children: [
-                              // Text(
-                              //   'Date: ',
-                              //   style: _textStyle,
-                              // ),
-                              Text(
-                                formattedDate,
-                                style: CommonUtils.txSty_13O_F6,
-                              ),
-                            ],
-                          ),
-                          // const SizedBox(
-                          //   width: 10.0,
-                          // ),
-                          //Spacer(),
-                          Row(
-                            children: [
-                              Icon(
-                                Icons.currency_rupee,
-                                size: 12,
-                                color: HexColor('#e58338'),
-                              ),
-                              Text(
-                                '${widget.listResult.amount}',
-                                style: CommonUtils.txSty_13O_F6,
-                              ),
-                            ],
-                          )
-                        ],
+                      const SizedBox(
+                        width: 10.0,
                       ),
-                    ),
-                  ],
-                )
-              ],
+                      Expanded(
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Row(
+                              children: [
+                                // Text(
+                                //   'Date: ',
+                                //   style: _textStyle,
+                                // ),
+                                Text(
+                                  formattedDate,
+                                  style: CommonUtils.txSty_13O_F6,
+                                ),
+                              ],
+                            ),
+                            // const SizedBox(
+                            //   width: 10.0,
+                            // ),
+                            //Spacer(),
+                            Row(
+                              children: [
+                                Icon(
+                                  Icons.currency_rupee,
+                                  size: 12,
+                                  color: HexColor('#e58338'),
+                                ),
+                                Text(
+                                  '${widget.listResult.amount}',
+                                  style: CommonUtils.txSty_13O_F6,
+                                ),
+                              ],
+                            )
+                          ],
+                        ),
+                      ),
+                    ],
+                  )
+                ],
+              ),
             ),
           ),
         ),

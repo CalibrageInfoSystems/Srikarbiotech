@@ -91,8 +91,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
         "UserId": userId
       };
 
-      debugPrint('_______Return Orders____1___');
-      debugPrint(jsonEncode(requestBody));
+      debugPrint('_______Return Orders____1___${jsonEncode(requestBody)}');
       final response = await http.post(
         url,
         body: json.encode(requestBody),
@@ -267,8 +266,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
               height: 45,
               child: TextField(
                 cursorColor: CommonUtils.orangeColor,
-                onChanged: (input) =>
-                    filterRecordsBasedOnPartyName(input), // search
+                onChanged: (input) => filterRecordsBasedOnPartyName(input),
                 decoration: InputDecoration(
                   contentPadding: const EdgeInsets.only(top: 10, left: 15),
                   hintText: 'Order Search',
@@ -697,6 +695,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     }
   }
 
+  bool isPartyCodeIsEmpty = false;
   @override
   Widget build(BuildContext context) {
     return Consumer<ViewReturnOrdersProvider>(
@@ -766,13 +765,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           return ListTile(
                             dense: true,
                             title: Text(
-                              value,
+                              '${isPartyCodeIsEmpty ? value : value['cardName']}',
                               style: CommonUtils.Mediumtext_12_0,
                             ),
                           );
-                        },
-                        onSelected: (selectedValue) {
-                          provider.getPartyController.text = selectedValue;
                         },
                         suggestionsCallback: (search) {
                           if (search == '') {
@@ -782,15 +778,70 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                               .where((party) => party['cardName']
                               .toLowerCase()
                               .startsWith(search.toLowerCase()))
-                              .map((party) => party['cardName'])
                               .toList();
+
+                          isPartyCodeIsEmpty = false;
+                          // partyInfo = dropdownItems.where((party) =>
+                          //     party['cardName']
+                          //         .toLowerCase()
+                          //         .startsWith(search.toLowerCase()));
                           if (filteredSuggestions.isEmpty) {
+                            isPartyCodeIsEmpty = true;
                             return ['No party found'];
                           }
 
                           return filteredSuggestions;
                         },
+                        onSelected: (selectedValue) {
+                          provider.getPartyController.text =
+                          selectedValue['cardName'];
+                          provider.getPartyCode = selectedValue['cardCode'];
+                        },
                       ),
+
+                      // TypeAheadField(
+                      //   controller: provider.getPartyController,
+                      //   builder: (context, controller, focusNode) => TextField(
+                      //     controller: controller,
+                      //     focusNode: focusNode,
+                      //     autofocus: false,
+                      //     style: CommonUtils.hintstyle_13,
+                      //     decoration: const InputDecoration(
+                      //         border: OutlineInputBorder(
+                      //           borderSide: BorderSide.none,
+                      //         ),
+                      //         hintText: 'Select Party',
+                      //         hintStyle: CommonUtils.hintstyle_13),
+                      //   ),
+                      //   itemBuilder: (context, value) {
+                      //     return ListTile(
+                      //       dense: true,
+                      //       title: Text(
+                      //         value,
+                      //         style: CommonUtils.hintstyle_12,
+                      //       ),
+                      //     );
+                      //   },
+                      //   onSelected: (selectedValue) {
+                      //     provider.getPartyController.text = selectedValue;
+                      //   },
+                      //   suggestionsCallback: (search) {
+                      //     if (search == '') {
+                      //       return null;
+                      //     }
+                      //     final filteredSuggestions = dropdownItems
+                      //         .where((party) => party['cardName']
+                      //             .toLowerCase()
+                      //             .startsWith(search.toLowerCase()))
+                      //         .map((party) => party['cardName'])
+                      //         .toList();
+                      //     if (filteredSuggestions.isEmpty) {
+                      //       return ['No party found'];
+                      //     }
+
+                      //     return filteredSuggestions;
+                      //   },
+                      // ),
 
                       // DropdownButtonHideUnderline(
                       //   child: ButtonTheme(
@@ -1042,15 +1093,14 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetAppReturnOrdersBySearch');
     try {
       final requestBody = {
-        "PartyCode": viewReturnOrdersProvider.getApiPartyCode,
+        "PartyCode": viewReturnOrdersProvider.getPartyCode,
         "StatusId": viewReturnOrdersProvider.getApiStatusId,
         "FormDate": viewReturnOrdersProvider.apiFromDate,
         "ToDate": viewReturnOrdersProvider.apiToDate,
         "CompanyId": companyId,
         "UserId": userId // "e39536e2-89d3-4cc7-ae79-3dd5291ff156"
       };
-      debugPrint('_______Return Orders____2___');
-      debugPrint(jsonEncode(requestBody));
+      debugPrint('_______Return Orders____2___${jsonEncode(requestBody)}');
 
       final response = await http.post(
         url,

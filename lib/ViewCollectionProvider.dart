@@ -20,6 +20,13 @@ class ViewCollectionProvider extends ChangeNotifier {
 
   TextEditingController get getPartyController => _partyController;
 
+  String partyCode = '';
+
+  String get getPartyCode => partyCode;
+  set getPartyCode(String newCode) {
+    partyCode = newCode;
+  }
+
   bool get filterStatus => filterIconStatus;
   set filterStatus(bool newStatus) {
     filterIconStatus = newStatus;
