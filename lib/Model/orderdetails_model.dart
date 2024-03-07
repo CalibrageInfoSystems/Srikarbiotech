@@ -33,19 +33,19 @@ class OrderDetailsModel {
         endUserMessage: json["endUserMessage"],
         links: json["links"],
         validationErrors:
-            List<dynamic>.from(json["validationErrors"].map((x) => x)),
+        List<dynamic>.from(json["validationErrors"].map((x) => x)),
         exception: json["exception"],
       );
 
   Map<String, dynamic> toJson() => {
-        "response": response.toJson(),
-        "isSuccess": isSuccess,
-        "affectedRecords": affectedRecords,
-        "endUserMessage": endUserMessage,
-        "links": links,
-        "validationErrors": List<dynamic>.from(validationErrors.map((x) => x)),
-        "exception": exception,
-      };
+    "response": response.toJson(),
+    "isSuccess": isSuccess,
+    "affectedRecords": affectedRecords,
+    "endUserMessage": endUserMessage,
+    "links": links,
+    "validationErrors": List<dynamic>.from(validationErrors.map((x) => x)),
+    "exception": exception,
+  };
 }
 
 class Response {
@@ -58,20 +58,20 @@ class Response {
   });
 
   factory Response.fromJson(Map<String, dynamic> json) => Response(
-        getOrderDetailsResult: List<GetOrderDetailsResult>.from(
-            json["getOrderDetailsResult"]
-                .map((x) => GetOrderDetailsResult.fromJson(x))),
-        orderItemXrefList: List<OrderItemXrefList>.from(
-            json["orderItemXrefList"]
-                .map((x) => OrderItemXrefList.fromJson(x))),
-      );
+    getOrderDetailsResult: List<GetOrderDetailsResult>.from(
+        json["getOrderDetailsResult"]
+            .map((x) => GetOrderDetailsResult.fromJson(x))),
+    orderItemXrefList: List<OrderItemXrefList>.from(
+        json["orderItemXrefList"]
+            .map((x) => OrderItemXrefList.fromJson(x))),
+  );
 
   Map<String, dynamic> toJson() => {
-        "getOrderDetailsResult":
-            List<dynamic>.from(getOrderDetailsResult.map((x) => x.toJson())),
-        "orderItemXrefList":
-            List<dynamic>.from(orderItemXrefList.map((x) => x.toJson())),
-      };
+    "getOrderDetailsResult":
+    List<dynamic>.from(getOrderDetailsResult.map((x) => x.toJson())),
+    "orderItemXrefList":
+    List<dynamic>.from(orderItemXrefList.map((x) => x.toJson())),
+  };
 }
 
 class GetOrderDetailsResult {
@@ -180,39 +180,39 @@ class GetOrderDetailsResult {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "companyId": companyId,
-        "orderNumber": orderNumber,
-        "orderDate": orderDate.toIso8601String(),
-        "partyCode": partyCode,
-        "partyName": partyName,
-        "partyAddress": partyAddress,
-        "partyState": partyState,
-        "partyPhoneNumber": partyPhoneNumber,
-        "partyGSTNumber": partyGstNumber,
-        "proprietorName": proprietorName,
-        "partyOutStandingAmount": partyOutStandingAmount,
-        "bookingPlace": bookingPlace,
-        "transportName": transportName,
-        "statusTypeId": statusTypeId,
-        "fileName": fileName,
-        "fileLocation": fileLocation,
-        "fileExtension": fileExtension,
-        "fileUrl": fileUrl,
-        "statusName": statusName,
-        "discount": discount,
-        "igst": igst,
-        "cgst": cgst,
-        "sgst": sgst,
-        "totalCost": totalCost,
-        "noOfItems": noOfItems,
-        "remarks": remarks,
-        "isActive": isActive,
-        "createdBy": createdBy,
-        "createdDate": createdDate.toIso8601String(),
-        "updatedBy": updatedBy,
-        "updatedDate": updatedDate.toIso8601String(),
-      };
+    "id": id,
+    "companyId": companyId,
+    "orderNumber": orderNumber,
+    "orderDate": orderDate.toIso8601String(),
+    "partyCode": partyCode,
+    "partyName": partyName,
+    "partyAddress": partyAddress,
+    "partyState": partyState,
+    "partyPhoneNumber": partyPhoneNumber,
+    "partyGSTNumber": partyGstNumber,
+    "proprietorName": proprietorName,
+    "partyOutStandingAmount": partyOutStandingAmount,
+    "bookingPlace": bookingPlace,
+    "transportName": transportName,
+    "statusTypeId": statusTypeId,
+    "fileName": fileName,
+    "fileLocation": fileLocation,
+    "fileExtension": fileExtension,
+    "fileUrl": fileUrl,
+    "statusName": statusName,
+    "discount": discount,
+    "igst": igst,
+    "cgst": cgst,
+    "sgst": sgst,
+    "totalCost": totalCost,
+    "noOfItems": noOfItems,
+    "remarks": remarks,
+    "isActive": isActive,
+    "createdBy": createdBy,
+    "createdDate": createdDate.toIso8601String(),
+    "updatedBy": updatedBy,
+    "updatedDate": updatedDate.toIso8601String(),
+  };
 }
 
 class OrderItemXrefList {
@@ -261,17 +261,17 @@ class OrderItemXrefList {
       );
 
   Map<String, dynamic> toJson() => {
-        "id": id,
-        "orderId": orderId,
-        "itemGrpCod": itemGrpCod,
-        "itemGrpName": itemGrpName,
-        "itemCode": itemCode,
-        "itemName": itemName,
-        "noOfPcs": noOfPcs,
-        "orderQty": orderQty,
-        "price": price,
-        "igst": igst,
-        "cgst": cgst,
-        "sgst": sgst,
-      };
+    "id": id,
+    "orderId": orderId,
+    "itemGrpCod": itemGrpCod,
+    "itemGrpName": itemGrpName,
+    "itemCode": itemCode,
+    "itemName": itemName,
+    "noOfPcs": noOfPcs,
+    "orderQty": orderQty,
+    "price": price,
+    "igst": igst,
+    "cgst": cgst,
+    "sgst": sgst,
+  };
 }

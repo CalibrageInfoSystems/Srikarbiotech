@@ -18,49 +18,8 @@ import 'Companiesselection.dart';
 import 'HomeScreen.dart';
 import 'LoginScreen.dart';
 
-import 'Services/LocationUpdatesService.dart';
 import 'ViewCollectionProvider.dart';
 import 'ViewPendingOrdersProvider.dart';
-import 'package:flutter/material.dart';
- // Import your LocationUpdatesService widget
-
-// void main() {
-//   runApp(MyApp());
-// }
-//
-// class MyApp extends StatelessWidget {
-//   @override
-//   Widget build(BuildContext context) {
-//     return MaterialApp(
-//       home: LocationUpdatesServiceContainer(), // Display the LocationUpdatesServiceContainer widget
-//     );
-//   }
-// }
-//
-// class LocationUpdatesServiceContainer extends StatefulWidget {
-//   @override
-//   _LocationUpdatesServiceContainerState createState() => _LocationUpdatesServiceContainerState();
-// }
-//
-// class _LocationUpdatesServiceContainerState extends State<LocationUpdatesServiceContainer> {
-//   late LocationUpdatesService _locationUpdatesService;
-//
-//   @override
-//   void initState() {
-//     super.initState();
-//     _locationUpdatesService = LocationUpdatesService();
-//   }
-//
-//   @override
-//   Widget build(BuildContext context) {
-//     return Scaffold(
-//       appBar: AppBar(
-//         title: Text('Location Updates Service Demo'),
-//       ),
-//       body: _locationUpdatesService,
-//     );
-//   }
-// }
 
 void main() {
   runApp(
@@ -98,6 +57,8 @@ class _MyAppState extends State<MyApp> {
           ChangeNotifierProvider(create: (context) => CartProvider()),
           ChangeNotifierProvider(create: (context) => ViewCollectionProvider()),
           ChangeNotifierProvider(create: (context) => ViewOrdersProvider()),
+          ChangeNotifierProvider(create: (context) => ViewReturnOrdersProvider()),
+          ChangeNotifierProvider(create: (context) => ViewPendingOrdersProvider()),
         ],
         child: MyHomePage(),
       ),

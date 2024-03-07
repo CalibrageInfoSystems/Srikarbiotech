@@ -17,6 +17,7 @@ import 'Createorderscreen.dart';
 import 'HomeScreen.dart';
 import 'Ledgerscreen.dart';
 import 'Model/Dealer.dart';
+import 'WareHouseScreen.dart';
 
 class Selectpartyscreen extends StatefulWidget {
   String from;
@@ -246,7 +247,7 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => Createorderscreen(
+                                builder: (context) => WareHouseScreen(
                                     cardName: filteredDealers[index].cardName,
                                     cardCode: filteredDealers[index].cardCode,
                                     address: filteredDealers[index].fullAddress,

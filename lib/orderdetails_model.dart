@@ -33,19 +33,19 @@ class OrderDetailsModel {
         endUserMessage: json["endUserMessage"],
         links: json["links"],
         validationErrors:
-            List<dynamic>.from(json["validationErrors"].map((x) => x)),
+        List<dynamic>.from(json["validationErrors"].map((x) => x)),
         exception: json["exception"],
       );
 
   Map<String, dynamic> toJson() => {
-        "response": response.toJson(),
-        "isSuccess": isSuccess,
-        "affectedRecords": affectedRecords,
-        "endUserMessage": endUserMessage,
-        "links": links,
-        "validationErrors": List<dynamic>.from(validationErrors.map((x) => x)),
-        "exception": exception,
-      };
+    "response": response.toJson(),
+    "isSuccess": isSuccess,
+    "affectedRecords": affectedRecords,
+    "endUserMessage": endUserMessage,
+    "links": links,
+    "validationErrors": List<dynamic>.from(validationErrors.map((x) => x)),
+    "exception": exception,
+  };
 }
 
 class Response {
@@ -58,54 +58,55 @@ class Response {
   });
 
   factory Response.fromJson(Map<String, dynamic> json) => Response(
-        getOrderDetailsResult: List<GetOrderDetailsResult>.from(
-            json["getOrderDetailsResult"]
-                .map((x) => GetOrderDetailsResult.fromJson(x))),
-        orderItemXrefList: List<OrderItemXrefList>.from(
-            json["orderItemXrefList"]
-                .map((x) => OrderItemXrefList.fromJson(x))),
-      );
+    getOrderDetailsResult: List<GetOrderDetailsResult>.from(
+        json["getOrderDetailsResult"]
+            .map((x) => GetOrderDetailsResult.fromJson(x))),
+    orderItemXrefList: List<OrderItemXrefList>.from(
+        json["orderItemXrefList"]
+            .map((x) => OrderItemXrefList.fromJson(x))),
+  );
 
   Map<String, dynamic> toJson() => {
-        "getOrderDetailsResult":
-            List<dynamic>.from(getOrderDetailsResult.map((x) => x.toJson())),
-        "orderItemXrefList":
-            List<dynamic>.from(orderItemXrefList.map((x) => x.toJson())),
-      };
+    "getOrderDetailsResult":
+    List<dynamic>.from(getOrderDetailsResult.map((x) => x.toJson())),
+    "orderItemXrefList":
+    List<dynamic>.from(orderItemXrefList.map((x) => x.toJson())),
+  };
 }
 
 class GetOrderDetailsResult {
   final int id;
   final int companyId;
   final String orderNumber;
-  final DateTime orderDate;
+  final String orderDate;
   final String partyCode;
   final String partyName;
   final String partyAddress;
   final String partyState;
   final String partyPhoneNumber;
-  final String partyGSTNumber;
+  final String partyGstNumber;
   final String proprietorName;
   final double partyOutStandingAmount;
   final String bookingPlace;
   final String transportName;
   final int statusTypeId;
-  final String fileName;
-  final String fileLocation;
-  final String fileExtension;
-  final String? fileUrl;
   final String statusName;
   final double discount;
   final double totalCost;
-  final double totalCostWithGST;
+  final double totalCostWithGst;
   final double gstCost;
   final int noOfItems;
-  final String? remarks;
+  final String remarks;
   final bool isActive;
   final String createdBy;
-  final DateTime createdDate;
+  final String createdDate;
   final String updatedBy;
-  final DateTime updatedDate;
+  final String updatedDate;
+  final String shRemarks;
+  final String rejectedRemarks;
+  final String? whsCode;
+  final String? whsState;
+  final String? whsName;
 
   GetOrderDetailsResult({
     required this.id,
@@ -117,20 +118,16 @@ class GetOrderDetailsResult {
     required this.partyAddress,
     required this.partyState,
     required this.partyPhoneNumber,
-    required this.partyGSTNumber,
+    required this.partyGstNumber,
     required this.proprietorName,
     required this.partyOutStandingAmount,
     required this.bookingPlace,
     required this.transportName,
     required this.statusTypeId,
-    required this.fileName,
-    required this.fileLocation,
-    required this.fileExtension,
-    required this.fileUrl,
     required this.statusName,
     required this.discount,
     required this.totalCost,
-    required this.totalCostWithGST,
+    required this.totalCostWithGst,
     required this.gstCost,
     required this.noOfItems,
     required this.remarks,
@@ -139,79 +136,83 @@ class GetOrderDetailsResult {
     required this.createdDate,
     required this.updatedBy,
     required this.updatedDate,
+    required this.shRemarks,
+    required this.rejectedRemarks,
+    required this.whsCode,
+    required this.whsName,
+    required this.whsState,
   });
 
-  factory GetOrderDetailsResult.fromJson(Map<String, dynamic> json) {
-    return GetOrderDetailsResult(
-      id: json['id'],
-      companyId: json['companyId'],
-      orderNumber: json['orderNumber'],
-      orderDate: DateTime.parse(json['orderDate']),
-      partyCode: json['partyCode'],
-      partyName: json['partyName'],
-      partyAddress: json['partyAddress'],
-      partyState: json['partyState'],
-      partyPhoneNumber: json['partyPhoneNumber'],
-      partyGSTNumber: json['partyGSTNumber'],
-      proprietorName: json['proprietorName'],
-      partyOutStandingAmount: json['partyOutStandingAmount'].toDouble(),
-      bookingPlace: json['bookingPlace'],
-      transportName: json['transportName'],
-      statusTypeId: json['statusTypeId'],
-      fileName: json['fileName'],
-      fileLocation: json['fileLocation'],
-      fileExtension: json['fileExtension'],
-      fileUrl: json['fileUrl'],
-      statusName: json['statusName'],
-      discount: json['discount'].toDouble(),
-      totalCost: json['totalCost'].toDouble(),
-      totalCostWithGST: json['totalCostWithGST'].toDouble(),
-      gstCost: json['gstCost'].toDouble(),
-      noOfItems: json['noOfItems'],
-      remarks: json['remarks'],
-      isActive: json['isActive'],
-      createdBy: json['createdBy'],
-      createdDate: DateTime.parse(json['createdDate']),
-      updatedBy: json['updatedBy'],
-      updatedDate: DateTime.parse(json['updatedDate']),
-    );
-  }
+  factory GetOrderDetailsResult.fromJson(Map<String, dynamic> json) =>
+      GetOrderDetailsResult(
+        id: json["id"],
+        companyId: json["companyId"],
+        orderNumber: json["orderNumber"],
+        orderDate: json["orderDate"],
+        partyCode: json["partyCode"],
+        partyName: json["partyName"],
+        partyAddress: json["partyAddress"],
+        partyState: json["partyState"],
+        partyPhoneNumber: json["partyPhoneNumber"],
+        partyGstNumber: json["partyGSTNumber"],
+        proprietorName: json["proprietorName"],
+        partyOutStandingAmount: json["partyOutStandingAmount"]?.toDouble(),
+        bookingPlace: json["bookingPlace"],
+        transportName: json["transportName"],
+        statusTypeId: json["statusTypeId"],
+        statusName: json["statusName"],
+        discount: json["discount"]?.toDouble(),
+        totalCost: json["totalCost"]?.toDouble(),
+        totalCostWithGst: json["totalCostWithGST"]?.toDouble(),
+        gstCost: json["gstCost"]?.toDouble(),
+        noOfItems: json["noOfItems"],
+        remarks: json["remarks"],
+        isActive: json["isActive"],
+        createdBy: json["createdBy"],
+        createdDate: json["createdDate"],
+        updatedBy: json["updatedBy"],
+        updatedDate: json["updatedDate"],
+        shRemarks: json["shRemarks"],
+        rejectedRemarks: json["rejectedRemarks"],
+        whsCode: json["whsCode"],
+        whsName: json["whsName"],
+        whsState: json["whsState"],
+      );
 
-  Map<String, dynamic> toJson() {
-    return {
-      'id': id,
-      'companyId': companyId,
-      'orderNumber': orderNumber,
-      'orderDate': orderDate.toIso8601String(),
-      'partyCode': partyCode,
-      'partyName': partyName,
-      'partyAddress': partyAddress,
-      'partyState': partyState,
-      'partyPhoneNumber': partyPhoneNumber,
-      'partyGSTNumber': partyGSTNumber,
-      'proprietorName': proprietorName,
-      'partyOutStandingAmount': partyOutStandingAmount,
-      'bookingPlace': bookingPlace,
-      'transportName': transportName,
-      'statusTypeId': statusTypeId,
-      'fileName': fileName,
-      'fileLocation': fileLocation,
-      'fileExtension': fileExtension,
-      'fileUrl': fileUrl,
-      'statusName': statusName,
-      'discount': discount,
-      'totalCost': totalCost,
-      'totalCostWithGST': totalCostWithGST,
-      'gstCost': gstCost,
-      'noOfItems': noOfItems,
-      'remarks': remarks,
-      'isActive': isActive,
-      'createdBy': createdBy,
-      'createdDate': createdDate.toIso8601String(),
-      'updatedBy': updatedBy,
-      'updatedDate': updatedDate.toIso8601String(),
-    };
-  }
+  Map<String, dynamic> toJson() => {
+    "id": id,
+    "companyId": companyId,
+    "orderNumber": orderNumber,
+    "orderDate": orderDate,
+    "partyCode": partyCode,
+    "partyName": partyName,
+    "partyAddress": partyAddress,
+    "partyState": partyState,
+    "partyPhoneNumber": partyPhoneNumber,
+    "partyGSTNumber": partyGstNumber,
+    "proprietorName": proprietorName,
+    "partyOutStandingAmount": partyOutStandingAmount,
+    "bookingPlace": bookingPlace,
+    "transportName": transportName,
+    "statusTypeId": statusTypeId,
+    "statusName": statusName,
+    "discount": discount,
+    "totalCost": totalCost,
+    "totalCostWithGST": totalCostWithGst,
+    "gstCost": gstCost,
+    "noOfItems": noOfItems,
+    "remarks": remarks,
+    "isActive": isActive,
+    "createdBy": createdBy,
+    "createdDate": createdDate,
+    "updatedBy": updatedBy,
+    "updatedDate": updatedDate,
+    "shRemarks": shRemarks,
+    "rejectedRemarks": rejectedRemarks,
+    "whsCode": whsCode,
+    "whsName": whsName,
+    "whsState": whsState,
+  };
 }
 
 class OrderItemXrefList {
@@ -229,8 +230,9 @@ class OrderItemXrefList {
   final String salUnitMsr;
   final double gst;
   final double totalPrice;
-  final double totalPriceWithGST;
+  final double totalPriceWithGst;
   final double gstPrice;
+  final String? taxCode;
 
   OrderItemXrefList({
     required this.id,
@@ -247,46 +249,49 @@ class OrderItemXrefList {
     required this.salUnitMsr,
     required this.gst,
     required this.totalPrice,
-    required this.totalPriceWithGST,
+    required this.totalPriceWithGst,
     required this.gstPrice,
+    required this.taxCode,
   });
 
   factory OrderItemXrefList.fromJson(Map<String, dynamic> json) =>
       OrderItemXrefList(
-        id: json['id'],
-        orderId: json['orderId'],
-        itemGrpCod: json['itemGrpCod'],
-        itemGrpName: json['itemGrpName'],
-        itemCode: json['itemCode'],
-        itemName: json['itemName'],
-        noOfPcs: json['noOfPcs'],
-        orderQty: json['orderQty'],
-        price: json['price'].toDouble(),
-        ugpName: json['ugpName'],
-        numInSale: json['numInSale'].toDouble(),
-        salUnitMsr: json['salUnitMsr'],
-        gst: json['gst'].toDouble(),
-        totalPrice: json['totalPrice'].toDouble(),
-        totalPriceWithGST: json['totalPriceWithGST'].toDouble(),
-        gstPrice: json['gstPrice'].toDouble(),
+        id: json["id"],
+        orderId: json["orderId"],
+        itemGrpCod: json["itemGrpCod"],
+        itemGrpName: json["itemGrpName"],
+        itemCode: json["itemCode"],
+        itemName: json["itemName"],
+        noOfPcs: json["noOfPcs"],
+        orderQty: json["orderQty"],
+        price: json["price"]?.toDouble(),
+        ugpName: json["ugpName"],
+        numInSale: json["numInSale"]?.toDouble(),
+        salUnitMsr: json["salUnitMsr"],
+        gst: json["gst"]?.toDouble(),
+        totalPrice: json["totalPrice"]?.toDouble(),
+        totalPriceWithGst: json["totalPriceWithGST"]?.toDouble(),
+        gstPrice: json["gstPrice"]?.toDouble(),
+        taxCode: json["taxCode"],
       );
 
   Map<String, dynamic> toJson() => {
-    'id': id,
-    'orderId': orderId,
-    'itemGrpCod': itemGrpCod,
-    'itemGrpName': itemGrpName,
-    'itemCode': itemCode,
-    'itemName': itemName,
-    'noOfPcs': noOfPcs,
-    'orderQty': orderQty,
-    'price': price,
-    'ugpName': ugpName,
-    'numInSale': numInSale,
-    'salUnitMsr': salUnitMsr,
-    'gst': gst,
-    'totalPrice': totalPrice,
-    'totalPriceWithGST': totalPriceWithGST,
-    'gstPrice': gstPrice,
+    "id": id,
+    "orderId": orderId,
+    "itemGrpCod": itemGrpCod,
+    "itemGrpName": itemGrpName,
+    "itemCode": itemCode,
+    "itemName": itemName,
+    "noOfPcs": noOfPcs,
+    "orderQty": orderQty,
+    "price": price,
+    "ugpName": ugpName,
+    "numInSale": numInSale,
+    "salUnitMsr": salUnitMsr,
+    "gst": gst,
+    "totalPrice": totalPrice,
+    "totalPriceWithGST": totalPriceWithGst,
+    "gstPrice": gstPrice,
+    "taxCode": taxCode,
   };
 }

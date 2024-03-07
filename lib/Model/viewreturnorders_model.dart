@@ -207,8 +207,10 @@ class ReturnOrderDetailsResult {
   };
 }
 
+
 class ReturnOrderItemXrefList {
   final String statusName;
+  final String? fileUrl;
   final int id;
   final int returnOrderId;
   final String itemGrpCod;
@@ -219,41 +221,55 @@ class ReturnOrderItemXrefList {
   final int orderQty;
   final double price;
   final String? remarks;
-  final dynamic totalPrice;
-
-  ReturnOrderItemXrefList({
-    required this.statusName,
-    required this.id,
-    required this.returnOrderId,
-    required this.itemGrpCod,
-    required this.itemGrpName,
-    required this.itemCode,
-    required this.itemName,
-    required this.statusTypeId,
-    required this.orderQty,
-    required this.price,
-    required this.remarks,
-    required this.totalPrice,
-  });
+  final double totalPrice;
+  final int? partialQty;
+  final String? fileName;
+  final String? fileLocation;
+  final String? fileExtension;
 
   factory ReturnOrderItemXrefList.fromJson(Map<String, dynamic> json) =>
       ReturnOrderItemXrefList(
-        statusName: json["statusName"],
-        id: json["id"],
-        returnOrderId: json["returnOrderId"],
-        itemGrpCod: json["itemGrpCod"],
-        itemGrpName: json["itemGrpName"],
-        itemCode: json["itemCode"],
-        itemName: json["itemName"],
-        statusTypeId: json["statusTypeId"],
-        orderQty: json["orderQty"],
-        price: json["price"]?.toDouble(),
-        remarks: json["remarks"],
-        totalPrice: json["totalPrice"],
+        statusName: json['statusName'] ?? "",
+        fileUrl: json['fileUrl'],
+        id: json['id'] ?? 0,
+        returnOrderId: json['returnOrderId'] ?? 0,
+        itemGrpCod: json['itemGrpCod'] ?? "",
+        itemGrpName: json['itemGrpName'] ?? "",
+        itemCode: json['itemCode'] ?? "",
+        itemName: json['itemName'] ?? "",
+        statusTypeId: json['statusTypeId'] ?? 0,
+        orderQty: json['orderQty'] ?? 0,
+        price: json['price']?.toDouble() ?? 0.0,
+        remarks: json['remarks'],
+        totalPrice: json['totalPrice']?.toDouble() ?? 0.0,
+        partialQty: json['partialQty'],
+        fileName: json['fileName'],
+        fileLocation: json['fileLocation'],
+        fileExtension: json['fileExtension'],
       );
+
+  ReturnOrderItemXrefList(
+      {required this.statusName,
+        required this.fileUrl,
+        required this.id,
+        required this.returnOrderId,
+        required this.itemGrpCod,
+        required this.itemGrpName,
+        required this.itemCode,
+        required this.itemName,
+        required this.statusTypeId,
+        required this.orderQty,
+        required this.price,
+        required this.remarks,
+        required this.totalPrice,
+        required this.partialQty,
+        required this.fileName,
+        required this.fileLocation,
+        required this.fileExtension});
 
   Map<String, dynamic> toJson() => {
     "statusName": statusName,
+    "fileUrl": fileUrl,
     "id": id,
     "returnOrderId": returnOrderId,
     "itemGrpCod": itemGrpCod,
@@ -265,5 +281,9 @@ class ReturnOrderItemXrefList {
     "price": price,
     "remarks": remarks,
     "totalPrice": totalPrice,
+    "partialQty": partialQty,
+    "fileName": fileName,
+    "fileLocation": fileLocation,
+    "fileExtension": fileExtension,
   };
 }

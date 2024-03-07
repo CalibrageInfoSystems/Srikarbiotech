@@ -35,20 +35,28 @@ class Ordersubmit_screen extends StatefulWidget {
   final String gstRegnNo;
   final String state;
   final String phone;
+  final String whsCode;
+  final String whsName;
+  final String whsState;
 
   final double creditLine;
   final double balance;
 
-  Ordersubmit_screen(
-      {required this.cardName,
-      required this.cardCode,
-      required this.address,
-      required this.state,
-      required this.phone,
-      required this.proprietorName,
-      required this.gstRegnNo,
-      required this.creditLine,
-      required this.balance});
+  const Ordersubmit_screen({
+    super.key,
+    required this.cardName,
+    required this.cardCode,
+    required this.address,
+    required this.state,
+    required this.phone,
+    required this.proprietorName,
+    required this.gstRegnNo,
+    required this.creditLine,
+    required this.balance,
+    required this.whsCode,
+    required this.whsName,
+    required this.whsState,
+  });
   @override
   Order_submit_screen createState() => Order_submit_screen();
 }
@@ -118,7 +126,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
 
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFe78337),
+        backgroundColor: const Color(0xFFe78337),
         automaticallyImplyLeading: false,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -127,7 +135,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
@@ -136,30 +144,34 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => Createorderscreen(
-                                cardName: widget.cardName,
-                                cardCode: widget.cardCode,
-                                address: widget.address,
-                                state: widget.state,
-                                phone: widget.phone,
-                                proprietorName: widget.proprietorName,
-                                gstRegnNo: widget.gstRegnNo,
-                                creditLine: widget.creditLine,
-                                balance: widget.balance),
+                              cardName: widget.cardName,
+                              cardCode: widget.cardCode,
+                              address: widget.address,
+                              state: widget.state,
+                              phone: widget.phone,
+                              proprietorName: widget.proprietorName,
+                              gstRegnNo: widget.gstRegnNo,
+                              creditLine: widget.creditLine,
+                              balance: widget.balance,
+                              whsCode: widget.whsCode,
+                              whsName: widget.whsName,
+                              whsState: widget.whsState,
+                            ),
                           ),
                         );
                       } catch (e) {
                         print("Error navigating: $e");
                       }
                     },
-                    child: Icon(
+                    child: const Icon(
                       Icons.chevron_left,
                       size: 30.0,
                       color: Colors.white,
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
-                Text(
+                const SizedBox(width: 8.0),
+                const Text(
                   'Order Submission ',
                   style: TextStyle(
                     color: Colors.white,
@@ -179,7 +191,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                     // Always return a widget in the builder
                     return Text(
                       '($globalCartLength)',
-                      style: TextStyle(
+                      style: const TextStyle(
                         color: Colors.white,
                         fontSize: 18,
                       ),
@@ -199,7 +211,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                       // Handle the click event for the home icon
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()),
                       );
                     },
                     child: Image.asset(
@@ -212,7 +225,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                   );
                 } else {
                   // Return a placeholder or loading indicator
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 }
               },
             ),
@@ -224,7 +237,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+              padding: const EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
@@ -237,7 +250,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                     Colors.white,
                     BorderRadius.circular(5.0),
                   ),
-                  SizedBox(height: 10.0),
+                  const SizedBox(height: 10.0),
                 ],
               ),
             ),
@@ -246,29 +259,25 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
             //       ),
             Container(
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+              padding: const EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
               child: IntrinsicHeight(
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
-
                   child: Container(
-
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
                       color: Colors.white,
                     ),
-                    padding: EdgeInsets.all(10.0),
-
+                    padding: const EdgeInsets.all(10.0),
                     width: MediaQuery.of(context).size.width,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-
                         Row(
                           children: [
-                            Expanded(
+                            const Expanded(
                               child: Text(
                                 'Credit Limit',
                                 style: TextStyle(
@@ -282,7 +291,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                             Expanded(
                               child: Text(
                                 '₹${widget.creditLine}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color(0xFF5f5f5f),
                                   fontFamily: "Roboto",
                                   fontWeight: FontWeight.w700,
@@ -293,11 +302,12 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 5.0), // Add some space between rows
+                        const SizedBox(
+                            height: 5.0), // Add some space between rows
                         // Third Row: Outstanding Amount
                         Row(
                           children: [
-                            Expanded(
+                            const Expanded(
                               child: Text(
                                 'Outstanding Amount',
                                 style: TextStyle(
@@ -311,7 +321,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                             Expanded(
                               child: Text(
                                 '₹${widget.balance}',
-                                style: TextStyle(
+                                style: const TextStyle(
                                   color: Color(0xFF5f5f5f),
                                   fontFamily: "Roboto",
                                   fontWeight: FontWeight.w700,
@@ -322,14 +332,13 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                             ),
                           ],
                         ),
-
                       ],
                     ),
                   ),
                 ),
               ),
             ),
-            SizedBox(height: 5),
+            const SizedBox(height: 5),
             FutureBuilder(
               future: Future.value(),
               builder: (context, snapshot) {
@@ -337,7 +346,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                 //   return CircularProgressIndicator();
                 // } else
                 // if (snapshot.connectionState == ConnectionState.done) {
-                List<OrderItemXrefType> cartItems = Provider.of<CartProvider>(context).getCartItems();
+                List<OrderItemXrefType> cartItems =
+                Provider.of<CartProvider>(context).getCartItems();
 
                 return buildListView(cartItems, ValueKey(cartItems));
 
@@ -368,7 +378,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                 //       EdgeInsets.only(top: 10.0, left: 10, right: 10, bottom: 10),
                 //   child:
                 Container(
-                  padding: EdgeInsets.only(
+                  padding: const EdgeInsets.only(
                       top: 5.0, left: 10, right: 10, bottom: 15),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
@@ -384,7 +394,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                     // Other card properties go here
 
                     child: Container(
-                        padding: EdgeInsets.only(
+                        padding: const EdgeInsets.only(
                             top: 0.0, left: 0, right: 0, bottom: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5.0),
@@ -392,188 +402,190 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                         ),
                         child: IntrinsicHeight(
                             child: Column(
-                          // mainAxisAlignment: MainAxisAlignment.center,
-                          children: [
-                            Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.only(
-                                  top: 15.0, left: 15.0, right: 15.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 0.0, left: 0.0, right: 0.0),
-                                    child: Text(
-                                      'Booking Place * ',
-                                      style: TextStyle(
-                                          color: Color(0xFF5f5f5f),
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.w600,
-                                          fontSize: 14),
-                                      textAlign: TextAlign.start,
-                                    ),
-                                  ),
-                                  SizedBox(height: 2.0),
-                                  //  SizedBox(height: 8.0),
-                                  GestureDetector(
-                                    onTap: () {
-                                      // Handle the click event for the second text view
-                                      print('first textview clicked');
-                                    },
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        border: Border.all(
-                                          color: Color(0xFFe78337),
-                                          width: 1,
+                              // mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  color: Colors.white,
+                                  padding: const EdgeInsets.only(
+                                      top: 15.0, left: 15.0, right: 15.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 0.0, left: 0.0, right: 0.0),
+                                        child: Text(
+                                          'Booking Place * ',
+                                          style: TextStyle(
+                                              color: Color(0xFF5f5f5f),
+                                              fontFamily: 'Roboto',
+                                              fontWeight: FontWeight.w600,
+                                              fontSize: 14),
+                                          textAlign: TextAlign.start,
                                         ),
                                       ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 10.0, top: 0.0),
-                                                child: TextFormField(
-                                                  controller:
+                                      const SizedBox(height: 2.0),
+                                      //  SizedBox(height: 8.0),
+                                      GestureDetector(
+                                        onTap: () {
+                                          // Handle the click event for the second text view
+                                          print('first textview clicked');
+                                        },
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(5.0),
+                                            border: Border.all(
+                                              color: const Color(0xFFe78337),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Align(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(
+                                                        left: 10.0, top: 0.0),
+                                                    child: TextFormField(
+                                                      controller:
                                                       bookingplacecontroller,
-                                                  keyboardType:
+                                                      keyboardType:
                                                       TextInputType.name,
-                                                  maxLength: 50,
-                                                  style: TextStyle(
-                                                      color: Color(0xFFe78337),
-                                                      fontFamily: 'Roboto',
-                                                      fontWeight:
+                                                      maxLength: 50,
+                                                      style: const TextStyle(
+                                                          color: Color(0xFFe78337),
+                                                          fontFamily: 'Roboto',
+                                                          fontWeight:
                                                           FontWeight.w600,
-                                                      fontSize: 14),
-                                                  decoration: InputDecoration(
-                                                    counterText: '',
-                                                    hintText:
+                                                          fontSize: 14),
+                                                      decoration:
+                                                      const InputDecoration(
+                                                        counterText: '',
+                                                        hintText:
                                                         'Enter Booking Place',
-                                                    hintStyle: TextStyle(
-                                                      fontSize: 14,
-                                                      fontFamily: 'Roboto',
-                                                      fontWeight:
+                                                        hintStyle: TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily: 'Roboto',
+                                                          fontWeight:
                                                           FontWeight.w700,
-                                                      color: Color(0xa0e78337),
+                                                          color: Color(0xa0e78337),
+                                                        ),
+                                                        border: InputBorder.none,
+                                                      ),
                                                     ),
-                                                    border: InputBorder.none,
                                                   ),
                                                 ),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                        ],
-                                      ),
-                                    ),
-                                  ),
-                                ],
-                              ),
-                            ),
-                            Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.only(
-                                  top: 15.0,
-                                  left: 15.0,
-                                  right: 15.0,
-                                  bottom: 20.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(
-                                        top: 0.0, left: 0.0, right: 0.0),
-                                    child: Text(
-                                      'Transport Name * ',
-                                      style: TextStyle(
-                                        color: Color(0xFF5f5f5f),
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
-                                      textAlign: TextAlign.start,
-                                    ),
-                                  ),
-                                  SizedBox(height: 2.0),
-                                  GestureDetector(
-                                    onTap: () {
-                                      print('first textview clicked');
-                                    },
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      decoration: BoxDecoration(
-                                        borderRadius:
-                                            BorderRadius.circular(5.0),
-                                        border: Border.all(
-                                          color: Color(0xFFe78337),
-                                          width: 1,
                                         ),
                                       ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Padding(
-                                                padding: EdgeInsets.only(
-                                                    left: 10.0, top: 0.0),
-                                                child: TextFormField(
-                                                  controller:
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  color: Colors.white,
+                                  padding: const EdgeInsets.only(
+                                      top: 15.0,
+                                      left: 15.0,
+                                      right: 15.0,
+                                      bottom: 20.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      const Padding(
+                                        padding: EdgeInsets.only(
+                                            top: 0.0, left: 0.0, right: 0.0),
+                                        child: Text(
+                                          'Transport Name * ',
+                                          style: TextStyle(
+                                            color: Color(0xFF5f5f5f),
+                                            fontFamily: 'Roboto',
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                          ),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                      const SizedBox(height: 2.0),
+                                      GestureDetector(
+                                        onTap: () {
+                                          print('first textview clicked');
+                                        },
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          decoration: BoxDecoration(
+                                            borderRadius:
+                                            BorderRadius.circular(5.0),
+                                            border: Border.all(
+                                              color: const Color(0xFFe78337),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Align(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Padding(
+                                                    padding: const EdgeInsets.only(
+                                                        left: 10.0, top: 0.0),
+                                                    child: TextFormField(
+                                                      controller:
                                                       Parcelservicecontroller,
-                                                  keyboardType:
+                                                      keyboardType:
                                                       TextInputType.name,
-                                                  maxLength: 50,
-                                                  style: TextStyle(
-                                                      color: Color(0xFFe78337),
-                                                      fontFamily: 'Roboto',
-                                                      fontWeight:
+                                                      maxLength: 50,
+                                                      style: const TextStyle(
+                                                          color: Color(0xFFe78337),
+                                                          fontFamily: 'Roboto',
+                                                          fontWeight:
                                                           FontWeight.w600,
-                                                      fontSize: 14),
-                                                  decoration: InputDecoration(
-                                                    counterText: '',
-                                                    hintText:
+                                                          fontSize: 14),
+                                                      decoration:
+                                                      const InputDecoration(
+                                                        counterText: '',
+                                                        hintText:
                                                         'Enter Transport Name',
-                                                    hintStyle: TextStyle(
-                                                      fontSize: 14,
-                                                      fontFamily: 'Roboto',
-                                                      fontWeight:
+                                                        hintStyle: TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily: 'Roboto',
+                                                          fontWeight:
                                                           FontWeight.w700,
-                                                      color: Color(0xa0e78337),
+                                                          color: Color(0xa0e78337),
+                                                        ),
+                                                        border: InputBorder.none,
+                                                      ),
                                                     ),
-                                                    border: InputBorder.none,
                                                   ),
                                                 ),
                                               ),
-                                            ),
+                                            ],
                                           ),
-                                        ],
+                                        ),
                                       ),
-                                    ),
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ))),
+                                ),
+                              ],
+                            ))),
                   ),
                 ),
               ],
             ),
             Container(
               width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+              padding: const EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
               child: IntrinsicHeight(
                 child: Card(
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                   ),
                   child: Container(
-                    padding: EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.all(10.0),
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
                       color: Colors.white,
@@ -585,7 +597,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            const Text(
                               'Sub Total',
                               style: TextStyle(
                                 color: Colors.black,
@@ -598,7 +610,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                               builder: (context, totalSum, child) {
                                 return Text(
                                   '₹${formatNumber(totalSum)}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Color(0xFFe78337),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14.0,
@@ -608,11 +620,11 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            const Text(
                               'GST',
                               style: TextStyle(
                                 color: Colors.black,
@@ -625,7 +637,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                               builder: (context, totalGstAmount, _) {
                                 return Text(
                                   '₹${formatNumber(totalGstAmount)}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Color(0xFFe78337),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14.0,
@@ -635,11 +647,11 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                             ),
                           ],
                         ),
-                        SizedBox(height: 8.0),
+                        const SizedBox(height: 8.0),
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: [
-                            Text(
+                            const Text(
                               'Total Amount',
                               style: TextStyle(
                                 color: Colors.black,
@@ -652,7 +664,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                               builder: (context, totalsumGstAmount, _) {
                                 return Text(
                                   '₹${formatNumber(totalsumGstAmount)}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Color(0xFFe78337),
                                     fontWeight: FontWeight.bold,
                                     fontSize: 14.0,
@@ -681,21 +693,20 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
             Expanded(
               child: InkWell(
                 onTap: () {
-      if (globalCartLength > 0) {
-        AddOrder();
-        // Add logic for the download button
-      }
-      else{
-        CommonUtils.showCustomToastMessageLong(
-            'Please Add Atleast One Product', context, 1, 4);
-      }
+                  if (globalCartLength > 0) {
+                    AddOrder();
+                    // Add logic for the download button
+                  } else {
+                    CommonUtils.showCustomToastMessageLong(
+                        'Please Add Atleast One Product', context, 1, 4);
+                  }
                   print(' button clicked');
                 },
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Color(0xFFe78337),
+                    color: const Color(0xFFe78337),
                   ),
                   child: const Center(
                     child: Text(
@@ -704,7 +715,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                         color: Colors.white,
                         fontSize: 18,
                         fontWeight:
-                            FontWeight.w700, // Set the font weight to bold
+                        FontWeight.w700, // Set the font weight to bold
                         fontFamily: 'Roboto', // Set the font family to Roboto
                       ),
                     ),
@@ -726,7 +737,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     // Format the date as 'yyyy-MM-dd'
     String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
     print('Formatted Date: $formattedcurrentDate');
-    final String apiUrl =
+    const String apiUrl =
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/AddOrder';
     List<Map<String, dynamic>> orderItemList = cartItems.map((cartItem) {
       int NoOfPcs = cartItem.orderQty! * cartItem.numInSale!;
@@ -763,6 +774,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
         "TotalPrice": totalPrice,
         "TotalPriceWithGST": totalPriceWithGST,
         "GSTPrice": totalgstPrice,
+        "TaxCode":"",
 
         // Map other cart item properties to corresponding fields
         // ...
@@ -774,7 +786,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     double totalCostWithGST = orderItemList.fold(
         0.0, (sum, item) => sum + (item['TotalPriceWithGST'] ?? 0.0));
     double totalGSTCost =
-        orderItemList.fold(0.0, (sum, item) => sum + (item['GSTPrice'] ?? 0.0));
+    orderItemList.fold(0.0, (sum, item) => sum + (item['GSTPrice'] ?? 0.0));
     print('Total Price: $totalCostWithGST');
     print('Total Price With GST: $totalGSTCost');
     bool isValid = true;
@@ -800,16 +812,16 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       "CompanyId": CompneyId,
       "OrderNumber": "",
       "OrderDate": formattedcurrentDate,
-      "PartyCode": '${widget.cardCode}',
-      "PartyName": '${widget.cardName}',
-      "PartyAddress": '${widget.address}',
-      "PartyState": '${widget.state}',
-      "PartyPhoneNumber": '${widget.phone}',
-      "PartyGSTNumber": '${widget.gstRegnNo}',
-      "ProprietorName": '${widget.proprietorName}',
+      "PartyCode": widget.cardCode,
+      "PartyName": widget.cardName,
+      "PartyAddress": widget.address,
+      "PartyState": widget.state,
+      "PartyPhoneNumber": widget.phone,
+      "PartyGSTNumber": widget.gstRegnNo,
+      "ProprietorName": widget.proprietorName,
       "PartyOutStandingAmount": '${widget.balance}',
-      "BookingPlace": '${bookingplacecontroller.text}',
-      "TransportName": '${Parcelservicecontroller.text}',
+      "BookingPlace": bookingplacecontroller.text,
+      "TransportName": Parcelservicecontroller.text,
       "FileName": "",
       "FileLocation": "",
       "FileExtension": "",
@@ -825,8 +837,10 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       "UpdatedBy": userId,
       "UpdatedDate": formattedcurrentDate,
       "SHRemarks": "",
-      "RejectedRemarks": ""
-
+      "RejectedRemarks": "",
+      "WhsCode":  widget.whsCode,
+      "WhsName":  widget.whsName,
+      "WhsState":  widget.whsState
     };
     print(jsonEncode(orderData));
     if (isValid) {
@@ -844,25 +858,24 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
 
           final responseData = jsonDecode(response.body);
           print(responseData);
-if(responseData['isSuccess']) {
-  final cartProvider = context.read<CartProvider>();
+          if (responseData['isSuccess']) {
+            final cartProvider = context.read<CartProvider>();
 
-  clearCartData(cartProvider);
+            clearCartData(cartProvider);
 
-  Navigator.push(
-    context,
-    MaterialPageRoute(
-      builder: (context) =>
-          orderStatusScreen(
-            responseData: responseData,
-            Compneyname: Compneyname,
-          ),
-    ),
-  );
-}else{
-  CommonUtils.showCustomToastMessageLong(
-      responseData['endUserMessage'], context, 1, 4);
-}
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => orderStatusScreen(
+                  responseData: responseData,
+                  Compneyname: Compneyname,
+                ),
+              ),
+            );
+          } else {
+            CommonUtils.showCustomToastMessageLong(
+                responseData['endUserMessage'], context, 1, 4);
+          }
           // clearCartItems();
           // printRemainingCartItems();
         } else {
@@ -905,7 +918,7 @@ if(responseData['isSuccess']) {
       // key: UniqueKey(),
       key: key,
       shrinkWrap: true,
-      physics: PageScrollPhysics(),
+      physics: const PageScrollPhysics(),
       scrollDirection: Axis.vertical,
       itemCount: cartItems.length,
       itemBuilder: (context, index) {
@@ -1007,42 +1020,40 @@ if(responseData['isSuccess']) {
     return formatter.format(number);
   }
 
-
-
   Future<void> GetPreviousOrderBookingByPartyCode(String cardCode) async {
     try {
       // Make a GET request to the API endpoint
-      http.Response response = await http.get(Uri.parse("http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetPreviousOrderBookingByPartyCode/$cardCode"));
+      http.Response response = await http.get(Uri.parse(
+          "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetPreviousOrderBookingByPartyCode/$cardCode"));
 
       // Check if the request was successful (status code 200)
       if (response.statusCode == 200) {
         // Parse the JSON response
 
-      Map<String, dynamic> data = jsonDecode(response.body);
+        Map<String, dynamic> data = jsonDecode(response.body);
 
-      // Check if 'response' field is not null
-      if (data['response'] != null) {
-        // Extract the values of bookingPlace and transportName
-        String bookingPlace = data['response']['bookingPlace'];
-        String transportName = data['response']['transportName'];
+        // Check if 'response' field is not null
+        if (data['response'] != null) {
+          // Extract the values of bookingPlace and transportName
+          String bookingPlace = data['response']['bookingPlace'];
+          String transportName = data['response']['transportName'];
 
-        // Update the text field controllers with the received data
-        bookingplacecontroller.text = bookingPlace;
-        Parcelservicecontroller.text = transportName;
+          // Update the text field controllers with the received data
+          bookingplacecontroller.text = bookingPlace;
+          Parcelservicecontroller.text = transportName;
+        } else {
+          // If 'response' field is null, show a message or handle it as per your requirement
+          print('No data available.');
+        }
       } else {
-        // If 'response' field is null, show a message or handle it as per your requirement
-        print('No data available.');
+        // If the request was not successful, print an error message
+        print('Failed to fetch data: ${response.statusCode}');
       }
-    } else {
-    // If the request was not successful, print an error message
-    print('Failed to fetch data: ${response.statusCode}');
-    }
     } catch (e) {
       // If an error occurs during the fetching process, print the error
       print('Error fetching data: $e');
     }
   }
-
 }
 
 // In CartItemWidget
@@ -1057,7 +1068,7 @@ class CartItemWidget extends StatefulWidget {
   final ValueNotifier<double> totalGstAmountNotifier;
   final VoidCallback onQuantityChanged;
 
-  CartItemWidget({
+  const CartItemWidget({
     required this.cartItem,
     required this.onDelete,
     required this.totalPrice,
@@ -1071,7 +1082,6 @@ class CartItemWidget extends StatefulWidget {
   @override
   _CartItemWidgetState createState() => _CartItemWidgetState();
 }
-
 
 class _CartItemWidgetState extends State<CartItemWidget> {
   late TextEditingController _textController;
@@ -1130,12 +1140,12 @@ class _CartItemWidgetState extends State<CartItemWidget> {
           color: Colors.white,
           padding: const EdgeInsets.all(8.0),
           child:
-              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               '${widget.cartItem.itemName}',
               style: CommonUtils.Mediumtext_14,
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
@@ -1151,13 +1161,13 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 ),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
             Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Container(
+                SizedBox(
                   width: (totalWidth - 40) / 2,
-                  child: Container(
+                  child: SizedBox(
                     width: (totalWidth - 40) / 2,
                     child: PlusMinusButtons(
                       addQuantity: () {
@@ -1203,7 +1213,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                       },
                       textController: _textController,
                       orderQuantity:
-                          _orderQty, // Pass _orderQty as orderQuantity
+                      _orderQty, // Pass _orderQty as orderQuantity
                       // Pass the onQuantityChanged callback function
                       updateTotalPrice: (int value) {
                         // Your updateTotalPrice logic, if any
@@ -1233,7 +1243,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
+                const SizedBox(width: 8.0),
                 GestureDetector(
                   onTap: () {
                     widget.onDelete();
@@ -1242,15 +1252,15 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                     height: 36,
                     width: 40,
                     decoration: BoxDecoration(
-                      color: Color(0xFFF8dac2),
+                      color: const Color(0xFFF8dac2),
                       border: Border.all(
-                        color: Color(0xFFe78337),
+                        color: const Color(0xFFe78337),
                         width: 1.0,
                       ),
                       borderRadius: BorderRadius.circular(8.0),
                     ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 4.0),
+                    child: const Padding(
+                      padding: EdgeInsets.symmetric(horizontal: 4.0),
                       child: Align(
                         alignment: Alignment.center,
                         child: Row(
@@ -1269,7 +1279,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 ),
               ],
             ),
-            SizedBox(height: 8.0),
+            const SizedBox(height: 8.0),
           ]),
         ),
       ),
@@ -1307,7 +1317,7 @@ class PlusMinusButtons extends StatelessWidget {
   final ValueChanged<int> onQuantityChanged;
   final ValueChanged<int> updateTotalPrice;
 
-  PlusMinusButtons({
+  const PlusMinusButtons({
     Key? key,
     required this.addQuantity,
     required this.deleteQuantity,
@@ -1323,12 +1333,12 @@ class PlusMinusButtons extends StatelessWidget {
       width: MediaQuery.of(context).size.width / 2.3,
       height: 38,
       decoration: BoxDecoration(
-        color: Color(0xFFe78337),
+        color: const Color(0xFFe78337),
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Card(
-        color: Color(0xFFe78337),
-        margin: EdgeInsets.symmetric(horizontal: 0.0),
+        color: const Color(0xFFe78337),
+        margin: const EdgeInsets.symmetric(horizontal: 0.0),
         child: Row(
           children: [
             IconButton(
@@ -1346,14 +1356,14 @@ class PlusMinusButtons extends StatelessWidget {
             Expanded(
               child: Align(
                 alignment: Alignment.center,
-                child: Container(
+                child: SizedBox(
                   height: 36,
                   child: Padding(
                     padding: const EdgeInsets.all(2.0),
                     child: Container(
                       alignment: Alignment.center,
                       width: MediaQuery.of(context).size.width / 5,
-                      decoration: BoxDecoration(
+                      decoration: const BoxDecoration(
                         color: Colors.white,
                       ),
                       child: TextField(
@@ -1363,7 +1373,7 @@ class PlusMinusButtons extends StatelessWidget {
                           FilteringTextInputFormatter.digitsOnly,
                           LengthLimitingTextInputFormatter(5),
                         ],
-                        decoration: InputDecoration(
+                        decoration: const InputDecoration(
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           enabledBorder: InputBorder.none,

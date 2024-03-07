@@ -9,6 +9,7 @@ import 'package:intl/intl.dart';
 import 'package:http/http.dart' as http;
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
+import 'package:srikarbiotech/Model/warehouse_model.dart';
 import 'package:srikarbiotech/vieworders_provider.dart';
 import 'Common/CommonUtils.dart';
 import 'Common/SharedPrefsData.dart';
@@ -73,12 +74,13 @@ class _VieworderPageState extends State<ViewOrders> {
     final url = Uri.parse(
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
     final requestBody = {
-      "PartyCode": viewOrdersProvider.getApiPartyCode,
+      "PartyCode": viewOrdersProvider.getPartyCode,
       "StatusId": viewOrdersProvider.getApiStatusId,
       "FormDate": viewOrdersProvider.apiFromDate,
       "ToDate": viewOrdersProvider.apiToDate,
       "CompanyId": companyId,
-      "UserId": userId
+      "UserId": userId,
+      "WhsCode": viewOrdersProvider.apiWareHouse
     };
 
     debugPrint('_______view orders____1___${jsonEncode(requestBody)}');
@@ -134,7 +136,7 @@ class _VieworderPageState extends State<ViewOrders> {
     setState(() {
       filterorderesponselist = orderesponselist.where((dealer) {
         return dealer.partyName.toLowerCase().contains(searchTerm) ||
-            dealer.partyGSTNumber!.toLowerCase().contains(searchTerm);
+            dealer.partyGSTNumber.toLowerCase().contains(searchTerm);
       }).toList();
     });
   }
@@ -401,18 +403,48 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   int? savedCompanyId = 0;
   String? slpCode = "";
   String? userId = "";
+  String? wareHouse;
+  late ViewOrdersProvider viewOrdersProvider;
+  late List<WareHouseList> wareHousesData = [];
+
   @override
   void initState() {
+    super.initState();
     // todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
     // DateTime oneWeekAgo = DateTime.now().subtract(const Duration(days: 7));
     // fromdateController.text = DateFormat('dd-MM-yyyy').format(oneWeekAgo);
     fetchData();
     getpaymentmethods();
-
-    super.initState();
+    getWareHouses();
   }
 
-  late ViewOrdersProvider viewOrdersProvider;
+  Future<void> getWareHouses() async {
+    try {
+      String apiUrl =
+          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetWarehousesByUserandCompany/e39536e2-89d3-4cc7-ae79-3dd5291ff156/1';
+      // String apiUrl = '$baseUrl$GetWarehousesByUserandCompany$userId 1';
+      final jsonResponse = await http.get(Uri.parse(apiUrl));
+      if (jsonResponse.statusCode == 200) {
+        Map<String, dynamic> response = jsonDecode(jsonResponse.body);
+        if (response['response']['listResult'] != null) {
+          List<dynamic> wareHouseList = response['response']['listResult'];
+
+          debugPrint('wareHouseList: ${wareHouseList[0]['whsName']}');
+          wareHousesData = wareHouseList
+              .map((house) => WareHouseList.fromJson(house))
+              .toList();
+          debugPrint('wareHousesData: ${wareHousesData[0].whsName}');
+        } else {
+          debugPrint('warehouse list is empty');
+        }
+      } else {
+        debugPrint('error: api call failed');
+      }
+    } catch (e) {
+      throw Exception('catch: $e');
+    }
+  }
+
   @override
   void didChangeDependencies() {
     super.didChangeDependencies();
@@ -842,7 +874,61 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     ),
                   ],
                 ),
-
+                Padding(
+                  padding: const EdgeInsets.only(left: 5.0),
+                  child: Text(
+                    'Ware House',
+                    style: CommonUtils.txSty_13O_F6,
+                  ),
+                ),
+                const SizedBox(
+                  height: 4.0,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 40.0,
+                  padding: const EdgeInsets.only(left: 15, right: 20),
+                  decoration: CommonUtils.decorationO_R10W1,
+                  child: wareHousesData.isEmpty
+                      ? LoadingAnimationWidget.newtonCradle(
+                    color: Colors.blue,
+                    size: 40.0,
+                  )
+                      : DropdownButton<String>(
+                    hint: Text(
+                      'Select WareHouse',
+                      style: CommonUtils.txSty_13O_F6,
+                    ),
+                    value: provider.dropDownWareHouse,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        provider.dropDownWareHouse = newValue;
+                        WareHouseList house = wareHousesData
+                            .firstWhere((item) => item.whsName == newValue);
+                        // for (WareHouseList house in wareHousesData) {
+                        //   if (house.whsName == newValue) {
+                        //     provider.apiWareHouse = house.whsCode;
+                        //     break;
+                        //   }
+                        // }
+                        provider.apiWareHouse = house.whsCode;
+                      });
+                    },
+                    items: wareHousesData.map((WareHouseList warehouse) {
+                      return DropdownMenuItem<String>(
+                        value: warehouse.whsName,
+                        child: Text(
+                          warehouse.whsName,
+                          style: CommonUtils.txSty_13O_F6,
+                        ),
+                      );
+                    }).toList(),
+                    icon: const Icon(Icons.arrow_drop_down),
+                    iconSize: 20,
+                    isExpanded: true,
+                    underline: const SizedBox(),
+                  ),
+                ),
                 const SizedBox(
                   height: 10.0,
                 ),
@@ -1000,7 +1086,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          //apply
                           getAppliedFilterData(context);
                         },
                         style: ElevatedButton.styleFrom(
@@ -1051,7 +1136,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         "FormDate": viewOrdersProvider.apiFromDate,
         "ToDate": viewOrdersProvider.apiToDate,
         "CompanyId": savedCompanyId,
-        "UserId": userId
+        "UserId": userId,
+        "WhsCode": viewOrdersProvider.apiWareHouse
       };
 
       debugPrint('_______view orders____2___${jsonEncode(requestBody)}');
@@ -1147,8 +1233,9 @@ class _OrderCardState extends State<OrderCard> {
           MaterialPageRoute(
             builder: (context) => Orderdetails(
               orderid: widget.orderResult.id,
+              whsName: widget.orderResult.whsName,
               orderdate: widget.formattedDate,
-              totalCostWithGST: widget.orderResult.totalCostWithGST!,
+              totalCostWithGST: widget.orderResult.totalCostWithGST,
               bookingplace: widget.orderResult.bookingPlace,
               transportmode: widget.orderResult.transportName,
               lrnumber: 1,
@@ -1156,9 +1243,9 @@ class _OrderCardState extends State<OrderCard> {
               statusname: widget.orderResult.statusName,
               partyname: widget.orderResult.partyName,
               partycode: widget.orderResult.partyCode,
-              proprietorName: widget.orderResult.proprietorName!,
-              partyGSTNumber: widget.orderResult.partyGSTNumber!,
-              ordernumber: widget.orderResult.orderNumber!,
+              proprietorName: widget.orderResult.proprietorName,
+              partyGSTNumber: widget.orderResult.partyGSTNumber,
+              ordernumber: widget.orderResult.orderNumber,
               partyAddress: widget.orderResult.partyAddress,
               statusBar: sendingSvgImagesAndColors(
                 widget.orderResult.statusTypeId,
@@ -1253,12 +1340,43 @@ class _OrderCardState extends State<OrderCard> {
                                 mainAxisAlignment:
                                 MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // const Text(
-                                  //   'Total Amount : ',
-                                  //   style: CommonUtils.txSty_13B_Fb,
+                                  widget.orderResult.whsName != null
+                                      ? Text(
+                                    '${widget.orderResult.whsName}',
+                                    style: CommonUtils.txSty_13O_F6,
+                                  )
+                                      : const SizedBox(),
+                                  // Text(
+                                  //   '${widget.orderResult.whsName}',
+                                  //   style: CommonUtils.txSty_13O_F6,
+                                  // ),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'No.of Items: ',
+                                        style: CommonUtils.txSty_13B_Fb,
+                                      ),
+                                      Text(
+                                        '${widget.orderResult.noOfItems}',
+                                        style: CommonUtils.txSty_13O_F6,
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5.0,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  // Text(
+                                  //   'whsCode', // '${widget.orderResult.noOfItems}', //
+                                  //   style: CommonUtils.txSty_13O_F6,
                                   // ),
                                   Text(
-                                    '₹${formatNumber(widget.orderResult.totalCostWithGST!)}',
+                                    '₹${formatNumber(widget.orderResult.totalCostWithGST)}',
                                     style: CommonUtils.txSty_13O_F6,
                                   ),
                                   Text(
@@ -1266,7 +1384,7 @@ class _OrderCardState extends State<OrderCard> {
                                     style: CommonUtils.txSty_13O_F6,
                                   ),
                                 ],
-                              )
+                              ),
                             ],
                           ),
                         ),
@@ -1304,28 +1422,27 @@ class _OrderCardState extends State<OrderCard> {
                     const SizedBox(
                       width: 10.0,
                     ),
-                    Expanded(
+                    const Expanded(
                       child: Row(
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
-                          const Expanded(child: SizedBox()),
-                          Column(
-                            crossAxisAlignment: CrossAxisAlignment.end,
-                            children: [
-                              Row(
-                                children: [
-                                  const Text(
-                                    'No.of Items: ',
-                                    style: CommonUtils.txSty_13B_Fb,
-                                  ),
-                                  Text(
-                                    '${widget.orderResult.noOfItems}',
-                                    style: CommonUtils.txSty_13O_F6,
-                                  ),
-                                ],
-                              ),
-                            ],
-                          )
+                          Expanded(child: SizedBox()),
+                          // Row(
+                          //   children: [
+                          //     const Text(
+                          //       'No.of Items: ',
+                          //       style: CommonUtils.txSty_13B_Fb,
+                          //     ),
+                          //     Text(
+                          //       '${widget.orderResult.noOfItems}',
+                          //       style: CommonUtils.txSty_13O_F6,
+                          //     ),
+                          //   ],
+                          // )
+                          // Text(
+                          //   '₹${formatNumber(widget.orderResult.totalCostWithGST)}',
+                          //   style: CommonUtils.txSty_13O_F6,
+                          // ),
                         ],
                       ),
                     ),

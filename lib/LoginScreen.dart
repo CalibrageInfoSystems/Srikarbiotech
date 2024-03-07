@@ -12,6 +12,7 @@ import 'Common/SharedPreferencesHelper.dart';
 import 'Common/SharedPrefsData.dart';
 import 'HomeScreen.dart';
 import 'Model/CompanyModel.dart';
+import 'Services/LocationUpdatesService.dart';
 import 'Services/api_config.dart';
 import 'forgot_password_screen.dart';
 
@@ -34,6 +35,7 @@ class _MyHomePageState extends State<LoginScreen> {
   String? userId;
   String? slpCode;
   bool isLoading = false;
+  late LocationUpdatesService _locationUpdatesService;
   @override
   initState() {
     super.initState();
@@ -41,6 +43,7 @@ class _MyHomePageState extends State<LoginScreen> {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
+    _locationUpdatesService = LocationUpdatesService();
     print("Company Name: ${widget.companyName}");
     print("Company ID: ${widget.companyId}");
     compneyid = widget.companyId;
@@ -439,6 +442,10 @@ class _MyHomePageState extends State<LoginScreen> {
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
         );
+
+        // Start the foreground service after successful login
+       // FlutterForegroundTask.initialize(isolateService: LocationUpdatesService(), androidServiceOptions: AndroidServiceOptions(channelId: "ForegroundChannel"));
+
       } else {
         print('Login failed. Please check your credentials.');
         CommonUtils.showCustomToastMessageLong(jsonResponse['endUserMessage'], context, 1, 4);
@@ -449,5 +456,13 @@ class _MyHomePageState extends State<LoginScreen> {
     setState(() {
       isLoading = false; // Set loading state back to false after the response
     });
+  }
+
+
+  void _startService() {
+    // Start your service here
+    // For example:
+    // Intent serviceIntent = Intent(context, YourServiceClass);
+    // context.startService(serviceIntent);
   }
 }

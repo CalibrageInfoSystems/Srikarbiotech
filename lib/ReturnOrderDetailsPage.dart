@@ -62,9 +62,11 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
         if (apiData['response']['returnOrderItemXrefList'] != null) {
           List<dynamic> returnOrderItemXrefListData =
           apiData['response']['returnOrderItemXrefList'];
+          debugPrint('33333333');
           returnOrderItemXrefList = returnOrderItemXrefListData
               .map((item) => ReturnOrderItemXrefList.fromJson(item))
               .toList();
+          debugPrint('4444444444');
         }
       }
     } catch (e) {
@@ -73,18 +75,22 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
   }
 
   Future<Map<String, dynamic>> getApiData() async {
-    String apiUrl =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderDetailsById/${widget.orderId}';
-    final response = await http.get(Uri.parse(apiUrl));
-    debugPrint('###############');
-    debugPrint(response.body);
-    debugPrint('###############');
-    debugPrint('${widget.orderId}');
+    try {
+      String apiUrl =
+          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderDetailsById/${widget.orderId}';
+      final response = await http.get(Uri.parse(apiUrl));
+      debugPrint('###############');
+      debugPrint(response.body);
+      debugPrint('###############');
+      debugPrint('${widget.orderId}');
 
-    if (response.statusCode == 200) {
-      return jsonDecode(response.body);
-    } else {
-      throw Exception('Failed to load data');
+      if (response.statusCode == 200) {
+        return jsonDecode(response.body);
+      } else {
+        throw Exception('Failed to load data');
+      }
+    } catch (e) {
+      throw Exception('_OrderDetailsPageState catch at 91');
     }
   }
 
@@ -268,49 +274,49 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                                       MainAxisAlignment
                                                           .spaceBetween,
                                                       children: <Widget>[
-                                                        Expanded(
-                                                          child: Padding(
-                                                            padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                12,
-                                                                vertical:
-                                                                10),
-                                                            child: Column(
-                                                              crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
-                                                              children: [
-                                                                const Text(
-                                                                  'Credited Amount',
-                                                                  style: CommonUtils
-                                                                      .txSty_13B_Fb,
-                                                                ),
-                                                                Text(
-                                                                  '₹${formatNumber(credit.creditedAmount)}',
-                                                                  style:
-                                                                  TextStyle(
-                                                                    fontFamily:
-                                                                    'Roboto',
-                                                                    fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
-                                                                    color: HexColor(
-                                                                        '#e58338'),
-                                                                    fontSize:
-                                                                    13,
-                                                                  ),
-                                                                ),
-                                                              ],
-                                                            ),
-                                                          ),
-                                                        ),
-                                                        Container(
-                                                          width: 0.2,
-                                                          height: 60,
-                                                          color: Colors.grey,
-                                                        ),
+                                                        // Expanded(
+                                                        //   child: Padding(
+                                                        //     padding:
+                                                        //     const EdgeInsets
+                                                        //         .symmetric(
+                                                        //         horizontal:
+                                                        //         12,
+                                                        //         vertical:
+                                                        //         10),
+                                                        //     child: Column(
+                                                        //       crossAxisAlignment:
+                                                        //       CrossAxisAlignment
+                                                        //           .start,
+                                                        //       children: [
+                                                        //         const Text(
+                                                        //           'Credited Amount',
+                                                        //           style: CommonUtils
+                                                        //               .txSty_13B_Fb,
+                                                        //         ),
+                                                        //         Text(
+                                                        //           '₹${formatNumber(credit.creditedAmount)}',
+                                                        //           style:
+                                                        //           TextStyle(
+                                                        //             fontFamily:
+                                                        //             'Roboto',
+                                                        //             fontWeight:
+                                                        //             FontWeight
+                                                        //                 .bold,
+                                                        //             color: HexColor(
+                                                        //                 '#e58338'),
+                                                        //             fontSize:
+                                                        //             13,
+                                                        //           ),
+                                                        //         ),
+                                                        //       ],
+                                                        //     ),
+                                                        //   ),
+                                                        // ),
+                                                        // Container(
+                                                        //   width: 0.2,
+                                                        //   height: 60,
+                                                        //   color: Colors.grey,
+                                                        // ),
                                                         Expanded(
                                                           child: Padding(
                                                             padding:
@@ -414,82 +420,93 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                                       height: 0.2,
                                                       color: Colors.grey,
                                                     ),
-                                                    Container(
-                                                      padding:
-                                                      const EdgeInsets.all(
-                                                          8.0),
-                                                      child: GestureDetector(
-                                                        onTap: () async {
-                                                          String? pdfUrl =
-                                                              credit.fileUrl;
-                                                          String? invoiceNo =
-                                                              "ReturnOrderCreditNoteFile";
-                                                          downloadFile(pdfUrl,
-                                                              invoiceNo);
-
-                                                          //Add your download functionality here
-                                                        },
-                                                        child: Container(
-                                                          height: 35,
-                                                          margin:
+                                                    Row(
+                                                      children: [
+                                                        const Spacer(), // This will push the container to the right corner
+                                                        Container(
+                                                          padding:
                                                           const EdgeInsets
-                                                              .symmetric(
-                                                              horizontal:
-                                                              4.0),
-                                                          decoration:
-                                                          BoxDecoration(
-                                                            color: const Color(
-                                                                0xFFF8dac2),
-                                                            border: Border.all(
-                                                              color: const Color(
-                                                                  0xFFe78337),
-                                                              width: 1,
-                                                            ),
-                                                            borderRadius:
-                                                            BorderRadius
-                                                                .circular(
-                                                                8.0),
-                                                          ),
-                                                          child: IntrinsicWidth(
-                                                            child: Column(
-                                                              mainAxisAlignment:
-                                                              MainAxisAlignment
-                                                                  .center,
-                                                              children: [
-                                                                Container(
-                                                                  padding: const EdgeInsets
-                                                                      .symmetric(
-                                                                      horizontal:
-                                                                      5.0),
-                                                                  child: Row(
-                                                                    children: [
-                                                                      SvgPicture
-                                                                          .asset(
-                                                                        'assets/file-download.svg',
-                                                                        height:
-                                                                        18,
-                                                                        width:
-                                                                        18,
-                                                                        fit: BoxFit
-                                                                            .fitWidth,
-                                                                        color: Colors
-                                                                            .black,
-                                                                      ),
-                                                                      const SizedBox(
-                                                                          width:
-                                                                          8.0),
-                                                                      const Text(
-                                                                          'Download Credit Note',
-                                                                          style:
-                                                                          CommonUtils.Mediumtext_12),
-                                                                    ],
-                                                                  ),
+                                                              .all(8.0),
+                                                          child:
+                                                          GestureDetector(
+                                                            onTap: () async {
+                                                              String? pdfUrl =
+                                                                  credit
+                                                                      .fileUrl;
+                                                              String?
+                                                              invoiceNo =
+                                                                  "ReturnOrderCreditNoteFile";
+                                                              downloadFile(
+                                                                  pdfUrl,
+                                                                  invoiceNo);
+                                                              // Add your download functionality here
+                                                            },
+                                                            child: Container(
+                                                              height: 35,
+                                                              margin:
+                                                              const EdgeInsets
+                                                                  .symmetric(
+                                                                  horizontal:
+                                                                  4.0),
+                                                              decoration:
+                                                              BoxDecoration(
+                                                                color: const Color(
+                                                                    0xFFF8dac2),
+                                                                border:
+                                                                Border.all(
+                                                                  color: const Color(
+                                                                      0xFFe78337),
+                                                                  width: 1,
                                                                 ),
-                                                              ],
+                                                                borderRadius:
+                                                                BorderRadius
+                                                                    .circular(
+                                                                    8.0),
+                                                              ),
+                                                              child:
+                                                              IntrinsicWidth(
+                                                                child: Column(
+                                                                  mainAxisAlignment:
+                                                                  MainAxisAlignment
+                                                                      .center,
+                                                                  children: [
+                                                                    Container(
+                                                                      padding: const EdgeInsets
+                                                                          .symmetric(
+                                                                          horizontal:
+                                                                          5.0),
+                                                                      child:
+                                                                      Row(
+                                                                        children: [
+                                                                          SvgPicture
+                                                                              .asset(
+                                                                            'assets/file-download.svg',
+                                                                            height:
+                                                                            18,
+                                                                            width:
+                                                                            18,
+                                                                            fit:
+                                                                            BoxFit.fitWidth,
+                                                                            color:
+                                                                            Colors.black,
+                                                                          ),
+                                                                          const SizedBox(
+                                                                              width: 8.0),
+                                                                          const Text(
+                                                                            'Download Credit Note',
+                                                                            style:
+                                                                            CommonUtils.Mediumtext_12,
+                                                                          ),
+                                                                        ],
+                                                                      ),
+                                                                    ),
+                                                                  ],
+                                                                ),
+                                                              ),
                                                             ),
                                                           ),
                                                         ),
-                                                      ),
+                                                      ],
                                                     ),
                                                   ],
                                                 ),
@@ -516,8 +533,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                     ),
                   ),
                 );
-              }
-              else {
+              } else {
                 return const Center(
                   child: Text('No data present'),
                 );
@@ -587,17 +603,21 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
   }
 
   Future<void> ReturnOrderCreditmethod() async {
-    final response = await http.get(Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderCreditById/${widget.orderId}'));
+    final response = await http.get(Uri.parse(
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderCreditById/${widget.orderId}'));
 
     if (response.statusCode == 200) {
       final jsonData = json.decode(response.body);
 
-      if (jsonData['response'] != null && jsonData['response']['listResult'] != null) {
+      if (jsonData['response'] != null &&
+          jsonData['response']['listResult'] != null) {
         final List<dynamic>? listResult = jsonData['response']['listResult'];
 
         if (listResult != null) {
           setState(() {
-            returnOrderCredits = listResult.map((data) => ReturnOrderCredit.fromJson(data)).toList();
+            returnOrderCredits = listResult
+                .map((data) => ReturnOrderCredit.fromJson(data))
+                .toList();
           });
         } else {
           // Handle the case where listResult is null
@@ -611,7 +631,6 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
       throw Exception('Failed to load data');
     }
   }
-
 
   String formatNumber(double number) {
     NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
@@ -656,7 +675,6 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
     }
   }
 }
-
 
 class CustomReturnExpansionTile extends StatefulWidget {
   final Widget title;
@@ -742,7 +760,7 @@ class ShipmentDetailsCard extends StatefulWidget {
 
 class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
   final _orangeColor = HexColor('#e58338');
-
+  List<ReturnOrdersImageList>? receivedAttachs;
   int currentIndex = 0;
   final _titleTextStyle = const TextStyle(
     fontFamily: 'Roboto',
@@ -776,6 +794,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
   void initState() {
     super.initState();
     imageApiData = getReturnOrderImagesById();
+    getReturnOrderReceivedAttchImagesById();
   }
 
   Future<List<ReturnOrdersImageList>> getReturnOrderImagesById() async {
@@ -964,39 +983,79 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                     ),
                     dividerForHorizontal,
                     Padding(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 12, vertical: 10),
-                      child: Container(
-                        padding: const EdgeInsets.symmetric(
-                            horizontal: 6, vertical: 2),
-                        decoration: BoxDecoration(
-                          color: const Color.fromARGB(255, 247, 232, 211),
-                          border: Border.all(
-                            color: _orangeColor,
+                      padding: const EdgeInsets.all(10.0),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(255, 247, 232, 211),
+                              border: Border.all(
+                                color: _orangeColor,
+                              ),
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                showAttachmentsDialog(data);
+                              },
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.link,
+                                    size: 18,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    'Attachments',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                          borderRadius: BorderRadius.circular(5),
-                        ),
-                        child: GestureDetector(
-                          onTap: () {
-                            showAttachmentsDialog(data);
-                          },
-                          child: const Row(
-                            mainAxisSize: MainAxisSize.min,
-                            children: [
-                              Icon(
-                                Icons.link,
-                                size: 18,
+                          receivedAttachs == null
+                              ? const SizedBox()
+                              : Container(
+                            padding: const EdgeInsets.symmetric(
+                                horizontal: 6, vertical: 2),
+                            decoration: BoxDecoration(
+                              color: const Color.fromARGB(
+                                  255, 247, 232, 211),
+                              border: Border.all(
+                                color: _orangeColor,
                               ),
-                              SizedBox(
-                                width: 5,
+                              borderRadius: BorderRadius.circular(5),
+                            ),
+                            child: GestureDetector(
+                              onTap: () {
+                                showAttachmentsDialog(receivedAttachs!);
+                                //  showReceivedAttach(receivedAttachs);
+                              },
+                              child: const Row(
+                                mainAxisSize: MainAxisSize.min,
+                                children: [
+                                  Icon(
+                                    Icons.link,
+                                    size: 18,
+                                  ),
+                                  SizedBox(
+                                    width: 5,
+                                  ),
+                                  Text(
+                                    'Received Attch',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                ],
                               ),
-                              Text(
-                                'Attachments',
-                                style: CommonUtils.txSty_13B_Fb,
-                              ),
-                            ],
+                            ),
                           ),
-                        ),
+                        ],
                       ),
                     )
                   ],
@@ -1007,62 +1066,6 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
             return const Center(child: Text('No data present'));
           }
         }
-      },
-    );
-  }
-
-  void _showZoomedAttachments(String imageString) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: Colors.white),
-            width: double.infinity,
-            height: 500,
-            child: Stack(
-              children: [
-                Center(
-                  child: PhotoViewGallery.builder(
-                    itemCount: 1, // Only one image in the gallery
-                    builder: (context, index) {
-                      return PhotoViewGalleryPageOptions(
-                        imageProvider: NetworkImage(imageString),
-                        minScale: PhotoViewComputedScale.contained,
-                        maxScale: PhotoViewComputedScale.covered,
-                      );
-                    },
-                    scrollDirection: Axis.vertical,
-                    scrollPhysics: const PageScrollPhysics(),
-                    allowImplicitScrolling: true,
-                    backgroundDecoration: const BoxDecoration(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Container(
-                      padding: const EdgeInsets.all(3.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.red,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
       },
     );
   }
@@ -1079,6 +1082,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
       ),
     );
   }
+
   int currentPage = 0;
   void showAttachmentsDialog(List<ReturnOrdersImageList> data) {
     showDialog(
@@ -1130,9 +1134,9 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                           width: 8.0,
                           height: 8.0,
                           margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                          decoration: BoxDecoration(
+                          decoration: const BoxDecoration(
                             shape: BoxShape.circle,
-                            color:Colors.red,
+                            color: Colors.red,
                           ),
                         );
                       }),
@@ -1165,100 +1169,124 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
       },
     );
   }
-  // void showAttachmentsDialog(List<ReturnOrdersImageList> data) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return AlertDialog(
-  //         title: const Text('Attachments'),
-  //         elevation: 5.0,
-  //         contentPadding: const EdgeInsets.all(5.0),
-  //         content: SizedBox(
-  //           height: 120,
-  //           width: 300,
-  //           child: Stack(
-  //             children: [
-  //               CarouselSlider(
-  //                 items: data.map((imageUrl) {
-  //                   return GestureDetector(
-  //                     onTap: () {
-  //                       _showZoomedAttachments(imageUrl.imageString);
-  //                     },
-  //                     child: Image.network(
-  //                       imageUrl.imageString,
-  //                       fit: BoxFit.cover,
-  //                     ),
-  //                   );
-  //                 }).toList(),
-  //                 options: CarouselOptions(
-  //                   scrollPhysics: const BouncingScrollPhysics(),
-  //                   autoPlay: true,
-  //                   enableInfiniteScroll: false,
-  //                   height: MediaQuery.of(context).size.height,
-  //                   aspectRatio: 23 / 9,
-  //                   viewportFraction: 1,
-  //                   onPageChanged: (index, reason) {
-  //                     // Handle page change if needed
-  //                     setState(() {
-  //                       currentIndex = index;
-  //                     });
-  //                   },
-  //                 ),
-  //
-  //                 // CarouselOptions(
-  //                 //   scrollPhysics:
-  //                 //       const BouncingScrollPhysics(),
-  //                 //   autoPlay: false,
-  //                 //   enableInfiniteScroll: false,
-  //                 //   viewportFraction: 1.0,
-  //                 //   height: MediaQuery.of(context)
-  //                 //       .size
-  //                 //       .height,
-  //                 //   aspectRatio: 23 / 9,
-  //                 //   onPageChanged: (index, reason) {
-  //                 //     setState(() {
-  //                 //       currentIndex = index;
-  //                 //     });
-  //                 //   },
-  //                 // ),
-  //               ),
-  //               SizedBox(
-  //                 width: MediaQuery.of(context).size.width,
-  //                 //  padding: EdgeInsets.all(20.0),
-  //
-  //                 height: MediaQuery.of(context).size.height,
-  //                 child: Align(
-  //                   alignment: Alignment.bottomCenter,
-  //                   child: Padding(
-  //                     padding: const EdgeInsets.only(bottom: 25.0),
-  //                     child: Row(
-  //                       mainAxisAlignment: MainAxisAlignment.center,
-  //                       children: List.generate(
-  //                         // Use the number of images from assets
-  //                         data.length, // Replace with the actual number of assets
-  //                             (index) {
-  //                           return buildIndicator(index);
-  //                         },
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.pop(context);
-  //             },
-  //             child: const Text('Close'),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
+
+  Future<void> getReturnOrderReceivedAttchImagesById() async {
+    String apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetReturnOrderImagesById/${widget.orderId}/20';
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = jsonDecode(response.body);
+        List<dynamic> resultList = jsonResponse['response']['listResult'];
+
+        // Check if listResult is not null
+        List<ReturnOrdersImageList> returnOrdersReceivedAttachImageList =
+        resultList
+            .map((item) => ReturnOrdersImageList.fromJson(item))
+            .toList();
+        receivedAttachs = returnOrdersReceivedAttachImageList;
+      } else {
+        throw Exception('unsuccess api call');
+      }
+    } catch (e) {
+      throw Exception('catch');
+    }
+  }
+
+// void showAttachmentsDialog(List<ReturnOrdersImageList> data) {
+//   showDialog(
+//     context: context,
+//     builder: (context) {
+//       return AlertDialog(
+//         title: const Text('Attachments'),
+//         elevation: 5.0,
+//         contentPadding: const EdgeInsets.all(5.0),
+//         content: SizedBox(
+//           height: 120,
+//           width: 300,
+//           child: Stack(
+//             children: [
+//               CarouselSlider(
+//                 items: data.map((imageUrl) {
+//                   return GestureDetector(
+//                     onTap: () {
+//                       _showZoomedAttachments(imageUrl.imageString);
+//                     },
+//                     child: Image.network(
+//                       imageUrl.imageString,
+//                       fit: BoxFit.cover,
+//                     ),
+//                   );
+//                 }).toList(),
+//                 options: CarouselOptions(
+//                   scrollPhysics: const BouncingScrollPhysics(),
+//                   autoPlay: true,
+//                   enableInfiniteScroll: false,
+//                   height: MediaQuery.of(context).size.height,
+//                   aspectRatio: 23 / 9,
+//                   viewportFraction: 1,
+//                   onPageChanged: (index, reason) {
+//                     // Handle page change if needed
+//                     setState(() {
+//                       currentIndex = index;
+//                     });
+//                   },
+//                 ),
+//
+//                 // CarouselOptions(
+//                 //   scrollPhysics:
+//                 //       const BouncingScrollPhysics(),
+//                 //   autoPlay: false,
+//                 //   enableInfiniteScroll: false,
+//                 //   viewportFraction: 1.0,
+//                 //   height: MediaQuery.of(context)
+//                 //       .size
+//                 //       .height,
+//                 //   aspectRatio: 23 / 9,
+//                 //   onPageChanged: (index, reason) {
+//                 //     setState(() {
+//                 //       currentIndex = index;
+//                 //     });
+//                 //   },
+//                 // ),
+//               ),
+//               SizedBox(
+//                 width: MediaQuery.of(context).size.width,
+//                 //  padding: EdgeInsets.all(20.0),
+//
+//                 height: MediaQuery.of(context).size.height,
+//                 child: Align(
+//                   alignment: Alignment.bottomCenter,
+//                   child: Padding(
+//                     padding: const EdgeInsets.only(bottom: 25.0),
+//                     child: Row(
+//                       mainAxisAlignment: MainAxisAlignment.center,
+//                       children: List.generate(
+//                         // Use the number of images from assets
+//                         data.length, // Replace with the actual number of assets
+//                             (index) {
+//                           return buildIndicator(index);
+//                         },
+//                       ),
+//                     ),
+//                   ),
+//                 ),
+//               ),
+//             ],
+//           ),
+//         ),
+//         actions: [
+//           TextButton(
+//             onPressed: () {
+//               Navigator.pop(context);
+//             },
+//             child: const Text('Close'),
+//           ),
+//         ],
+//       );
+//     },
+//   );
+// }
 }
 
 class AttachmentImages extends StatelessWidget {
@@ -1276,97 +1304,13 @@ class AttachmentImages extends StatelessWidget {
   }
 }
 
-class ItemCard extends StatelessWidget {
+class ItemCard extends StatefulWidget {
   final ReturnOrderItemXrefList data;
   final Widget statusBar;
   const ItemCard({super.key, required this.data, required this.statusBar});
 
   @override
-  Widget build(BuildContext context) {
-    return Card(
-      elevation: 5,
-      shape: RoundedRectangleBorder(
-        borderRadius: BorderRadius.circular(5),
-      ),
-      child: Container(
-        decoration: BoxDecoration(
-          color: Colors.white,
-          borderRadius: BorderRadius.circular(5),
-        ),
-        width: double.infinity,
-        padding: const EdgeInsets.all(12),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: <Widget>[
-            Text(
-              data.itemName,
-              style: CommonUtils.txSty_13B_Fb,
-            ),
-            const SizedBox(
-              height: 5,
-            ),
-            Row(
-              children: [
-                const Text(
-                  'Qty: ',
-                  style: CommonUtils.txSty_13B_Fb,
-                ),
-                Text(
-                  data.orderQty.toString(),
-                  style: CommonUtils.txSty_13O_F6,
-                ),
-              ],
-            ),
-            const SizedBox(height: 5.0),
-            Container(
-              width: double.infinity,
-              height: 0.2,
-              color: Colors.grey,
-            ),
-            const SizedBox(height: 5.0),
-            Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                if (data.remarks != null)
-                  Flexible(
-                    child: Column(
-                      children: [
-                        Row(
-                          children: [
-                            const Text(
-                              'Remarks:',
-                              style: CommonUtils.txSty_13B_Fb,
-                            ),
-                            const SizedBox(width: 5),
-                            Expanded(
-                              child: Text(
-                                data.remarks!,
-                                style: CommonUtils.txSty_13O_F6,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 5.0),
-                        CommonUtils.dividerForHorizontal,
-                      ],
-                    ),
-                  ),
-              ],
-            ),
-            Padding(
-              padding: const EdgeInsets.only(top: 8),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.end,
-                children: [
-                  getSvgImagesAndColors(data.statusTypeId, data.statusName),
-                ],
-              ),
-            ),
-          ],
-        ),
-      ),
-    );
-  }
+  State<ItemCard> createState() => _ItemCardState();
 
   static Widget getSvgImagesAndColors(int statusTypeId, String statusName) {
     String svgIcon;
@@ -1381,13 +1325,13 @@ class ItemCard extends StatelessWidget {
         break;
       case 13: // 'Shipped'
         svgIcon = 'assets/shipping-fast.svg';
-        statusColor =const Color(0xFFe58338);
+        statusColor = const Color(0xFFe58338);
         svgIconBgColor = const Color(0xFFe58338).withOpacity(0.2);
         break;
       case 14: // 'Received'
         svgIcon = 'assets/truck-check.svg';
-    statusColor = Colors.green;
-    svgIconBgColor = Colors.green.shade100;
+        statusColor = Colors.green;
+        svgIconBgColor = Colors.green.shade100;
         break;
       case 15: // 'Not Received'
         svgIcon = 'assets/order-cancel.svg';
@@ -1396,10 +1340,9 @@ class ItemCard extends StatelessWidget {
         break;
       case 18: // 'Partially Received'
         svgIcon = 'assets/boxes.svg';
-        statusColor =const Color(0xFF31b3cc);
-        svgIconBgColor =const Color(0xFF31b3cc).withOpacity(0.2);
+        statusColor = const Color(0xFF31b3cc);
+        svgIconBgColor = const Color(0xFF31b3cc).withOpacity(0.2);
         break;
-
 
       default:
         svgIcon = 'assets/plus-small.svg';
@@ -1435,6 +1378,177 @@ class ItemCard extends StatelessWidget {
           ),
         ],
       ),
+    );
+  }
+}
+
+class _ItemCardState extends State<ItemCard> {
+  @override
+  Widget build(BuildContext context) {
+    return Card(
+      elevation: 5,
+      shape: RoundedRectangleBorder(
+        borderRadius: BorderRadius.circular(5),
+      ),
+      child: Container(
+        decoration: BoxDecoration(
+          color: Colors.white,
+          borderRadius: BorderRadius.circular(5),
+        ),
+        width: double.infinity,
+        padding: const EdgeInsets.all(12),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: <Widget>[
+            Text(
+              widget.data.itemName,
+              style: CommonUtils.txSty_13B_Fb,
+            ),
+            const SizedBox(
+              height: 5,
+            ),
+            Row(
+              children: [
+                const Text(
+                  'Qty: ',
+                  style: CommonUtils.txSty_13B_Fb,
+                ),
+                Text(
+                  widget.data.orderQty.toString(),
+                  style: CommonUtils.txSty_13O_F6,
+                ),
+              ],
+            ),
+            const SizedBox(height: 5.0),
+            // CommonUtils.dividerForHorizontal,
+            // const SizedBox(height: 5.0),
+            if (widget.data.remarks != null)
+              Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  CommonUtils.dividerForHorizontal,
+                  const SizedBox(height: 5.0),
+                  const Text(
+                    'Remarks',
+                    style: CommonUtils.txSty_13B_Fb,
+                  ),
+                  Text(
+                    widget.data.remarks!,
+                    style: CommonUtils.txSty_13O_F6,
+                  ),
+                ],
+              ),
+            const SizedBox(height: 5.0),
+            CommonUtils.dividerForHorizontal,
+            const SizedBox(height: 5.0),
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+              children: [
+                widget.data.fileUrl == null
+                    ? const SizedBox()
+                    : Container(
+                  padding: const EdgeInsets.symmetric(
+                      horizontal: 6, vertical: 2),
+                  decoration: BoxDecoration(
+                    color: const Color.fromARGB(255, 247, 232, 211),
+                    border: Border.all(
+                      color: CommonUtils.orangeColor,
+                    ),
+                    borderRadius: BorderRadius.circular(5),
+                  ),
+                  child: GestureDetector(
+                    onTap: () {
+                      showItemDetailsAttachments(widget.data.fileUrl!);
+                      //  showReceivedAttach(receivedAttachs);
+                    },
+                    child: const Row(
+                      mainAxisSize: MainAxisSize.min,
+                      children: [
+                        Icon(
+                          Icons.link,
+                          size: 18,
+                        ),
+                        SizedBox(
+                          width: 5,
+                        ),
+                        Text(
+                          'Item Attch',
+                          style: CommonUtils.txSty_13B_Fb,
+                        ),
+                      ],
+                    ),
+                  ),
+                ),
+                ItemCard.getSvgImagesAndColors(
+                    widget.data.statusTypeId, widget.data.statusName),
+              ],
+            ),
+          ],
+        ),
+      ),
+    );
+  }
+
+  void showItemDetailsAttachments(String fileUrl) {
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return Dialog(
+          child: Container(
+            padding: const EdgeInsets.all(5),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+            width: double.infinity,
+            height: 500,
+            child: Stack(
+              children: [
+                Center(
+                  child: PhotoViewGallery.builder(
+                    itemCount: 1,
+                    builder: (context, index) {
+                      return PhotoViewGalleryPageOptions(
+                        imageProvider: NetworkImage(fileUrl),
+                        minScale: PhotoViewComputedScale.contained,
+                        maxScale: PhotoViewComputedScale.covered,
+                      );
+                    },
+                    scrollDirection: Axis.horizontal,
+                    scrollPhysics: const PageScrollPhysics(),
+                    allowImplicitScrolling: true,
+                    backgroundDecoration: const BoxDecoration(
+                      color: Colors.white,
+                    ),
+                    onPageChanged: (index) {
+                      // onPageChanged callback if needed
+                    },
+                  ),
+                ),
+                Positioned(
+                  top: 0,
+                  right: 0,
+                  child: GestureDetector(
+                    onTap: () => Navigator.of(context).pop(),
+                    child: Container(
+                      padding: const EdgeInsets.all(3.0),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(20),
+                        color: Colors.red.withOpacity(0.2),
+                      ),
+                      child: const Icon(
+                        Icons.close,
+                        color: Colors.red,
+                        size: 15,
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+        );
+      },
     );
   }
 }
@@ -1481,7 +1595,7 @@ class _PaymentDetailsCardState extends State<PaymentDetailsCard> {
           color: Colors.white,
           borderRadius: BorderRadius.circular(5),
         ),
-        width: double.infinity, // remove padding here
+        width: double.infinity,
         child: Column(
           crossAxisAlignment: CrossAxisAlignment.start,
           children: <Widget>[

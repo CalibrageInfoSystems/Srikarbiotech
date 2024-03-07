@@ -34,7 +34,7 @@ class ReturnOrderCredit {
       id: json['id'],
       returnOrderId: json['returnOrderId'],
       creditedDate: json['creditedDate'],
-      creditedAmount: json['creditedAmount'].toDouble(),
+      creditedAmount: json['creditedAmount'] != null ? json['creditedAmount'].toDouble() : 0.0,
       fileName: json['fileName'],
       fileLocation: json['fileLocation'],
       fileExtension: json['fileExtension'],

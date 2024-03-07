@@ -4,10 +4,11 @@ import 'package:srikarbiotech/OrderResponse.dart';
 
 class ViewOrdersProvider extends ChangeNotifier {
   List<OrderResult> viewOrderProviderData = [];
-  int? _selectedParty;
-  String? _selectedPurpose;
-  String? apiPurpose;
-  String? apiPartyCode = '';
+  int? _displayParty;
+  String? _displayWareHouse;
+  String? _apiWareHouse;
+  // String? apiPurpose;
+  String? apiPartyCode;
   int? apiStatusId;
   int selectedStatusIndex = 0;
   String fromDate = DateFormat('dd-MM-yyyy')
@@ -17,12 +18,12 @@ class ViewOrdersProvider extends ChangeNotifier {
 
   final TextEditingController _partyController = TextEditingController();
 
-  String partyCode = '';
+  String? partyCode;
 
   TextEditingController get getPartyController => _partyController;
 
-  String get getPartyCode => partyCode;
-  set getPartyCode(String newCode) {
+  String? get getPartyCode => partyCode;
+  set getPartyCode(String? newCode) {
     partyCode = newCode;
   }
 
@@ -61,11 +62,11 @@ class ViewOrdersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  String? get getApiPurpose => apiPurpose;
-  set getApiPurpose(String? newApiPurpose) {
-    apiPurpose = newApiPurpose;
-    notifyListeners();
-  }
+  // String? get getApiPurpose => apiPurpose;
+  // set getApiPurpose(String? newApiPurpose) {
+  //   apiPurpose = newApiPurpose;
+  //   notifyListeners();
+  // }
 
   int? get getApiStatusId => apiStatusId;
   set getApiStatusId(int? newApiStatusId) {
@@ -79,15 +80,21 @@ class ViewOrdersProvider extends ChangeNotifier {
     notifyListeners();
   }
 
-  int? get dropDownParty => _selectedParty;
+  int? get dropDownParty => _displayParty;
   set dropDownParty(int? newParty) {
-    _selectedParty = newParty;
+    _displayParty = newParty;
     notifyListeners();
   }
 
-  String? get dropDownPurpose => _selectedPurpose;
-  set dropDownPurpose(String? newPurpose) {
-    _selectedPurpose = newPurpose;
+  String? get dropDownWareHouse => _displayWareHouse;
+  set dropDownWareHouse(String? newPurpose) {
+    _displayWareHouse = newPurpose;
+    notifyListeners();
+  }
+
+  String? get apiWareHouse => _apiWareHouse;
+  set apiWareHouse(String? newPurpose) {
+    _apiWareHouse = newPurpose;
     notifyListeners();
   }
 
@@ -97,10 +104,10 @@ class ViewOrdersProvider extends ChangeNotifier {
         .format(DateTime.now().subtract(const Duration(days: 7)));
     toDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
     selectedStatusIndex = 0;
-    _selectedPurpose = null;
-    _selectedParty = null;
+    _displayWareHouse = null;
+    _apiWareHouse = null;
 
-    apiPurpose = null;
+    _displayParty = null;
     apiPartyCode = null;
     apiStatusId = null;
     _partyController.clear();

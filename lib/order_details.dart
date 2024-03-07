@@ -1,3 +1,5 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
 import 'package:flutter/material.dart';
@@ -15,6 +17,7 @@ import 'orderdetails_model.dart';
 
 class Orderdetails extends StatefulWidget {
   final int orderid;
+  final String? whsName;
   final String orderdate;
   final double totalCostWithGST;
   final String bookingplace;
@@ -30,23 +33,25 @@ class Orderdetails extends StatefulWidget {
   final String partyAddress;
   final Widget statusBar;
 
-  const Orderdetails(
-      {super.key,
-      required this.orderid,
-      required this.orderdate,
-      required this.totalCostWithGST,
-      required this.bookingplace,
-      required this.transportmode,
-      required this.lrnumber,
-      required this.lrdate,
-      required this.statusname,
-      required this.partyname,
-      required this.partycode,
-      required this.proprietorName,
-      required this.partyGSTNumber,
-      required this.ordernumber,
-      required this.partyAddress,
-      required this.statusBar});
+  const Orderdetails({
+    super.key,
+    required this.whsName,
+    required this.orderid,
+    required this.orderdate,
+    required this.totalCostWithGST,
+    required this.bookingplace,
+    required this.transportmode,
+    required this.lrnumber,
+    required this.lrdate,
+    required this.statusname,
+    required this.partyname,
+    required this.partycode,
+    required this.proprietorName,
+    required this.partyGSTNumber,
+    required this.ordernumber,
+    required this.partyAddress,
+    required this.statusBar,
+  });
 
   @override
   State<Orderdetails> createState() => _OrderdetailsPageState();
@@ -68,7 +73,13 @@ class _OrderdetailsPageState extends State<Orderdetails> {
   //List<OrderDetailsResponse> orderdetailslist = [];
   late List tableCellValues;
   late Future<OrderDetailsResponse?> orderDetailsList;
-  String? partyname, partycode, itemname, salesname, partygstnumber, partyaddress, ordernumber;
+  String? partyname,
+      partycode,
+      itemname,
+      salesname,
+      partygstnumber,
+      partyaddress,
+      ordernumber;
   OrderItemXref? orderItemXref;
   List<OrderItemXref> orderitemxreflist = [];
   List<Map<String, dynamic>> itemList = [];
@@ -78,7 +89,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
   double totalGst = 0.0;
   double totalsum = 0.0;
   String? Remarks;
-  late List<GetOrderDetailsResult> orderDetails;
+  late List<GetOrderDetailsResult> orderDetails = [];
   late List<OrderItemXrefList> orderItemsList = [];
   int CompneyId = 0;
   late Future<InvoiceApiResponse> futureData;
@@ -89,9 +100,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
   final ExpansionTileController controller = ExpansionTileController();
   @override
   void initState() {
-    print('OrderId: $Statusname');
     Statusname = widget.statusname;
-    print('Statusname: $Statusname');
     super.initState();
     fetchData();
     getOrderDetails();
@@ -111,8 +120,9 @@ class _OrderdetailsPageState extends State<Orderdetails> {
 
   Future<void> getOrderDetails() async {
     orderid = widget.orderid;
-    String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetOrderDetailsById/$orderid';
-    print("apiUrl====> $apiUrl");
+    String apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetOrderDetailsById/$orderid';
+    debugPrint("orderid====> $orderid");
     try {
       final apiData = await http.get(Uri.parse(apiUrl));
 
@@ -120,28 +130,25 @@ class _OrderdetailsPageState extends State<Orderdetails> {
         Map<String, dynamic> response = json.decode(apiData.body);
         if (response['isSuccess']) {
           // extracting the getOrderDetailsResult
-          List<dynamic> orderDetailsData = response['response']['getOrderDetailsResult'];
-          List<GetOrderDetailsResult> getOrderDetailsListResult = orderDetailsData.map((item) => GetOrderDetailsResult.fromJson(item)).toList();
+          List<dynamic> orderDetailsData =
+          response['response']['getOrderDetailsResult'];
+          List<GetOrderDetailsResult> getOrderDetailsListResult =
+          orderDetailsData
+              .map((item) => GetOrderDetailsResult.fromJson(item))
+              .toList();
           orderDetails = List.from(getOrderDetailsListResult);
-          print("/*$orderDetails");
+
           setState(() {
-            partyname = getOrderDetailsListResult[0].partyName;
-            partyaddress = getOrderDetailsListResult[0].partyAddress;
-            partycode = getOrderDetailsListResult[0].partyCode;
-            partygstnumber = getOrderDetailsListResult[0].partyGSTNumber;
-            salesname = getOrderDetailsListResult[0].proprietorName;
-            ordernumber = getOrderDetailsListResult[0].orderNumber;
-            totalcost = getOrderDetailsListResult[0].totalCost;
-            totalGst = getOrderDetailsListResult[0].gstCost;
-            totalsum = getOrderDetailsListResult[0].totalCostWithGST;
-            Remarks = getOrderDetailsListResult[0].remarks;
+            totalGst = orderDetails[0].gstCost;
+            totalsum = orderDetails[0].totalCost;
+            totalcost = orderDetails[0].totalCostWithGst;
           });
-          print("partyname====> $partyname");
-          print("Remarks====> $Remarks");
-          print("ordernumber====> $ordernumber");
           // extracting the orderItemXrefList
-          List<dynamic> orderItemsData = response['response']['orderItemXrefList'];
-          List<OrderItemXrefList> orderItemXrefListResult = orderItemsData.map((item) => OrderItemXrefList.fromJson(item)).toList();
+          List<dynamic> orderItemsData =
+          response['response']['orderItemXrefList'];
+          List<OrderItemXrefList> orderItemXrefListResult = orderItemsData
+              .map((item) => OrderItemXrefList.fromJson(item))
+              .toList();
           orderItemsList = List.from(orderItemXrefListResult);
 //        setState(() {
 //           itemname = orderItemXrefListResult;
@@ -150,20 +157,21 @@ class _OrderdetailsPageState extends State<Orderdetails> {
 //           price = orderItemXrefListResult;
 //         });
         } else {
-          print('api call unsuccessfull');
+          debugPrint('api call unsuccessfull');
         }
       } else {
-        print('else: api failed');
+        debugPrint('else: api failed');
       }
     } catch (error) {
-      CommonUtils.showCustomToastMessageLong('$error', context, 1, 4);
-      print('Error: $error');
+      CommonUtils.showCustomToastMessageLong('catch $error', context, 1, 4);
+      debugPrint('Error: $error');
     }
   }
 
   Future<void> fetchorderproducts() async {
     print('fetchorderproducts called');
-    final response = await http.get(Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetOrderDetailsById/$orderid'));
+    final response = await http.get(Uri.parse(
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetOrderDetailsById/$orderid'));
 
     if (response.statusCode == 200) {
       final Map<String, dynamic> data = json.decode(response.body);
@@ -195,7 +203,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
     ];
 
     // Convert the elements to strings if needed
-    List<String> stringList = tableCellValues.expand((row) => row).map((element) {
+    List<String> stringList =
+    tableCellValues.expand((row) => row).map((element) {
       return element.toString(); // Adjust the conversion as needed
     }).toList();
     return stringList;
@@ -206,21 +215,21 @@ class _OrderdetailsPageState extends State<Orderdetails> {
       case 'Pending':
         return const Color(0xFFE58338).withOpacity(0.1);
       case 'Shipped':
-        // Set background color for statusTypeId 8
+      // Set background color for statusTypeId 8
         return const Color(0xFF0d6efd).withOpacity(0.1);
       case 'Accepted':
-        // Set background color for statusTypeId 9
+      // Set background color for statusTypeId 9
         return const Color(0xFF198754).withOpacity(0.1);
       case 'Partially Shipped':
-        // Set background color for statusTypeId 9
+      // Set background color for statusTypeId 9
         return const Color(0xFF0dcaf0).withOpacity(0.1);
       case 'Reject':
         return const Color(0xFFdc3545).withOpacity(0.1);
         break;
-      // Add more cases as needed for other statusTypeId values
+    // Add more cases as needed for other statusTypeId values
 
       default:
-        // Default background color or handle other cases if needed
+      // Default background color or handle other cases if needed
         return Colors.white;
     }
   }
@@ -230,13 +239,13 @@ class _OrderdetailsPageState extends State<Orderdetails> {
       case 'Pending':
         return const Color(0xFFe58338);
       case 'Shipped':
-        // Set background color for statusTypeId 8
+      // Set background color for statusTypeId 8
         return const Color(0xFF0d6efd);
       case 'Accepted':
-        // Set background color for statusTypeId 9
+      // Set background color for statusTypeId 9
         return const Color(0xFF198754);
       case 'Partially Shipped':
-        // Set background color for statusTypeId 9
+      // Set background color for statusTypeId 9
         return const Color(0xFF0dcaf0);
       case 'Reject':
         return const Color(0xFFdc3545);
@@ -249,1260 +258,1593 @@ class _OrderdetailsPageState extends State<Orderdetails> {
 
   @override
   Widget build(BuildContext context) {
-    double screenHeight = MediaQuery.of(context).size.height;
     double screenWidth = MediaQuery.of(context).size.width;
     return Scaffold(
-        appBar: _appBar(),
-        body: SingleChildScrollView(
-            child: isDataLoaded
-                ? Column(
-                    //mainAxisSize: MainAxisSize.min,
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    // Set mainAxisSize to min for intrinsic height
-                    children: [
-                        Container(
-                          width: screenWidth,
-                          padding: const EdgeInsets.all(10.0),
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(10),
-                            color: Colors.white,
-                          ),
-                          child: CommonUtils.buildCard(
-                            widget.partyname,
-                            widget.partycode,
-                            widget.proprietorName,
-                            widget.partyGSTNumber,
-                            widget.partyAddress,
-                            Colors.white,
-                            BorderRadius.circular(5.0),
-                          ),
+      appBar: _appBar(),
+      body: SingleChildScrollView(
+        child: isDataLoaded
+            ? Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          Container(
+            width: screenWidth,
+            padding: const EdgeInsets.all(10.0),
+            decoration: BoxDecoration(
+              borderRadius: BorderRadius.circular(10),
+              color: Colors.white,
+            ),
+            child: CommonUtils.buildCard(
+              widget.partyname,
+              widget.partycode,
+              widget.proprietorName,
+              widget.partyGSTNumber,
+              widget.partyAddress,
+              Colors.white,
+              BorderRadius.circular(5.0),
+            ),
+          ),
+          Container(
+            padding:
+            const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+            child: const Text(
+              'Order Details',
+              style: CommonUtils.header_Styles16,
+            ),
+          ),
+          Container(
+            padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+            child: Card(
+                elevation: 7,
+                child: Container(
+                    width: double.infinity,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      color: Colors.white,
+                    ),
+                    child: Column(children: [
+                      // Table
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment:
+                              CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Order ID',
+                                  textAlign: TextAlign.start,
+                                  style: CommonUtils.txSty_13B_Fb,
+                                ),
+                                const SizedBox(
+                                  height: 2.0,
+                                ),
+                                Text(
+                                  widget.ordernumber,
+                                  style: const TextStyle(
+                                      fontFamily: 'Roboto',
+                                      fontSize: 13,
+                                      color: Color(0xFFe58338),
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                            widget.statusBar,
+                          ],
                         ),
-                        Container(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                          child: const Text(
-                            'Order Details',
-                            style: CommonUtils.header_Styles16,
+                      ),
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: <Widget>[
+                          // row one
+
+                          Container(
+                            width: double.infinity,
+                            height: 0.2,
+                            color: Colors.grey,
                           ),
-                        ),
-                        Container(
-                          padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                          child: Card(
-                              elevation: 7,
-                              child: Container(
-                                  //   padding: const EdgeInsets.all(10),
-                                  width: double.infinity,
-                                  decoration: BoxDecoration(
-                                    borderRadius: BorderRadius.circular(10),
-                                    color: Colors.white,
+
+                          // row two
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'OrderDate',
+                                        style: CommonUtils.txSty_13B_Fb,
+                                      ),
+                                      const SizedBox(
+                                        height: 2.0,
+                                      ),
+                                      Text(
+                                        widget.orderdate,
+                                        style: TextStyle(
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
+                                          color: HexColor('#e58338'),
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
                                   ),
-                                  child: Column(children: [
-                                    // Table
-                                    Container(
-                                      padding: const EdgeInsets.all(10),
-                                      child: Row(
-                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          Column(
-                                            mainAxisAlignment: MainAxisAlignment.start,
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Text(
-                                                'Order ID',
-                                                textAlign: TextAlign.start,
-                                                style: CommonUtils.txSty_13B_Fb,
-                                              ),
-                                              SizedBox(
-                                                height: 2.0,
-                                              ),
-                                              Text(
-                                                '$ordernumber',
-                                                style: const TextStyle(fontFamily: 'Roboto', fontSize: 13, color: Color(0xFFe58338), fontWeight: FontWeight.w600),
-                                              ),
-                                            ],
-                                          ),
-                                          widget.statusBar,
-                                        ],
-                                        // _orderStatus(widget.statusname),
-                                      ),
-                                    ),
-                                    Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        // row one
-
-                                        Container(
-                                          width: double.infinity,
-                                          height: 0.2,
-                                          color: Colors.grey,
-                                        ),
-
-                                        // row two
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    const Text(
-                                                      'OrderDate',
-                                                      style: CommonUtils.txSty_13B_Fb,
-                                                    ),
-                                                    SizedBox(
-                                                      height: 2.0,
-                                                    ),
-                                                    Text(
-                                                      widget.orderdate,
-                                                      style: TextStyle(
-                                                        fontFamily: 'Roboto',
-                                                        fontWeight: FontWeight.bold,
-                                                        color: HexColor('#e58338'),
-                                                        fontSize: 13,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              width: 0.2,
-                                              height: 60,
-                                              color: Colors.grey,
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    const Text(
-                                                      'Total Amount',
-                                                      style: CommonUtils.txSty_13B_Fb,
-                                                    ),
-                                                    SizedBox(
-                                                      height: 2.0,
-                                                    ),
-                                                    Text(
-                                                      '₹${formatNumber(widget.totalCostWithGST)}',
-                                                      style: TextStyle(
-                                                        fontFamily: 'Roboto',
-                                                        fontWeight: FontWeight.bold,
-                                                        color: HexColor('#e58338'),
-                                                        fontSize: 13,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Container(
-                                          width: double.infinity,
-                                          height: 0.2,
-                                          color: Colors.grey,
-                                        ),
-                                        Row(
-                                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                          children: <Widget>[
-                                            Expanded(
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    const Text(
-                                                      'Booking Place',
-                                                      style: CommonUtils.txSty_13B_Fb,
-                                                    ),
-                                                    SizedBox(
-                                                      height: 2.0,
-                                                    ),
-                                                    Text(
-                                                      widget.bookingplace,
-                                                      style: TextStyle(
-                                                        fontFamily: 'Roboto',
-                                                        fontWeight: FontWeight.bold,
-                                                        color: HexColor('#e58338'),
-                                                        fontSize: 13,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                            Container(
-                                              width: 0.2,
-                                              height: 60,
-                                              color: Colors.grey,
-                                            ),
-                                            Expanded(
-                                              child: Padding(
-                                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                                child: Column(
-                                                  crossAxisAlignment: CrossAxisAlignment.start,
-                                                  children: [
-                                                    const Text(
-                                                      'Transport Name',
-                                                      style: CommonUtils.txSty_13B_Fb,
-                                                    ),
-                                                    SizedBox(
-                                                      height: 2.0,
-                                                    ),
-                                                    Text(
-                                                      widget.transportmode,
-                                                      style: TextStyle(
-                                                        fontFamily: 'Roboto',
-                                                        fontWeight: FontWeight.bold,
-                                                        color: HexColor('#e58338'),
-                                                        fontSize: 13,
-                                                      ),
-                                                    ),
-                                                  ],
-                                                ),
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                        Visibility(
-                                          visible: Remarks != null && Remarks != "",
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                width: double.infinity,
-                                                height: 0.2,
-                                                color: Colors.grey,
-                                              ),
-                                              Row(
-                                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                children: <Widget>[
-                                                  Expanded(
-                                                    child: Padding(
-                                                      padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                                      // Check if remarks are not null or empty
-                                                      child: Column(
-                                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                                        children: [
-                                                          const Text(
-                                                            'Remarks',
-                                                            style: CommonUtils.txSty_13B_Fb,
-                                                          ),
-                                                          SizedBox(
-                                                            height: 2.0,
-                                                          ),
-                                                          Text(
-                                                            '$Remarks',
-                                                            style: TextStyle(
-                                                              fontFamily: 'Roboto',
-                                                              fontWeight: FontWeight.bold,
-                                                              color: HexColor('#e58338'),
-                                                              fontSize: 13,
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ),
-                                                  ),
-                                                ],
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-
-                                        // Container(
-                                        //   width: double.infinity,
-                                        //   height: 0.2,
-                                        //   color: Colors.grey,
-                                        // ),
-                                        // Row(
-                                        //   mainAxisAlignment:
-                                        //       MainAxisAlignment.spaceBetween,
-                                        //   children: <Widget>[
-                                        //     Expanded(
-                                        //       child: Padding(
-                                        //         padding:
-                                        //             const EdgeInsets.symmetric(
-                                        //                 horizontal: 12,
-                                        //                 vertical: 10),
-                                        //         child:
-                                        //         Column(
-                                        //           crossAxisAlignment:
-                                        //               CrossAxisAlignment.start,
-                                        //           children: [
-                                        //             const Text(
-                                        //               'LR Number',
-                                        //               style: CommonUtils
-                                        //                   .txSty_13B_Fb,
-                                        //             ),
-                                        //             Text(
-                                        //               '${widget.lrnumber}',
-                                        //               style: TextStyle(
-                                        //                 fontFamily: 'Roboto',
-                                        //                 fontWeight:
-                                        //                     FontWeight.bold,
-                                        //                 color:
-                                        //                     HexColor('#e58338'),
-                                        //                 fontSize: 13,
-                                        //               ),
-                                        //             ),
-                                        //           ],
-                                        //         ),
-                                        //       ),
-                                        //     ),
-                                        //     Container(
-                                        //       width: 0.2,
-                                        //       height: 60,
-                                        //       color: Colors.grey,
-                                        //     ),
-                                        //     Expanded(
-                                        //       child: Padding(
-                                        //         padding:
-                                        //             const EdgeInsets.symmetric(
-                                        //                 horizontal: 12,
-                                        //                 vertical: 10),
-                                        //         child: Column(
-                                        //           crossAxisAlignment:
-                                        //               CrossAxisAlignment.start,
-                                        //           children: [
-                                        //             const Text(
-                                        //               'LR Date',
-                                        //               style: CommonUtils
-                                        //                   .txSty_13B_Fb,
-                                        //             ),
-                                        //             Text(
-                                        //               '',
-                                        //               style: TextStyle(
-                                        //                 fontFamily: 'Roboto',
-                                        //                 fontWeight:
-                                        //                     FontWeight.bold,
-                                        //                 color:
-                                        //                     HexColor('#e58338'),
-                                        //                 fontSize: 13,
-                                        //               ),
-                                        //             ),
-                                        //           ],
-                                        //         ),
-                                        //       ),
-                                        //     ),
-                                        //   ],
-                                        // ),
-
-                                        Container(
-                                          width: double.infinity,
-                                          height: 0.2,
-                                          color: Colors.grey,
-                                        ),
-
-                                        Visibility(
-                                          visible: Statusname == 'Pending', // Set the visibility based on statustypeid
-                                          child: Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: <Widget>[
-                                              Expanded(
-                                                child: Padding(
-                                                  padding: const EdgeInsets.symmetric(
-                                                    horizontal: 12,
-                                                    vertical: 10,
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      const Text(
-                                                        'You can cancel this order before it got Approved ',
-                                                        style: CommonUtils.txSty_13B_Fb,
-                                                      ),
-                                                      Text(
-                                                        '',
-                                                        style: TextStyle(
-                                                          fontFamily: 'Roboto',
-                                                          fontWeight: FontWeight.bold,
-                                                          color: HexColor('#e58338'),
-                                                          fontSize: 13,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              GestureDetector(
-                                                onTap: () {
-                                                  // Show confirmation dialog
-                                                  showDialog(
-                                                    context: context,
-                                                    builder: (BuildContext context) {
-                                                      return AlertDialog(
-                                                        title: const Text("Confirmation"),
-                                                        content: const Text("Are you sure you want to cancel this order?"),
-                                                        actions: [
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop(); // Close the dialog
-                                                            },
-                                                            child: const Text("Cancel"),
-                                                          ),
-                                                          TextButton(
-                                                            onPressed: () {
-                                                              Navigator.of(context).pop(); // Close the dialog
-                                                              // Call function to cancel order
-                                                              cancelOrder();
-                                                            },
-                                                            child: const Text("OK"),
-                                                          ),
-                                                        ],
-                                                      );
-                                                    },
-                                                  );
-                                                },
-                                                child: Container(
-                                                  decoration: BoxDecoration(
-                                                    color: HexColor('#ffecee'), // Background color of the card
-                                                    borderRadius: BorderRadius.circular(20), // Adjust the radius as needed
-                                                  ),
-                                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Adjust padding as needed
-                                                  child: Row(
-                                                    children: [
-                                                      SvgPicture.asset(
-                                                        'assets/crosscircle.svg',
-                                                        height: 18,
-                                                        width: 18,
-                                                        fit: BoxFit.fitWidth,
-                                                        color: HexColor('#de4554'),
-                                                      ),
-                                                      const SizedBox(width: 8.0), // Add some spacing between icon and text
-                                                      Text(
-                                                        'Cancel',
-                                                        style: TextStyle(
-                                                          fontFamily: 'Roboto',
-                                                          fontWeight: FontWeight.bold,
-                                                          color: HexColor('#de4554'),
-                                                          fontSize: 13,
-                                                        ),
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                              const SizedBox(width: 10),
-                                            ],
-                                          ),
-                                        ),
-                                      ],
-                                    ),
-
-                                    // Table(
-                                    //   border: TableBorder.all(
-                                    //     width: 1,
-                                    //     color: Colors.grey.shade500,
-                                    //   ),
-                                    //   children: [
-                                    //     ...List.generate(3, (index) {
-                                    //       return TableRow(
-                                    //         children: [
-                                    //           TableCell(
-                                    //             child: Container(
-                                    //               padding: const EdgeInsets.all(10),
-                                    //               child: Column(
-                                    //                 crossAxisAlignment:
-                                    //                     CrossAxisAlignment.start,
-                                    //                 children: <Widget>[
-                                    //                   Text(
-                                    //                     tableCellTitles[0][index],
-                                    //                     //   style: _titleTextStyle,
-                                    //                   ),
-                                    //                   SizedBox(height: 5),
-                                    //                   Text(
-                                    //                     tableCellValues[0][index]
-                                    //                         .toString(),
-                                    //                     style: TextStyle(
-                                    //                         fontFamily: 'Roboto',
-                                    //                         fontSize: 13,
-                                    //                         color: Color(0xFFe58338),
-                                    //                         fontWeight: FontWeight.w600),
-                                    //                     //style: _dataTextStyle,
-                                    //                   )
-                                    //                 ],
-                                    //               ),
-                                    //             ),
-                                    //           ),
-                                    //           TableCell(
-                                    //             child: Container(
-                                    //               padding: EdgeInsets.all(10),
-                                    //               child: Column(
-                                    //                 crossAxisAlignment:
-                                    //                     CrossAxisAlignment.start,
-                                    //                 children: <Widget>[
-                                    //                   Text(
-                                    //                     tableCellTitles[1][index],
-                                    //                   ),
-                                    //                   SizedBox(height: 5),
-                                    //                   Text(
-                                    //                     tableCellValues[1][index]
-                                    //                         .toString(),
-                                    //                     style: TextStyle(
-                                    //                         fontFamily: 'Roboto',
-                                    //                         fontSize: 13,
-                                    //                         color: Color(0xFFe58338),
-                                    //                         fontWeight: FontWeight.w600),
-                                    //                   )
-                                    //                 ],
-                                    //               ),
-                                    //             ),
-                                    //           ),
-                                    //         ],
-                                    //       );
-                                    //     })
-                                    //   ],
-                                    // ),
-                                  ]))),
-                        ),
-
-                        const SizedBox(
-                          height: 5.0,
-                        ),
-
-                        //_buildBody(context),
-                        CustomExpansionTile(
-                          title: const Text(
-                            "Item Details",
-                            style: TextStyle(color: Colors.white), // Adjust text color as needed
-                            maxLines: 2,
-                            overflow: TextOverflow.ellipsis,
-                          ),
-                          content: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              Container(
-                                width: screenWidth,
-                                padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                                //   height: screenHeight / 2,
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  //        color: Colors.white,
-                                ),
-                                child: ListView.builder(
-                                  shrinkWrap: true,
-                                  physics: const PageScrollPhysics(),
-                                  itemCount: orderItemsList.length,
-                                  itemBuilder: (context, index) {
-                                    return GestureDetector(
-                                      onTap: () {
-                                        // Navigator.of(context)
-                                        //     .pushNamed('/statusScreen', arguments: widget.listResult);
-                                        // Navigator.of(context).push(
-                                        //   MaterialPageRoute(
-                                        //     builder: (context) => ViewCollectionCheckOut(
-                                        //       //
-                                        //       listResult: widget.listResult,
-                                        //       position: widget.index, // Assuming you have the index available
-                                        //     ),
-                                        //   ),
-                                        // );
-                                      },
-                                      child: Container(
-                                        margin: const EdgeInsets.only(bottom: 10),
-                                        color: Colors.transparent,
-                                        child: Card(
-                                          elevation: 5,
-                                          color: Colors.white,
-                                          child: Container(
-                                            padding: const EdgeInsets.all(10),
-                                            //   width: double.infinity,
-                                            width: MediaQuery.of(context).size.width,
-                                            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
-
-                                            child: Column(
-                                              crossAxisAlignment: CrossAxisAlignment.start,
-                                              children: [
-                                                Container(
-                                                  // height: 70,
-                                                  // width: double.infinity,
-                                                  // margin: const EdgeInsets.only(bottom: 12),
-                                                  width: MediaQuery.of(context).size.width,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                  ),
-                                                  child: Row(
-                                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                    children: [
-                                                      // starting icon of card
-
-                                                      // beside info
-                                                      SizedBox(
-                                                        //height: 90,
-                                                        // width: ,
-                                                        width: MediaQuery.of(context).size.width / 1.3,
-                                                        child: Container(
-                                                          padding: const EdgeInsets.only(left: 0, top: 0, bottom: 0),
-                                                          child: Column(
-                                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                            children: [
-                                                              Text(
-                                                                orderItemsList[index].itemName,
-                                                                style: const TextStyle(fontFamily: 'Roboto', fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold),
-                                                                softWrap: true,
-                                                                maxLines: 2,
-                                                                overflow: TextOverflow.ellipsis,
-                                                              ),
-                                                              const SizedBox(
-                                                                height: 5.0,
-                                                              ),
-                                                              Row(
-                                                                mainAxisAlignment: MainAxisAlignment.spaceAround,
-                                                                children: [
-                                                                  Container(
-                                                                    child: Row(
-                                                                      children: [
-                                                                        Text(
-                                                                          'Qty: ${orderItemsList[index].orderQty}',
-                                                                          style: const TextStyle(
-                                                                            fontFamily: 'Roboto',
-                                                                            fontSize: 14,
-                                                                            color: Colors.black,
-                                                                            fontWeight: FontWeight.w400,
-                                                                          ),
-                                                                        ),
-                                                                        // Text(
-                                                                        //   orderItemsList[index].orderQty.toString(),
-                                                                        //   style: CommonUtils.Mediumtext_12,
-                                                                        // ),
-
-                                                                        Text(
-                                                                          ' (${orderItemsList[index].orderQty} ${orderItemsList[index].salUnitMsr} = ${orderItemsList[index].orderQty * orderItemsList[index].numInSale}  Nos)', // Display totalSumForProduct for the single product
-                                                                          style: CommonUtils.Mediumtext_o_14,
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                  //  Text(
-                                                                  //   'Qty: ${orderItemsList[index].orderQty}',
-                                                                  //   style: TextStyle(
-                                                                  //     fontFamily: 'Roboto',
-                                                                  //     fontSize: 14,
-                                                                  //     color: Colors.black,
-                                                                  //     fontWeight: FontWeight.w400,
-                                                                  //   ),
-                                                                  // ),
-                                                                  // // Text(
-                                                                  // //   orderItemsList[index].orderQty.toString(),
-                                                                  // //   style: CommonUtils.Mediumtext_12,
-                                                                  // // ),
-                                                                  //
-                                                                  // Text(
-                                                                  //   ' (${orderItemsList[index].orderQty} ${orderItemsList[index].salUnitMsr} = ${orderItemsList[index].orderQty * orderItemsList[index].numInSale!}  Nos)', // Display totalSumForProduct for the single product
-                                                                  //   style: CommonUtils.Mediumtext_o_14,
-                                                                  // ),
-                                                                  Expanded(
-                                                                    child: Container(), // This Expanded widget ensures that the additional text is positioned at the end of the row
-                                                                  ),
-                                                                  // SizedBox(width: 20.0,),
-
-                                                                  Text(
-                                                                    '₹${formatNumber(orderItemsList[index].totalPrice)}',
-                                                                    style: CommonUtils.Mediumtext_o_14,
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ],
-                                                          ),
-                                                        ),
-                                                      )
-                                                    ],
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    );
-                                  },
                                 ),
                               ),
-                              const SizedBox(
-                                height: 5.0,
-                              ),
                               Container(
-                                width: MediaQuery.of(context).size.width,
-                                padding: const EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-                                child: IntrinsicHeight(
-                                  child: Card(
-                                    shape: RoundedRectangleBorder(
-                                      borderRadius: BorderRadius.circular(5.0),
-                                    ),
-                                    child: Container(
-                                      padding: const EdgeInsets.all(10.0),
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5.0),
-                                        color: Colors.white,
+                                width: 0.2,
+                                height: 60,
+                                color: Colors.grey,
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Total Amount',
+                                        style: CommonUtils.txSty_13B_Fb,
                                       ),
-                                      width: MediaQuery.of(context).size.width,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Text(
-                                                'Sub Total',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14.0,
-                                                ),
-                                              ),
-                                              Text(
-                                                '₹${formatNumber(totalcost)}',
-                                                style: const TextStyle(
-                                                  color: Color(0xFFe78337),
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14.0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 8.0),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Text(
-                                                'GST',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14.0,
-                                                ),
-                                              ),
-                                              Text(
-                                                '₹${formatNumber(totalGst)}',
-                                                style: const TextStyle(
-                                                  color: Color(0xFFe78337),
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14.0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                          const SizedBox(height: 8.0),
-                                          Row(
-                                            mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                            children: [
-                                              const Text(
-                                                'Total Amount',
-                                                style: TextStyle(
-                                                  color: Colors.black,
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14.0,
-                                                ),
-                                              ),
-                                              Text(
-                                                '₹${formatNumber(totalsum)}',
-                                                style: const TextStyle(
-                                                  color: Color(0xFFe78337),
-                                                  fontWeight: FontWeight.bold,
-                                                  fontSize: 14.0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ],
+                                      const SizedBox(
+                                        height: 2.0,
                                       ),
-                                    ),
+                                      Text(
+                                        '₹${formatNumber(widget.totalCostWithGST)}',
+                                        style: TextStyle(
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
+                                          color: HexColor('#e58338'),
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
                               ),
                             ],
                           ),
-                          initiallyExpanded: false,
-                        ),
-                        //    ),
-                        const SizedBox(
-                          height: 5.0,
-                        ),
-                        if (invoiceResponse?.listResult != null && invoiceResponse!.listResult!.isNotEmpty)
-                          CustomExpansionTile(
-                            title: const Text(
-                              "Invoice Details",
-                              style: TextStyle(color: Colors.white), // Adjust text color as needed
-                              overflow: TextOverflow.ellipsis,
-                            ),
-                            content: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                invoiceResponse?.listResult != null && invoiceResponse!.listResult!.isNotEmpty
-                                    ? Container(
-                                        width: screenWidth,
-                                        padding: const EdgeInsets.only(left: 0.0, right: 0.0),
-                                        //   height: screenHeight / 2,
-                                        decoration: BoxDecoration(
-                                          borderRadius: BorderRadius.circular(10),
-                                          //        color: Colors.white,
+                          Container(
+                            width: double.infinity,
+                            height: 0.2,
+                            color: Colors.grey,
+                          ),
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Booking Place',
+                                        style: CommonUtils.txSty_13B_Fb,
+                                      ),
+                                      const SizedBox(
+                                        height: 2.0,
+                                      ),
+                                      Text(
+                                        widget.bookingplace,
+                                        style: TextStyle(
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
+                                          color: HexColor('#e58338'),
+                                          fontSize: 13,
                                         ),
-                                        child: ListView.builder(
-                                          shrinkWrap: true,
-                                          physics: const PageScrollPhysics(),
-                                          itemCount: invoiceResponse!.listResult!.length,
-                                          itemBuilder: (context, index) {
-                                            InvoiceDetails invoice = invoiceResponse!.listResult![index];
-                                            DateTime date = invoice.invoiceDate;
-                                            String invoicedateDate = DateFormat('dd MMM, yyyy').format(date);
-
-                                            return Container(
-                                              width: screenWidth,
-                                              padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                                              child: Card(
-                                                elevation: 7,
-                                                shape: RoundedRectangleBorder(
-                                                  side: BorderSide(
-                                                    color: invoice.isReceived ?? false ? Colors.green : Colors.redAccent,
-                                                    width: 2.0, // Set your desired border width here
-                                                  ),
-                                                  borderRadius: BorderRadius.circular(10.0),
-                                                ),
-                                                child: Container(
-                                                  width: double.infinity,
-                                                  decoration: BoxDecoration(
-                                                    borderRadius: BorderRadius.circular(10),
-                                                    color: Colors.white,
-                                                  ),
-                                                  child: Column(
-                                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                                    children: [
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: <Widget>[
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                                              child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  const Text(
-                                                                    'Invoice Number',
-                                                                    style: CommonUtils.txSty_13B_Fb,
-                                                                  ),
-                                                                  Text(
-                                                                    invoice.invoiceNo,
-                                                                    style: TextStyle(
-                                                                      fontFamily: 'Roboto',
-                                                                      fontWeight: FontWeight.bold,
-                                                                      color: HexColor('#e58338'),
-                                                                      fontSize: 13,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            width: 0.2,
-                                                            height: 60,
-                                                            color: Colors.grey,
-                                                          ),
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                                              child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  const Text(
-                                                                    'Invoice Date',
-                                                                    style: CommonUtils.txSty_13B_Fb,
-                                                                  ),
-                                                                  Text(
-                                                                    invoicedateDate,
-                                                                    style: TextStyle(
-                                                                      fontFamily: 'Roboto',
-                                                                      fontWeight: FontWeight.bold,
-                                                                      color: HexColor('#e58338'),
-                                                                      fontSize: 13,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Container(
-                                                        width: double.infinity,
-                                                        height: 0.2,
-                                                        color: Colors.grey,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: <Widget>[
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                                              child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  const Text(
-                                                                    'Quantity',
-                                                                    style: CommonUtils.txSty_13B_Fb,
-                                                                  ),
-                                                                  Text(
-                                                                    '${invoice.totalInvoiceQty}',
-                                                                    style: TextStyle(
-                                                                      fontFamily: 'Roboto',
-                                                                      fontWeight: FontWeight.bold,
-                                                                      color: HexColor('#e58338'),
-                                                                      fontSize: 13,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Container(
-                                                            width: 0.2,
-                                                            height: 60,
-                                                            color: Colors.grey,
-                                                          ),
-                                                          Expanded(
-                                                            child: Padding(
-                                                              padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
-                                                              child: Column(
-                                                                crossAxisAlignment: CrossAxisAlignment.start,
-                                                                children: [
-                                                                  const Text(
-                                                                    'Invoice Amount',
-                                                                    style: CommonUtils.txSty_13B_Fb,
-                                                                  ),
-                                                                  Text(
-                                                                    '₹${formatNumber(invoice.totalInvoiceAmount)}',
-                                                                    style: TextStyle(
-                                                                      fontFamily: 'Roboto',
-                                                                      fontWeight: FontWeight.bold,
-                                                                      color: HexColor('#e58338'),
-                                                                      fontSize: 13,
-                                                                    ),
-                                                                  ),
-                                                                ],
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      // Container(
-                                                      //   width: double.infinity,
-                                                      //   height: 0.2,
-                                                      //   color: Colors.grey,
-                                                      // ),
-                                                      // Row(
-                                                      //   mainAxisAlignment:
-                                                      //   MainAxisAlignment
-                                                      //       .spaceBetween,
-                                                      //   children: <Widget>[
-                                                      //     Expanded(
-                                                      //       child: Padding(
-                                                      //         padding: const EdgeInsets
-                                                      //             .symmetric(
-                                                      //             horizontal: 12,
-                                                      //             vertical: 10),
-                                                      //         child: Column(
-                                                      //           crossAxisAlignment:
-                                                      //           CrossAxisAlignment
-                                                      //               .start,
-                                                      //           children: [
-                                                      //             const Text(
-                                                      //               'LR Number',
-                                                      //               style: CommonUtils
-                                                      //                   .txSty_13B_Fb,
-                                                      //             ),
-                                                      //             Text(
-                                                      //               '${widget.lrnumber}',
-                                                      //               style: TextStyle(
-                                                      //                 fontFamily:
-                                                      //                 'Roboto',
-                                                      //                 fontWeight:
-                                                      //                 FontWeight.bold,
-                                                      //                 color: HexColor(
-                                                      //                     '#e58338'),
-                                                      //                 fontSize: 13,
-                                                      //               ),
-                                                      //             ),
-                                                      //           ],
-                                                      //         ),
-                                                      //       ),
-                                                      //     ),
-                                                      //     Container(
-                                                      //       width: 0.2,
-                                                      //       height: 60,
-                                                      //       color: Colors.grey,
-                                                      //     ),
-                                                      //     Expanded(
-                                                      //       child: Padding(
-                                                      //         padding: const EdgeInsets
-                                                      //             .symmetric(
-                                                      //             horizontal: 12,
-                                                      //             vertical: 10),
-                                                      //         child: Column(
-                                                      //           crossAxisAlignment:
-                                                      //           CrossAxisAlignment
-                                                      //               .start,
-                                                      //           children: [
-                                                      //             const Text(
-                                                      //               'LR Date',
-                                                      //               style: CommonUtils
-                                                      //                   .txSty_13B_Fb,
-                                                      //             ),
-                                                      //             Text(
-                                                      //               '',
-                                                      //               style: TextStyle(
-                                                      //                 fontFamily:
-                                                      //                 'Roboto',
-                                                      //                 fontWeight:
-                                                      //                 FontWeight.bold,
-                                                      //                 color: HexColor(
-                                                      //                     '#e58338'),
-                                                      //                 fontSize: 13,
-                                                      //               ),
-                                                      //             ),
-                                                      //           ],
-                                                      //         ),
-                                                      //       ),
-                                                      //     ),
-                                                      //   ],
-                                                      // ),
-
-                                                      Container(
-                                                        width: double.infinity,
-                                                        height: 0.2,
-                                                        color: Colors.grey,
-                                                      ),
-                                                      Row(
-                                                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                                        children: <Widget>[
-                                                          Container(
-                                                            padding: const EdgeInsets.all(8.0),
-                                                            child: Visibility(
-                                                              visible: invoiceResponse!.listResult![index].lrFileUrl != null,
-                                                              child: GestureDetector(
-                                                                onTap: () {
-                                                                  showDialog(
-                                                                    context: context,
-                                                                    builder: (BuildContext context) {
-                                                                      return AlertDialog(
-                                                                        content: SizedBox(
-                                                                          width: double.infinity,
-                                                                          height: double.infinity,
-                                                                          child: Column(
-                                                                            children: [
-                                                                              Expanded(
-                                                                                child: Image.network(
-                                                                                  invoiceResponse!.listResult![index].lrFileUrl ?? '',
-                                                                                  fit: BoxFit.contain,
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                        actions: [
-                                                                          Container(
-                                                                            margin: const EdgeInsets.only(top: 10, right: 10),
-                                                                            decoration: BoxDecoration(
-                                                                              shape: BoxShape.circle,
-                                                                              color: Colors.white,
-                                                                              boxShadow: [
-                                                                                BoxShadow(
-                                                                                  color: Colors.black.withOpacity(0.1),
-                                                                                  blurRadius: 6,
-                                                                                  spreadRadius: 3,
-                                                                                ),
-                                                                              ],
-                                                                            ),
-                                                                            child: IconButton(
-                                                                              icon: const Icon(Icons.close, color: Colors.red),
-                                                                              onPressed: () {
-                                                                                Navigator.of(context).pop();
-                                                                              },
-                                                                            ),
-                                                                          ),
-                                                                        ],
-                                                                      );
-                                                                    },
-                                                                  );
-                                                                },
-                                                                child: Container(
-                                                                  height: 35,
-                                                                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                                  decoration: BoxDecoration(
-                                                                    color: const Color(0xFFe78337),
-                                                                    border: Border.all(
-                                                                      color: const Color(0xFFe78337),
-                                                                      width: 1,
-                                                                    ),
-                                                                    borderRadius: BorderRadius.circular(8.0),
-                                                                  ),
-                                                                  child: IntrinsicWidth(
-                                                                    child: Column(
-                                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                                      children: [
-                                                                        Container(
-                                                                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                                                          child: Row(
-                                                                            children: [
-                                                                              SvgPicture.asset(
-                                                                                'assets/overview.svg',
-                                                                                height: 18,
-                                                                                width: 18,
-                                                                                fit: BoxFit.fitWidth,
-                                                                                color: Colors.white,
-                                                                              ),
-                                                                              const SizedBox(width: 8.0),
-                                                                              const Text(
-                                                                                'View LR',
-                                                                                style: TextStyle(
-                                                                                  color: Colors.white,
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Visibility(
-                                                            visible: invoice.isReceived == false,
-                                                            child: Container(
-                                                              padding: const EdgeInsets.all(8.0),
-                                                              child: GestureDetector(
-                                                                onTap: () async {
-                                                                  if (invoiceResponse?.listResult != null && invoiceResponse!.listResult!.isNotEmpty && !_showBottomSheet) {
-                                                                    for (InvoiceDetails invoice in invoiceResponse!.listResult!) {
-                                                                      if (invoice.isReceived == false) {
-                                                                        // setState(() {
-                                                                        //   _showBottomSheet = true;
-                                                                        // });
-                                                                        showBottomSheet(context, invoice.invoiceNo, invoicedateDate);
-                                                                        break; // Stop looping after finding the first invoice with isReceived == false
-                                                                      }
-                                                                    }
-
-                                                                    //Add your download functionality here
-                                                                  }
-                                                                },
-                                                                child: Container(
-                                                                  height: 35,
-                                                                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                                  decoration: BoxDecoration(
-                                                                    color: const Color(0xFFF8dac2),
-                                                                    border: Border.all(
-                                                                      color: const Color(0xFFe78337),
-                                                                      width: 1,
-                                                                    ),
-                                                                    borderRadius: BorderRadius.circular(8.0),
-                                                                  ),
-                                                                  child: IntrinsicWidth(
-                                                                    child: Column(
-                                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                                      children: [
-                                                                        Container(
-                                                                          padding: const EdgeInsets.symmetric(horizontal: 10.0),
-                                                                          child: Row(
-                                                                            children: [
-                                                                              SvgPicture.asset(
-                                                                                'assets/box-check.svg',
-                                                                                height: 18,
-                                                                                width: 18,
-                                                                                fit: BoxFit.fitWidth,
-                                                                                color: Colors.black,
-                                                                              ),
-                                                                              const SizedBox(width: 8.0),
-                                                                              const Text(
-                                                                                'Received',
-                                                                                style: TextStyle(
-                                                                                  color: Colors.black,
-                                                                                ),
-                                                                              ),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                          Visibility(
-                                                            visible: invoice.isReceived == true && invoice.invoiceFileUrl != null,
-                                                            child: Container(
-                                                              padding: const EdgeInsets.all(8.0),
-                                                              child: GestureDetector(
-                                                                onTap: () async {
-                                                                  String? pdfUrl = invoice.invoiceFileUrl;
-                                                                  String? invoiceNo = invoice.invoiceNo;
-                                                                  downloadFile(pdfUrl!, invoiceNo);
-
-                                                                  //Add your download functionality here
-                                                                },
-                                                                child: Container(
-                                                                  height: 35,
-                                                                  margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                                                                  decoration: BoxDecoration(
-                                                                    color: const Color(0xFFF8dac2),
-                                                                    border: Border.all(
-                                                                      color: const Color(0xFFe78337),
-                                                                      width: 1,
-                                                                    ),
-                                                                    borderRadius: BorderRadius.circular(8.0),
-                                                                  ),
-                                                                  child: IntrinsicWidth(
-                                                                    child: Column(
-                                                                      mainAxisAlignment: MainAxisAlignment.center,
-                                                                      children: [
-                                                                        Container(
-                                                                          padding: const EdgeInsets.symmetric(horizontal: 5.0),
-                                                                          child: Row(
-                                                                            children: [
-                                                                              SvgPicture.asset(
-                                                                                'assets/file-download.svg',
-                                                                                height: 18,
-                                                                                width: 18,
-                                                                                fit: BoxFit.fitWidth,
-                                                                                color: Colors.black,
-                                                                              ),
-                                                                              const SizedBox(width: 8.0),
-                                                                              const Text('Download Invoice', style: CommonUtils.Mediumtext_12),
-                                                                            ],
-                                                                          ),
-                                                                        ),
-                                                                      ],
-                                                                    ),
-                                                                  ),
-                                                                ),
-                                                              ),
-                                                            ),
-                                                          ),
-                                                        ],
-                                                      ),
-                                                    ],
-                                                  ),
-                                                ),
-                                              ),
-                                            );
-                                          },
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              Container(
+                                width: 0.2,
+                                height: 60,
+                                color: Colors.grey,
+                              ),
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Transport Name',
+                                        style: CommonUtils.txSty_13B_Fb,
+                                      ),
+                                      const SizedBox(
+                                        height: 2.0,
+                                      ),
+                                      Text(
+                                        widget.transportmode,
+                                        style: TextStyle(
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
+                                          color: HexColor('#e58338'),
+                                          fontSize: 13,
                                         ),
-                                      )
-                                    : Container(),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                            ],
+                          ),
+
+                          Container(
+                            width: double.infinity,
+                            height: 0.2,
+                            color: Colors.grey,
+                          ),
+                          if (widget.whsName != null)
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 10),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'Warehouse',
+                                          style: CommonUtils.txSty_13B_Fb,
+                                        ),
+                                        const SizedBox(
+                                          height: 2.0,
+                                        ),
+                                        Text(
+                                          widget.whsName!,
+                                          style: TextStyle(
+                                            fontFamily: 'Roboto',
+                                            fontWeight: FontWeight.bold,
+                                            color: HexColor('#e58338'),
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                // Container(
+                                //   width: 0.2,
+                                //   height: 60,
+                                //   color: Colors.grey,
+                                // ),
+                                // Expanded(
+                                //   child: Padding(
+                                //     padding: const EdgeInsets.symmetric(
+                                //         horizontal: 12, vertical: 10),
+                                //     child: Column(
+                                //       crossAxisAlignment:
+                                //           CrossAxisAlignment.start,
+                                //       children: [
+                                //         const Text(
+                                //           'ttryty6h',
+                                //           style: CommonUtils.txSty_13B_Fb,
+                                //         ),
+                                //         const SizedBox(
+                                //           height: 2.0,
+                                //         ),
+                                //         Text(
+                                //           '₹${formatNumber(widget.totalCostWithGST)}',
+                                //           style: TextStyle(
+                                //             fontFamily: 'Roboto',
+                                //             fontWeight: FontWeight.bold,
+                                //             color: HexColor('#e58338'),
+                                //             fontSize: 13,
+                                //           ),
+                                //         ),
+                                //       ],
+                                //     ),
+                                //   ),
+                                // ),
                               ],
                             ),
-                            initiallyExpanded: false,
+
+                          Visibility(
+                            visible: Remarks != null && Remarks != "",
+                            child: Column(
+                              children: [
+                                Container(
+                                  width: double.infinity,
+                                  height: 0.2,
+                                  color: Colors.grey,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                  MainAxisAlignment.spaceBetween,
+                                  children: <Widget>[
+                                    Expanded(
+                                      child: Padding(
+                                        padding:
+                                        const EdgeInsets.symmetric(
+                                            horizontal: 12,
+                                            vertical: 10),
+                                        // Check if remarks are not null or empty
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            const Text(
+                                              'Remarks',
+                                              style: CommonUtils
+                                                  .txSty_13B_Fb,
+                                            ),
+                                            const SizedBox(
+                                              height: 2.0,
+                                            ),
+                                            Text(
+                                              '$Remarks',
+                                              style: TextStyle(
+                                                fontFamily: 'Roboto',
+                                                fontWeight:
+                                                FontWeight.bold,
+                                                color:
+                                                HexColor('#e58338'),
+                                                fontSize: 13,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
                           ),
-                        const SizedBox(
-                          height: 5.0,
+
+                          // Container(
+                          //   width: double.infinity,
+                          //   height: 0.2,
+                          //   color: Colors.grey,
+                          // ),
+                          // Row(
+                          //   mainAxisAlignment:
+                          //       MainAxisAlignment.spaceBetween,
+                          //   children: <Widget>[
+                          //     Expanded(
+                          //       child: Padding(
+                          //         padding:
+                          //             const EdgeInsets.symmetric(
+                          //                 horizontal: 12,
+                          //                 vertical: 10),
+                          //         child:
+                          //         Column(
+                          //           crossAxisAlignment:
+                          //               CrossAxisAlignment.start,
+                          //           children: [
+                          //             const Text(
+                          //               'LR Number',
+                          //               style: CommonUtils
+                          //                   .txSty_13B_Fb,
+                          //             ),
+                          //             Text(
+                          //               '${widget.lrnumber}',
+                          //               style: TextStyle(
+                          //                 fontFamily: 'Roboto',
+                          //                 fontWeight:
+                          //                     FontWeight.bold,
+                          //                 color:
+                          //                     HexColor('#e58338'),
+                          //                 fontSize: 13,
+                          //               ),
+                          //             ),
+                          //           ],
+                          //         ),
+                          //       ),
+                          //     ),
+                          //     Container(
+                          //       width: 0.2,
+                          //       height: 60,
+                          //       color: Colors.grey,
+                          //     ),
+                          //     Expanded(
+                          //       child: Padding(
+                          //         padding:
+                          //             const EdgeInsets.symmetric(
+                          //                 horizontal: 12,
+                          //                 vertical: 10),
+                          //         child: Column(
+                          //           crossAxisAlignment:
+                          //               CrossAxisAlignment.start,
+                          //           children: [
+                          //             const Text(
+                          //               'LR Date',
+                          //               style: CommonUtils
+                          //                   .txSty_13B_Fb,
+                          //             ),
+                          //             Text(
+                          //               '',
+                          //               style: TextStyle(
+                          //                 fontFamily: 'Roboto',
+                          //                 fontWeight:
+                          //                     FontWeight.bold,
+                          //                 color:
+                          //                     HexColor('#e58338'),
+                          //                 fontSize: 13,
+                          //               ),
+                          //             ),
+                          //           ],
+                          //         ),
+                          //       ),
+                          //     ),
+                          //   ],
+                          // ),
+
+                          Container(
+                            width: double.infinity,
+                            height: 0.2,
+                            color: Colors.grey,
+                          ),
+
+                          Visibility(
+                            visible: Statusname ==
+                                'Pending', // Set the visibility based on statustypeid
+                            child: Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: <Widget>[
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                      horizontal: 12,
+                                      vertical: 10,
+                                    ),
+                                    child: Column(
+                                      crossAxisAlignment:
+                                      CrossAxisAlignment.start,
+                                      children: [
+                                        const Text(
+                                          'You can cancel this order before it got Approved ',
+                                          style: CommonUtils.txSty_13B_Fb,
+                                        ),
+                                        Text(
+                                          '',
+                                          style: TextStyle(
+                                            fontFamily: 'Roboto',
+                                            fontWeight: FontWeight.bold,
+                                            color: HexColor('#e58338'),
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                GestureDetector(
+                                  onTap: () {
+                                    // Show confirmation dialog
+                                    showDialog(
+                                      context: context,
+                                      builder: (BuildContext context) {
+                                        return AlertDialog(
+                                          title:
+                                          const Text("Confirmation"),
+                                          content: const Text(
+                                              "Are you sure you want to cancel this order?"),
+                                          actions: [
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(); // Close the dialog
+                                              },
+                                              child: const Text("Cancel"),
+                                            ),
+                                            TextButton(
+                                              onPressed: () {
+                                                Navigator.of(context)
+                                                    .pop(); // Close the dialog
+                                                // Call function to cancel order
+                                                cancelOrder();
+                                              },
+                                              child: const Text("OK"),
+                                            ),
+                                          ],
+                                        );
+                                      },
+                                    );
+                                  },
+                                  child: Container(
+                                    decoration: BoxDecoration(
+                                      color: HexColor(
+                                          '#ffecee'), // Background color of the card
+                                      borderRadius: BorderRadius.circular(
+                                          20), // Adjust the radius as needed
+                                    ),
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10,
+                                        vertical:
+                                        5), // Adjust padding as needed
+                                    child: Row(
+                                      children: [
+                                        SvgPicture.asset(
+                                          'assets/crosscircle.svg',
+                                          height: 18,
+                                          width: 18,
+                                          fit: BoxFit.fitWidth,
+                                          color: HexColor('#de4554'),
+                                        ),
+                                        const SizedBox(
+                                            width:
+                                            8.0), // Add some spacing between icon and text
+                                        Text(
+                                          'Cancel',
+                                          style: TextStyle(
+                                            fontFamily: 'Roboto',
+                                            fontWeight: FontWeight.bold,
+                                            color: HexColor('#de4554'),
+                                            fontSize: 13,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ),
+                                const SizedBox(width: 10),
+                              ],
+                            ),
+                          ),
+                        ],
+                      ),
+
+                      // Table(
+                      //   border: TableBorder.all(
+                      //     width: 1,
+                      //     color: Colors.grey.shade500,
+                      //   ),
+                      //   children: [
+                      //     ...List.generate(3, (index) {
+                      //       return TableRow(
+                      //         children: [
+                      //           TableCell(
+                      //             child: Container(
+                      //               padding: const EdgeInsets.all(10),
+                      //               child: Column(
+                      //                 crossAxisAlignment:
+                      //                     CrossAxisAlignment.start,
+                      //                 children: <Widget>[
+                      //                   Text(
+                      //                     tableCellTitles[0][index],
+                      //                     //   style: _titleTextStyle,
+                      //                   ),
+                      //                   SizedBox(height: 5),
+                      //                   Text(
+                      //                     tableCellValues[0][index]
+                      //                         .toString(),
+                      //                     style: TextStyle(
+                      //                         fontFamily: 'Roboto',
+                      //                         fontSize: 13,
+                      //                         color: Color(0xFFe58338),
+                      //                         fontWeight: FontWeight.w600),
+                      //                     //style: _dataTextStyle,
+                      //                   )
+                      //                 ],
+                      //               ),
+                      //             ),
+                      //           ),
+                      //           TableCell(
+                      //             child: Container(
+                      //               padding: EdgeInsets.all(10),
+                      //               child: Column(
+                      //                 crossAxisAlignment:
+                      //                     CrossAxisAlignment.start,
+                      //                 children: <Widget>[
+                      //                   Text(
+                      //                     tableCellTitles[1][index],
+                      //                   ),
+                      //                   SizedBox(height: 5),
+                      //                   Text(
+                      //                     tableCellValues[1][index]
+                      //                         .toString(),
+                      //                     style: TextStyle(
+                      //                         fontFamily: 'Roboto',
+                      //                         fontSize: 13,
+                      //                         color: Color(0xFFe58338),
+                      //                         fontWeight: FontWeight.w600),
+                      //                   )
+                      //                 ],
+                      //               ),
+                      //             ),
+                      //           ),
+                      //         ],
+                      //       );
+                      //     })
+                      //   ],
+                      // ),
+                    ]))),
+          ),
+
+          const SizedBox(
+            height: 5.0,
+          ),
+
+          //_buildBody(context),
+          CustomExpansionTile(
+            title: const Text(
+              "Item Details",
+              style: TextStyle(
+                  color: Colors.white), // Adjust text color as needed
+              maxLines: 2,
+              overflow: TextOverflow.ellipsis,
+            ),
+            content: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Container(
+                  width: screenWidth,
+                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
+                  //   height: screenHeight / 2,
+                  decoration: BoxDecoration(
+                    borderRadius: BorderRadius.circular(10),
+                    //        color: Colors.white,
+                  ),
+                  child: ListView.builder(
+                    shrinkWrap: true,
+                    physics: const PageScrollPhysics(),
+                    itemCount: orderItemsList.length,
+                    itemBuilder: (context, index) {
+                      return GestureDetector(
+                        onTap: () {},
+                        child: Container(
+                          margin: const EdgeInsets.only(bottom: 10),
+                          color: Colors.transparent,
+                          child: Card(
+                            elevation: 5,
+                            color: Colors.white,
+                            child: Container(
+                              padding: const EdgeInsets.all(10),
+                              //   width: double.infinity,
+                              width: MediaQuery.of(context).size.width,
+                              decoration: BoxDecoration(
+                                  borderRadius: BorderRadius.circular(10),
+                                  color: Colors.white),
+
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Container(
+                                    // height: 70,
+                                    // width: double.infinity,
+                                    // margin: const EdgeInsets.only(bottom: 12),
+                                    width:
+                                    MediaQuery.of(context).size.width,
+                                    decoration: BoxDecoration(
+                                      borderRadius:
+                                      BorderRadius.circular(10),
+                                    ),
+                                    child: Row(
+                                      mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        // starting icon of card
+
+                                        // beside info
+                                        SizedBox(
+                                          //height: 90,
+                                          // width: ,
+                                          width: MediaQuery.of(context)
+                                              .size
+                                              .width /
+                                              1.3,
+                                          child: Container(
+                                            padding:
+                                            const EdgeInsets.only(
+                                                left: 0,
+                                                top: 0,
+                                                bottom: 0),
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment
+                                                  .start,
+                                              mainAxisAlignment:
+                                              MainAxisAlignment
+                                                  .spaceBetween,
+                                              children: [
+                                                Text(
+                                                  orderItemsList[index]
+                                                      .itemName,
+                                                  style: const TextStyle(
+                                                      fontFamily:
+                                                      'Roboto',
+                                                      fontSize: 14,
+                                                      color: Colors.black,
+                                                      fontWeight:
+                                                      FontWeight
+                                                          .bold),
+                                                  softWrap: true,
+                                                  maxLines: 2,
+                                                  overflow: TextOverflow
+                                                      .ellipsis,
+                                                ),
+                                                const SizedBox(
+                                                  height: 5.0,
+                                                ),
+                                                Row(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .spaceAround,
+                                                  children: [
+                                                    Container(
+                                                      child: Row(
+                                                        children: [
+                                                          Text(
+                                                            'Qty: ${orderItemsList[index].orderQty}',
+                                                            style:
+                                                            const TextStyle(
+                                                              fontFamily:
+                                                              'Roboto',
+                                                              fontSize:
+                                                              14,
+                                                              color: Colors
+                                                                  .black,
+                                                              fontWeight:
+                                                              FontWeight
+                                                                  .w400,
+                                                            ),
+                                                          ),
+                                                          // Text(
+                                                          //   orderItemsList[index].orderQty.toString(),
+                                                          //   style: CommonUtils.Mediumtext_12,
+                                                          // ),
+
+                                                          Text(
+                                                            ' (${orderItemsList[index].orderQty} ${orderItemsList[index].salUnitMsr} = ${orderItemsList[index].orderQty * orderItemsList[index].numInSale}  Nos)', // Display totalSumForProduct for the single product
+                                                            style: CommonUtils
+                                                                .Mediumtext_o_14,
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    //  Text(
+                                                    //   'Qty: ${orderItemsList[index].orderQty}',
+                                                    //   style: TextStyle(
+                                                    //     fontFamily: 'Roboto',
+                                                    //     fontSize: 14,
+                                                    //     color: Colors.black,
+                                                    //     fontWeight: FontWeight.w400,
+                                                    //   ),
+                                                    // ),
+                                                    // // Text(
+                                                    // //   orderItemsList[index].orderQty.toString(),
+                                                    // //   style: CommonUtils.Mediumtext_12,
+                                                    // // ),
+                                                    //
+                                                    // Text(
+                                                    //   ' (${orderItemsList[index].orderQty} ${orderItemsList[index].salUnitMsr} = ${orderItemsList[index].orderQty * orderItemsList[index].numInSale!}  Nos)', // Display totalSumForProduct for the single product
+                                                    //   style: CommonUtils.Mediumtext_o_14,
+                                                    // ),
+                                                    Expanded(
+                                                      child:
+                                                      Container(), // This Expanded widget ensures that the additional text is positioned at the end of the row
+                                                    ),
+                                                    // SizedBox(width: 20.0,),
+
+                                                    Text(
+                                                      '₹${formatNumber(orderItemsList[index].totalPrice)}',
+                                                      style: CommonUtils
+                                                          .Mediumtext_o_14,
+                                                    ),
+                                                  ],
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        )
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ),
-                      ])
-                : const Center(child: CircularProgressIndicator())));
+                      );
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 5.0,
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.only(
+                      top: 5.0, left: 10.0, right: 10.0),
+                  child: IntrinsicHeight(
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: Container(
+                        padding: const EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5.0),
+                          color: Colors.white,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Sub Total',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                                Text(
+                                  '₹${formatNumber(orderDetails[0].totalCost)}',
+                                  style: const TextStyle(
+                                    color: Color(0xFFe78337),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8.0),
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'GST',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                                Text(
+                                  '₹${formatNumber(orderDetails[0].gstCost)}',
+                                  style: const TextStyle(
+                                    color: Color(0xFFe78337),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                            const SizedBox(height: 8.0),
+                            Row(
+                              mainAxisAlignment:
+                              MainAxisAlignment.spaceBetween,
+                              children: [
+                                const Text(
+                                  'Total Amount',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                                Text(
+                                  '₹${formatNumber(orderDetails[0].totalCostWithGst)}',
+                                  style: const TextStyle(
+                                    color: Color(0xFFe78337),
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+            initiallyExpanded: false,
+          ),
+          //    ),
+          const SizedBox(
+            height: 5.0,
+          ),
+          if (invoiceResponse?.listResult != null &&
+              invoiceResponse!.listResult!.isNotEmpty)
+            CustomExpansionTile(
+              title: const Text(
+                "Invoice Details",
+                style: TextStyle(
+                    color: Colors.white), // Adjust text color as needed
+                overflow: TextOverflow.ellipsis,
+              ),
+              content: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  invoiceResponse?.listResult != null &&
+                      invoiceResponse!.listResult!.isNotEmpty
+                      ? Container(
+                    width: screenWidth,
+                    padding: const EdgeInsets.only(
+                        left: 0.0, right: 0.0),
+                    //   height: screenHeight / 2,
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                      //        color: Colors.white,
+                    ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const PageScrollPhysics(),
+                      itemCount:
+                      invoiceResponse!.listResult!.length,
+                      itemBuilder: (context, index) {
+                        InvoiceDetails invoice =
+                        invoiceResponse!.listResult![index];
+                        DateTime date = invoice.invoiceDate;
+                        String invoicedateDate =
+                        DateFormat('dd MMM, yyyy').format(date);
+
+                        return Container(
+                          width: screenWidth,
+                          padding: const EdgeInsets.only(
+                              left: 10.0, right: 10.0),
+                          child: Card(
+                            elevation: 7,
+                            shape: RoundedRectangleBorder(
+                              side: BorderSide(
+                                color: invoice.isReceived ?? false
+                                    ? Colors.green
+                                    : Colors.redAccent,
+                                width:
+                                2.0, // Set your desired border width here
+                              ),
+                              borderRadius:
+                              BorderRadius.circular(10.0),
+                            ),
+                            child: Container(
+                              width: double.infinity,
+                              decoration: BoxDecoration(
+                                borderRadius:
+                                BorderRadius.circular(10),
+                                color: Colors.white,
+                              ),
+                              child: Column(
+                                crossAxisAlignment:
+                                CrossAxisAlignment.start,
+                                children: [
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment
+                                        .spaceBetween,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets
+                                              .symmetric(
+                                              horizontal: 12,
+                                              vertical: 10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              const Text(
+                                                'Invoice Number',
+                                                style: CommonUtils
+                                                    .txSty_13B_Fb,
+                                              ),
+                                              Text(
+                                                invoice.invoiceNo,
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                  'Roboto',
+                                                  fontWeight:
+                                                  FontWeight
+                                                      .bold,
+                                                  color: HexColor(
+                                                      '#e58338'),
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 0.2,
+                                        height: 60,
+                                        color: Colors.grey,
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets
+                                              .symmetric(
+                                              horizontal: 12,
+                                              vertical: 10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              const Text(
+                                                'Invoice Date',
+                                                style: CommonUtils
+                                                    .txSty_13B_Fb,
+                                              ),
+                                              Text(
+                                                invoicedateDate,
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                  'Roboto',
+                                                  fontWeight:
+                                                  FontWeight
+                                                      .bold,
+                                                  color: HexColor(
+                                                      '#e58338'),
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  Container(
+                                    width: double.infinity,
+                                    height: 0.2,
+                                    color: Colors.grey,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment
+                                        .spaceBetween,
+                                    children: <Widget>[
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets
+                                              .symmetric(
+                                              horizontal: 12,
+                                              vertical: 10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              const Text(
+                                                'Quantity',
+                                                style: CommonUtils
+                                                    .txSty_13B_Fb,
+                                              ),
+                                              Text(
+                                                '${invoice.totalInvoiceQty}',
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                  'Roboto',
+                                                  fontWeight:
+                                                  FontWeight
+                                                      .bold,
+                                                  color: HexColor(
+                                                      '#e58338'),
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                      Container(
+                                        width: 0.2,
+                                        height: 60,
+                                        color: Colors.grey,
+                                      ),
+                                      Expanded(
+                                        child: Padding(
+                                          padding: const EdgeInsets
+                                              .symmetric(
+                                              horizontal: 12,
+                                              vertical: 10),
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment
+                                                .start,
+                                            children: [
+                                              const Text(
+                                                'Invoice Amount',
+                                                style: CommonUtils
+                                                    .txSty_13B_Fb,
+                                              ),
+                                              Text(
+                                                '₹${formatNumber(invoice.totalInvoiceAmount)}',
+                                                style: TextStyle(
+                                                  fontFamily:
+                                                  'Roboto',
+                                                  fontWeight:
+                                                  FontWeight
+                                                      .bold,
+                                                  color: HexColor(
+                                                      '#e58338'),
+                                                  fontSize: 13,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                  // Container(
+                                  //   width: double.infinity,
+                                  //   height: 0.2,
+                                  //   color: Colors.grey,
+                                  // ),
+                                  // Row(
+                                  //   mainAxisAlignment:
+                                  //   MainAxisAlignment
+                                  //       .spaceBetween,
+                                  //   children: <Widget>[
+                                  //     Expanded(
+                                  //       child: Padding(
+                                  //         padding: const EdgeInsets
+                                  //             .symmetric(
+                                  //             horizontal: 12,
+                                  //             vertical: 10),
+                                  //         child: Column(
+                                  //           crossAxisAlignment:
+                                  //           CrossAxisAlignment
+                                  //               .start,
+                                  //           children: [
+                                  //             const Text(
+                                  //               'LR Number',
+                                  //               style: CommonUtils
+                                  //                   .txSty_13B_Fb,
+                                  //             ),
+                                  //             Text(
+                                  //               '${widget.lrnumber}',
+                                  //               style: TextStyle(
+                                  //                 fontFamily:
+                                  //                 'Roboto',
+                                  //                 fontWeight:
+                                  //                 FontWeight.bold,
+                                  //                 color: HexColor(
+                                  //                     '#e58338'),
+                                  //                 fontSize: 13,
+                                  //               ),
+                                  //             ),
+                                  //           ],
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //     Container(
+                                  //       width: 0.2,
+                                  //       height: 60,
+                                  //       color: Colors.grey,
+                                  //     ),
+                                  //     Expanded(
+                                  //       child: Padding(
+                                  //         padding: const EdgeInsets
+                                  //             .symmetric(
+                                  //             horizontal: 12,
+                                  //             vertical: 10),
+                                  //         child: Column(
+                                  //           crossAxisAlignment:
+                                  //           CrossAxisAlignment
+                                  //               .start,
+                                  //           children: [
+                                  //             const Text(
+                                  //               'LR Date',
+                                  //               style: CommonUtils
+                                  //                   .txSty_13B_Fb,
+                                  //             ),
+                                  //             Text(
+                                  //               '',
+                                  //               style: TextStyle(
+                                  //                 fontFamily:
+                                  //                 'Roboto',
+                                  //                 fontWeight:
+                                  //                 FontWeight.bold,
+                                  //                 color: HexColor(
+                                  //                     '#e58338'),
+                                  //                 fontSize: 13,
+                                  //               ),
+                                  //             ),
+                                  //           ],
+                                  //         ),
+                                  //       ),
+                                  //     ),
+                                  //   ],
+                                  // ),
+
+                                  Container(
+                                    width: double.infinity,
+                                    height: 0.2,
+                                    color: Colors.grey,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment
+                                        .spaceBetween,
+                                    children: <Widget>[
+                                      Container(
+                                        padding:
+                                        const EdgeInsets.all(
+                                            8.0),
+                                        child: Visibility(
+                                          visible: invoiceResponse!
+                                              .listResult![
+                                          index]
+                                              .lrFileUrl !=
+                                              null,
+                                          child: GestureDetector(
+                                            onTap: () {
+                                              showDialog(
+                                                context: context,
+                                                builder:
+                                                    (BuildContext
+                                                context) {
+                                                  return AlertDialog(
+                                                    content:
+                                                    SizedBox(
+                                                      width: double
+                                                          .infinity,
+                                                      height: double
+                                                          .infinity,
+                                                      child: Column(
+                                                        children: [
+                                                          Expanded(
+                                                            child: Image
+                                                                .network(
+                                                              invoiceResponse!.listResult![index].lrFileUrl ??
+                                                                  '',
+                                                              fit: BoxFit
+                                                                  .contain,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                    actions: [
+                                                      Container(
+                                                        margin: const EdgeInsets
+                                                            .only(
+                                                            top: 10,
+                                                            right:
+                                                            10),
+                                                        decoration:
+                                                        BoxDecoration(
+                                                          shape: BoxShape
+                                                              .circle,
+                                                          color: Colors
+                                                              .white,
+                                                          boxShadow: [
+                                                            BoxShadow(
+                                                              color: Colors
+                                                                  .black
+                                                                  .withOpacity(0.1),
+                                                              blurRadius:
+                                                              6,
+                                                              spreadRadius:
+                                                              3,
+                                                            ),
+                                                          ],
+                                                        ),
+                                                        child:
+                                                        IconButton(
+                                                          icon: const Icon(
+                                                              Icons
+                                                                  .close,
+                                                              color:
+                                                              Colors.red),
+                                                          onPressed:
+                                                              () {
+                                                            Navigator.of(context)
+                                                                .pop();
+                                                          },
+                                                        ),
+                                                      ),
+                                                    ],
+                                                  );
+                                                },
+                                              );
+                                            },
+                                            child: Container(
+                                              height: 35,
+                                              margin:
+                                              const EdgeInsets
+                                                  .symmetric(
+                                                  horizontal:
+                                                  4.0),
+                                              decoration:
+                                              BoxDecoration(
+                                                color: const Color(
+                                                    0xFFe78337),
+                                                border: Border.all(
+                                                  color: const Color(
+                                                      0xFFe78337),
+                                                  width: 1,
+                                                ),
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(
+                                                    8.0),
+                                              ),
+                                              child: IntrinsicWidth(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .center,
+                                                  children: [
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal:
+                                                          10.0),
+                                                      child: Row(
+                                                        children: [
+                                                          SvgPicture
+                                                              .asset(
+                                                            'assets/overview.svg',
+                                                            height:
+                                                            18,
+                                                            width:
+                                                            18,
+                                                            fit: BoxFit
+                                                                .fitWidth,
+                                                            color: Colors
+                                                                .white,
+                                                          ),
+                                                          const SizedBox(
+                                                              width:
+                                                              8.0),
+                                                          const Text(
+                                                            'View LR',
+                                                            style:
+                                                            TextStyle(
+                                                              color:
+                                                              Colors.white,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible:
+                                        invoice.isReceived ==
+                                            false,
+                                        child: Container(
+                                          padding:
+                                          const EdgeInsets.all(
+                                              8.0),
+                                          child: GestureDetector(
+                                            onTap: () async {
+                                              if (invoiceResponse
+                                                  ?.listResult !=
+                                                  null &&
+                                                  invoiceResponse!
+                                                      .listResult!
+                                                      .isNotEmpty &&
+                                                  !_showBottomSheet) {
+                                                for (InvoiceDetails invoice
+                                                in invoiceResponse!
+                                                    .listResult!) {
+                                                  if (invoice
+                                                      .isReceived ==
+                                                      false) {
+                                                    // setState(() {
+                                                    //   _showBottomSheet = true;
+                                                    // });
+                                                    showBottomSheet(
+                                                        context,
+                                                        invoice
+                                                            .invoiceNo,
+                                                        invoicedateDate);
+                                                    break; // Stop looping after finding the first invoice with isReceived == false
+                                                  }
+                                                }
+
+                                                //Add your download functionality here
+                                              }
+                                            },
+                                            child: Container(
+                                              height: 35,
+                                              margin:
+                                              const EdgeInsets
+                                                  .symmetric(
+                                                  horizontal:
+                                                  4.0),
+                                              decoration:
+                                              BoxDecoration(
+                                                color: const Color(
+                                                    0xFFF8dac2),
+                                                border: Border.all(
+                                                  color: const Color(
+                                                      0xFFe78337),
+                                                  width: 1,
+                                                ),
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(
+                                                    8.0),
+                                              ),
+                                              child: IntrinsicWidth(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .center,
+                                                  children: [
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal:
+                                                          10.0),
+                                                      child: Row(
+                                                        children: [
+                                                          SvgPicture
+                                                              .asset(
+                                                            'assets/box-check.svg',
+                                                            height:
+                                                            18,
+                                                            width:
+                                                            18,
+                                                            fit: BoxFit
+                                                                .fitWidth,
+                                                            color: Colors
+                                                                .black,
+                                                          ),
+                                                          const SizedBox(
+                                                              width:
+                                                              8.0),
+                                                          const Text(
+                                                            'Received',
+                                                            style:
+                                                            TextStyle(
+                                                              color:
+                                                              Colors.black,
+                                                            ),
+                                                          ),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                      Visibility(
+                                        visible: invoice
+                                            .isReceived ==
+                                            true &&
+                                            invoice.invoiceFileUrl !=
+                                                null,
+                                        child: Container(
+                                          padding:
+                                          const EdgeInsets.all(
+                                              8.0),
+                                          child: GestureDetector(
+                                            onTap: () async {
+                                              String? pdfUrl = invoice
+                                                  .invoiceFileUrl;
+                                              String? invoiceNo =
+                                                  invoice.invoiceNo;
+                                              downloadFile(pdfUrl!,
+                                                  invoiceNo);
+
+                                              //Add your download functionality here
+                                            },
+                                            child: Container(
+                                              height: 35,
+                                              margin:
+                                              const EdgeInsets
+                                                  .symmetric(
+                                                  horizontal:
+                                                  4.0),
+                                              decoration:
+                                              BoxDecoration(
+                                                color: const Color(
+                                                    0xFFF8dac2),
+                                                border: Border.all(
+                                                  color: const Color(
+                                                      0xFFe78337),
+                                                  width: 1,
+                                                ),
+                                                borderRadius:
+                                                BorderRadius
+                                                    .circular(
+                                                    8.0),
+                                              ),
+                                              child: IntrinsicWidth(
+                                                child: Column(
+                                                  mainAxisAlignment:
+                                                  MainAxisAlignment
+                                                      .center,
+                                                  children: [
+                                                    Container(
+                                                      padding: const EdgeInsets
+                                                          .symmetric(
+                                                          horizontal:
+                                                          5.0),
+                                                      child: Row(
+                                                        children: [
+                                                          SvgPicture
+                                                              .asset(
+                                                            'assets/file-download.svg',
+                                                            height:
+                                                            18,
+                                                            width:
+                                                            18,
+                                                            fit: BoxFit
+                                                                .fitWidth,
+                                                            color: Colors
+                                                                .black,
+                                                          ),
+                                                          const SizedBox(
+                                                              width:
+                                                              8.0),
+                                                          const Text(
+                                                              'Download Invoice',
+                                                              style:
+                                                              CommonUtils.Mediumtext_12),
+                                                        ],
+                                                      ),
+                                                    ),
+                                                  ],
+                                                ),
+                                              ),
+                                            ),
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  )
+                      : Container(),
+                ],
+              ),
+              initiallyExpanded: false,
+            ),
+          const SizedBox(
+            height: 5.0,
+          ),
+        ])
+            : const Center(
+          child: CircularProgressIndicator(),
+        ),
+      ),
+    );
   }
 
   AppBar _appBar() {
@@ -1555,11 +1897,14 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                     // Handle the click event for the home icon
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
                     );
                   },
                   child: Image.asset(
-                    CompneyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
+                    CompneyId == 1
+                        ? 'assets/srikar-home-icon.png'
+                        : 'assets/seeds-home-icon.png',
                     width: 30,
                     height: 30,
                   ),
@@ -1577,13 +1922,12 @@ class _OrderdetailsPageState extends State<Orderdetails> {
 
   Future<void> getshareddata() async {
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-
-    print('Company ID: $CompneyId');
   }
 
   Future<InvoiceApiResponse> fetchinvoicedata() async {
     ordernum = widget.ordernumber;
-    final response = await http.get(Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetInvoiceDetailsByOrderNumber/$ordernum'));
+    final response = await http.get(Uri.parse(
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetInvoiceDetailsByOrderNumber/$ordernum'));
 
     if (response.statusCode == 200) {
       final responseData = json.decode(response.body);
@@ -1607,8 +1951,10 @@ class _OrderdetailsPageState extends State<Orderdetails> {
     DateTime currentDate = DateTime.now();
     String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
     print('Formatted Date: $formattedcurrentDate');
-    const String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus';
-    final String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
+    const String apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus';
+    final String userId =
+    await SharedPrefsData.getStringFromSharedPrefs("userId");
 
     final Map<String, dynamic> requestData = {
       "Id": orderid,
@@ -1632,7 +1978,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
         if (responseData['isSuccess']) {
           // Status updated successfully
           print(responseData['endUserMessage']);
-          CommonUtils.showCustomToastMessageLong("Your Order Cancelled Successfully", context, 0, 3);
+          CommonUtils.showCustomToastMessageLong(
+              "Your Order Cancelled Successfully", context, 0, 3);
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ViewOrders()),
@@ -1651,7 +1998,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
     }
   }
 
-  void showBottomSheet(BuildContext context, String invoiceNo, String invoicedateDate) {
+  void showBottomSheet(
+      BuildContext context, String invoiceNo, String invoicedateDate) {
     showModalBottomSheet(
       context: context,
       shape: const RoundedRectangleBorder(
@@ -1698,7 +2046,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              padding:
+                              const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Row(
                                 children: [
                                   SvgPicture.asset(
@@ -1730,7 +2079,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                     onTap: () {
                       Navigator.of(context).pop(); // Close the bottom sheet
                       // Show a new bottom sheet for entering remarks
-                      showRemarksBottomSheet(context, invoiceNo, invoicedateDate);
+                      showRemarksBottomSheet(
+                          context, invoiceNo, invoicedateDate);
                     },
                     child: Container(
                       height: 35,
@@ -1748,7 +2098,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                           mainAxisAlignment: MainAxisAlignment.center,
                           children: [
                             Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                              padding:
+                              const EdgeInsets.symmetric(horizontal: 10.0),
                               child: Row(
                                 children: [
                                   SvgPicture.asset(
@@ -1785,7 +2136,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
     );
   }
 
-  void showRemarksBottomSheet(BuildContext context, String invoiceNo, String invoicedateDate) {
+  void showRemarksBottomSheet(
+      BuildContext context, String invoiceNo, String invoicedateDate) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -1809,7 +2161,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                 ),
                 const SizedBox(height: 10),
                 const Padding(
-                  padding: EdgeInsets.only(top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
+                  padding: EdgeInsets.only(
+                      top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
                   child: Text(
                     'Remarks *',
                     style: CommonUtils.Mediumtext_o_14,
@@ -1820,7 +2173,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                   height: 70,
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
-                    border: Border.all(color: const Color(0xFFe78337), width: 1),
+                    border:
+                    Border.all(color: const Color(0xFFe78337), width: 1),
                     borderRadius: BorderRadius.circular(5.0),
                     color: Colors.white,
                   ),
@@ -1849,7 +2203,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                       onTap: () {
                         String remarks = remarkstext.text.trim();
                         if (remarks.isEmpty) {
-                          CommonUtils.showCustomToastMessageLong('Please Enter Remarks', context, 1, 4);
+                          CommonUtils.showCustomToastMessageLong(
+                              'Please Enter Remarks', context, 1, 4);
                         } else {
                           // Call the API to update invoice status with remarks
                           updateInvoiceStatus(ordernumber!, invoiceNo, remarks);
@@ -1874,7 +2229,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 10.0),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
@@ -1919,13 +2275,16 @@ class _OrderdetailsPageState extends State<Orderdetails> {
     );
   }
 
-  void updateInvoiceStatus(String orderNumber, String invoiceNo, String remarks) async {
-    final String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
+  void updateInvoiceStatus(
+      String orderNumber, String invoiceNo, String remarks) async {
+    final String userId =
+    await SharedPrefsData.getStringFromSharedPrefs("userId");
     DateTime currentDate = DateTime.now();
     String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
     print('Formatted Date: $formattedcurrentDate');
     // Your API URL
-    const String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateInvoiceStatus';
+    const String apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateInvoiceStatus';
 
     // Your API request body
     final Map<String, dynamic> requestBody = {
@@ -1952,7 +2311,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
         if (responseData['isSuccess']) {
           // Status updated successfully
           print(responseData['endUserMessage']);
-          CommonUtils.showCustomToastMessageLong(responseData['endUserMessage'], context, 0, 3);
+          CommonUtils.showCustomToastMessageLong('point 1', context, 0, 3);
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ViewOrders()),
@@ -1996,7 +2355,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
 
         // Show a message indicating successful download
         // print('PDF downloaded successfully');
-        CommonUtils.showCustomToastMessageLong('Invoice Downloaded Successfully', context, 0, 4);
+        CommonUtils.showCustomToastMessageLong(
+            'Invoice Downloaded Successfully', context, 0, 4);
         // You can use this file path to open the PDF file, or display it in your app
 
         print('PDF path: $filePath');
@@ -2119,7 +2479,9 @@ class _CustomExpansionTileState extends State<CustomExpansionTile> {
                 children: [
                   Expanded(child: widget.title),
                   Icon(
-                    _isExpanded ? Icons.keyboard_arrow_up : Icons.keyboard_arrow_down,
+                    _isExpanded
+                        ? Icons.keyboard_arrow_up
+                        : Icons.keyboard_arrow_down,
                     color: Colors.white,
                   ),
                 ],
@@ -2148,8 +2510,9 @@ class InvoiceApiResponse {
     return InvoiceApiResponse(
       listResult: json['response']['listResult'] != null
           ? List<InvoiceDetails>.from(
-              json['response']['listResult'].map((x) => InvoiceDetails.fromJson(x)),
-            )
+        json['response']['listResult']
+            .map((x) => InvoiceDetails.fromJson(x)),
+      )
           : null,
       count: json['response']['count'],
       affectedRecords: json['response']['affectedRecords'],
