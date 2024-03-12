@@ -61,15 +61,14 @@ class _VieworderPageState extends State<ViewOrders> {
           viewOrdersProvider.storeIntoViewOrderProvider(data);
         });
       } else {}
-    }).catchError((error) {});
+    }).catchError((error) {
+      throw Exception('catchError: ${error.toString()}');
+    });
   }
 
   Future<List<OrderResult>> getorder() async {
     companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
-    // String formattedCurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
-    // String formattedOneWeekBackDate =
-    //     DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
 
     final url = Uri.parse(
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
@@ -1276,23 +1275,52 @@ class _OrderCardState extends State<OrderCard> {
                   child: Row(
                     children: [
                       // starting icon of card
-                      Card(
-                        elevation: 3,
-                        color: Colors.white,
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-                        child: Container(
-                          height: 65,
-                          width: 65,
-                          padding: const EdgeInsets.all(10),
-                          decoration: _iconBoxBorder,
-                          child: Center(
-                            child: getSvgImagesAndColors(
-                              widget.orderResult.statusTypeId,
+                      Column(
+                        crossAxisAlignment: CrossAxisAlignment.center,
+                        children: [
+                          Card(
+                            elevation: 3,
+                            color: Colors.white,
+                            shape: RoundedRectangleBorder(
+                              borderRadius: BorderRadius.circular(5.0),
+                            ),
+                            child: Container(
+                              height: 65,
+                              width: 65,
+                              padding: const EdgeInsets.all(10),
+                              decoration: _iconBoxBorder,
+                              child: Center(
+                                child: getSvgImagesAndColors(
+                                  widget.orderResult.statusTypeId,
+                                ),
+                              ),
                             ),
                           ),
-                        ),
+                          const SizedBox(
+                            height: 5.0,
+                          ),
+                          Container(
+                            padding: const EdgeInsets.symmetric(
+                                vertical: 3, horizontal: 7),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(10),
+                              color: statusBgColor,
+                            ),
+                            child: Row(
+                              mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Text(
+                                  widget.orderResult.statusName,
+                                  style: TextStyle(
+                                    fontSize: 11,
+                                    color: statusColor,
+                                    // Add other text styles as needed
+                                  ),
+                                ),
+                              ],
+                            ),
+                          ),
+                        ],
                       ),
 
                       // beside info
@@ -1376,11 +1404,11 @@ class _OrderCardState extends State<OrderCard> {
                                   //   style: CommonUtils.txSty_13O_F6,
                                   // ),
                                   Text(
-                                    '₹${formatNumber(widget.orderResult.totalCostWithGST)}',
+                                    widget.formattedDate,
                                     style: CommonUtils.txSty_13O_F6,
                                   ),
                                   Text(
-                                    widget.formattedDate,
+                                    '₹${formatNumber(widget.orderResult.totalCostWithGST)}',
                                     style: CommonUtils.txSty_13O_F6,
                                   ),
                                 ],
@@ -1392,62 +1420,62 @@ class _OrderCardState extends State<OrderCard> {
                     ],
                   ),
                 ),
-                const SizedBox(
-                  height: 5.0,
-                ),
-                Row(
-                  children: [
-                    Container(
-                      margin: const EdgeInsets.only(left: 5.0),
-                      padding: const EdgeInsets.symmetric(
-                          vertical: 3, horizontal: 7),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: statusBgColor,
-                      ),
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          Text(
-                            widget.orderResult.statusName,
-                            style: TextStyle(
-                              fontSize: 11,
-                              color: statusColor,
-                              // Add other text styles as needed
-                            ),
-                          ),
-                        ],
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 10.0,
-                    ),
-                    const Expanded(
-                      child: Row(
-                        mainAxisAlignment: MainAxisAlignment.end,
-                        children: [
-                          Expanded(child: SizedBox()),
-                          // Row(
-                          //   children: [
-                          //     const Text(
-                          //       'No.of Items: ',
-                          //       style: CommonUtils.txSty_13B_Fb,
-                          //     ),
-                          //     Text(
-                          //       '${widget.orderResult.noOfItems}',
-                          //       style: CommonUtils.txSty_13O_F6,
-                          //     ),
-                          //   ],
-                          // )
-                          // Text(
-                          //   '₹${formatNumber(widget.orderResult.totalCostWithGST)}',
-                          //   style: CommonUtils.txSty_13O_F6,
-                          // ),
-                        ],
-                      ),
-                    ),
-                  ],
-                )
+                // const SizedBox(
+                //   height: 5.0,
+                // ),
+                // Row(
+                //   children: [
+                //     Container(
+                //       margin: const EdgeInsets.only(left: 5.0),
+                //       padding: const EdgeInsets.symmetric(
+                //           vertical: 3, horizontal: 7),
+                //       decoration: BoxDecoration(
+                //         borderRadius: BorderRadius.circular(10),
+                //         color: statusBgColor,
+                //       ),
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.center,
+                //         children: [
+                //           Text(
+                //             widget.orderResult.statusName,
+                //             style: TextStyle(
+                //               fontSize: 11,
+                //               color: statusColor,
+                //               // Add other text styles as needed
+                //             ),
+                //           ),
+                //         ],
+                //       ),
+                //     ),
+                //     const SizedBox(
+                //       width: 10.0,
+                //     ),
+                //     const Expanded(
+                //       child: Row(
+                //         mainAxisAlignment: MainAxisAlignment.end,
+                //         children: [
+                //           Expanded(child: SizedBox()),
+                //           // Row(
+                //           //   children: [
+                //           //     const Text(
+                //           //       'No.of Items: ',
+                //           //       style: CommonUtils.txSty_13B_Fb,
+                //           //     ),
+                //           //     Text(
+                //           //       '${widget.orderResult.noOfItems}',
+                //           //       style: CommonUtils.txSty_13O_F6,
+                //           //     ),
+                //           //   ],
+                //           // )
+                //           // Text(
+                //           //   '₹${formatNumber(widget.orderResult.totalCostWithGST)}',
+                //           //   style: CommonUtils.txSty_13O_F6,
+                //           // ),
+                //         ],
+                //       ),
+                //     ),
+                //   ],
+                // )
               ],
             ),
           ),

@@ -96,7 +96,7 @@ class GetOrderDetailsResult {
   final double totalCostWithGst;
   final double gstCost;
   final int noOfItems;
-  final String remarks;
+  final String? remarks;
   final bool isActive;
   final String createdBy;
   final String createdDate;

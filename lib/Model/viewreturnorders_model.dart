@@ -90,10 +90,10 @@ class ReturnOrderDetailsResult {
   final String lrNumber;
   final String lrDate;
   final int statusTypeId;
-  final String fileName;
-  final String fileLocation;
-  final String fileExtension;
-  final String fileUrl;
+  final String? fileName;
+  final String? fileLocation;
+  final String? fileExtension;
+  final String? fileUrl;
   final String statusName;
   final double discount;
   final double totalCost;
@@ -203,10 +203,9 @@ class ReturnOrderDetailsResult {
     "createdDate": createdDate,
     "updatedBy": updatedBy,
     "updatedDate": updatedDate,
-    "transportName":transportName
+    "transportName": transportName
   };
 }
-
 
 class ReturnOrderItemXrefList {
   final String statusName;

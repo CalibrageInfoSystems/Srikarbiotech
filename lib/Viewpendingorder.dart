@@ -87,7 +87,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
       "ToDate": currentdate,
       "CompanyId": companyId,
       "UserId": userId,
-      "WhsCode":"",
+      "WhsCode": "",
     };
 
     debugPrint('_______pending orders____1___');
@@ -115,7 +115,6 @@ class _VieworderPageState extends State<Viewpendingorder> {
         });
 
         if (filterorderesponselist.isEmpty) {
-          print('No records found.');
           // Display a message or set a variable to show a message in your UI.
         }
 
@@ -760,7 +759,7 @@ class _OrderCardState extends State<OrderCard> {
           MaterialPageRoute(
             builder: (context) => Orderdetails(
               orderid: widget.orderResult.id,
-              whsName: null,
+              whsName: widget.orderResult.whsName,
               orderdate: widget.formattedDate,
               totalCostWithGST: widget.orderResult.totalCostWithGST,
               bookingplace: widget.orderResult.bookingPlace,
@@ -924,82 +923,84 @@ class _OrderCardState extends State<OrderCard> {
                                     mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                     children: [
-                                      // const Text(
-                                      //   'Total Amount : ',
-                                      //   style: CommonUtils.txSty_13B_Fb,
-                                      // ),
-                                      Text(
-                                        '₹${formatNumber(widget.orderResult.totalCostWithGST)}',
+                                      widget.orderResult.whsName != null
+                                          ? Text(
+                                        '${widget.orderResult.whsName}',
                                         style: CommonUtils.txSty_13O_F6,
-                                      ),
+                                      )
+                                          : const SizedBox(),
                                       Text(
                                         widget.formattedDate,
                                         style: CommonUtils.txSty_13O_F6,
                                       ),
                                     ],
-                                  )
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        '₹${formatNumber(widget.orderResult.totalCostWithGST)}',
+                                        style: CommonUtils.txSty_13O_F6,
+                                      ),
+                                      Row(
+                                        children: [
+                                          const Text(
+                                            'No.of Items: ',
+                                            style: CommonUtils.txSty_13B_Fb,
+                                          ),
+                                          Text(
+                                            '${widget.orderResult.noOfItems}',
+                                            style: CommonUtils.txSty_13O_F6,
+                                          ),
+                                        ],
+                                      ),
+                                    ],
+                                  ),
                                 ],
                               ),
                             ),
                           )
                         ],
                       ),
-                      const SizedBox(
-                        height: 5.0,
-                      ),
-                      Row(
-                        children: [
-                          // Container(
-                          //   margin: const EdgeInsets.only(left: 5.0),
-                          //   padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 7),
-                          //   decoration: BoxDecoration(
-                          //     borderRadius: BorderRadius.circular(10),
-                          //     color: statusBgColor,
-                          //   ),
-                          //   child: Row(
-                          //     mainAxisAlignment: MainAxisAlignment.center,
-                          //     children: [
-                          //       Text(
-                          //         widget.orderResult.statusName,
-                          //         style: TextStyle(
-                          //           fontSize: 11,
-                          //           color: statusColor,
-                          //           // Add other text styles as needed
-                          //         ),
-                          //       ),
-                          //     ],
-                          //   ),
-                          // ),
-                          const SizedBox(
-                            width: 10.0,
-                          ),
-                          Expanded(
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.end,
-                              children: [
-                                const Expanded(child: SizedBox()),
-                                Column(
-                                  crossAxisAlignment: CrossAxisAlignment.end,
-                                  children: [
-                                    Row(
-                                      children: [
-                                        const Text(
-                                          'No.of Items: ',
-                                          style: CommonUtils.txSty_13B_Fb,
-                                        ),
-                                        Text(
-                                          '${widget.orderResult.noOfItems}',
-                                          style: CommonUtils.txSty_13O_F6,
-                                        ),
-                                      ],
-                                    ),
-                                  ],
-                                )
-                              ],
-                            ),
-                          ),
-                        ],
-                      ),
+                      // const SizedBox(
+                      //   height: 5.0,
+                      // ),
+                      // Row(
+                      //   children: [
+                      //     const SizedBox(
+                      //       width: 10.0,
+                      //     ),
+                      //     Expanded(
+                      //       child: Row(
+                      //         mainAxisAlignment: MainAxisAlignment.end,
+                      //         children: [
+                      //           const Expanded(child: SizedBox()),
+                      //           Column(
+                      //             crossAxisAlignment: CrossAxisAlignment.end,
+                      //             children: [
+                      //               Row(
+                      //                 children: [
+                      //                   const Text(
+                      //                     'No.of Items: ',
+                      //                     style: CommonUtils.txSty_13B_Fb,
+                      //                   ),
+                      //                   Text(
+                      //                     '${widget.orderResult.noOfItems}',
+                      //                     style: CommonUtils.txSty_13O_F6,
+                      //                   ),
+                      //                 ],
+                      //               ),
+                      //             ],
+                      //           )
+                      //         ],
+                      //       ),
+                      //     ),
+                      //   ],
+                      // ),
                       const SizedBox(
                         height: 5.0,
                       ),
@@ -1031,7 +1032,6 @@ class _OrderCardState extends State<OrderCard> {
                                   style: TextStyle(
                                     fontSize: 11,
                                     color: statusColor,
-                                    // Add other text styles as needed
                                   ),
                                 ),
                               ],
@@ -1042,7 +1042,6 @@ class _OrderCardState extends State<OrderCard> {
                               alignment: Alignment.centerRight,
                               child: GestureDetector(
                                 onTap: () {
-                                  // Show confirmation dialog
                                   showRemarksBottomSheet(
                                       context, widget.orderResult.id);
                                 },

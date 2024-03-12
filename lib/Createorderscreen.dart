@@ -757,11 +757,13 @@ class _ProductListState extends State<Createorderscreen> {
                                                 Image.network(
                                                   productresp.itemImage!,
                                                   width: 85,
+                                                  height: 85,
                                                 )
                                               else
                                                 Image.asset(
                                                   'assets/srikargroups_logo.png',
                                                   width: 85,
+                                                  height: 85,
                                                 ),
                                     ],
                                           ),

@@ -164,12 +164,12 @@ class _OrderdetailsPageState extends State<Orderdetails> {
       }
     } catch (error) {
       CommonUtils.showCustomToastMessageLong('catch $error', context, 1, 4);
-      debugPrint('Error: $error');
+      debugPrint('catch: $error');
     }
   }
 
   Future<void> fetchorderproducts() async {
-    print('fetchorderproducts called');
+    print('fetchorderproducts called: $orderid');
     final response = await http.get(Uri.parse(
         'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetOrderDetailsById/$orderid'));
 
@@ -292,701 +292,634 @@ class _OrderdetailsPageState extends State<Orderdetails> {
           Container(
             padding: const EdgeInsets.only(left: 10.0, right: 10.0),
             child: Card(
-                elevation: 7,
-                child: Container(
-                    width: double.infinity,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(10),
-                      color: Colors.white,
+              elevation: 7,
+              child: Container(
+                width: double.infinity,
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
+                child: Column(
+                  children: [
+                    // Table
+                    Container(
+                      padding: const EdgeInsets.all(10),
+                      child: Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: [
+                          Column(
+                            mainAxisAlignment: MainAxisAlignment.start,
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Text(
+                                'Order ID',
+                                textAlign: TextAlign.start,
+                                style: CommonUtils.txSty_13B_Fb,
+                              ),
+                              const SizedBox(
+                                height: 2.0,
+                              ),
+                              Text(
+                                widget.ordernumber,
+                                style: const TextStyle(
+                                    fontFamily: 'Roboto',
+                                    fontSize: 13,
+                                    color: Color(0xFFe58338),
+                                    fontWeight: FontWeight.w600),
+                              ),
+                            ],
+                          ),
+                          widget.statusBar,
+                        ],
+                      ),
                     ),
-                    child: Column(children: [
-                      // Table
-                      Container(
-                        padding: const EdgeInsets.all(10),
-                        child: Row(
+                    Column(
+                      crossAxisAlignment: CrossAxisAlignment.start,
+                      children: <Widget>[
+                        // row one
+
+                        Container(
+                          width: double.infinity,
+                          height: 0.2,
+                          color: Colors.grey,
+                        ),
+
+                        // row two
+                        Row(
                           mainAxisAlignment:
                           MainAxisAlignment.spaceBetween,
-                          children: [
-                            Column(
-                              mainAxisAlignment: MainAxisAlignment.start,
-                              crossAxisAlignment:
-                              CrossAxisAlignment.start,
-                              children: [
-                                const Text(
-                                  'Order ID',
-                                  textAlign: TextAlign.start,
-                                  style: CommonUtils.txSty_13B_Fb,
-                                ),
-                                const SizedBox(
-                                  height: 2.0,
-                                ),
-                                Text(
-                                  widget.ordernumber,
-                                  style: const TextStyle(
-                                      fontFamily: 'Roboto',
-                                      fontSize: 13,
-                                      color: Color(0xFFe58338),
-                                      fontWeight: FontWeight.w600),
-                                ),
-                              ],
-                            ),
-                            widget.statusBar,
-                          ],
-                        ),
-                      ),
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: <Widget>[
-                          // row one
-
-                          Container(
-                            width: double.infinity,
-                            height: 0.2,
-                            color: Colors.grey,
-                          ),
-
-                          // row two
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'OrderDate',
-                                        style: CommonUtils.txSty_13B_Fb,
-                                      ),
-                                      const SizedBox(
-                                        height: 2.0,
-                                      ),
-                                      Text(
-                                        widget.orderdate,
-                                        style: TextStyle(
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.bold,
-                                          color: HexColor('#e58338'),
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 0.2,
-                                height: 60,
-                                color: Colors.grey,
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Total Amount',
-                                        style: CommonUtils.txSty_13B_Fb,
-                                      ),
-                                      const SizedBox(
-                                        height: 2.0,
-                                      ),
-                                      Text(
-                                        '₹${formatNumber(widget.totalCostWithGST)}',
-                                        style: TextStyle(
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.bold,
-                                          color: HexColor('#e58338'),
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-                          Container(
-                            width: double.infinity,
-                            height: 0.2,
-                            color: Colors.grey,
-                          ),
-                          Row(
-                            mainAxisAlignment:
-                            MainAxisAlignment.spaceBetween,
-                            children: <Widget>[
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Booking Place',
-                                        style: CommonUtils.txSty_13B_Fb,
-                                      ),
-                                      const SizedBox(
-                                        height: 2.0,
-                                      ),
-                                      Text(
-                                        widget.bookingplace,
-                                        style: TextStyle(
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.bold,
-                                          color: HexColor('#e58338'),
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                              Container(
-                                width: 0.2,
-                                height: 60,
-                                color: Colors.grey,
-                              ),
-                              Expanded(
-                                child: Padding(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 10),
-                                  child: Column(
-                                    crossAxisAlignment:
-                                    CrossAxisAlignment.start,
-                                    children: [
-                                      const Text(
-                                        'Transport Name',
-                                        style: CommonUtils.txSty_13B_Fb,
-                                      ),
-                                      const SizedBox(
-                                        height: 2.0,
-                                      ),
-                                      Text(
-                                        widget.transportmode,
-                                        style: TextStyle(
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.bold,
-                                          color: HexColor('#e58338'),
-                                          fontSize: 13,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
-                          ),
-
-                          Container(
-                            width: double.infinity,
-                            height: 0.2,
-                            color: Colors.grey,
-                          ),
-                          if (widget.whsName != null)
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 12, vertical: 10),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          'Warehouse',
-                                          style: CommonUtils.txSty_13B_Fb,
-                                        ),
-                                        const SizedBox(
-                                          height: 2.0,
-                                        ),
-                                        Text(
-                                          widget.whsName!,
-                                          style: TextStyle(
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.bold,
-                                            color: HexColor('#e58338'),
-                                            fontSize: 13,
-                                          ),
-                                        ),
-                                      ],
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'OrderDate',
+                                      style: CommonUtils.txSty_13B_Fb,
                                     ),
-                                  ),
-                                ),
-                                // Container(
-                                //   width: 0.2,
-                                //   height: 60,
-                                //   color: Colors.grey,
-                                // ),
-                                // Expanded(
-                                //   child: Padding(
-                                //     padding: const EdgeInsets.symmetric(
-                                //         horizontal: 12, vertical: 10),
-                                //     child: Column(
-                                //       crossAxisAlignment:
-                                //           CrossAxisAlignment.start,
-                                //       children: [
-                                //         const Text(
-                                //           'ttryty6h',
-                                //           style: CommonUtils.txSty_13B_Fb,
-                                //         ),
-                                //         const SizedBox(
-                                //           height: 2.0,
-                                //         ),
-                                //         Text(
-                                //           '₹${formatNumber(widget.totalCostWithGST)}',
-                                //           style: TextStyle(
-                                //             fontFamily: 'Roboto',
-                                //             fontWeight: FontWeight.bold,
-                                //             color: HexColor('#e58338'),
-                                //             fontSize: 13,
-                                //           ),
-                                //         ),
-                                //       ],
-                                //     ),
-                                //   ),
-                                // ),
-                              ],
-                            ),
-
-                          Visibility(
-                            visible: Remarks != null && Remarks != "",
-                            child: Column(
-                              children: [
-                                Container(
-                                  width: double.infinity,
-                                  height: 0.2,
-                                  color: Colors.grey,
-                                ),
-                                Row(
-                                  mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
-                                  children: <Widget>[
-                                    Expanded(
-                                      child: Padding(
-                                        padding:
-                                        const EdgeInsets.symmetric(
-                                            horizontal: 12,
-                                            vertical: 10),
-                                        // Check if remarks are not null or empty
-                                        child: Column(
-                                          crossAxisAlignment:
-                                          CrossAxisAlignment.start,
-                                          children: [
-                                            const Text(
-                                              'Remarks',
-                                              style: CommonUtils
-                                                  .txSty_13B_Fb,
-                                            ),
-                                            const SizedBox(
-                                              height: 2.0,
-                                            ),
-                                            Text(
-                                              '$Remarks',
-                                              style: TextStyle(
-                                                fontFamily: 'Roboto',
-                                                fontWeight:
-                                                FontWeight.bold,
-                                                color:
-                                                HexColor('#e58338'),
-                                                fontSize: 13,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
+                                    const SizedBox(
+                                      height: 2.0,
+                                    ),
+                                    Text(
+                                      widget.orderdate,
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.bold,
+                                        color: HexColor('#e58338'),
+                                        fontSize: 13,
                                       ),
                                     ),
                                   ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-
-                          // Container(
-                          //   width: double.infinity,
-                          //   height: 0.2,
-                          //   color: Colors.grey,
-                          // ),
-                          // Row(
-                          //   mainAxisAlignment:
-                          //       MainAxisAlignment.spaceBetween,
-                          //   children: <Widget>[
-                          //     Expanded(
-                          //       child: Padding(
-                          //         padding:
-                          //             const EdgeInsets.symmetric(
-                          //                 horizontal: 12,
-                          //                 vertical: 10),
-                          //         child:
-                          //         Column(
-                          //           crossAxisAlignment:
-                          //               CrossAxisAlignment.start,
-                          //           children: [
-                          //             const Text(
-                          //               'LR Number',
-                          //               style: CommonUtils
-                          //                   .txSty_13B_Fb,
-                          //             ),
-                          //             Text(
-                          //               '${widget.lrnumber}',
-                          //               style: TextStyle(
-                          //                 fontFamily: 'Roboto',
-                          //                 fontWeight:
-                          //                     FontWeight.bold,
-                          //                 color:
-                          //                     HexColor('#e58338'),
-                          //                 fontSize: 13,
-                          //               ),
-                          //             ),
-                          //           ],
-                          //         ),
-                          //       ),
-                          //     ),
-                          //     Container(
-                          //       width: 0.2,
-                          //       height: 60,
-                          //       color: Colors.grey,
-                          //     ),
-                          //     Expanded(
-                          //       child: Padding(
-                          //         padding:
-                          //             const EdgeInsets.symmetric(
-                          //                 horizontal: 12,
-                          //                 vertical: 10),
-                          //         child: Column(
-                          //           crossAxisAlignment:
-                          //               CrossAxisAlignment.start,
-                          //           children: [
-                          //             const Text(
-                          //               'LR Date',
-                          //               style: CommonUtils
-                          //                   .txSty_13B_Fb,
-                          //             ),
-                          //             Text(
-                          //               '',
-                          //               style: TextStyle(
-                          //                 fontFamily: 'Roboto',
-                          //                 fontWeight:
-                          //                     FontWeight.bold,
-                          //                 color:
-                          //                     HexColor('#e58338'),
-                          //                 fontSize: 13,
-                          //               ),
-                          //             ),
-                          //           ],
-                          //         ),
-                          //       ),
-                          //     ),
-                          //   ],
-                          // ),
-
-                          Container(
-                            width: double.infinity,
-                            height: 0.2,
-                            color: Colors.grey,
-                          ),
-
-                          Visibility(
-                            visible: Statusname ==
-                                'Pending', // Set the visibility based on statustypeid
-                            child: Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: <Widget>[
-                                Expanded(
-                                  child: Padding(
-                                    padding: const EdgeInsets.symmetric(
-                                      horizontal: 12,
-                                      vertical: 10,
+                            Container(
+                              width: 0.2,
+                              height: 60,
+                              color: Colors.grey,
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Total Amount',
+                                      style: CommonUtils.txSty_13B_Fb,
                                     ),
-                                    child: Column(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.start,
-                                      children: [
-                                        const Text(
-                                          'You can cancel this order before it got Approved ',
-                                          style: CommonUtils.txSty_13B_Fb,
-                                        ),
-                                        Text(
-                                          '',
-                                          style: TextStyle(
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.bold,
-                                            color: HexColor('#e58338'),
-                                            fontSize: 13,
-                                          ),
-                                        ),
-                                      ],
+                                    const SizedBox(
+                                      height: 2.0,
                                     ),
+                                    Text(
+                                      '₹${formatNumber(widget.totalCostWithGST)}',
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.bold,
+                                        color: HexColor('#e58338'),
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+                        Container(
+                          width: double.infinity,
+                          height: 0.2,
+                          color: Colors.grey,
+                        ),
+                        Row(
+                          mainAxisAlignment:
+                          MainAxisAlignment.spaceBetween,
+                          children: <Widget>[
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Booking Place',
+                                      style: CommonUtils.txSty_13B_Fb,
+                                    ),
+                                    const SizedBox(
+                                      height: 2.0,
+                                    ),
+                                    Text(
+                                      widget.bookingplace,
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.bold,
+                                        color: HexColor('#e58338'),
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                            Container(
+                              width: 0.2,
+                              height: 60,
+                              color: Colors.grey,
+                            ),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Transport Name',
+                                      style: CommonUtils.txSty_13B_Fb,
+                                    ),
+                                    const SizedBox(
+                                      height: 2.0,
+                                    ),
+                                    Text(
+                                      widget.transportmode,
+                                      style: TextStyle(
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.bold,
+                                        color: HexColor('#e58338'),
+                                        fontSize: 13,
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ],
+                        ),
+
+                        Container(
+                          width: double.infinity,
+                          height: 0.2,
+                          color: Colors.grey,
+                        ),
+                        if (widget.whsName != null)
+                          Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 12, vertical: 10),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'Warehouse',
+                                        style: CommonUtils.txSty_13B_Fb,
+                                      ),
+                                      const SizedBox(
+                                        height: 2.0,
+                                      ),
+                                      Text(
+                                        widget.whsName!,
+                                        style: TextStyle(
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
+                                          color: HexColor('#e58338'),
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                GestureDetector(
-                                  onTap: () {
-                                    // Show confirmation dialog
-                                    showDialog(
-                                      context: context,
-                                      builder: (BuildContext context) {
-                                        return AlertDialog(
-                                          title:
-                                          const Text("Confirmation"),
-                                          content: const Text(
-                                              "Are you sure you want to cancel this order?"),
-                                          actions: [
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context)
-                                                    .pop(); // Close the dialog
-                                              },
-                                              child: const Text("Cancel"),
+                              ),
+                              // Container(
+                              //   width: 0.2,
+                              //   height: 60,
+                              //   color: Colors.grey,
+                              // ),
+                              // Expanded(
+                              //   child: Padding(
+                              //     padding: const EdgeInsets.symmetric(
+                              //         horizontal: 12, vertical: 10),
+                              //     child: Column(
+                              //       crossAxisAlignment:
+                              //           CrossAxisAlignment.start,
+                              //       children: [
+                              //         const Text(
+                              //           'ttryty6h',
+                              //           style: CommonUtils.txSty_13B_Fb,
+                              //         ),
+                              //         const SizedBox(
+                              //           height: 2.0,
+                              //         ),
+                              //         Text(
+                              //           '₹${formatNumber(widget.totalCostWithGST)}',
+                              //           style: TextStyle(
+                              //             fontFamily: 'Roboto',
+                              //             fontWeight: FontWeight.bold,
+                              //             color: HexColor('#e58338'),
+                              //             fontSize: 13,
+                              //           ),
+                              //         ),
+                              //       ],
+                              //     ),
+                              //   ),
+                              // ),
+                            ],
+                          ),
+
+                        Visibility(
+                          visible: Remarks != null && Remarks != "",
+                          child: Column(
+                            children: [
+                              Container(
+                                width: double.infinity,
+                                height: 0.2,
+                                color: Colors.grey,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 10),
+                                      // Check if remarks are not null or empty
+                                      child: Column(
+                                        crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Remarks',
+                                            style:
+                                            CommonUtils.txSty_13B_Fb,
+                                          ),
+                                          const SizedBox(
+                                            height: 2.0,
+                                          ),
+                                          Text(
+                                            '$Remarks',
+                                            style: TextStyle(
+                                              fontFamily: 'Roboto',
+                                              fontWeight: FontWeight.bold,
+                                              color: HexColor('#e58338'),
+                                              fontSize: 13,
                                             ),
-                                            TextButton(
-                                              onPressed: () {
-                                                Navigator.of(context)
-                                                    .pop(); // Close the dialog
-                                                // Call function to cancel order
-                                                cancelOrder();
-                                              },
-                                              child: const Text("OK"),
-                                            ),
-                                          ],
-                                        );
-                                      },
-                                    );
-                                  },
-                                  child: Container(
-                                    decoration: BoxDecoration(
-                                      color: HexColor(
-                                          '#ffecee'), // Background color of the card
-                                      borderRadius: BorderRadius.circular(
-                                          20), // Adjust the radius as needed
+                                          ),
+                                        ],
+                                      ),
                                     ),
-                                    padding: const EdgeInsets.symmetric(
-                                        horizontal: 10,
-                                        vertical:
-                                        5), // Adjust padding as needed
-                                    child: Row(
-                                      children: [
-                                        SvgPicture.asset(
-                                          'assets/crosscircle.svg',
-                                          height: 18,
-                                          width: 18,
-                                          fit: BoxFit.fitWidth,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+
+                        // Container(
+                        //   width: double.infinity,
+                        //   height: 0.2,
+                        //   color: Colors.grey,
+                        // ),
+                        // Row(
+                        //   mainAxisAlignment:
+                        //       MainAxisAlignment.spaceBetween,
+                        //   children: <Widget>[
+                        //     Expanded(
+                        //       child: Padding(
+                        //         padding:
+                        //             const EdgeInsets.symmetric(
+                        //                 horizontal: 12,
+                        //                 vertical: 10),
+                        //         child:
+                        //         Column(
+                        //           crossAxisAlignment:
+                        //               CrossAxisAlignment.start,
+                        //           children: [
+                        //             const Text(
+                        //               'LR Number',
+                        //               style: CommonUtils
+                        //                   .txSty_13B_Fb,
+                        //             ),
+                        //             Text(
+                        //               '${widget.lrnumber}',
+                        //               style: TextStyle(
+                        //                 fontFamily: 'Roboto',
+                        //                 fontWeight:
+                        //                     FontWeight.bold,
+                        //                 color:
+                        //                     HexColor('#e58338'),
+                        //                 fontSize: 13,
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       ),
+                        //     ),
+                        //     Container(
+                        //       width: 0.2,
+                        //       height: 60,
+                        //       color: Colors.grey,
+                        //     ),
+                        //     Expanded(
+                        //       child: Padding(
+                        //         padding:
+                        //             const EdgeInsets.symmetric(
+                        //                 horizontal: 12,
+                        //                 vertical: 10),
+                        //         child: Column(
+                        //           crossAxisAlignment:
+                        //               CrossAxisAlignment.start,
+                        //           children: [
+                        //             const Text(
+                        //               'LR Date',
+                        //               style: CommonUtils
+                        //                   .txSty_13B_Fb,
+                        //             ),
+                        //             Text(
+                        //               '',
+                        //               style: TextStyle(
+                        //                 fontFamily: 'Roboto',
+                        //                 fontWeight:
+                        //                     FontWeight.bold,
+                        //                 color:
+                        //                     HexColor('#e58338'),
+                        //                 fontSize: 13,
+                        //               ),
+                        //             ),
+                        //           ],
+                        //         ),
+                        //       ),
+                        //     ),
+                        //   ],
+                        // ),
+
+                        Container(
+                          width: double.infinity,
+                          height: 0.2,
+                          color: Colors.grey,
+                        ),
+
+                        Visibility(
+                          visible: Statusname ==
+                              'Pending', // Set the visibility based on statustypeid
+                          child: Row(
+                            mainAxisAlignment:
+                            MainAxisAlignment.spaceBetween,
+                            children: <Widget>[
+                              Expanded(
+                                child: Padding(
+                                  padding: const EdgeInsets.symmetric(
+                                    horizontal: 12,
+                                    vertical: 10,
+                                  ),
+                                  child: Column(
+                                    crossAxisAlignment:
+                                    CrossAxisAlignment.start,
+                                    children: [
+                                      const Text(
+                                        'You can cancel this order before it got Approved ',
+                                        style: CommonUtils.txSty_13B_Fb,
+                                      ),
+                                      Text(
+                                        '',
+                                        style: TextStyle(
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
+                                          color: HexColor('#e58338'),
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ),
+                              GestureDetector(
+                                onTap: () {
+                                  // Show confirmation dialog
+                                  showDialog(
+                                    context: context,
+                                    builder: (BuildContext context) {
+                                      return AlertDialog(
+                                        title: const Text("Confirmation"),
+                                        content: const Text(
+                                            "Are you sure you want to cancel this order?"),
+                                        actions: [
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop(); // Close the dialog
+                                            },
+                                            child: const Text("Cancel"),
+                                          ),
+                                          TextButton(
+                                            onPressed: () {
+                                              Navigator.of(context)
+                                                  .pop(); // Close the dialog
+                                              // Call function to cancel order
+                                              cancelOrder();
+                                            },
+                                            child: const Text("OK"),
+                                          ),
+                                        ],
+                                      );
+                                    },
+                                  );
+                                },
+                                child: Container(
+                                  decoration: BoxDecoration(
+                                    color: HexColor(
+                                        '#ffecee'), // Background color of the card
+                                    borderRadius: BorderRadius.circular(
+                                        20), // Adjust the radius as needed
+                                  ),
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 10,
+                                      vertical:
+                                      5), // Adjust padding as needed
+                                  child: Row(
+                                    children: [
+                                      SvgPicture.asset(
+                                        'assets/crosscircle.svg',
+                                        height: 18,
+                                        width: 18,
+                                        fit: BoxFit.fitWidth,
+                                        color: HexColor('#de4554'),
+                                      ),
+                                      const SizedBox(
+                                          width:
+                                          8.0), // Add some spacing between icon and text
+                                      Text(
+                                        'Cancel',
+                                        style: TextStyle(
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
                                           color: HexColor('#de4554'),
+                                          fontSize: 13,
                                         ),
-                                        const SizedBox(
-                                            width:
-                                            8.0), // Add some spacing between icon and text
-                                        Text(
-                                          'Cancel',
-                                          style: TextStyle(
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.bold,
-                                            color: HexColor('#de4554'),
-                                            fontSize: 13,
-                                          ),
-                                        ),
-                                      ],
-                                    ),
+                                      ),
+                                    ],
                                   ),
                                 ),
-                                const SizedBox(width: 10),
-                              ],
-                            ),
+                              ),
+                              const SizedBox(width: 10),
+                            ],
                           ),
-                        ],
-                      ),
-
-                      // Table(
-                      //   border: TableBorder.all(
-                      //     width: 1,
-                      //     color: Colors.grey.shade500,
-                      //   ),
-                      //   children: [
-                      //     ...List.generate(3, (index) {
-                      //       return TableRow(
-                      //         children: [
-                      //           TableCell(
-                      //             child: Container(
-                      //               padding: const EdgeInsets.all(10),
-                      //               child: Column(
-                      //                 crossAxisAlignment:
-                      //                     CrossAxisAlignment.start,
-                      //                 children: <Widget>[
-                      //                   Text(
-                      //                     tableCellTitles[0][index],
-                      //                     //   style: _titleTextStyle,
-                      //                   ),
-                      //                   SizedBox(height: 5),
-                      //                   Text(
-                      //                     tableCellValues[0][index]
-                      //                         .toString(),
-                      //                     style: TextStyle(
-                      //                         fontFamily: 'Roboto',
-                      //                         fontSize: 13,
-                      //                         color: Color(0xFFe58338),
-                      //                         fontWeight: FontWeight.w600),
-                      //                     //style: _dataTextStyle,
-                      //                   )
-                      //                 ],
-                      //               ),
-                      //             ),
-                      //           ),
-                      //           TableCell(
-                      //             child: Container(
-                      //               padding: EdgeInsets.all(10),
-                      //               child: Column(
-                      //                 crossAxisAlignment:
-                      //                     CrossAxisAlignment.start,
-                      //                 children: <Widget>[
-                      //                   Text(
-                      //                     tableCellTitles[1][index],
-                      //                   ),
-                      //                   SizedBox(height: 5),
-                      //                   Text(
-                      //                     tableCellValues[1][index]
-                      //                         .toString(),
-                      //                     style: TextStyle(
-                      //                         fontFamily: 'Roboto',
-                      //                         fontSize: 13,
-                      //                         color: Color(0xFFe58338),
-                      //                         fontWeight: FontWeight.w600),
-                      //                   )
-                      //                 ],
-                      //               ),
-                      //             ),
-                      //           ),
-                      //         ],
-                      //       );
-                      //     })
-                      //   ],
-                      // ),
-                    ]))),
+                        ),
+                      ],
+                    ),
+                  ],
+                ),
+              ),
+            ),
           ),
 
           const SizedBox(
             height: 5.0,
           ),
 
-          //_buildBody(context),
           CustomExpansionTile(
             title: const Text(
               "Item Details",
-              style: TextStyle(
-                  color: Colors.white), // Adjust text color as needed
+              style: TextStyle(color: Colors.white),
               maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
-            content: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              children: [
-                Container(
-                  width: screenWidth,
-                  padding: const EdgeInsets.only(left: 10.0, right: 10.0),
-                  //   height: screenHeight / 2,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    //        color: Colors.white,
-                  ),
-                  child: ListView.builder(
-                    shrinkWrap: true,
-                    physics: const PageScrollPhysics(),
-                    itemCount: orderItemsList.length,
-                    itemBuilder: (context, index) {
-                      return GestureDetector(
-                        onTap: () {},
-                        child: Container(
-                          margin: const EdgeInsets.only(bottom: 10),
-                          color: Colors.transparent,
-                          child: Card(
-                            elevation: 5,
-                            color: Colors.white,
-                            child: Container(
-                              padding: const EdgeInsets.all(10),
-                              //   width: double.infinity,
-                              width: MediaQuery.of(context).size.width,
-                              decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(10),
-                                  color: Colors.white),
+            content: Container(
+              decoration: BoxDecoration(
+                borderRadius: BorderRadius.circular(10),
+                color: Colors.transparent,
+              ),
+              child: Column(
+                crossAxisAlignment: CrossAxisAlignment.start,
+                children: [
+                  Container(
+                    width: screenWidth,
+                    padding:
+                    const EdgeInsets.only(left: 10.0, right: 10.0),
+                    decoration: BoxDecoration(
+                      borderRadius: BorderRadius.circular(10),
+                    ),
+                    child: ListView.builder(
+                      shrinkWrap: true,
+                      physics: const PageScrollPhysics(),
+                      itemCount: orderItemsList.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {},
+                          child: Container(
+                            margin: const EdgeInsets.only(
+                                top: 5, bottom: 2.5),
+                            color: Colors.transparent,
+                            child: Card(
+                              elevation: 5,
+                              color: Colors.white,
+                              child: Container(
+                                padding: const EdgeInsets.all(10),
+                                //   width: double.infinity,
+                                width: MediaQuery.of(context).size.width,
+                                decoration: BoxDecoration(
+                                    borderRadius:
+                                    BorderRadius.circular(10),
+                                    color: Colors.white),
 
-                              child: Column(
-                                crossAxisAlignment:
-                                CrossAxisAlignment.start,
-                                children: [
-                                  Container(
-                                    // height: 70,
-                                    // width: double.infinity,
-                                    // margin: const EdgeInsets.only(bottom: 12),
-                                    width:
-                                    MediaQuery.of(context).size.width,
-                                    decoration: BoxDecoration(
-                                      borderRadius:
-                                      BorderRadius.circular(10),
-                                    ),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        // starting icon of card
-
-                                        // beside info
-                                        SizedBox(
-                                          //height: 90,
-                                          // width: ,
-                                          width: MediaQuery.of(context)
-                                              .size
-                                              .width /
-                                              1.3,
-                                          child: Container(
-                                            padding:
-                                            const EdgeInsets.only(
-                                                left: 0,
-                                                top: 0,
-                                                bottom: 0),
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment
-                                                  .start,
-                                              mainAxisAlignment:
-                                              MainAxisAlignment
-                                                  .spaceBetween,
-                                              children: [
-                                                Text(
-                                                  orderItemsList[index]
-                                                      .itemName,
-                                                  style: const TextStyle(
-                                                      fontFamily:
-                                                      'Roboto',
-                                                      fontSize: 14,
-                                                      color: Colors.black,
-                                                      fontWeight:
-                                                      FontWeight
-                                                          .bold),
-                                                  softWrap: true,
-                                                  maxLines: 2,
-                                                  overflow: TextOverflow
-                                                      .ellipsis,
-                                                ),
-                                                const SizedBox(
-                                                  height: 5.0,
-                                                ),
-                                                Row(
-                                                  mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceAround,
-                                                  children: [
-                                                    Container(
-                                                      child: Row(
+                                child: Column(
+                                  crossAxisAlignment:
+                                  CrossAxisAlignment.start,
+                                  children: [
+                                    Container(
+                                      // height: 70,
+                                      // width: double.infinity,
+                                      // margin: const EdgeInsets.only(bottom: 12),
+                                      width: MediaQuery.of(context)
+                                          .size
+                                          .width,
+                                      decoration: BoxDecoration(
+                                        borderRadius:
+                                        BorderRadius.circular(10),
+                                      ),
+                                      child: Row(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment
+                                            .spaceBetween,
+                                        children: [
+                                          SizedBox(
+                                            width: MediaQuery.of(context)
+                                                .size
+                                                .width /
+                                                1.3,
+                                            child: Container(
+                                              padding:
+                                              const EdgeInsets.only(
+                                                  left: 0,
+                                                  top: 0,
+                                                  bottom: 0),
+                                              child: Column(
+                                                crossAxisAlignment:
+                                                CrossAxisAlignment
+                                                    .start,
+                                                mainAxisAlignment:
+                                                MainAxisAlignment
+                                                    .spaceBetween,
+                                                children: [
+                                                  Text(
+                                                    orderItemsList[index]
+                                                        .itemName,
+                                                    style: const TextStyle(
+                                                        fontFamily:
+                                                        'Roboto',
+                                                        fontSize: 14,
+                                                        color:
+                                                        Colors.black,
+                                                        fontWeight:
+                                                        FontWeight
+                                                            .bold),
+                                                    softWrap: true,
+                                                    maxLines: 2,
+                                                    overflow: TextOverflow
+                                                        .ellipsis,
+                                                  ),
+                                                  const SizedBox(
+                                                    height: 5.0,
+                                                  ),
+                                                  Row(
+                                                    mainAxisAlignment:
+                                                    MainAxisAlignment
+                                                        .spaceAround,
+                                                    children: [
+                                                      Row(
                                                         children: [
                                                           Text(
                                                             'Qty: ${orderItemsList[index].orderQty}',
@@ -1003,11 +936,6 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                                   .w400,
                                                             ),
                                                           ),
-                                                          // Text(
-                                                          //   orderItemsList[index].orderQty.toString(),
-                                                          //   style: CommonUtils.Mediumtext_12,
-                                                          // ),
-
                                                           Text(
                                                             ' (${orderItemsList[index].orderQty} ${orderItemsList[index].salUnitMsr} = ${orderItemsList[index].orderQty * orderItemsList[index].numInSale}  Nos)', // Display totalSumForProduct for the single product
                                                             style: CommonUtils
@@ -1015,151 +943,131 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                           ),
                                                         ],
                                                       ),
-                                                    ),
-                                                    //  Text(
-                                                    //   'Qty: ${orderItemsList[index].orderQty}',
-                                                    //   style: TextStyle(
-                                                    //     fontFamily: 'Roboto',
-                                                    //     fontSize: 14,
-                                                    //     color: Colors.black,
-                                                    //     fontWeight: FontWeight.w400,
-                                                    //   ),
-                                                    // ),
-                                                    // // Text(
-                                                    // //   orderItemsList[index].orderQty.toString(),
-                                                    // //   style: CommonUtils.Mediumtext_12,
-                                                    // // ),
-                                                    //
-                                                    // Text(
-                                                    //   ' (${orderItemsList[index].orderQty} ${orderItemsList[index].salUnitMsr} = ${orderItemsList[index].orderQty * orderItemsList[index].numInSale!}  Nos)', // Display totalSumForProduct for the single product
-                                                    //   style: CommonUtils.Mediumtext_o_14,
-                                                    // ),
-                                                    Expanded(
-                                                      child:
-                                                      Container(), // This Expanded widget ensures that the additional text is positioned at the end of the row
-                                                    ),
-                                                    // SizedBox(width: 20.0,),
-
-                                                    Text(
-                                                      '₹${formatNumber(orderItemsList[index].totalPrice)}',
-                                                      style: CommonUtils
-                                                          .Mediumtext_o_14,
-                                                    ),
-                                                  ],
-                                                ),
-                                              ],
+                                                      Expanded(
+                                                        child:
+                                                        Container(),
+                                                      ),
+                                                      Text(
+                                                        '₹${formatNumber(orderItemsList[index].totalPrice)}',
+                                                        style: CommonUtils
+                                                            .Mediumtext_o_14,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                ],
+                                              ),
                                             ),
-                                          ),
-                                        )
-                                      ],
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+                  ),
+                  const SizedBox(
+                    height: 15.0,
+                  ),
+                  Container(
+                    width: MediaQuery.of(context).size.width,
+                    padding: const EdgeInsets.only(
+                        bottom: 5, left: 10.0, right: 10.0),
+                    child: IntrinsicHeight(
+                      child: Card(
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(10.0),
+                        ),
+                        child: Container(
+                          padding: const EdgeInsets.all(10.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(10.0),
+                            color: Colors.white,
+                          ),
+                          width: MediaQuery.of(context).size.width,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'Sub Total',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                  Text(
+                                    '₹${formatNumber(orderDetails[0].totalCost)}',
+                                    style: const TextStyle(
+                                      color: Color(0xFFe78337),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0,
                                     ),
                                   ),
                                 ],
                               ),
-                            ),
+                              const SizedBox(height: 8.0),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'GST',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                  Text(
+                                    '₹${formatNumber(orderDetails[0].gstCost)}',
+                                    style: const TextStyle(
+                                      color: Color(0xFFe78337),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                              const SizedBox(height: 8.0),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  const Text(
+                                    'Total Amount',
+                                    style: TextStyle(
+                                      color: Colors.black,
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                  Text(
+                                    '₹${formatNumber(orderDetails[0].totalCostWithGst)}',
+                                    style: const TextStyle(
+                                      color: Color(0xFFe78337),
+                                      fontWeight: FontWeight.bold,
+                                      fontSize: 14.0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-                const SizedBox(
-                  height: 5.0,
-                ),
-                Container(
-                  width: MediaQuery.of(context).size.width,
-                  padding: const EdgeInsets.only(
-                      top: 5.0, left: 10.0, right: 10.0),
-                  child: IntrinsicHeight(
-                    child: Card(
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(5.0),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(10.0),
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(5.0),
-                          color: Colors.white,
-                        ),
-                        width: MediaQuery.of(context).size.width,
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'Sub Total',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.0,
-                                  ),
-                                ),
-                                Text(
-                                  '₹${formatNumber(orderDetails[0].totalCost)}',
-                                  style: const TextStyle(
-                                    color: Color(0xFFe78337),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8.0),
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'GST',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.0,
-                                  ),
-                                ),
-                                Text(
-                                  '₹${formatNumber(orderDetails[0].gstCost)}',
-                                  style: const TextStyle(
-                                    color: Color(0xFFe78337),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(height: 8.0),
-                            Row(
-                              mainAxisAlignment:
-                              MainAxisAlignment.spaceBetween,
-                              children: [
-                                const Text(
-                                  'Total Amount',
-                                  style: TextStyle(
-                                    color: Colors.black,
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.0,
-                                  ),
-                                ),
-                                Text(
-                                  '₹${formatNumber(orderDetails[0].totalCostWithGst)}',
-                                  style: const TextStyle(
-                                    color: Color(0xFFe78337),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.0,
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
+                ],
+              ),
             ),
             initiallyExpanded: false,
           ),
@@ -1173,7 +1081,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
               title: const Text(
                 "Invoice Details",
                 style: TextStyle(
-                    color: Colors.white), // Adjust text color as needed
+                    color: Colors.white),
                 overflow: TextOverflow.ellipsis,
               ),
               content: Column(
@@ -1185,10 +1093,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                     width: screenWidth,
                     padding: const EdgeInsets.only(
                         left: 0.0, right: 0.0),
-                    //   height: screenHeight / 2,
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(10),
-                      //        color: Colors.white,
                     ),
                     child: ListView.builder(
                       shrinkWrap: true,
@@ -1214,7 +1120,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                     ? Colors.green
                                     : Colors.redAccent,
                                 width:
-                                2.0, // Set your desired border width here
+                                2.0,
                               ),
                               borderRadius:
                               BorderRadius.circular(10.0),
