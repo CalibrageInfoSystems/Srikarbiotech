@@ -248,6 +248,7 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                               context,
                               MaterialPageRoute(
                                 builder: (context) => WareHouseScreen(
+                                    from: 'CreateOrder',
                                     cardName: filteredDealers[index].cardName,
                                     cardCode: filteredDealers[index].cardCode,
                                     address: filteredDealers[index].fullAddress,
@@ -302,7 +303,8 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                             Navigator.push(
                               context,
                               MaterialPageRoute(
-                                builder: (context) => CreateReturnorderscreen(
+                                builder: (context) => WareHouseScreen(
+                                    from: 'CreatereturnOrder',
                                     cardName: filteredDealers[index].cardName,
                                     cardCode: filteredDealers[index].cardCode,
                                     address: filteredDealers[index].fullAddress,

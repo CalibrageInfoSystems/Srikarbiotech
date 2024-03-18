@@ -18,6 +18,7 @@ import 'orderdetails_model.dart';
 class Orderdetails extends StatefulWidget {
   final int orderid;
   final String? whsName;
+  final String? whscode;
   final String orderdate;
   final double totalCostWithGST;
   final String bookingplace;
@@ -36,6 +37,7 @@ class Orderdetails extends StatefulWidget {
   const Orderdetails({
     super.key,
     required this.whsName,
+    required this.whscode,
     required this.orderid,
     required this.orderdate,
     required this.totalCostWithGST,
@@ -490,6 +492,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                           height: 0.2,
                           color: Colors.grey,
                         ),
+
                         if (widget.whsName != null)
                           Row(
                             mainAxisAlignment:
@@ -510,52 +513,32 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                       const SizedBox(
                                         height: 2.0,
                                       ),
-                                      Text(
-                                        widget.whsName!,
-                                        style: TextStyle(
-                                          fontFamily: 'Roboto',
-                                          fontWeight: FontWeight.bold,
-                                          color: HexColor('#e58338'),
-                                          fontSize: 13,
-                                        ),
+                                      Row(
+                                        children: [
+                                          Text(
+                                            widget.whsName!,
+                                            style: TextStyle(
+                                              fontFamily: 'Roboto',
+                                              fontWeight: FontWeight.bold,
+                                              color: HexColor('#e58338'),
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                          Text(
+                                            ' (${widget.whscode})',
+                                            style: TextStyle(
+                                              fontFamily: 'Roboto',
+                                              fontWeight: FontWeight.bold,
+                                              color: HexColor('#e58338'),
+                                              fontSize: 13,
+                                            ),
+                                          ),
+                                        ],
                                       ),
                                     ],
                                   ),
                                 ),
                               ),
-                              // Container(
-                              //   width: 0.2,
-                              //   height: 60,
-                              //   color: Colors.grey,
-                              // ),
-                              // Expanded(
-                              //   child: Padding(
-                              //     padding: const EdgeInsets.symmetric(
-                              //         horizontal: 12, vertical: 10),
-                              //     child: Column(
-                              //       crossAxisAlignment:
-                              //           CrossAxisAlignment.start,
-                              //       children: [
-                              //         const Text(
-                              //           'ttryty6h',
-                              //           style: CommonUtils.txSty_13B_Fb,
-                              //         ),
-                              //         const SizedBox(
-                              //           height: 2.0,
-                              //         ),
-                              //         Text(
-                              //           '₹${formatNumber(widget.totalCostWithGST)}',
-                              //           style: TextStyle(
-                              //             fontFamily: 'Roboto',
-                              //             fontWeight: FontWeight.bold,
-                              //             color: HexColor('#e58338'),
-                              //             fontSize: 13,
-                              //           ),
-                              //         ),
-                              //       ],
-                              //     ),
-                              //   ),
-                              // ),
                             ],
                           ),
 
@@ -810,6 +793,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
             height: 5.0,
           ),
 
+
+
           CustomExpansionTile(
             title: const Text(
               "Item Details",
@@ -915,38 +900,43 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                     height: 5.0,
                                                   ),
                                                   Row(
+                                                    children: [
+                                                      Text(
+                                                        'Qty: ${orderItemsList[index].orderQty}',
+                                                        style:
+                                                        const TextStyle(
+                                                          fontFamily:
+                                                          'Roboto',
+                                                          fontSize: 14,
+                                                          color: Colors
+                                                              .black,
+                                                          fontWeight:
+                                                          FontWeight
+                                                              .w400,
+                                                        ),
+                                                      ),
+                                                      Text(
+                                                        ' (${orderItemsList[index].orderQty} ${orderItemsList[index].salUnitMsr} = ${orderItemsList[index].orderQty * orderItemsList[index].numInSale}  Nos)', // Display totalSumForProduct for the single product
+                                                        style: CommonUtils
+                                                            .Mediumtext_o_14,
+                                                      ),
+                                                    ],
+                                                  ),
+                                                  Container(
+                                                    margin:
+                                                    const EdgeInsets
+                                                        .symmetric(
+                                                        vertical: 5),
+                                                    width:
+                                                    double.infinity,
+                                                    height: 0.2,
+                                                    color: Colors.grey,
+                                                  ),
+                                                  Row(
                                                     mainAxisAlignment:
                                                     MainAxisAlignment
-                                                        .spaceAround,
+                                                        .end,
                                                     children: [
-                                                      Row(
-                                                        children: [
-                                                          Text(
-                                                            'Qty: ${orderItemsList[index].orderQty}',
-                                                            style:
-                                                            const TextStyle(
-                                                              fontFamily:
-                                                              'Roboto',
-                                                              fontSize:
-                                                              14,
-                                                              color: Colors
-                                                                  .black,
-                                                              fontWeight:
-                                                              FontWeight
-                                                                  .w400,
-                                                            ),
-                                                          ),
-                                                          Text(
-                                                            ' (${orderItemsList[index].orderQty} ${orderItemsList[index].salUnitMsr} = ${orderItemsList[index].orderQty * orderItemsList[index].numInSale}  Nos)', // Display totalSumForProduct for the single product
-                                                            style: CommonUtils
-                                                                .Mediumtext_o_14,
-                                                          ),
-                                                        ],
-                                                      ),
-                                                      Expanded(
-                                                        child:
-                                                        Container(),
-                                                      ),
                                                       Text(
                                                         '₹${formatNumber(orderItemsList[index].totalPrice)}',
                                                         style: CommonUtils
@@ -1071,6 +1061,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
             ),
             initiallyExpanded: false,
           ),
+
           //    ),
           const SizedBox(
             height: 5.0,

@@ -1382,6 +1382,7 @@ class ItemCard extends StatefulWidget {
   }
 }
 
+
 class _ItemCardState extends State<ItemCard> {
   @override
   Widget build(BuildContext context) {
@@ -1408,20 +1409,36 @@ class _ItemCardState extends State<ItemCard> {
               height: 5,
             ),
             Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                const Text(
-                  'Qty: ',
-                  style: CommonUtils.txSty_13B_Fb,
+                Row(
+                  children: [
+                    const Text(
+                      'Qty: ',
+                      style: CommonUtils.txSty_13B_Fb,
+                    ),
+                    Text(
+                      widget.data.orderQty.toString(),
+                      style: CommonUtils.txSty_13O_F6,
+                    ),
+                  ],
                 ),
-                Text(
-                  widget.data.orderQty.toString(),
-                  style: CommonUtils.txSty_13O_F6,
-                ),
+                if (widget.data.partialQty != null)
+                  Row(
+                    children: [
+                      const Text(
+                        'Partially Received Qty: ',
+                        style: CommonUtils.txSty_13B_Fb,
+                      ),
+                      Text(
+                        widget.data.partialQty.toString(),
+                        style: CommonUtils.txSty_13O_F6,
+                      ),
+                    ],
+                  ),
               ],
             ),
             const SizedBox(height: 5.0),
-            // CommonUtils.dividerForHorizontal,
-            // const SizedBox(height: 5.0),
             if (widget.data.remarks != null)
               Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
@@ -1436,9 +1453,9 @@ class _ItemCardState extends State<ItemCard> {
                     widget.data.remarks!,
                     style: CommonUtils.txSty_13O_F6,
                   ),
+                  const SizedBox(height: 5.0),
                 ],
               ),
-            const SizedBox(height: 5.0),
             CommonUtils.dividerForHorizontal,
             const SizedBox(height: 5.0),
             Row(
@@ -1552,6 +1569,7 @@ class _ItemCardState extends State<ItemCard> {
     );
   }
 }
+
 
 class PaymentDetailsCard extends StatefulWidget {
   final ReturnOrderDetailsResult data;

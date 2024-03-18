@@ -302,57 +302,46 @@ class _orderStatusScreenState extends State<orderStatusScreen>
 //Future<void> saveDataToTextDocument(String data) async {
   Future<void> _shareorderdetails(Map<String, dynamic> responseData) async {
     try {
-      // Extract relevant data from the response
-      //   String orderDetails = """
-      //   Item Name: ${responseData['response']['orderItemXrefTypeList'][0]['itemName']}
-      //   Number of Pieces: ${responseData['response']['orderItemXrefTypeList'][0]['noOfPcs']}
-      //   Order Quantity: ${responseData['response']['orderItemXrefTypeList'][0]['orderQty']}
-      //   Price: ${responseData['response']['orderItemXrefTypeList'][0]['price']}
-      //   Order Number: ${responseData['response']['orderNumber']}
-      //   Order Date: ${responseData['response']['orderDate']}
-      //   Party Code: ${responseData['response']['partyCode']}
-      //   Party Name: ${responseData['response']['partyName']}
-      //   Party Address: ${responseData['response']['partyAddress']}
-      //   Party State: ${responseData['response']['partyState']}
-      //   Party GST Number: ${responseData['response']['partyGSTNumber']}
-      //   Proprietor Name: ${responseData['response']['proprietorName']}
-      //   Outstanding Amount: ${responseData['response']['partyOutStandingAmount']}
-      //   Booking Place: ${responseData['response']['bookingPlace']}
-      //   Transport Name: ${responseData['response']['transportName']}
-      //   End User Message: ${responseData['endUserMessage']}
-      // """;
+      if (responseData != null && responseData.containsKey('response')) {
+        Map<String, dynamic> response = responseData['response'];
+        String orderDate = response['orderDate'];
 
-// Retrieve orderDate from responseData
-      String orderDate = responseData['response']['orderDate'];
 
-// Parse the orderDate string into a DateTime object
-      DateTime dateTime = DateTime.parse(orderDate);
+        DateTime date = DateTime.parse(orderDate);
+        String formattedOrderDate = DateFormat('dd MMM, yyyy').format(date);
 
-// Define the desired date format
-      DateFormat formatter = DateFormat('dd-MM-yyyy');
+        // DateTime dateTime = DateTime.parse(orderDate);
+        // DateFormat formatter = DateFormat('dd-MM-yyyy');
+        // String formattedOrderDate = formatter.format(dateTime);
+        String orderNumber = response['orderNumber'];
+        String partyName = response['partyName'];
+        String partyCode = response['partyCode'];
+        String bookingPlace = response['bookingPlace'];
+        String transportName = response['transportName'];
 
-// Format the DateTime object to the desired format
-      String formattedOrderDate = formatter.format(dateTime);
+        NumberFormat amountFormatter =
+        NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+        double totalCost = response['totalCost'];
+        String formattedOrderAmount = '₹${amountFormatter.format(totalCost)}';
 
-      // Format the order amount with Rupee symbol
-      NumberFormat amountFormatter =
-      NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
-      String formattedOrderAmount =
-          '₹${amountFormatter.format(responseData['response']['totalCostWithGST'])}';
+        String orderDetails =
+                "Order ID: *$orderNumber* \n" +
+                "Order Date: *$formattedOrderDate* \n" +
+                "Order Amount: *$formattedOrderAmount* \n" +
+                "Party Name (Code): *$partyName ($partyCode)* \n" +
+                "Booking Place: *$bookingPlace* \n" +
+                "Transport Name: *$transportName* \n";
 
-// Now you can use formattedOrderDate in your string template
-      String orderDetails = """
-    Order ID: ${responseData['response']['orderNumber']}
-    Order Date: $formattedOrderDate
-    Order Amount: $formattedOrderAmount
-    Party Name (Code): ${responseData['response']['partyName']} (${responseData['response']['partyCode']})
-    Booking Place: ${responseData['response']['bookingPlace']}
-    Transport Name: ${responseData['response']['transportName']}
-""";
-
-      await Share.share(orderDetails, subject: 'Order Details');
+        await Share.share(orderDetails, subject: 'Order Details');
+      } else {
+        print('Invalid or incomplete response.');
+      }
     } catch (error) {
       print('Error sharing order details: $error');
     }
   }
+
+
+
+
 }

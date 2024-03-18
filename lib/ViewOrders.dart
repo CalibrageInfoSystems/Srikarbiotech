@@ -418,9 +418,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> getWareHouses() async {
+    String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
+    int companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+
     try {
-      String apiUrl =
-          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetWarehousesByUserandCompany/e39536e2-89d3-4cc7-ae79-3dd5291ff156/1';
+      String apiUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetWarehousesByUserandCompany/$userId/$companyId";
       // String apiUrl = '$baseUrl$GetWarehousesByUserandCompany$userId 1';
       final jsonResponse = await http.get(Uri.parse(apiUrl));
       if (jsonResponse.statusCode == 200) {
@@ -876,7 +878,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 Padding(
                   padding: const EdgeInsets.only(left: 5.0),
                   child: Text(
-                    'Ware House',
+                    'Warehouse',
                     style: CommonUtils.txSty_13O_F6,
                   ),
                 ),
@@ -895,7 +897,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   )
                       : DropdownButton<String>(
                     hint: Text(
-                      'Select WareHouse',
+                      'Select Warehouse',
                       style: CommonUtils.txSty_13O_F6,
                     ),
                     value: provider.dropDownWareHouse,
@@ -1233,6 +1235,7 @@ class _OrderCardState extends State<OrderCard> {
             builder: (context) => Orderdetails(
               orderid: widget.orderResult.id,
               whsName: widget.orderResult.whsName,
+              whscode: widget.orderResult.whsCode,
               orderdate: widget.formattedDate,
               totalCostWithGST: widget.orderResult.totalCostWithGST,
               bookingplace: widget.orderResult.bookingPlace,

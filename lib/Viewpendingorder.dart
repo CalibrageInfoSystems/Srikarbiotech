@@ -760,6 +760,7 @@ class _OrderCardState extends State<OrderCard> {
             builder: (context) => Orderdetails(
               orderid: widget.orderResult.id,
               whsName: widget.orderResult.whsName,
+              whscode: widget.orderResult.whsCode,
               orderdate: widget.formattedDate,
               totalCostWithGST: widget.orderResult.totalCostWithGST,
               bookingplace: widget.orderResult.bookingPlace,
@@ -846,18 +847,15 @@ class _OrderCardState extends State<OrderCard> {
                                           overflow: TextOverflow.ellipsis,
                                         ),
                                       ),
-                                      // Add SizedBox to control the size of the Checkbox
 
                                       SizedBox(
-                                        width: 24, // Adjust the width as needed
-                                        height:
-                                        24, // Adjust the height as needed
+                                        width: 24,
+                                        height: 24,
                                         child:
                                         Consumer<ViewPendingOrdersProvider>(
                                           builder: (context, pendingOrders, _) {
-                                            final int index = widget
-                                                .orderIndex ??
-                                                0; // Provide a default value or handle it according to your logic
+                                            final int index =
+                                                widget.orderIndex ?? 0;
 
                                             return Checkbox(
                                               activeColor:
@@ -873,25 +871,6 @@ class _OrderCardState extends State<OrderCard> {
                                           },
                                         ),
                                       ),
-
-                                      // SizedBox(
-                                      //   width: 24, // Adjust the width as needed
-                                      //   height: 24, // Adjust the height as needed
-                                      //   child: Consumer<ViewPendingOrdersProvider>(
-                                      //     builder: (context, pendingOrders, _) {
-                                      //       // Ensure that the index is within the valid range of the list
-                                      //       final int index = widget.orderIndex < pendingOrders.getCheckBoxValues.length ? widget.orderIndex : 0; // Provide a default value or handle it according to your logic
-                                      //
-                                      //       return Checkbox(
-                                      //         activeColor: const Color(0xFFe78337),
-                                      //         value: pendingOrders.getCheckBoxValues[index],
-                                      //         onChanged: (bool? newValue) {
-                                      //           pendingOrders.setCheckBoxStatusByIndex(index, newValue);
-                                      //         },
-                                      //       );
-                                      //     },
-                                      //   ),
-                                      // ),
                                     ],
                                   ),
                                   const SizedBox(
@@ -929,23 +908,6 @@ class _OrderCardState extends State<OrderCard> {
                                         style: CommonUtils.txSty_13O_F6,
                                       )
                                           : const SizedBox(),
-                                      Text(
-                                        widget.formattedDate,
-                                        style: CommonUtils.txSty_13O_F6,
-                                      ),
-                                    ],
-                                  ),
-                                  const SizedBox(
-                                    height: 5.0,
-                                  ),
-                                  Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      Text(
-                                        '₹${formatNumber(widget.orderResult.totalCostWithGST)}',
-                                        style: CommonUtils.txSty_13O_F6,
-                                      ),
                                       Row(
                                         children: [
                                           const Text(
@@ -957,6 +919,23 @@ class _OrderCardState extends State<OrderCard> {
                                             style: CommonUtils.txSty_13O_F6,
                                           ),
                                         ],
+                                      ),
+                                    ],
+                                  ),
+                                  const SizedBox(
+                                    height: 5.0,
+                                  ),
+                                  Row(
+                                    mainAxisAlignment:
+                                    MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      Text(
+                                        widget.formattedDate,
+                                        style: CommonUtils.txSty_13O_F6,
+                                      ),
+                                      Text(
+                                        '₹${formatNumber(widget.orderResult.totalCostWithGST)}',
+                                        style: CommonUtils.txSty_13O_F6,
                                       ),
                                     ],
                                   ),

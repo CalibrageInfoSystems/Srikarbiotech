@@ -285,6 +285,12 @@ class CommonUtils {
       fontSize: 13,
       color: orangeColor,
       fontWeight: FontWeight.w600);
+
+  static Widget showProgressIndicator() {
+    return const CircularProgressIndicator.adaptive(
+      valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+    );
+  }
 }
 
 Future<void> saveIntToPreferences(String key, int value) async {

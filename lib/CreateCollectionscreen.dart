@@ -15,6 +15,7 @@ import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:path/path.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:srikarbiotech/Model/account_modal.dart';
 import 'package:srikarbiotech/Payment_model.dart';
 import 'package:srikarbiotech/categroy_model.dart';
 import 'package:srikarbiotech/sb_status.dart';
@@ -32,14 +33,15 @@ class CreateCollectionscreen extends StatefulWidget {
   final String proprietorName;
   final String gstRegnNo;
 
-  CreateCollectionscreen(
-      {required this.cardName,
-      required this.cardCode,
-      required this.address,
-      required this.state,
-      required this.phone,
-      required this.proprietorName,
-      required this.gstRegnNo});
+  const CreateCollectionscreen(
+      {super.key,
+        required this.cardName,
+        required this.cardCode,
+        required this.address,
+        required this.state,
+        required this.phone,
+        required this.proprietorName,
+        required this.gstRegnNo});
 
   @override
   Createcollection_screen createState() => Createcollection_screen();
@@ -78,6 +80,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   ApiResponse? apiResponse;
   String paymentname = "";
   int paymentid = 0;
+  String? accountValue;
 
   String? selectedPurpose;
 
@@ -86,6 +89,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   // List of category names
   List<ItemGroup> itemGroups = []; // List of ItemGroup objects
   List<Purpose> purposeList = [];
+  List<AccountList> accountList = [];
   ItemGroup? selectedcategoryObj;
   String selectedItmsGrpCod = '';
   String selectedItmsGrpNam = '';
@@ -100,12 +104,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
-
-    print('cardName: ${widget.cardName}');
-    print('cardCode: ${widget.cardCode}');
-    print('address: ${widget.address}');
-    print('gstRegnNo: ${widget.gstRegnNo}');
-    print('proprietorName: ${widget.proprietorName}');
+    getAccountsData();
     getshareddata();
     DateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
     CommonUtils.checkInternetConnectivity().then((isConnected) {
@@ -115,8 +114,6 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
         fetchdropdownitems();
 
         fetchdropdownitemscategory();
-
-        print('The Internet Is Connected');
       } else {
         print('The Internet Is not  Connected');
       }
@@ -127,7 +124,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFe78337),
+        backgroundColor: const Color(0xFFe78337),
         automaticallyImplyLeading: false,
         // This line removes the default back arrow
         title: Row(
@@ -137,21 +134,21 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
               children: [
                 Padding(
                   padding:
-                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
                       Navigator.of(context).pop();
                     },
-                    child: Icon(
+                    child: const Icon(
                       Icons.chevron_left,
                       size: 30.0,
                       color: Colors.white,
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
-                Text(
+                const SizedBox(width: 8.0),
+                const Text(
                   'Create Collection',
                   style: TextStyle(
                     color: Colors.white,
@@ -171,7 +168,8 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                       // Handle the click event for the home icon
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()),
                       );
                     },
                     child: Image.asset(
@@ -184,7 +182,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                   );
                 } else {
                   // Return a placeholder or loading indicator
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 }
               },
             ),
@@ -195,11 +193,12 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
         child: Column(
           children: [
             Padding(
-              padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+              padding:
+              const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
               child: Column(
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
-                  SizedBox(height: 8.0),
+                  const SizedBox(height: 8.0),
                   CommonUtils.buildCard(
                     widget.cardName,
                     widget.cardCode,
@@ -209,7 +208,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                     Colors.white,
                     BorderRadius.circular(5.0),
                   ),
-                  SizedBox(height: 16.0),
+                  const SizedBox(height: 16.0),
                   Card(
                     elevation: 2.0,
                     shape: RoundedRectangleBorder(
@@ -224,7 +223,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
 
                         // color: Colors.white
                       ),
-                      padding: EdgeInsets.all(16.0),
+                      padding: const EdgeInsets.all(16.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -232,18 +231,18 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                             context,
                             ' Date *',
                             DateController,
-                            () => _selectDate(context, DateController),
+                                () => _selectDate(context, DateController),
                           ),
 
                           // From Date TextFormField with Calendar Icon
-                          SizedBox(height: 5.0),
+                          const SizedBox(height: 5.0),
                           Padding(
-                            padding: EdgeInsets.only(
+                            padding: const EdgeInsets.only(
                                 top: 10.0, left: 0.0, right: 0.0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
-                                Padding(
+                                const Padding(
                                   padding: EdgeInsets.only(
                                       top: 0.0, left: 5.0, right: 0.0),
                                   child: Text(
@@ -252,7 +251,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                     textAlign: TextAlign.start,
                                   ),
                                 ),
-                                SizedBox(height: 8.0),
+                                const SizedBox(height: 8.0),
                                 GestureDetector(
                                   onTap: () {
                                     // Handle the click event for the second text view
@@ -264,7 +263,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                     decoration: BoxDecoration(
                                       borderRadius: BorderRadius.circular(8.0),
                                       border: Border.all(
-                                        color: Color(0xFFe78337),
+                                        color: const Color(0xFFe78337),
                                         width: 1,
                                       ),
                                     ),
@@ -274,16 +273,17 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                           child: Align(
                                             alignment: Alignment.centerLeft,
                                             child: Padding(
-                                              padding: EdgeInsets.only(
+                                              padding: const EdgeInsets.only(
                                                   left: 10.0, top: 0.0),
                                               child: TextFormField(
                                                 controller: Amounttext,
                                                 keyboardType:
-                                                    TextInputType.number,
+                                                TextInputType.number,
                                                 maxLength: 10,
                                                 style:
-                                                    CommonUtils.Mediumtext_o_14,
-                                                decoration: InputDecoration(
+                                                CommonUtils.Mediumtext_o_14,
+                                                decoration:
+                                                const InputDecoration(
                                                   counterText: '',
                                                   hintText: 'Enter  Amount',
                                                   hintStyle: CommonUtils
@@ -301,8 +301,8 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                               ],
                             ),
                           ),
-                          SizedBox(height: 5.0),
-                          Padding(
+                          const SizedBox(height: 5.0),
+                          const Padding(
                             padding: EdgeInsets.only(
                                 top: 10.0, left: 5.0, right: 0.0),
                             child: Text(
@@ -311,141 +311,243 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(height: 5.0),
+                          const SizedBox(height: 5.0),
 
-                          Container(
+                          SizedBox(
                             height: 40,
                             // child: Expanded(
                             child: apiResponse == null
-                                ? Center(child: CircularProgressIndicator())
+                                ? Center(
+                                child: CommonUtils.showProgressIndicator())
                                 : ListView.builder(
-                                    scrollDirection: Axis.horizontal,
-                                    itemCount: apiResponse!.listResult.length,
-                                    itemBuilder:
-                                        (BuildContext context, int index) {
-                                      bool isSelected = index == indexselected;
-                                      PaymentMode currentPaymode = apiResponse!
-                                              .listResult[
-                                          index]; // Store the current paymode in a local variable
+                              scrollDirection: Axis.horizontal,
+                              itemCount: apiResponse!.listResult.length,
+                              itemBuilder:
+                                  (BuildContext context, int index) {
+                                bool isSelected = index == indexselected;
+                                PaymentMode currentPaymode = apiResponse!
+                                    .listResult[
+                                index]; // Store the current paymode in a local variable
 
-                                      String iconData;
-                                      switch (currentPaymode.desc) {
-                                        case 'Online':
-                                          iconData = 'assets/site-alt.svg';
-                                          break;
-                                        case 'Cheque':
-                                          iconData = 'assets/money-bills.svg';
-                                          break;
-                                        // Add more cases as needed
-                                        default:
-                                          iconData =
-                                              'assets/money-bills.svg'; // Default icon
-                                          break;
-                                      }
-                                      if (isSelected) {
-                                        print(
-                                            'Default selected item: ${currentPaymode.desc}, TypeCdId: ${currentPaymode.typeCdId}');
-                                        payid = currentPaymode.typeCdId;
-                                        Selected_PaymentMode =
-                                            currentPaymode.desc;
-                                      }
+                                String iconData;
+                                switch (currentPaymode.desc) {
+                                  case 'Online':
+                                    iconData = 'assets/site-alt.svg';
+                                    break;
+                                  case 'Cheque':
+                                    iconData = 'assets/money-bills.svg';
+                                    break;
+                                // Add more cases as needed
+                                  default:
+                                    iconData =
+                                    'assets/money-bills.svg'; // Default icon
+                                    break;
+                                }
+                                if (isSelected) {
+                                  print(
+                                      'Default selected item: ${currentPaymode.desc}, TypeCdId: ${currentPaymode.typeCdId}');
+                                  payid = currentPaymode.typeCdId;
+                                  Selected_PaymentMode =
+                                      currentPaymode.desc;
+                                }
 
-                                      return GestureDetector(
-                                        onTap: () {
-                                          setState(() {
-                                            indexselected = index;
-                                            selectedPaymode =
-                                                currentPaymode; // Update the selectedPaymode outside the build method
-                                          });
-                                          payid = currentPaymode.typeCdId;
-                                          Selected_PaymentMode = currentPaymode.desc;
-                                          print('payid:$payid');
-                                          print(
-                                              'Selected Payment Mode: ${currentPaymode.desc}, TypeCdId: $payid');
-                                          print(
-                                              'Selected Payment Mode: ${Selected_PaymentMode}, TypeCdId: $payid');
-                                          if(Selected_PaymentMode == 'Online'){
-                                           checknumbercontroller.text ="";
-                                           checkissuedbankcontroller.text = "";
-                                           checkDateController.text= "";
-                                          }
-                                          if(Selected_PaymentMode == 'Cheque'){
-                                            accountnumcontroller.text ="";
-                                            creditbankcontroller.text ="";
-                                            utrcontroller.text= "";
+                                return GestureDetector(
+                                  onTap: () {
+                                    setState(() {
+                                      indexselected = index;
+                                      selectedPaymode =
+                                          currentPaymode; // Update the selectedPaymode outside the build method
+                                    });
+                                    payid = currentPaymode.typeCdId;
+                                    Selected_PaymentMode =
+                                        currentPaymode.desc;
+                                    print('payid:$payid');
+                                    print(
+                                        'Selected Payment Mode: ${currentPaymode.desc}, TypeCdId: $payid');
+                                    print(
+                                        'Selected Payment Mode: $Selected_PaymentMode, TypeCdId: $payid');
+                                    if (Selected_PaymentMode ==
+                                        'Online') {
+                                      checknumbercontroller.text = "";
+                                      checkissuedbankcontroller.text = "";
+                                      checkDateController.text = "";
+                                    }
+                                    if (Selected_PaymentMode ==
+                                        'Cheque') {
+                                      accountnumcontroller.text = "";
+                                      creditbankcontroller.text = "";
+                                      utrcontroller.text = "";
+                                    }
+                                  },
+                                  child: Container(
+                                    // color: Color(0xFFF8dac2),
 
-                                          }
-                                        },
-                                        child: Container(
-                                          // color: Color(0xFFF8dac2),
-
-                                          margin: EdgeInsets.symmetric(
-                                              horizontal: 4.0),
-                                          decoration: BoxDecoration(
-                                            color: isSelected
-                                                ? Color(0xFFe78337)
-                                                : Color(0xFFF8dac2),
-                                            border: Border.all(
-                                              color: isSelected
-                                                  ? Color(0xFFe78337)
-                                                  : Color(0xFFe78337),
-                                              width: 1,
-                                            ),
-                                            borderRadius:
-                                                BorderRadius.circular(8.0),
-                                          ),
-                                          child: IntrinsicWidth(
-                                            child: Column(
-                                              mainAxisAlignment:
-                                                  MainAxisAlignment.center,
+                                    margin: const EdgeInsets.symmetric(
+                                        horizontal: 4.0),
+                                    decoration: BoxDecoration(
+                                      color: isSelected
+                                          ? const Color(0xFFe78337)
+                                          : const Color(0xFFF8dac2),
+                                      border: Border.all(
+                                        color: isSelected
+                                            ? const Color(0xFFe78337)
+                                            : const Color(0xFFe78337),
+                                        width: 1,
+                                      ),
+                                      borderRadius:
+                                      BorderRadius.circular(8.0),
+                                    ),
+                                    child: IntrinsicWidth(
+                                      child: Column(
+                                        mainAxisAlignment:
+                                        MainAxisAlignment.center,
+                                        children: [
+                                          Container(
+                                            padding: const EdgeInsets
+                                                .symmetric(
+                                                horizontal: 10.0),
+                                            child: Row(
                                               children: [
-                                                Container(
-                                                  padding: EdgeInsets.symmetric(
-                                                      horizontal: 10.0),
-                                                  child: Row(
-                                                    children: [
-                                                      SvgPicture.asset(
-                                                        iconData,
-                                                        height: 18,
-                                                        width: 18,
-                                                        fit: BoxFit.fitWidth,
-                                                        color: isSelected
-                                                            ? Colors.white
-                                                            : Colors.black,
-                                                      ),
-                                                      SizedBox(
-                                                          width:
-                                                              8.0), // Add some spacing between icon and text
-                                                      Text(
-                                                        '${currentPaymode.desc.toString()}',
-                                                        style: TextStyle(
-                                                          color: isSelected
-                                                              ? Colors.white
-                                                              : Colors.black,
-                                                        ),
-                                                      ),
-                                                    ],
+                                                SvgPicture.asset(
+                                                  iconData,
+                                                  height: 18,
+                                                  width: 18,
+                                                  fit: BoxFit.fitWidth,
+                                                  color: isSelected
+                                                      ? Colors.white
+                                                      : Colors.black,
+                                                ),
+                                                const SizedBox(
+                                                    width:
+                                                    8.0), // Add some spacing between icon and text
+                                                Text(
+                                                  currentPaymode.desc
+                                                      .toString(),
+                                                  style: TextStyle(
+                                                    color: isSelected
+                                                        ? Colors.white
+                                                        : Colors.black,
                                                   ),
                                                 ),
                                               ],
                                             ),
                                           ),
-                                        ),
-                                      );
-                                    },
+                                        ],
+                                      ),
+                                    ),
                                   ),
+                                );
+                              },
+                            ),
                           ),
-                          //   SizedBox(height: 5.0),
-
+                          // account
                           Visibility(
                               visible: Selected_PaymentMode == 'Online',
                               child: Padding(
-                                padding: EdgeInsets.only(
+                                padding: const EdgeInsets.only(
                                     top: 15.0, left: 0.0, right: 0.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Padding(
+                                    const Padding(
+                                      padding: EdgeInsets.only(
+                                          top: 0.0, left: 5.0, right: 0.0),
+                                      child: Text(
+                                        'Account No *',
+                                        style: CommonUtils.Mediumtext_12,
+                                        textAlign: TextAlign.start,
+                                      ),
+                                    ),
+                                    const SizedBox(height: 8.0),
+                                    GestureDetector(
+                                      onTap: () {
+                                        // Handle the click event for the second text view
+                                      },
+                                      child: Container(
+                                        width:
+                                        MediaQuery.of(context).size.width,
+                                        height: 55.0,
+                                        decoration: BoxDecoration(
+                                          borderRadius:
+                                          BorderRadius.circular(8.0),
+                                          border: Border.all(
+                                            color: const Color(0xFFe78337),
+                                            width: 1,
+                                          ),
+                                        ),
+                                        child: Row(
+                                          children: [
+                                            Expanded(
+                                              child: Align(
+                                                alignment: Alignment.centerLeft,
+                                                child: Padding(
+                                                  padding:
+                                                  const EdgeInsets.only(
+                                                      left: 10.0, top: 0.0),
+                                                  child: accountList.isEmpty
+                                                      ? LoadingAnimationWidget
+                                                      .newtonCradle(
+                                                    color: Colors.blue,
+                                                    size: 40.0,
+                                                  )
+                                                      : DropdownButton<String>(
+                                                    hint: Text(
+                                                      'Select Account',
+                                                      style: CommonUtils
+                                                          .txSty_13O_F6,
+                                                    ),
+                                                    value:
+                                                    accountValue, // String? accountValue;
+                                                    onChanged: (String?
+                                                    newValue) {
+                                                      setState(() {
+                                                        accountValue = newValue;
+                                                        AccountList accounts = accountList.firstWhere((account) =>
+                                                        account.bankCode == newValue);
+                                                        print('Selected Account code details: ${accounts.account}, bankCode: ${accounts.bankCode} , branch: ${accounts.branch}');
+                                                      });
+                                                    },
+                                                    items: accountList
+                                                        .map((AccountList
+                                                    account) {
+                                                      return DropdownMenuItem<
+                                                          String>(
+                                                        value: account
+                                                            .bankCode,
+                                                        child: Text(
+                                                          '${account.branch} (${account.bankCode})',
+                                                          style: CommonUtils
+                                                              .txSty_13O_F6,
+                                                        ),
+                                                      );
+                                                    }).toList(),
+                                                    icon: const Icon(Icons
+                                                        .arrow_drop_down),
+                                                    iconSize: 20,
+                                                    isExpanded: true,
+                                                    underline:
+                                                    const SizedBox(),
+                                                  ),
+                                                ),
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              )),
+
+                          Visibility(
+                              visible: Selected_PaymentMode == '#Online',
+                              child: Padding(
+                                padding: const EdgeInsets.only(
+                                    top: 15.0, left: 0.0, right: 0.0),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Padding(
                                       padding: EdgeInsets.only(
                                           top: 0.0, left: 5.0, right: 0.0),
                                       child: Text(
@@ -454,7 +556,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     GestureDetector(
                                       onTap: () {
                                         // Handle the click event for the second text view
@@ -462,13 +564,13 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                       },
                                       child: Container(
                                         width:
-                                            MediaQuery.of(context).size.width,
+                                        MediaQuery.of(context).size.width,
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(8.0),
+                                          BorderRadius.circular(8.0),
                                           border: Border.all(
-                                            color: Color(0xFFe78337),
+                                            color: const Color(0xFFe78337),
                                             width: 1,
                                           ),
                                         ),
@@ -478,32 +580,34 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Padding(
-                                                  padding: EdgeInsets.only(
+                                                  padding:
+                                                  const EdgeInsets.only(
                                                       left: 10.0, top: 0.0),
                                                   child: TextFormField(
                                                     controller:
-                                                        accountnumcontroller,
+                                                    accountnumcontroller,
                                                     keyboardType:
-                                                        TextInputType.number,
+                                                    TextInputType.number,
                                                     maxLength: 20,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
                                                       fontWeight:
-                                                          FontWeight.w600,
+                                                      FontWeight.w600,
                                                       color: Color(0xFFe78337),
                                                     ),
-                                                    decoration: InputDecoration(
+                                                    decoration:
+                                                    const InputDecoration(
                                                       counterText: '',
                                                       hintText:
-                                                          'Enter Credit Account No',
+                                                      'Enter Credit Account No',
                                                       hintStyle: TextStyle(
                                                         fontSize: 14,
                                                         fontFamily: 'Roboto',
                                                         fontWeight:
-                                                            FontWeight.w700,
+                                                        FontWeight.w700,
                                                         color:
-                                                            Color(0xa0e78337),
+                                                        Color(0xa0e78337),
                                                       ),
                                                       border: InputBorder.none,
                                                     ),
@@ -520,14 +624,14 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                               )),
                           //  SizedBox(height: 5.0),
                           Visibility(
-                              visible: Selected_PaymentMode == 'Online',
+                              visible: Selected_PaymentMode == '#Online',
                               child: Padding(
-                                padding: EdgeInsets.only(
+                                padding: const EdgeInsets.only(
                                     top: 15.0, left: 0.0, right: 0.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Padding(
+                                    const Padding(
                                       padding: EdgeInsets.only(
                                           top: 0.0, left: 5.0, right: 0.0),
                                       child: Text(
@@ -536,7 +640,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     GestureDetector(
                                       onTap: () {
                                         // Handle the click event for the second text view
@@ -544,13 +648,13 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                       },
                                       child: Container(
                                         width:
-                                            MediaQuery.of(context).size.width,
+                                        MediaQuery.of(context).size.width,
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(8.0),
+                                          BorderRadius.circular(8.0),
                                           border: Border.all(
-                                            color: Color(0xFFe78337),
+                                            color: const Color(0xFFe78337),
                                             width: 1,
                                           ),
                                         ),
@@ -560,32 +664,34 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Padding(
-                                                  padding: EdgeInsets.only(
+                                                  padding:
+                                                  const EdgeInsets.only(
                                                       left: 10.0, top: 0.0),
                                                   child: TextFormField(
                                                     controller:
-                                                        creditbankcontroller,
+                                                    creditbankcontroller,
                                                     keyboardType:
-                                                        TextInputType.name,
+                                                    TextInputType.name,
                                                     maxLength: 25,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
                                                       fontWeight:
-                                                          FontWeight.w600,
+                                                      FontWeight.w600,
                                                       color: Color(0xFFe78337),
                                                     ),
-                                                    decoration: InputDecoration(
+                                                    decoration:
+                                                    const InputDecoration(
                                                       counterText: '',
                                                       hintText:
-                                                          'Enter Credit Bank',
+                                                      'Enter Credit Bank',
                                                       hintStyle: TextStyle(
                                                         fontSize: 14,
                                                         fontFamily: 'Roboto',
                                                         fontWeight:
-                                                            FontWeight.w700,
+                                                        FontWeight.w700,
                                                         color:
-                                                            Color(0xa0e78337),
+                                                        Color(0xa0e78337),
                                                       ),
                                                       border: InputBorder.none,
                                                     ),
@@ -604,12 +710,12 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                           Visibility(
                               visible: Selected_PaymentMode == 'Online',
                               child: Padding(
-                                padding: EdgeInsets.only(
+                                padding: const EdgeInsets.only(
                                     top: 15.0, left: 0.0, right: 0.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Padding(
+                                    const Padding(
                                       padding: EdgeInsets.only(
                                           top: 0.0, left: 5.0, right: 0.0),
                                       child: Text(
@@ -618,7 +724,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     GestureDetector(
                                       onTap: () {
                                         // Handle the click event for the second text view
@@ -626,13 +732,13 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                       },
                                       child: Container(
                                         width:
-                                            MediaQuery.of(context).size.width,
+                                        MediaQuery.of(context).size.width,
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(8.0),
+                                          BorderRadius.circular(8.0),
                                           border: Border.all(
-                                            color: Color(0xFFe78337),
+                                            color: const Color(0xFFe78337),
                                             width: 1,
                                           ),
                                         ),
@@ -642,31 +748,33 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Padding(
-                                                  padding: EdgeInsets.only(
+                                                  padding:
+                                                  const EdgeInsets.only(
                                                       left: 10.0, top: 0.0),
                                                   child: TextFormField(
                                                     controller: utrcontroller,
                                                     keyboardType:
-                                                        TextInputType.name,
+                                                    TextInputType.name,
                                                     maxLength: 25,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
                                                       fontWeight:
-                                                          FontWeight.w600,
+                                                      FontWeight.w600,
                                                       color: Color(0xFFe78337),
                                                     ),
-                                                    decoration: InputDecoration(
+                                                    decoration:
+                                                    const InputDecoration(
                                                       counterText: '',
                                                       hintText:
-                                                          'Enter UTR Number',
+                                                      'Enter UTR Number',
                                                       hintStyle: TextStyle(
                                                         fontSize: 14,
                                                         fontFamily: 'Roboto',
                                                         fontWeight:
-                                                            FontWeight.w700,
+                                                        FontWeight.w700,
                                                         color:
-                                                            Color(0xa0e78337),
+                                                        Color(0xa0e78337),
                                                       ),
                                                       border: InputBorder.none,
                                                     ),
@@ -686,12 +794,12 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                           Visibility(
                               visible: Selected_PaymentMode == 'Cheque',
                               child: Padding(
-                                padding: EdgeInsets.only(
+                                padding: const EdgeInsets.only(
                                     top: 15.0, left: 0.0, right: 0.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Padding(
+                                    const Padding(
                                       padding: EdgeInsets.only(
                                           top: 0.0, left: 5.0, right: 0.0),
                                       child: Text(
@@ -700,7 +808,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                         textAlign: TextAlign.start,
                                       ),
                                     ),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     GestureDetector(
                                       onTap: () {
                                         // Handle the click event for the second text view
@@ -708,13 +816,13 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                       },
                                       child: Container(
                                         width:
-                                            MediaQuery.of(context).size.width,
+                                        MediaQuery.of(context).size.width,
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(8.0),
+                                          BorderRadius.circular(8.0),
                                           border: Border.all(
-                                            color: Color(0xFFe78337),
+                                            color: const Color(0xFFe78337),
                                             width: 1,
                                           ),
                                         ),
@@ -724,31 +832,33 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Padding(
-                                                  padding: EdgeInsets.only(
+                                                  padding:
+                                                  const EdgeInsets.only(
                                                       left: 10.0, top: 0.0),
                                                   child: TextFormField(
                                                     controller:
-                                                        checknumbercontroller,
+                                                    checknumbercontroller,
                                                     keyboardType:
-                                                        TextInputType.number,
+                                                    TextInputType.number,
                                                     maxLength: 25,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
                                                       fontWeight:
-                                                          FontWeight.w600,
+                                                      FontWeight.w600,
                                                       color: Color(0xFFe78337),
                                                     ),
-                                                    decoration: InputDecoration(
+                                                    decoration:
+                                                    const InputDecoration(
                                                       counterText: '',
                                                       hintText: 'XXXXXXXXXX',
                                                       hintStyle: TextStyle(
                                                         fontSize: 14,
                                                         fontFamily: 'Roboto',
                                                         fontWeight:
-                                                            FontWeight.w700,
+                                                        FontWeight.w700,
                                                         color:
-                                                            Color(0xa0e78337),
+                                                        Color(0xa0e78337),
                                                       ),
                                                       border: InputBorder.none,
                                                     ),
@@ -769,14 +879,14 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                           Visibility(
                             visible: Selected_PaymentMode == 'Cheque',
                             child: Padding(
-                              padding: EdgeInsets.only(
+                              padding: const EdgeInsets.only(
                                   top: 15.0,
                                   bottom: 0.0), // Adjust the padding as needed
                               child: buildDateInput(
                                 context,
                                 'Check Date *',
                                 checkDateController,
-                                () => _selectcheckDate(
+                                    () => _selectcheckDate(
                                     context, checkDateController),
                               ),
                             ),
@@ -786,7 +896,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                           Visibility(
                               visible: Selected_PaymentMode == 'Cheque',
                               child: Padding(
-                                padding: EdgeInsets.only(
+                                padding: const EdgeInsets.only(
                                     top: 15.0,
                                     left: 0.0,
                                     right: 0.0,
@@ -794,7 +904,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Padding(
+                                    const Padding(
                                       padding: EdgeInsets.only(
                                           top: 0.0, left: 5.0, right: 0.0),
                                       child: Text(
@@ -804,7 +914,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                       ),
                                     ),
                                     //  SizedBox(height: 8.0),
-                                    SizedBox(height: 8.0),
+                                    const SizedBox(height: 8.0),
                                     GestureDetector(
                                       onTap: () {
                                         // Handle the click event for the second text view
@@ -812,13 +922,13 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                       },
                                       child: Container(
                                         width:
-                                            MediaQuery.of(context).size.width,
+                                        MediaQuery.of(context).size.width,
                                         height: 55.0,
                                         decoration: BoxDecoration(
                                           borderRadius:
-                                              BorderRadius.circular(8.0),
+                                          BorderRadius.circular(8.0),
                                           border: Border.all(
-                                            color: Color(0xFFe78337),
+                                            color: const Color(0xFFe78337),
                                             width: 1,
                                           ),
                                         ),
@@ -828,32 +938,34 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                               child: Align(
                                                 alignment: Alignment.centerLeft,
                                                 child: Padding(
-                                                  padding: EdgeInsets.only(
+                                                  padding:
+                                                  const EdgeInsets.only(
                                                       left: 10.0, top: 0.0),
                                                   child: TextFormField(
                                                     controller:
-                                                        checkissuedbankcontroller,
+                                                    checkissuedbankcontroller,
                                                     keyboardType:
-                                                        TextInputType.name,
+                                                    TextInputType.name,
                                                     maxLength: 25,
-                                                    style: TextStyle(
+                                                    style: const TextStyle(
                                                       fontSize: 14,
                                                       fontFamily: 'Roboto',
                                                       fontWeight:
-                                                          FontWeight.w600,
+                                                      FontWeight.w600,
                                                       color: Color(0xFFe78337),
                                                     ),
-                                                    decoration: InputDecoration(
+                                                    decoration:
+                                                    const InputDecoration(
                                                       counterText: '',
                                                       hintText:
-                                                          'Enter Issued Bank',
+                                                      'Enter Issued Bank',
                                                       hintStyle: TextStyle(
                                                         fontSize: 14,
                                                         fontFamily: 'Roboto',
                                                         fontWeight:
-                                                            FontWeight.w700,
+                                                        FontWeight.w700,
                                                         color:
-                                                            Color(0xa0e78337),
+                                                        Color(0xa0e78337),
                                                       ),
                                                       border: InputBorder.none,
                                                     ),
@@ -872,7 +984,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                           // Download and Share buttons
 
                           // Purpose
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(
                                 top: 10.0, left: 5.0, right: 0.0),
                             child: Text(
@@ -881,7 +993,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(height: 8.0),
+                          const SizedBox(height: 8.0),
                           GestureDetector(
                             onTap: () {
                               // Handle the click event for the container
@@ -893,81 +1005,82 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8.0),
                                   border: Border.all(
-                                    color: Color(0xFFe78337),
+                                    color: const Color(0xFFe78337),
                                     width: 1,
                                   ),
                                 ),
                                 child: Padding(
-                                  padding: EdgeInsets.all(8.0),
+                                  padding: const EdgeInsets.all(8.0),
                                   child: purposeList.isEmpty
                                       ? LoadingAnimationWidget.newtonCradle(
-                                          color: Colors
-                                              .blue, // Set the color as needed
-                                          size: 40.0,
-                                        ) // Show a loading indicator
+                                    color: Colors
+                                        .blue, // Set the color as needed
+                                    size: 40.0,
+                                  ) // Show a loading indicator
                                       : DropdownButton<String>(
-                                          hint: Text(
-                                            'Select Purpose',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.w700,
-                                              color: Color(0xa0e78337),
-                                            ),
-                                          ),
-                                          value: selectedPurpose,
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              selectedPurpose = newValue;
+                                    hint: const Text(
+                                      'Select Purpose',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xa0e78337),
+                                      ),
+                                    ),
+                                    value: selectedPurpose,
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        selectedPurpose = newValue;
 
-                                              // Find the selected Purpose object
-                                              selectedPurposeObj =
-                                                  purposeList.firstWhere(
-                                                (purpose) =>
-                                                    purpose.fldValue ==
-                                                    newValue,
-                                                orElse: () => Purpose(
-                                                  fldValue: '',
-                                                  descr: '',
-                                                  purposeName: '',
-                                                ),
-                                              );
-
-                                              // Print the selected values
-                                              print(
-                                                  'fldValue: ${selectedPurposeObj?.fldValue}');
-                                              print(
-                                                  'descr: ${selectedPurposeObj?.descr}');
-                                              print(
-                                                  'purposeName: ${selectedPurposeObj?.purposeName}');
-                                            });
-                                          },
-                                          items: purposeList
-                                              .map((Purpose purpose) {
-                                            return DropdownMenuItem<String>(
-                                              value: purpose.fldValue,
-                                              child: Text(
-                                                purpose.purposeName,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: 'Roboto',
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Color(0xFFe78337),
-                                                ),
+                                        // Find the selected Purpose object
+                                        selectedPurposeObj =
+                                            purposeList.firstWhere(
+                                                  (purpose) =>
+                                              purpose.fldValue ==
+                                                  newValue,
+                                              orElse: () => Purpose(
+                                                fldValue: '',
+                                                descr: '',
+                                                purposeName: '',
                                               ),
                                             );
-                                          }).toList(),
-                                          icon: Icon(Icons.arrow_drop_down),
-                                          iconSize: 24,
-                                          isExpanded: true,
-                                          underline: SizedBox(),
+
+                                        // Print the selected values
+                                        print(
+                                            'fldValue: ${selectedPurposeObj?.fldValue}');
+                                        print(
+                                            'descr: ${selectedPurposeObj?.descr}');
+                                        print(
+                                            'purposeName: ${selectedPurposeObj?.purposeName}');
+                                      });
+                                    },
+                                    items: purposeList
+                                        .map((Purpose purpose) {
+                                      return DropdownMenuItem<String>(
+                                        value: purpose.fldValue,
+                                        child: Text(
+                                          purpose.purposeName,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontFamily: 'Roboto',
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFFe78337),
+                                          ),
                                         ),
+                                      );
+                                    }).toList(),
+                                    icon:
+                                    const Icon(Icons.arrow_drop_down),
+                                    iconSize: 24,
+                                    isExpanded: true,
+                                    underline: const SizedBox(),
+                                  ),
                                 )),
                           ),
 
-                          SizedBox(height: 5.0),
+                          const SizedBox(height: 5.0),
 
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(
                                 top: 10.0, left: 5.0, right: 0.0),
                             child: Text(
@@ -976,7 +1089,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(height: 8.0),
+                          const SizedBox(height: 8.0),
                           GestureDetector(
                             onTap: () {
                               // Handle the click event for the container
@@ -988,76 +1101,77 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8.0),
                                   border: Border.all(
-                                    color: Color(0xFFe78337),
+                                    color: const Color(0xFFe78337),
                                     width: 1,
                                   ),
                                 ),
                                 child: Padding(
-                                  padding: EdgeInsets.all(
+                                  padding: const EdgeInsets.all(
                                       8.0), // Adjust the padding as needed
                                   child: itemGroups.isEmpty
                                       ? LoadingAnimationWidget.newtonCradle(
-                                          color: Colors
-                                              .blue, // Set the color as needed
-                                          size: 40.0,
-                                        ) // S // Show a loading indicator
+                                    color: Colors
+                                        .blue, // Set the color as needed
+                                    size: 40.0,
+                                  ) // S // Show a loading indicator
                                       : DropdownButton<String>(
-                                          hint: Text(
-                                            'Select Category',
-                                            style: TextStyle(
-                                              fontSize: 14,
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.w700,
-                                              color: Color(0xa0e78337),
-                                            ),
-                                          ),
-                                          value: categroyname,
-                                          onChanged: (String? newValue) {
-                                            setState(() {
-                                              categroyname = newValue;
+                                    hint: const Text(
+                                      'Select Category',
+                                      style: TextStyle(
+                                        fontSize: 14,
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.w700,
+                                        color: Color(0xa0e78337),
+                                      ),
+                                    ),
+                                    value: categroyname,
+                                    onChanged: (String? newValue) {
+                                      setState(() {
+                                        categroyname = newValue;
 
-                                              // Find the selected Purpose object
-                                              selectedcategoryObj =
-                                                  itemGroups.firstWhere(
-                                                (category) =>
-                                                    category.itmsGrpNam ==
-                                                    newValue,
-                                                orElse: () => ItemGroup(
-                                                    itmsGrpCod: '',
-                                                    itmsGrpNam: ''),
-                                              );
-
-                                              // Print the selected values
-                                              print(
-                                                  'itmsGrpCod: ${selectedcategoryObj?.itmsGrpCod}');
-                                              print(
-                                                  'itmsGrpNam: ${selectedcategoryObj?.itmsGrpNam}');
-                                            });
-                                          },
-                                          items: itemGroups
-                                              .map((ItemGroup category) {
-                                            return DropdownMenuItem<String>(
-                                              value: category.itmsGrpNam,
-                                              child: Text(
-                                                category.itmsGrpNam,
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  fontFamily: 'Roboto',
-                                                  fontWeight: FontWeight.w600,
-                                                  color: Color(0xFFe78337),
-                                                ),
-                                              ),
+                                        // Find the selected Purpose object
+                                        selectedcategoryObj =
+                                            itemGroups.firstWhere(
+                                                  (category) =>
+                                              category.itmsGrpNam ==
+                                                  newValue,
+                                              orElse: () => ItemGroup(
+                                                  itmsGrpCod: '',
+                                                  itmsGrpNam: ''),
                                             );
-                                          }).toList(),
-                                          icon: Icon(Icons.arrow_drop_down),
-                                          iconSize: 24,
-                                          isExpanded: true,
-                                          underline: SizedBox(),
+
+                                        // Print the selected values
+                                        print(
+                                            'itmsGrpCod: ${selectedcategoryObj?.itmsGrpCod}');
+                                        print(
+                                            'itmsGrpNam: ${selectedcategoryObj?.itmsGrpNam}');
+                                      });
+                                    },
+                                    items: itemGroups
+                                        .map((ItemGroup category) {
+                                      return DropdownMenuItem<String>(
+                                        value: category.itmsGrpNam,
+                                        child: Text(
+                                          category.itmsGrpNam,
+                                          style: const TextStyle(
+                                            fontSize: 14,
+                                            fontFamily: 'Roboto',
+                                            fontWeight: FontWeight.w600,
+                                            color: Color(0xFFe78337),
+                                          ),
                                         ),
+                                      );
+                                    }).toList(),
+                                    icon:
+                                    const Icon(Icons.arrow_drop_down),
+                                    iconSize: 24,
+                                    isExpanded: true,
+                                    underline: const SizedBox(),
+                                  ),
                                 )),
                           ),
-                          SizedBox(height: 5.0),
-                          Padding(
+                          const SizedBox(height: 5.0),
+                          const Padding(
                             padding: EdgeInsets.only(
                                 top: 10.0, left: 0.0, right: 0.0),
                             child: Text(
@@ -1066,7 +1180,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(height: 8.0),
+                          const SizedBox(height: 8.0),
                           if (_imageFile == null)
                             GestureDetector(
                               onTap: () {
@@ -1078,10 +1192,10 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(8.0),
                                 ),
-                                padding: EdgeInsets.all(0.0),
+                                padding: const EdgeInsets.all(0.0),
                                 child: DottedBorder(
                                   borderType: BorderType.RRect,
-                                  color: Color(0xFFe78337),
+                                  color: const Color(0xFFe78337),
                                   padding: const EdgeInsets.only(
                                       top: 0, bottom: 0.0),
                                   strokeWidth: 1,
@@ -1090,7 +1204,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                     // margin: const EdgeInsets.only(top: 3, bottom: 15),
                                     //   height: 70,
                                     width: MediaQuery.of(context).size.width,
-                                    padding: EdgeInsets.all(10.0),
+                                    padding: const EdgeInsets.all(10.0),
 
                                     decoration: BoxDecoration(
 //                                borderRadius: BorderRadius.circular(12.0),
@@ -1109,19 +1223,19 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                           padding: const EdgeInsets.all(6),
                                           // margin: const EdgeInsets.only(bottom: 5),
                                           decoration: BoxDecoration(
-                                            color: Color(0xFFe78337),
+                                            color: const Color(0xFFe78337),
                                             borderRadius:
-                                                BorderRadius.circular(10),
+                                            BorderRadius.circular(10),
                                           ),
                                           child: const Icon(
                                             Icons.folder_rounded,
                                             color: Colors.black,
                                           ),
                                         ),
-                                        SizedBox(
+                                        const SizedBox(
                                           height: 4.0,
                                         ),
-                                        Text(
+                                        const Text(
                                           'Choose file to upload',
                                           style: TextStyle(
                                             fontSize: 14,
@@ -1143,7 +1257,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                 ),
                               ),
                             ),
-                          SizedBox(height: 10.0),
+                          const SizedBox(height: 10.0),
 
                           GestureDetector(
                             onTap: () {
@@ -1162,39 +1276,39 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                 children: [
                                   _imageFile != null
                                       ? Image.file(
-                                          _imageFile!,
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          fit: BoxFit.fitWidth,
-                                        )
+                                    _imageFile!,
+                                    width:
+                                    MediaQuery.of(context).size.width,
+                                    fit: BoxFit.fitWidth,
+                                  )
                                       : Image.asset(
-                                          'assets/shopping_bag.png',
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          fit: BoxFit.fitWidth,
-                                        ),
+                                    'assets/shopping_bag.png',
+                                    width:
+                                    MediaQuery.of(context).size.width,
+                                    fit: BoxFit.fitWidth,
+                                  ),
                                   if (_imageFile != null)
                                     GestureDetector(
                                       onTap: () {
                                         // Handle tap on cross mark icon (optional)
                                         setState(() {
                                           _imageFile =
-                                              null; // Set _imageFile to null to remove the image
+                                          null; // Set _imageFile to null to remove the image
                                         });
                                       },
                                       child: Container(
-                                        padding: EdgeInsets.all(5.0),
-                                        margin: EdgeInsets.only(
+                                        padding: const EdgeInsets.all(5.0),
+                                        margin: const EdgeInsets.only(
                                             top: 5, right: 10.0),
                                         color: HexColor(
                                             '#ffeee0'), // Optional overlay color
                                         child: SvgPicture.asset(
                                           'assets/crosscircle.svg',
-                                          color: Color(0xFFe78337),
+                                          color: const Color(0xFFe78337),
                                           width:
-                                              24.0, // Set the width as needed
+                                          24.0, // Set the width as needed
                                           height:
-                                              24.0, // Set the height as needed
+                                          24.0, // Set the height as needed
                                         ),
                                       ),
                                     ),
@@ -1204,7 +1318,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                           ),
 
                           // Submit Button
-                          SizedBox(height: 18.0),
+                          const SizedBox(height: 18.0),
 
                           // Submit Button
                           Container(
@@ -1215,9 +1329,9 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: isButtonEnabled
-                                  ? Color(0xFFe78337)
+                                  ? const Color(0xFFe78337)
                                   : Colors
-                                      .grey, // Change color based on button state
+                                  .grey, // Change color based on button state
                             ),
                             child: GestureDetector(
                               onTap: isButtonEnabled
@@ -1228,11 +1342,11 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(10.0),
                                   color: isButtonEnabled
-                                      ? Color(0xFFe78337)
+                                      ? const Color(0xFFe78337)
                                       : Colors
-                                          .grey, // Change color based on button state
+                                      .grey, // Change color based on button state
                                 ),
-                                child: Center(
+                                child: const Center(
                                   child: Text(
                                     'Submit',
                                     style: TextStyle(
@@ -1367,11 +1481,11 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
         "Id": "",
         "Date": selecteddate,
         "SlpCode": '$slpCode',
-        "PartyCode": '${widget.cardCode}',
-        "PartyName": '${widget.cardName}',
-        "Address": '${widget.address}',
-        "StateName": '${widget.state}',
-        "PhoneNumber": '${widget.phone}',
+        "PartyCode": widget.cardCode,
+        "PartyName": widget.cardName,
+        "Address": widget.address,
+        "StateName": widget.state,
+        "PhoneNumber": widget.phone,
         "Amount": Amounttext.text,
         "PaymentType": '$payid',
         "PaymentTypeName": Selected_PaymentMode,
@@ -1385,9 +1499,15 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
         "CreditBank": "",
 
         if (Selected_PaymentMode == 'Online') ...{
-          "CreditAccountNo": accountnumcontroller.text,
-          "CreditBank": creditbankcontroller.text,
+          // "CreditAccountNo": accountnumcontroller.text,
+          // "CreditBank": creditbankcontroller.text,
           "UTRNumber": utrcontroller.text,
+          "VirtualAccountNo": "",
+          "VirtualBankName": "",
+          "VirtualBankCode": "",
+          "OtherAccountNo": "",
+          "OtherBankName": "",
+          "OtherBankCode": ""
         },
         if (Selected_PaymentMode == 'Cheque') ...{
           "CheckNumber": checknumbercontroller.text,
@@ -1405,15 +1525,16 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
         "CreatedDate": formattedcurrentDate,
         "UpdatedBy": '$userId',
         "UpdatedDate": formattedcurrentDate,
-        "PartyGSTNumber": '${widget.gstRegnNo}',
-        "ProprietorName": '${widget.proprietorName}',
-        "FileString": '$base64Image'
+        "PartyGSTNumber": widget.gstRegnNo,
+        "ProprietorName": widget.proprietorName,
+        "FileString": base64Image
       };
 
       print(requestData);
       print(jsonEncode(requestData));
       // URL for the API endpoint
-      String apiUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/AddUpdateCollections";
+      String apiUrl =
+          "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/AddUpdateCollections";
 
       // Encode the JSON data
       String requestBody = jsonEncode(requestData);
@@ -1447,7 +1568,8 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
             Navigator.push(
               context,
               MaterialPageRoute(
-                  builder: (context) => StatusScreen(Compneyname!,responseData['response']['collectionNumber'] )),
+                  builder: (context) => StatusScreen(Compneyname!,
+                      responseData['response']['collectionNumber'])),
             );
           } else {
             CommonUtils.showCustomToastMessageLong('Error', context, 1, 6);
@@ -1468,23 +1590,23 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   }
 
   static Widget buildDateInput(
-    BuildContext context,
-    String labelText,
-    TextEditingController controller,
-    VoidCallback onTap,
-  ) {
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      VoidCallback onTap,
+      ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
+          padding: const EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
           child: Text(
             labelText,
             style: CommonUtils.Mediumtext_12,
             textAlign: TextAlign.start,
           ),
         ),
-        SizedBox(height: 8.0),
+        const SizedBox(height: 8.0),
         GestureDetector(
           onTap: () async {
             // Call the onTap callback to open the date picker
@@ -1496,7 +1618,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(8.0),
               border: Border.all(
-                color: Color(0xFFe78337),
+                color: const Color(0xFFe78337),
                 width: 1,
               ),
             ),
@@ -1506,11 +1628,11 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
-                      padding: EdgeInsets.only(left: 10.0, top: 0.0),
+                      padding: const EdgeInsets.only(left: 10.0, top: 0.0),
                       child: IgnorePointer(
                         child: TextFormField(
                           controller: controller,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w600,
@@ -1518,7 +1640,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                           ),
                           decoration: InputDecoration(
                             hintText: labelText,
-                            hintStyle: TextStyle(
+                            hintStyle: const TextStyle(
                               fontSize: 14,
                               fontFamily: 'Roboto',
                               fontWeight: FontWeight.w700,
@@ -1536,7 +1658,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                     // Call the onTap callback to open the date picker
                     onTap();
                   },
-                  child: Padding(
+                  child: const Padding(
                     padding: EdgeInsets.all(10.0),
                     child: Icon(
                       Icons.calendar_today,
@@ -1553,9 +1675,9 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   }
 
   Future<void> _selectcheckDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate = selectedCheckDate ?? currentDate;
 
@@ -1599,9 +1721,9 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   }
 
   Future<void> _selectDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
     DateTime currentDate = DateTime.now();
 
     DateTime initialDate = selectedDate ?? currentDate;
@@ -1656,7 +1778,6 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
       throw Exception('Failed to load data');
     }
   }
-
 
   void showBottomSheetForImageSelection(BuildContext context) {
     showModalBottomSheet(
@@ -1726,7 +1847,6 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
     );
   }
 
-
   pickImage(ImageSource source, BuildContext context) async {
     try {
       final pickedFile = await ImagePicker().pickImage(source: source);
@@ -1763,8 +1883,8 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
 
   Future<void> fetchdropdownitems() async {
     final apiUrl =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/' +
-            '$CompneyId';
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'
+        '$CompneyId';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -1785,11 +1905,33 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
     }
   }
 
+  Future<void> getAccountsData() async {
+    final apiUrl =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetBankDetails/$CompneyId';
+
+    try {
+      final response = await http.get(Uri.parse(apiUrl));
+
+      if (response.statusCode == 200) {
+        Map<String, dynamic> jsonResponse = json.decode(response.body);
+        List<dynamic> resultList = jsonResponse['response']['listResult'];
+        accountList =
+            resultList.map((account) => AccountList.fromJson(account)).toList();
+
+        // debugPrint('getAccountsData: ${accountList[1].bankCode}');
+      } else {
+        debugPrint('Error: api failed');
+        throw Exception('Error: api failed');
+      }
+    } catch (e) {
+      debugPrint('catch: $e');
+      throw Exception('catch: $e');
+    }
+  }
+
   Future<void> fetchdropdownitemscategory() async {
     final apiUrl =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Item/GetItemGroups/' +
-            '$CompneyId' +
-            '/null';
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Item/GetItemGroups/$CompneyId/null';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -1845,9 +1987,9 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   Widget _buildImagePopup(File imageFile) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFe78337),
+        backgroundColor: const Color(0xFFe78337),
         automaticallyImplyLeading: false,
-        title: Text("Attached Image"),
+        title: const Text("Attached Image"),
       ),
       body: Container(
         child: PhotoView(

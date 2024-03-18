@@ -47,6 +47,7 @@ class _home_Screen extends State<HomeScreen> {
 
   late ExpandedTileController _expandedTileController;
 
+
   @override
   void initState() {
     super.initState();
@@ -62,6 +63,7 @@ class _home_Screen extends State<HomeScreen> {
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height / 3;
+
     getshareddata();
     return WillPopScope(
       onWillPop: () async {

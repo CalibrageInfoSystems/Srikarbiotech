@@ -521,8 +521,7 @@ class _ProductListState extends State<Createorderscreen> {
                               final productresp = filteredproducts[index];
                               if (globalCartLength > 0) {
                                 String itemcode = productresp.itemCode!;
-                                for (var cartItem
-                                in cartProvider.getCartItems()) {
+                                for (var cartItem in cartProvider.getCartItems()) {
                                   if (cartItem.itemCode == itemcode) {
                                     isItemAddedToCart[index] = true;
                                     textEditingControllers[index].text =
@@ -540,17 +539,6 @@ class _ProductListState extends State<Createorderscreen> {
                                   }
                                 }
                               }
-//     }
-// // Check if the current item is already added to the cart
-//                                 for (var cartItem in cartProvider.getCartItems()) {
-//                                   if (cartItem.itemCode == itemcode) {
-//                                     isItemAddedToCart[index] = true;
-//                                     textEditingControllers[index].text = cartItem.orderQty.toString();
-//                                     print('previousscreen:${textEditingControllers[index].text}');
-//                                     break; // Exit the loop once the item is found in the cart
-//                                   }
-//                                 }
-//                               }
 
                               return GestureDetector(
                                   onTap: () {
@@ -609,28 +597,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                         ),
                                                       ),
 
-                                                      // Container(
-                                                      //   child: Text(
-                                                      //     '${productresp.itemName.toString()}\n',
-                                                      //     style: TextStyle(
-                                                      //       color: Color(0xFF424242),
-                                                      //       fontSize: 16,
-                                                      //       // height: 2,
-                                                      //       fontFamily: "Roboto",
-                                                      //       fontWeight: FontWeight.w700,
-                                                      //     ),
-                                                      //   ),
-                                                      // ),
-                                                      // Text(
-                                                      //   '${productresp.itemName.toString()}',
-                                                      //   style: TextStyle(
-                                                      //     color: Color(0xFF424242),
-                                                      //     fontSize: 16,
-                                                      //     height: 1.5,
-                                                      //     fontFamily: "Roboto",
-                                                      //     fontWeight: FontWeight.w700,
-                                                      //   ),
-                                                      // ),
+
                                                       const SizedBox(
                                                         height: 5.0,
                                                       ),
@@ -649,36 +616,6 @@ class _ProductListState extends State<Createorderscreen> {
                                                         ),
                                                       ),
 
-                                                      // Row(
-                                                      //   // crossAxisAlignment: CrossAxisAlignment.start,
-                                                      //   // mainAxisAlignment: MainAxisAlignment.start,
-                                                      //   children: [
-                                                      //     // Spacer(),
-                                                      //     // Row(
-                                                      //     //   crossAxisAlignment: CrossAxisAlignment.end,
-                                                      //     //   mainAxisAlignment: MainAxisAlignment.end,
-                                                      //     //   children: [
-                                                      //     //     Container(
-                                                      //     //       child: Row(
-                                                      //     //         crossAxisAlignment: CrossAxisAlignment.end,
-                                                      //     //         mainAxisAlignment: MainAxisAlignment.end,
-                                                      //     //         children: [
-                                                      //     //           Text(
-                                                      //     //             '${productresp.ugpCode.toString()}',
-                                                      //     //             style: TextStyle(
-                                                      //     //               color: Color(0xFFe78337),
-                                                      //     //               fontFamily: "Roboto",
-                                                      //     //               fontWeight: FontWeight.w600,
-                                                      //     //               fontSize: 12.0,
-                                                      //     //             ),
-                                                      //     //           )
-                                                      //     //         ],
-                                                      //     //       ),
-                                                      //     //     )
-                                                      //     //   ],
-                                                      //     // ),
-                                                      //   ],
-                                                      // ),
                                                       const SizedBox(
                                                         height: 5.0,
                                                       ),
@@ -994,8 +931,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                       child: GestureDetector(
                                                         onTap: () async {
                                                           if (CompneyId == 1) {
-                                                            if (!isItemAddedToCart[
-                                                            index]) {
+                                                            if (!isItemAddedToCart[index]) {
                                                               setState(() {
                                                                 isSelectedList[
                                                                 index] =
@@ -1109,14 +1045,16 @@ class _ProductListState extends State<Createorderscreen> {
                                                                   });
                                                                 }
                                                               }
-                                                            } else {
-                                                              CommonUtils
-                                                                  .showCustomToastMessageLong(
-                                                                  'Quantity should be greater than 0 to add item to cart',
-                                                                  context,
-                                                                  1,
-                                                                  2);
+                                                              else {
+                                                                CommonUtils
+                                                                    .showCustomToastMessageLong(
+                                                                    'Quantity should be greater than 0 to add item to cart',
+                                                                    context,
+                                                                    1,
+                                                                    2);
+                                                              }
                                                             }
+
                                                           } else if (CompneyId ==
                                                               2) {
                                                             if (!isItemAddedToCart[

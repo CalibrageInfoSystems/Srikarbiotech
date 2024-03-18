@@ -8,6 +8,8 @@ import 'package:srikarbiotech/HomeScreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:srikarbiotech/Model/warehouse_model.dart';
 
+import 'CreateReturnorderscreen.dart';
+
 class WareHouseScreen extends StatefulWidget {
   final String cardName;
   final String cardCode;
@@ -18,6 +20,7 @@ class WareHouseScreen extends StatefulWidget {
   final String phone;
   final double creditLine;
   final double balance;
+  final String from;
   const WareHouseScreen(
       {super.key,
         required this.cardName,
@@ -28,7 +31,8 @@ class WareHouseScreen extends StatefulWidget {
         required this.state,
         required this.phone,
         required this.creditLine,
-        required this.balance});
+        required this.balance,
+      required this.from});
 
   @override
   State<WareHouseScreen> createState() => _WareHouseScreenState();
@@ -38,7 +42,7 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
   int selectedCardIndex = -1;
   int companyId = 0;
   late Future<List<WareHouseList>> wareHousesData;
-
+  late String screenFrom;
   Future<void> getshareddata() async {
     companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
   }
@@ -46,13 +50,20 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
   @override
   void initState() {
     super.initState();
+    print("screenFrom: ${widget.from}");
+
+    screenFrom = '${widget.from}'.trim();
     wareHousesData = getWareHouses();
   }
 
   Future<List<WareHouseList>> getWareHouses() async {
+    String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
+    int companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+
     try {
-      String apiUrl =
-          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetWarehousesByUserandCompany/e39536e2-89d3-4cc7-ae79-3dd5291ff156/1';
+      String apiUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetWarehousesByUserandCompany/$userId/$companyId";
+
+
       // String apiUrl = '$baseUrl$GetWarehousesByUserandCompany$userId 1';
       final jsonResponse = await http.get(Uri.parse(apiUrl));
       if (jsonResponse.statusCode == 200) {
@@ -111,25 +122,53 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
                       setState(() {
                         selectedCardIndex = index;
                       });
+    if (screenFrom == "CreateOrder") {
+      Navigator.of(context).push(
+        MaterialPageRoute(
+          builder: (context) =>
+              Createorderscreen(
+                cardName: widget.cardName,
+                cardCode: widget.cardCode,
+                address: widget.address,
+                state: widget.state,
+                phone: widget.phone,
+                proprietorName: widget.proprietorName,
+                gstRegnNo: widget.gstRegnNo,
+                creditLine: widget.creditLine,
+                balance: widget.balance,
+                whsCode: data[index].whsCode,
+                whsName: data[index].whsName,
+                whsState: data[index].whsState,
+              ),
+        ),
+      );
+    }
+    else if (screenFrom == "CreatereturnOrder") {
+      try {
+        Navigator.push(
+          context,
+          MaterialPageRoute(
+            builder: (context) => CreateReturnorderscreen(
+              cardName: widget.cardName,
+              cardCode: widget.cardCode,
+              address: widget.address,
+              state: widget.state,
+              phone: widget.phone,
+              proprietorName: widget.proprietorName,
+              gstRegnNo: widget.gstRegnNo,
+              creditLine: widget.creditLine,
+              balance: widget.balance,
+              // whsCode: data[index].whsCode,
+              // whsName: data[index].whsName,
+              // whsState: data[index].whsState
+            ),
+          ),
+        );
+      } catch (e) {
+        print("Error navigating: $e");
+      }
 
-                      Navigator.of(context).push(
-                        MaterialPageRoute(
-                          builder: (context) => Createorderscreen(
-                            cardName: widget.cardName,
-                            cardCode: widget.cardCode,
-                            address: widget.address,
-                            state: widget.state,
-                            phone: widget.phone,
-                            proprietorName: widget.proprietorName,
-                            gstRegnNo: widget.gstRegnNo,
-                            creditLine: widget.creditLine,
-                            balance: widget.balance,
-                            whsCode: data[index].whsCode,
-                            whsName: data[index].whsName,
-                            whsState: data[index].whsState,
-                          ),
-                        ),
-                      );
+    }
                     },
                     child: SizedBox(
                       // margin: const EdgeInsets.symmetric(
@@ -158,52 +197,52 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      data[index].whsName,
+                                      data[index].whsName + ' ('+  data[index].whsCode +') ',
                                       style: CommonUtils.header_Styles16,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
                                     ),
-                                    const SizedBox(height: 5.0),
-                                    Text(
-                                      data[index].whsCode,
-                                      style: CommonUtils.Mediumtext_14,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    const SizedBox(height: 5.0),
-                                    Text(
-                                      data[index].whsState,
-                                      style: CommonUtils.Mediumtext_12_0,
-                                      maxLines: 2,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    if (data[index].email != null)
-                                      Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                        children: [
-                                          const SizedBox(height: 5.0),
-                                          RichText(
-                                            text: TextSpan(
-                                              style:
-                                              DefaultTextStyle.of(context)
-                                                  .style,
-                                              children: <TextSpan>[
-                                                const TextSpan(
-                                                  text: 'Email: ',
-                                                  style:
-                                                  CommonUtils.Mediumtext_12,
-                                                ),
-                                                TextSpan(
-                                                  text: data[index].email,
-                                                  style: CommonUtils
-                                                      .Mediumtext_12_0,
-                                                ),
-                                              ],
-                                            ),
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                        ],
-                                      ),
+                                    // const SizedBox(height: 5.0),
+                                    // Text(
+                                    //   data[index].whsCode,
+                                    //   style: CommonUtils.Mediumtext_14,
+                                    //   overflow: TextOverflow.ellipsis,
+                                    // ),
+                                    // const SizedBox(height: 5.0),
+                                    // Text(
+                                    //   data[index].whsState,
+                                    //   style: CommonUtils.Mediumtext_12_0,
+                                    //   maxLines: 2,
+                                    //   overflow: TextOverflow.ellipsis,
+                                    // ),
+                                    // if (data[index].email != null)
+                                    //   Column(
+                                    //     crossAxisAlignment:
+                                    //     CrossAxisAlignment.start,
+                                    //     children: [
+                                    //       const SizedBox(height: 5.0),
+                                    //       RichText(
+                                    //         text: TextSpan(
+                                    //           style:
+                                    //           DefaultTextStyle.of(context)
+                                    //               .style,
+                                    //           children: <TextSpan>[
+                                    //             const TextSpan(
+                                    //               text: 'Email: ',
+                                    //               style:
+                                    //               CommonUtils.Mediumtext_12,
+                                    //             ),
+                                    //             TextSpan(
+                                    //               text: data[index].email,
+                                    //               style: CommonUtils
+                                    //                   .Mediumtext_12_0,
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //         overflow: TextOverflow.ellipsis,
+                                    //       ),
+                                    //     ],
+                                    //   ),
                                     if (data[index].address != null &&
                                         data[index].address!.isNotEmpty)
                                       Column(

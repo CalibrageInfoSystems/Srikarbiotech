@@ -721,7 +721,14 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
             child: Center(
               child: GestureDetector(
                 onTap: () {
-                  Addreturnorder();
+                  if (globalCartLength > 0) {
+                    Addreturnorder();
+                    // Add logic for the download button
+                  } else {
+                    CommonUtils.showCustomToastMessageLong(
+                        'Please Add Atleast One Product', context, 1, 4);
+                  }
+
                 },
                 child: Container(
                   // width: desiredWidth * 0.9,
