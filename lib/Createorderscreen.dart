@@ -165,82 +165,94 @@ class _ProductListState extends State<Createorderscreen> {
             titleSpacing: -10,
             centerTitle: false,
             actions: [
-              GestureDetector(
-                onTap: () {
-                  // Handle the click event for the home icon
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  );
-                },
-                child: Image.asset(
-                  CompneyId == 1
-                      ? 'assets/srikar-home-icon.png'
-                      : 'assets/seeds-home-icon.png',
-                  width: 30,
-                  height: 30,
-                ),
-              ),
-              Stack(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      if (globalCartLength > 0) {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Ordersubmit_screen(
-                              cardName: widget.cardName,
-                              cardCode: widget.cardCode,
-                              address: widget.address,
-                              state: widget.state,
-                              phone: widget.phone,
-                              proprietorName: widget.proprietorName,
-                              gstRegnNo: widget.gstRegnNo,
-
-                              creditLine: double.parse('${widget.creditLine}'),
-                              // Convert to double
-                              balance: double.parse('${widget.balance}'),
-                              whsCode: widget.whsCode,
-                              whsName: widget.whsName,
-                              whsState: widget.whsState,
-                            ),
-                          ),
-                        );
-
-                        print(' button clicked');
-                      } else {
-                        CommonUtils.showCustomToastMessageLong(
-                            'Please Select Atleast One Product', context, 1, 4);
-                      }
+                  GestureDetector(
+                    onTap: () {
+                      // Handle the click event for the home icon
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HomeScreen()),
+                      );
                     },
-                    icon: const Icon(
-                      Icons.shopping_cart,
-                      size: 30.0,
+                    child: SizedBox(
+                      width: 30, // Same width as the cart icon
+                      height: 30, // Same height as the cart icon
+                      child: Image.asset(
+                        CompneyId == 1
+                            ? 'assets/srikar-home-icon.png'
+                            : 'assets/seeds-home-icon.png',
+                        width: 30,
+                        height: 30,
+                      ),
                     ),
                   ),
-                  Positioned(
-                    right: 5,
-                    top: 1,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: const BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xFFD6D6D6), // Customize the badge color
+                  Stack(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+                          if (globalCartLength > 0) {
+                            Navigator.push(
+                              context,
+                              MaterialPageRoute(
+                                builder: (context) => Ordersubmit_screen(
+                                  cardName: widget.cardName,
+                                  cardCode: widget.cardCode,
+                                  address: widget.address,
+                                  state: widget.state,
+                                  phone: widget.phone,
+                                  proprietorName: widget.proprietorName,
+                                  gstRegnNo: widget.gstRegnNo,
+
+                                  creditLine: double.parse('${widget.creditLine}'),
+                                  // Convert to double
+                                  balance: double.parse('${widget.balance}'),
+                                  whsCode: widget.whsCode,
+                                  whsName: widget.whsName,
+                                  whsState: widget.whsState,
+                                ),
+                              ),
+                            );
+
+                            print(' button clicked');
+                          } else {
+                            CommonUtils.showCustomToastMessageLong(
+                                'Please Select Atleast One Product', context, 1, 4);
+                          }
+                        },
+                        icon: const Icon(
+                          Icons.shopping_cart,
+                          size: 30.0,
+                        ),
+
                       ),
-                      child: Text(
-                        '$globalCartLength',
-                        style: const TextStyle(
-                          color: Color(0xFFe78337),
-                          fontWeight: FontWeight.bold,
+                      Positioned(
+                        right: 5,
+                        top: 1,
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xFFD6D6D6), // Customize the badge color
+                          ),
+                          child: Text(
+                            '$globalCartLength',
+                            style: const TextStyle(
+                              color: Color(0xFFe78337),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
               const SizedBox(width: 20.0),
             ],
+
+
           ),
           body: Column(
             children: [
@@ -430,8 +442,7 @@ class _ProductListState extends State<Createorderscreen> {
                               });
 
                               if (isAll) {
-                                getgropcode =
-                                ""; // Reset group code to null or your default value
+                                getgropcode = ""; // Reset group code to null or your default value
                                 print('getitemgroupcode: All');
                                 fetchproductlist("");
                                 // Call your function for All
@@ -477,33 +488,19 @@ class _ProductListState extends State<Createorderscreen> {
                         left: 8.0,
                         right: 8.0,
                         top: 0.0), // Adjust the padding as needed
-                    child: filteredproducts == null
-                        ? (isLoading
+
+                    child: filteredproducts.isEmpty
                         ? const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircularProgressIndicator.adaptive(),
-                          SizedBox(height: 16.0),
-                          Text(
-                            'Loading, please wait...',
-                            style: TextStyle(
-                                fontSize: 18.0, color: Color(0xFF424242)),
-                          ),
-                        ],
-                      ),
-                    )
-                        : const Center(
                       child: Text(
-                        'No products available for this Category',
+                        'No products available',
                         style: TextStyle(
                           fontSize: 18.0,
                           color: Color(0xFF424242),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ))
-                        : Consumer<CartProvider>(
+                    )
+            : Consumer<CartProvider>(
                         builder: (context, cartProvider, _) {
                           List<OrderItemXrefType> cartItems =
                           cartProvider.getCartItems();
@@ -698,10 +695,13 @@ class _ProductListState extends State<Createorderscreen> {
                                                 )
                                               else
                                                 Image.asset(
-                                                  'assets/srikargroups_logo.png',
+                                                  CompneyId == 1
+                                                      ? 'assets/srikar-home-icon.png'
+                                                      : 'assets/seeds-home-icon.png',
                                                   width: 85,
                                                   height: 85,
                                                 ),
+
                                     ],
                                           ),
                                           const SizedBox(
@@ -1005,9 +1005,7 @@ class _ProductListState extends State<Createorderscreen> {
                                                                         1.1,
                                                                       );
 
-                                                                  await cartProvider
-                                                                      .addToCart(
-                                                                      orderItem!);
+                                                                  await cartProvider.addToCart(orderItem!);
                                                                   await prefs.setBool(
                                                                       'isItemAddedToCart_$index',
                                                                       true);
@@ -1465,9 +1463,9 @@ class _ProductListState extends State<Createorderscreen> {
   }
 
   void fetchproductlist(String getgropcode) async {
+    searchController.clear();
     totalproducts.clear();
-    const String apiUrl =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Item/GetAllItemsByItemGroupCode';
+    const String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Item/GetAllItemsByItemGroupCode';
     final requestBody = {
       "CompanyId": '$CompneyId',
       "PartyCode": widget.cardCode,

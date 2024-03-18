@@ -441,6 +441,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                             ),
                           ),
                           // account
+
                           Visibility(
                               visible: Selected_PaymentMode == 'Online',
                               child: Padding(
@@ -1502,8 +1503,6 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
           // "CreditAccountNo": accountnumcontroller.text,
           // "CreditBank": creditbankcontroller.text,
           "UTRNumber": utrcontroller.text,
-          "VirtualAccountNo": "",
-          "VirtualBankName": "",
           "VirtualBankCode": "",
           "OtherAccountNo": "",
           "OtherBankName": "",

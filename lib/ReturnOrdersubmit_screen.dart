@@ -46,6 +46,9 @@ class ReturnOrdersubmit_screen extends StatefulWidget {
   final double creditLine;
   final double balance;
   final String transportname;
+  final String whsCode;
+  final String whsName;
+  final String whsState;
 
   const ReturnOrdersubmit_screen(
       {super.key,
@@ -64,7 +67,10 @@ class ReturnOrdersubmit_screen extends StatefulWidget {
         required this.addlattchments,
         required this.creditLine,
         required this.balance,
-        required this.transportname});
+        required this.transportname,
+        required this.whsCode,
+        required this.whsName,
+        required this.whsState});
   @override
   returnOrder_submit_screen createState() => returnOrder_submit_screen();
 }
@@ -444,6 +450,9 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                                                   '${widget.balance}'),
                                               transportname:
                                               widget.transportname,
+                                                whsCode: widget.whsCode,
+                                                whsName: widget.whsName,
+                                                whsState: widget.whsState
                                             )),
                                   );
                                 },
@@ -795,7 +804,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         // Update totalSumNotifier with the correct value
 
         return CartItemWidget(
-          key: UniqueKey(), // Ensure each item has a unique key
+
           cartItem: cartItem,
           onDelete: () {
             setState(() {
@@ -893,7 +902,10 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       "OtherFileName": "",
       "OtherFileExtension": ".jpg",
       "OtherFileLocation": "",
-      "TransportName": widget.transportname
+      "TransportName": widget.transportname,
+      "WhsCode":  widget.whsCode,
+      "WhsName":  widget.whsName,
+      "WhsState":  widget.whsState
     };
     print(jsonEncode(orderData));
 
@@ -1202,8 +1214,8 @@ class CartItemWidget extends StatefulWidget {
   final VoidCallback
   onQuantityChanged; // Callback function to notify when quantity changes
 
-  const CartItemWidget(
-      {super.key,
+   CartItemWidget(
+      {
         required this.cartItem,
         required this.onDelete,
         required this.cartItems,

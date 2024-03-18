@@ -9,7 +9,9 @@ class ViewReturnOrdersProvider extends ChangeNotifier {
   String? apiPurpose;
   String? apiPartyCode;
   int? apiStatusId;
+  String? _apiWareHouse;
   int selectedStatusIndex = 0;
+  String? _displayWareHouse;
   String fromDate = DateFormat('dd-MM-yyyy')
       .format(DateTime.now().subtract(const Duration(days: 7)));
   String toDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
@@ -89,6 +91,16 @@ class ViewReturnOrdersProvider extends ChangeNotifier {
     _selectedPurpose = newPurpose;
     notifyListeners();
   }
+  String? get apiWareHouse => _apiWareHouse;
+  set apiWareHouse(String? newPurpose) {
+    _apiWareHouse = newPurpose;
+    notifyListeners();
+  }
+  String? get dropDownWareHouse => _displayWareHouse;
+  set dropDownWareHouse(String? newPurpose) {
+    _displayWareHouse = newPurpose;
+    notifyListeners();
+  }
 
   void clearFilter() {
     filterStatus = false;
@@ -98,7 +110,7 @@ class ViewReturnOrdersProvider extends ChangeNotifier {
     selectedStatusIndex = 0;
     _selectedPurpose = null;
     _selectedParty = null;
-
+    _displayWareHouse = null;
     apiPurpose = null;
     apiPartyCode = null;
     apiStatusId = null;

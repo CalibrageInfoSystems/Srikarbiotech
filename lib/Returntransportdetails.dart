@@ -33,6 +33,9 @@ class Returntransportdetails extends StatefulWidget {
   final String remarks;
   final double balance;
   final String transportname;
+  final String whsCode;
+  final String whsName;
+  final String whsState;
 
   Returntransportdetails(
       {required this.cardName,
@@ -47,7 +50,10 @@ class Returntransportdetails extends StatefulWidget {
       required this.gstRegnNo,
       required this.creditLine,
       required this.balance,
-      required this.transportname});
+      required this.transportname,
+        required this.whsCode,
+        required this.whsName,
+        required this.whsState});
 
   @override
   State<Returntransportdetails> createState() => _createreturnorderPageState();
@@ -1452,6 +1458,10 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                       double.parse('${widget.creditLine}'), // Convert to double
                   balance: double.parse('${widget.balance}'),
                 transportname : TransportController.text,
+                whsCode: widget.whsCode,
+                whsName: widget.whsName,
+                whsState: widget.whsState
+
                 )),
       );
     }

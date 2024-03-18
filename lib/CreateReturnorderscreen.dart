@@ -32,6 +32,9 @@ class CreateReturnorderscreen extends StatefulWidget {
   final String phone;
   final double creditLine;
   final double balance;
+  final String whsCode;
+  final String whsName;
+  final String whsState;
 
   CreateReturnorderscreen(
       {required this.cardName,
@@ -42,7 +45,10 @@ class CreateReturnorderscreen extends StatefulWidget {
       required this.proprietorName,
       required this.gstRegnNo,
       required this.creditLine,
-      required this.balance});
+      required this.balance,
+        required this.whsCode,
+        required this.whsName,
+        required this.whsState});
 
   @override
   State<CreateReturnorderscreen> createState() => _ProductListState();
@@ -450,32 +456,17 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                         left: 8.0,
                         right: 8.0,
                         top: 0.0), // Adjust the padding as needed
-                    child: filteredproducts == null
-                        ? (isLoading
+                    child: filteredproducts.isEmpty
                         ? const Center(
-                      child: Column(
-                        mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
-                          CircularProgressIndicator.adaptive(),
-                          SizedBox(height: 16.0),
-                          Text(
-                            'Loading, please wait...',
-                            style: TextStyle(
-                                fontSize: 18.0, color: Color(0xFF424242)),
-                          ),
-                        ],
-                      ),
-                    )
-                        : const Center(
                       child: Text(
-                        'No products available for this Category',
+                        'No products available',
                         style: TextStyle(
                           fontSize: 18.0,
                           color: Color(0xFF424242),
                           fontWeight: FontWeight.bold,
                         ),
                       ),
-                    ))
+                    )
                         : Consumer<CartProvider>(
                         builder: (context, cartProvider, _) {
                           List< ReturnOrderItemXrefType> cartItems =
@@ -1208,7 +1199,10 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                                         lrnumber: '',
                                         lrdate: '',
                                         remarks: '',
-                                        transportname: ''
+                                        transportname: '',
+                                        whsCode: widget.whsCode,
+                                        whsName: widget.whsName,
+                                        whsState: widget.whsState
 
                                     ),
                               ),

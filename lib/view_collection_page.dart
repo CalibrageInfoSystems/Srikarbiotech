@@ -389,13 +389,15 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   TextEditingController todateController = TextEditingController();
   TextEditingController fromdateController = TextEditingController();
   DateTime selectedDate = DateTime.now();
-  DateTime selectedfromdateDate = DateTime.now();
+  // DateTime selectedfromdateDate = DateTime.now();
   List<Purpose> purposeList = [];
   String? selectedPurpose, selectformattedfromdate, selectformattedtodate;
   Purpose? selectedPurposeObj; // Declare it globally
   String purposename = '';
   int? savedCompanyId = 0;
   String? slpCode = "";
+  bool dateSelected = false;
+  DateTime selectedfromdateDate = DateTime.now().subtract(Duration(days: 7));
   @override
   void initState() {
     // todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
@@ -468,23 +470,27 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       BuildContext context,
       TextEditingController controller,
       ) async {
-    DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
+    print('===>current date,${DateTime.now()}');
     if (controller.text.isNotEmpty) {
       try {
-        initialDate = DateTime.parse(controller.text);
+        print('===> date,${DateFormat('dd-MM-yyyy').parse(controller.text)}');
+        initialDate = DateFormat('dd-MM-yyyy').parse(controller.text);
       } catch (e) {
-        initialDate = currentDate;
+        // If parsing fails, default to current date
+        initialDate = DateTime.now();
       }
     } else {
-      initialDate = currentDate;
+      // If controller.text is empty, default to current date
+      initialDate = DateTime.now();
     }
 
     try {
       DateTime? picked = await showDatePicker(
         context: context,
         initialDate: initialDate,
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
       );
@@ -575,33 +581,40 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       BuildContext context,
       TextEditingController controller,
       ) async {
-    DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
+    print('===>current date,${DateTime.now()}');
     if (controller.text.isNotEmpty) {
       try {
-        initialDate = DateTime.parse(controller.text);
+        print('===> date,${DateFormat('dd-MM-yyyy').parse(controller.text)}');
+        initialDate = DateFormat('dd-MM-yyyy').parse(controller.text);
       } catch (e) {
-        initialDate = currentDate;
+        // If parsing fails, default to current date
+        initialDate = DateTime.now();
       }
     } else {
-      initialDate = currentDate;
+      // If controller.text is empty, default to current date
+      initialDate = DateTime.now();
     }
 
     try {
       DateTime? picked = await showDatePicker(
         context: context,
         initialDate: initialDate,
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
       );
 
       if (picked != null) {
+        dateSelected = true;
+        selectedfromdateDate = picked;
+
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         controller.text = formattedDate;
         viewProvider.setFromDate = formattedDate;
         // Save selected dates as DateTime objects
-        selectedfromdateDate = picked;
+       // selectedfromdateDate = picked;
 
         //
         //

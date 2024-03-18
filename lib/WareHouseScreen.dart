@@ -158,9 +158,9 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
               gstRegnNo: widget.gstRegnNo,
               creditLine: widget.creditLine,
               balance: widget.balance,
-              // whsCode: data[index].whsCode,
-              // whsName: data[index].whsName,
-              // whsState: data[index].whsState
+              whsCode: data[index].whsCode,
+              whsName: data[index].whsName,
+              whsState: data[index].whsState
             ),
           ),
         );

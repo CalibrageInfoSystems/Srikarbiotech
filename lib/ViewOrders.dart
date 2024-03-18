@@ -394,7 +394,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   TextEditingController todateController = TextEditingController();
   TextEditingController fromdateController = TextEditingController();
   DateTime selectedDate = DateTime.now();
-  DateTime selectedfromdateDate = DateTime.now();
+
+  bool dateSelected = false;
+  DateTime selectedfromdateDate = DateTime.now().subtract(Duration(days: 7));
   List<Purpose> purposeList = [];
   String? selectedPurpose, selectformattedfromdate, selectformattedtodate;
   Purpose? selectedPurposeObj; // Declare it globally
@@ -477,18 +479,18 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       TextEditingController controller,
       ) async {
     DateTime currentDate = DateTime.now();
-    DateTime initialDate;
-
-    if (controller.text.isNotEmpty) {
-      try {
-        initialDate = DateTime.parse(controller.text);
-      } catch (e) {
-        initialDate = currentDate;
-      }
-    } else {
-      initialDate = currentDate;
-    }
-
+    // DateTime initialDate;
+    //
+    // if (controller.text.isNotEmpty) {
+    //   try {
+    //     initialDate = DateTime.parse(controller.text);
+    //   } catch (e) {
+    //     initialDate = currentDate;
+    //   }
+    // } else {
+    //   initialDate = currentDate;
+    // }
+    DateTime initialDate = selectedDate  ?? currentDate;
     try {
       DateTime? picked = await showDatePicker(
         context: context,
@@ -579,22 +581,24 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       ],
     );
   }
-
   Future<void> _selectfromDate(
       BuildContext context,
       TextEditingController controller,
       ) async {
-    DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
+    print('===>current date,${DateTime.now()}');
     if (controller.text.isNotEmpty) {
       try {
-        initialDate = DateTime.parse(controller.text);
+        print('===> date,${DateFormat('dd-MM-yyyy').parse(controller.text)}');
+        initialDate = DateFormat('dd-MM-yyyy').parse(controller.text);
       } catch (e) {
-        initialDate = currentDate;
+        // If parsing fails, default to current date
+        initialDate = DateTime.now();
       }
     } else {
-      initialDate = currentDate;
+      // If controller.text is empty, default to current date
+      initialDate = DateTime.now();
     }
 
     try {
@@ -610,15 +614,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         controller.text = formattedDate;
         viewOrdersProvider.setFromDate = formattedDate;
-        // Save selected dates as DateTime objects
         selectedfromdateDate = picked;
-
-        //
-        //
         selectformattedfromdate = DateFormat('yyyy-MM-dd').format(picked);
       }
     } catch (e) {}
   }
+
 
   Widget buildDateInputfromdate(
       BuildContext context,

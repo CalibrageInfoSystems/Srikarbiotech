@@ -17,6 +17,7 @@ import 'package:srikarbiotech/Services/api_config.dart';
 import 'package:srikarbiotech/viewreturnorders_provider.dart';
 
 import 'HomeScreen.dart';
+import 'Model/warehouse_model.dart';
 import 'ReturnOrderDetailsPage.dart';
 import 'ViewOrders.dart';
 
@@ -88,7 +89,8 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
         "FormDate": returnOrdersProvider.apiFromDate,
         "ToDate": returnOrdersProvider.apiToDate,
         "CompanyId": companyId,
-        "UserId": userId
+        "UserId": userId,
+        "WhsCode": returnOrdersProvider.apiWareHouse
       };
 
       debugPrint('_______Return Orders____1___${jsonEncode(requestBody)}');
@@ -382,6 +384,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   String purposename = '';
   int? savedCompanyId = 0;
   String? slpCode = "";
+  late List<WareHouseList> wareHousesData = [];
   @override
   void initState() {
     // todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
@@ -390,6 +393,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     fetchData();
     getpaymentmethods();
     fetchdropdownitems();
+    getWareHouses();
     super.initState();
   }
 
@@ -453,21 +457,25 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
+    print('===>current date,${DateTime.now()}');
     if (controller.text.isNotEmpty) {
       try {
-        initialDate = DateTime.parse(controller.text);
+        print('===> date,${DateFormat('dd-MM-yyyy').parse(controller.text)}');
+        initialDate = DateFormat('dd-MM-yyyy').parse(controller.text);
       } catch (e) {
-        print("Invalid date format: $e");
-        initialDate = currentDate;
+        // If parsing fails, default to current date
+        initialDate = DateTime.now();
       }
     } else {
-      initialDate = currentDate;
+      // If controller.text is empty, default to current date
+      initialDate = DateTime.now();
     }
 
     try {
       DateTime? picked = await showDatePicker(
         context: context,
         initialDate: initialDate,
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
       );
@@ -564,22 +572,25 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
+    print('===>current date,${DateTime.now()}');
     if (controller.text.isNotEmpty) {
-      print('###########controller.text: ${controller.text}');
       try {
-        initialDate = DateTime.parse(controller.text);
+        print('===> date,${DateFormat('dd-MM-yyyy').parse(controller.text)}');
+        initialDate = DateFormat('dd-MM-yyyy').parse(controller.text);
       } catch (e) {
-        print("Invalid date format: $e");
-        initialDate = currentDate;
+        // If parsing fails, default to current date
+        initialDate = DateTime.now();
       }
     } else {
-      initialDate = currentDate;
+      // If controller.text is empty, default to current date
+      initialDate = DateTime.now();
     }
 
     try {
       DateTime? picked = await showDatePicker(
         context: context,
         initialDate: initialDate,
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
       );
@@ -895,7 +906,61 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     ),
                   ],
                 ),
-
+                Padding(
+                  padding: const EdgeInsets.only(left: 5.0),
+                  child: Text(
+                    'Warehouse',
+                    style: CommonUtils.txSty_13O_F6,
+                  ),
+                ),
+                const SizedBox(
+                  height: 4.0,
+                ),
+                Container(
+                  width: double.infinity,
+                  height: 40.0,
+                  padding: const EdgeInsets.only(left: 15, right: 20),
+                  decoration: CommonUtils.decorationO_R10W1,
+                  child: wareHousesData.isEmpty
+                      ? LoadingAnimationWidget.newtonCradle(
+                    color: Colors.blue,
+                    size: 40.0,
+                  )
+                      : DropdownButton<String>(
+                    hint: Text(
+                      'Select Warehouse',
+                      style: CommonUtils.txSty_13O_F6,
+                    ),
+                    value: provider.dropDownWareHouse,
+                    onChanged: (String? newValue) {
+                      setState(() {
+                        provider.dropDownWareHouse = newValue;
+                        WareHouseList house = wareHousesData
+                            .firstWhere((item) => item.whsName == newValue);
+                        // for (WareHouseList house in wareHousesData) {
+                        //   if (house.whsName == newValue) {
+                        //     provider.apiWareHouse = house.whsCode;
+                        //     break;
+                        //   }
+                        // }
+                        provider.apiWareHouse = house.whsCode;
+                      });
+                    },
+                    items: wareHousesData.map((WareHouseList warehouse) {
+                      return DropdownMenuItem<String>(
+                        value: warehouse.whsName,
+                        child: Text(
+                          warehouse.whsName,
+                          style: CommonUtils.txSty_13O_F6,
+                        ),
+                      );
+                    }).toList(),
+                    icon: const Icon(Icons.arrow_drop_down),
+                    iconSize: 20,
+                    isExpanded: true,
+                    underline: const SizedBox(),
+                  ),
+                ),
                 const SizedBox(
                   height: 10.0,
                 ),
@@ -1089,8 +1154,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     int companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
 
-    final url = Uri.parse(
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetAppReturnOrdersBySearch');
+    final url = Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/GetAppReturnOrdersBySearch');
     try {
       final requestBody = {
         "PartyCode": viewReturnOrdersProvider.getPartyCode,
@@ -1098,7 +1162,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         "FormDate": viewReturnOrdersProvider.apiFromDate,
         "ToDate": viewReturnOrdersProvider.apiToDate,
         "CompanyId": companyId,
-        "UserId": userId // "e39536e2-89d3-4cc7-ae79-3dd5291ff156"
+        "UserId": userId ,// "e39536e2-89d3-4cc7-ae79-3dd5291ff156"
+        "WhsCode": viewReturnOrdersProvider.apiWareHouse
+
       };
       debugPrint('_______Return Orders____2___${jsonEncode(requestBody)}');
 
@@ -1138,6 +1204,36 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     }
     Navigator.of(context).pop();
   }
+
+  Future<void> getWareHouses() async {
+    String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
+    int companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+
+    try {
+      String apiUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetWarehousesByUserandCompany/$userId/$companyId";
+      // String apiUrl = '$baseUrl$GetWarehousesByUserandCompany$userId 1';
+      final jsonResponse = await http.get(Uri.parse(apiUrl));
+      if (jsonResponse.statusCode == 200) {
+        Map<String, dynamic> response = jsonDecode(jsonResponse.body);
+        if (response['response']['listResult'] != null) {
+          List<dynamic> wareHouseList = response['response']['listResult'];
+
+          debugPrint('wareHouseList: ${wareHouseList[0]['whsName']}');
+          wareHousesData = wareHouseList
+              .map((house) => WareHouseList.fromJson(house))
+              .toList();
+          debugPrint('wareHousesData: ${wareHousesData[0].whsName}');
+        } else {
+          debugPrint('warehouse list is empty');
+        }
+      } else {
+        debugPrint('error: api call failed');
+      }
+    } catch (e) {
+      throw Exception('catch: $e');
+    }
+  }
+
 // void clearAllFilters() {
 //   setState(() {
 //     // Reset the selected values to their initial state or default values

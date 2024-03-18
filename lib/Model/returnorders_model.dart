@@ -101,6 +101,9 @@ class ReturnOrdersList {
   final String createdDate;
   final String updatedBy;
   final DateTime updatedDate;
+  final String? whsCode;
+  final String? whsName;
+  final String? whsState;
 
   ReturnOrdersList({
     required this.id,
@@ -128,6 +131,9 @@ class ReturnOrdersList {
     required this.createdDate,
     required this.updatedBy,
     required this.updatedDate,
+    required this.whsCode,
+    required this.whsName,
+    required this.whsState,
   });
 
   factory ReturnOrdersList.fromJson(Map<String, dynamic> json) =>
@@ -157,6 +163,9 @@ class ReturnOrdersList {
         createdDate: json["createdDate"],
         updatedBy: json["updatedBy"],
         updatedDate: DateTime.parse(json["updatedDate"]),
+        whsCode: json['whsCode'],
+        whsName: json['whsName'],
+        whsState: json['whsState'],
       );
 
   Map<String, dynamic> toJson() => {
@@ -185,5 +194,9 @@ class ReturnOrdersList {
     "createdDate": createdDate,
     "updatedBy": updatedBy,
     "updatedDate": updatedDate.toIso8601String(),
+    "whsCode":whsCode,
+    "whsName" : whsName,
+    "whsState": whsState
+
   };
 }
