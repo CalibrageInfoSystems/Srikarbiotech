@@ -88,8 +88,7 @@ class Selectparty_screen extends State<Selectpartyscreen> {
           _isLoading = false;
         });
       } else {
-        throw Exception(
-            'Failed to load data. Status Code: ${response.statusCode}');
+        throw Exception('Failed to load data. Status Code: ${response.statusCode}');
       }
     } catch (e) {
       // Handle exceptions here
@@ -112,8 +111,7 @@ class Selectparty_screen extends State<Selectpartyscreen> {
             Row(
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
@@ -147,9 +145,7 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                 );
               },
               child: Image.asset(
-                CompneyId == 1
-                    ? 'assets/srikar-home-icon.png'
-                    : 'assets/seeds-home-icon.png',
+                CompneyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
                 width: 30,
                 height: 30,
               ),
@@ -218,206 +214,194 @@ class Selectparty_screen extends State<Selectpartyscreen> {
         Expanded(
           child: _isLoading
               ? Center(
-            child: CircularProgressIndicator(),
-          )
+                  child: CircularProgressIndicator(),
+                )
               : filteredDealers.isEmpty // Check if filteredDealers is empty
-              ? Center(
-            child: Text('No Data Found',style: CommonUtils.Mediumtext_12,), // Display this text when filteredDealers is empty
-          )
-              : ListView.builder(
-                  itemCount: filteredDealers.length,
-                  itemBuilder: (context, index) {
-                    return GestureDetector(
-                      onTap: () {
-                        setState(() {
-                          selectedCardIndex = index; // Update selected index
-                        });
-                        // onTap: () {
-                        //   if (!FocusScope.of(context).hasPrimaryFocus) {
-                        //     return;
-                        //   }
-                        print(
-                            "Tapped on dealer with cardName: ${filteredDealers[index].cardName}");
-                        print("screenFrom: $screenFrom");
+                  ? Center(
+                      child: Text(
+                        'No Data Found',
+                        style: CommonUtils.Mediumtext_12,
+                      ), // Display this text when filteredDealers is empty
+                    )
+                  : ListView.builder(
+                      itemCount: filteredDealers.length,
+                      itemBuilder: (context, index) {
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              selectedCardIndex = index; // Update selected index
+                            });
+                            // onTap: () {
+                            //   if (!FocusScope.of(context).hasPrimaryFocus) {
+                            //     return;
+                            //   }
+                            print("Tapped on dealer with cardName: ${filteredDealers[index].cardName}");
+                            print("screenFrom: $screenFrom");
 
-                        if (screenFrom == "CreateOrder") {
-                          print(
-                              "Tapped on dealer with cardName:2 ${filteredDealers[index].cardName}");
-                          try {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => WareHouseScreen(
-                                    from: 'CreateOrder',
-                                    cardName: filteredDealers[index].cardName,
-                                    cardCode: filteredDealers[index].cardCode,
-                                    address: filteredDealers[index].fullAddress,
-                                    state: filteredDealers[index].state,
-                                    phone: filteredDealers[index].phoneNumber,
-                                    proprietorName:
-                                        filteredDealers[index].proprietorName,
-                                    gstRegnNo: filteredDealers[index].gstRegnNo,
-                                    creditLine:
-                                        filteredDealers[index].creditLine,
-                                    balance: filteredDealers[index].balance),
-                              ),
-                            );
-                          } catch (e) {
-                            print("Error navigating: $e");
-                          }
-                        } else if (screenFrom == "CreateCollections") {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => CreateCollectionscreen(
-                                  cardName: filteredDealers[index].cardName,
-                                  cardCode: filteredDealers[index].cardCode,
-                                  address: filteredDealers[index].fullAddress,
-                                  state: filteredDealers[index].state,
-                                  phone: filteredDealers[index].phoneNumber,
-                                  proprietorName:
-                                      filteredDealers[index].proprietorName,
-                                  gstRegnNo: filteredDealers[index].gstRegnNo),
-                            ),
-                          );
-                        } else if (screenFrom == "Ledger") {
-                          Navigator.push(
-                            context,
-                            MaterialPageRoute(
-                              builder: (context) => Ledgerscreen(
-                                  cardName: filteredDealers[index].cardName,
-                                  cardCode: filteredDealers[index].cardCode,
-                                  address: filteredDealers[index].fullAddress,
-                                  state: filteredDealers[index].state,
-                                  phone: filteredDealers[index].phoneNumber,
-                                  proprietorName: filteredDealers[index].proprietorName,
-                                  gstRegnNo: filteredDealers[index].gstRegnNo,
-                                  creditLine: filteredDealers[index].creditLine,
-                                  balance: filteredDealers[index].balance),
-                            ),
-                          );
-                        } else if (screenFrom == "CreatereturnOrder") {
-                          print(
-                              "Tapped on dealer with cardName:2 ${filteredDealers[index].cardName}");
-                          try {
-                            Navigator.push(
-                              context,
-                              MaterialPageRoute(
-                                builder: (context) => WareHouseScreen(
-                                    from: 'CreatereturnOrder',
-                                    cardName: filteredDealers[index].cardName,
-                                    cardCode: filteredDealers[index].cardCode,
-                                    address: filteredDealers[index].fullAddress,
-                                    state: filteredDealers[index].state,
-                                    phone: filteredDealers[index].phoneNumber,
-                                    proprietorName:
-                                        filteredDealers[index].proprietorName,
-                                    gstRegnNo: filteredDealers[index].gstRegnNo,
-                                    creditLine: filteredDealers[index].creditLine,
-                                    balance: filteredDealers[index].balance),
-                              ),
-                            );
-                          } catch (e) {
-                            print("Error navigating: $e");
-                          }
-                        }
-                      },
-                      child: Container(
-                        margin: EdgeInsets.symmetric(
-                            horizontal: 16.0, vertical: 4.0),
-                        child: Card(
-                          elevation: 0,
-                          color: selectedCardIndex == index
-                              ? Color(0xFFfff5ec)
-                              : null,
-                          shape: RoundedRectangleBorder(
-                            borderRadius: BorderRadius.circular(5.0),
-                            side: BorderSide(
-                              color: selectedCardIndex == index
-                                  ? Color(
-                                      0xFFe98d47) // Border color for selected item
-                                  : Colors
-                                      .grey, // Border color for unselected items
-                              width: 1,
-                            ),
-                          ),
-                          child: Container(
-                            padding: EdgeInsets.all(10.0),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Flexible(
-                                  child: Column(
-                                    crossAxisAlignment:
-                                        CrossAxisAlignment.start,
-                                    children: [
-                                      Text(
-                                        filteredDealers[index].cardName,
-                                        style: CommonUtils.header_Styles16,
-                                        maxLines: 2, // Display in 2 lines
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(height: 8.0),
-                                      Text(
-                                        filteredDealers[index].cardCode,
-                                        style: CommonUtils.Mediumtext_14,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(height: 8.0),
-                                      Text(
-                                        filteredDealers[index].proprietorName,
-                                        style: CommonUtils.Mediumtext_12_0,
-                                        maxLines: 2, // Display in 2 lines
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(height: 8.0),
-                                      RichText(
-                                        text: TextSpan(
-                                          style: DefaultTextStyle.of(context)
-                                              .style,
-                                          children: <TextSpan>[
-                                            TextSpan(
-                                              text: 'GST No. ',
-                                              style: CommonUtils.Mediumtext_12,
-                                            ),
-                                            TextSpan(
-                                              text: filteredDealers[index]
-                                                  .gstRegnNo,
-                                              style:
-                                                  CommonUtils.Mediumtext_12_0,
-                                            ),
-                                          ],
-                                        ),
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(height: 8.0),
-                                      Text(
-                                        'Address',
-                                        style: CommonUtils.Mediumtext_12,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      SizedBox(height: 2.0),
-                                      Text(
-                                        filteredDealers[index].fullAddress,
-                                        style: CommonUtils.Mediumtext_12_0,
-                                        maxLines: 2, // Display in 2 lines
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                    ],
+                            if (screenFrom == "CreateOrder") {
+                              print("Tapped on dealer with cardName:2 ${filteredDealers[index].cardName}");
+                              try {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WareHouseScreen(
+                                        from: 'CreateOrder',
+                                        cardName: filteredDealers[index].cardName,
+                                        cardCode: filteredDealers[index].cardCode,
+                                        address: filteredDealers[index].fullAddress,
+                                        state: filteredDealers[index].state,
+                                        phone: filteredDealers[index].phoneNumber,
+                                        proprietorName: filteredDealers[index].proprietorName,
+                                        gstRegnNo: filteredDealers[index].gstRegnNo,
+                                        creditLine: filteredDealers[index].creditLine,
+                                        balance: filteredDealers[index].balance),
                                   ),
+                                );
+                              } catch (e) {
+                                print("Error navigating: $e");
+                              }
+                            } else if (screenFrom == "CreateCollections") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => CreateCollectionscreen(
+                                      cardName: filteredDealers[index].cardName,
+                                      cardCode: filteredDealers[index].cardCode,
+                                      address: filteredDealers[index].fullAddress,
+                                      state: filteredDealers[index].state,
+                                      phone: filteredDealers[index].phoneNumber,
+                                      proprietorName: filteredDealers[index].proprietorName,
+                                      code: filteredDealers[index].cardCode,
+                                      gstRegnNo: filteredDealers[index].gstRegnNo),
                                 ),
-                                Icon(
-                                  Icons.chevron_right,
-                                  color: Colors.orange,
+                              );
+                            } else if (screenFrom == "Ledger") {
+                              Navigator.push(
+                                context,
+                                MaterialPageRoute(
+                                  builder: (context) => Ledgerscreen(
+                                      cardName: filteredDealers[index].cardName,
+                                      cardCode: filteredDealers[index].cardCode,
+                                      address: filteredDealers[index].fullAddress,
+                                      state: filteredDealers[index].state,
+                                      phone: filteredDealers[index].phoneNumber,
+                                      proprietorName: filteredDealers[index].proprietorName,
+                                      gstRegnNo: filteredDealers[index].gstRegnNo,
+                                      creditLine: filteredDealers[index].creditLine,
+                                      balance: filteredDealers[index].balance),
                                 ),
-                              ],
+                              );
+                            } else if (screenFrom == "CreatereturnOrder") {
+                              print("Tapped on dealer with cardName:2 ${filteredDealers[index].cardName}");
+                              try {
+                                Navigator.push(
+                                  context,
+                                  MaterialPageRoute(
+                                    builder: (context) => WareHouseScreen(
+                                        from: 'CreatereturnOrder',
+                                        cardName: filteredDealers[index].cardName,
+                                        cardCode: filteredDealers[index].cardCode,
+                                        address: filteredDealers[index].fullAddress,
+                                        state: filteredDealers[index].state,
+                                        phone: filteredDealers[index].phoneNumber,
+                                        proprietorName: filteredDealers[index].proprietorName,
+                                        gstRegnNo: filteredDealers[index].gstRegnNo,
+                                        creditLine: filteredDealers[index].creditLine,
+                                        balance: filteredDealers[index].balance),
+                                  ),
+                                );
+                              } catch (e) {
+                                print("Error navigating: $e");
+                              }
+                            }
+                          },
+                          child: Container(
+                            margin: EdgeInsets.symmetric(horizontal: 16.0, vertical: 4.0),
+                            child: Card(
+                              elevation: 0,
+                              color: selectedCardIndex == index ? Color(0xFFfff5ec) : null,
+                              shape: RoundedRectangleBorder(
+                                borderRadius: BorderRadius.circular(5.0),
+                                side: BorderSide(
+                                  color: selectedCardIndex == index
+                                      ? Color(0xFFe98d47) // Border color for selected item
+                                      : Colors.grey, // Border color for unselected items
+                                  width: 1,
+                                ),
+                              ),
+                              child: Container(
+                                padding: EdgeInsets.all(10.0),
+                                child: Row(
+                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Flexible(
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Text(
+                                            filteredDealers[index].cardName,
+                                            style: CommonUtils.header_Styles16,
+                                            maxLines: 2, // Display in 2 lines
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 8.0),
+                                          Text(
+                                            filteredDealers[index].cardCode,
+                                            style: CommonUtils.Mediumtext_14,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 8.0),
+                                          Text(
+                                            filteredDealers[index].proprietorName,
+                                            style: CommonUtils.Mediumtext_12_0,
+                                            maxLines: 2, // Display in 2 lines
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 8.0),
+                                          RichText(
+                                            text: TextSpan(
+                                              style: DefaultTextStyle.of(context).style,
+                                              children: <TextSpan>[
+                                                TextSpan(
+                                                  text: 'GST No. ',
+                                                  style: CommonUtils.Mediumtext_12,
+                                                ),
+                                                TextSpan(
+                                                  text: filteredDealers[index].gstRegnNo,
+                                                  style: CommonUtils.Mediumtext_12_0,
+                                                ),
+                                              ],
+                                            ),
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 8.0),
+                                          Text(
+                                            'Address',
+                                            style: CommonUtils.Mediumtext_12,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          SizedBox(height: 2.0),
+                                          Text(
+                                            filteredDealers[index].fullAddress,
+                                            style: CommonUtils.Mediumtext_12_0,
+                                            maxLines: 2, // Display in 2 lines
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Icon(
+                                      Icons.chevron_right,
+                                      color: Colors.orange,
+                                    ),
+                                  ],
+                                ),
+                              ),
                             ),
                           ),
-                        ),
-                      ),
-                    );
-                  },
-                ),
+                        );
+                      },
+                    ),
         ),
       ]),
     );
@@ -427,9 +411,7 @@ class Selectparty_screen extends State<Selectpartyscreen> {
     final String searchTerm = searchController.text.toLowerCase();
     setState(() {
       filteredDealers = dealers.where((dealer) {
-        return dealer.cardCode.toLowerCase().contains(searchTerm) ||
-            dealer.cardName.toLowerCase().contains(searchTerm)  ||
-            dealer.fullAddress.toLowerCase().contains(searchTerm);
+        return dealer.cardCode.toLowerCase().contains(searchTerm) || dealer.cardName.toLowerCase().contains(searchTerm) || dealer.fullAddress.toLowerCase().contains(searchTerm);
       }).toList();
     });
   }
