@@ -11,7 +11,7 @@ var GetAllDealersBySlpCode = "Party/GetDealersBySlpCode/";
 var GetBanners = 'Banner/GetBannersDataInfo/';
 
 var FetchCreateOrderapi = 'Item/GetItemGroups/';
-
+var GetTypeCdmt = 'Master/GetAllTypeCdDmt/1';
 var SubmitCreateOrderapi = 'Order/AddOrder';
 var GetVirtualCode = 'SAP/GetVertualCodesByPartyCode/';
 var addCollections = 'Collections/AddUpdateCollections';
@@ -27,6 +27,9 @@ var getCompanies = "Account/GetCompanies/null";
 var getAllTypeCdDmt = "Master/GetAllTypeCdDmt/2";
 var GetAllItemsByItemGroupCode = "Item/GetAllItemsByItemGroupCode";
 var ForgotPassword = "Account/ForgotPassword";
+var GetAppOrder = 'Order/GetAppOrdersBySearch';
+
+var GetTypeCdmt4 = 'Master/GetAllTypeCdDmt/4';
 
 var UpdateInvoiceStatus = "Order/UpdateInvoiceStatus";
 var UpdateOrderStatus = "Order/UpdateOrderStatus";
@@ -46,3 +49,4 @@ var GetItemGroups = "Item/GetItemGroups/";
 var AddReturnorder = 'ReturnOrder/AddReturnOrder';
 var GetAppOrderbySearch = 'Order/GetAppOrdersBySearch';
 var addUpdateCollections = "Collections/AddUpdateCollections";
+var GetInvoiceDetails = 'Order/GetInvoiceDetailsByOrderNumber/';

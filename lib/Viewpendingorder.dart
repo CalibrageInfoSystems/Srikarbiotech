@@ -1290,8 +1290,9 @@ class _OrderCardState extends State<OrderCard> {
       };
       print('==>${jsonEncode(requestBody)}');
       // Make the HTTP POST request
+      String apiurl = baseUrl + UpdateOrderStatus;
       var response = await http.post(
-        Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus'),
+        Uri.parse(apiurl),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },

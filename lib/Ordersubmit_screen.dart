@@ -965,7 +965,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
   Future<void> GetPreviousOrderBookingByPartyCode(String cardCode) async {
     try {
       // Make a GET request to the API endpoint
-      http.Response response = await http.get(Uri.parse("http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetPreviousOrderBookingByPartyCode/$cardCode"));
+      final apiurl = baseUrl + getPreviousOrderBookingByPartyCode + cardCode;
+      http.Response response = await http.get(Uri.parse(apiurl));
 
       // Check if the request was successful (status code 200)
       if (response.statusCode == 200) {

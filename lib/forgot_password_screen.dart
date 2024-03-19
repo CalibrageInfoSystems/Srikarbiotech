@@ -7,15 +7,14 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'package:srikarbiotech/LoginScreen.dart';
 import 'package:http/http.dart' as http;
+import 'package:srikarbiotech/Services/api_config.dart';
 
 import 'Model/ForgotModel.dart';
-
 
 class ForgotPasswordScreen extends StatefulWidget {
   final int companyId;
   final String companyName;
-  const ForgotPasswordScreen(
-      {super.key, required this.companyId, required this.companyName});
+  const ForgotPasswordScreen({super.key, required this.companyId, required this.companyName});
 
   @override
   State<ForgotPasswordScreen> createState() => _ForgotPasswordScreenState();
@@ -33,17 +32,15 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
     });
 
     forgotPassword(forgotEmail).then(
-          (data) {
+      (data) {
         setState(
-              () {
+          () {
             _isLoading = false;
             ForgotModel res = forgotModelFromJson(data);
             if (res.isSuccess) {
-              CommonUtils.showCustomToastMessageLong(
-                  res.endUserMessage, context, 0, 2);
+              CommonUtils.showCustomToastMessageLong(res.endUserMessage, context, 0, 2);
             } else {
-              CommonUtils.showCustomToastMessageLong(
-                  res.endUserMessage, context, 1, 2);
+              CommonUtils.showCustomToastMessageLong(res.endUserMessage, context, 1, 2);
             }
           },
         );
@@ -61,12 +58,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
   }
 
   Future<dynamic> forgotPassword(String forgotEmail) async {
+    // String url = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/ForgotPassword';
+    String url = baseUrl + ForgotPassword;
 
-    String url = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/ForgotPassword';
     final requestHeaders = {'Content-Type': 'application/json'};
-    final requestBody = {"UserNameorEmail": forgotEmail,
-      "CompanyId":  widget.companyId
-    };
+    final requestBody = {"UserNameorEmail": forgotEmail, "CompanyId": widget.companyId};
     if (forgotEmail.isEmpty) {
       throw Exception('Please Enter Email/Username');
     }
@@ -80,10 +76,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
       if (response.statusCode == 200) {
         forgotEmailController.text = "";
         return response.body;
-
       } else {
-        throw Exception(
-            'API call failed with status code: ${response.statusCode}');
+        throw Exception('API call failed with status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error occurred during forgot password request: $e');
@@ -112,9 +106,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
               padding: const EdgeInsets.only(bottom: 35.0),
               child: Center(
                 child: Image.asset(
-                  widget.companyId == 1
-                      ? 'assets/login_screen_logo.png'
-                      : 'assets/srikar_seeds.png',
+                  widget.companyId == 1 ? 'assets/login_screen_logo.png' : 'assets/srikar_seeds.png',
                   width: MediaQuery.of(context).size.height / 3.2,
                   height: MediaQuery.of(context).size.height / 3.2,
                   // Other styling properties as needed
@@ -125,8 +117,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
           Align(
             alignment: FractionalOffset.bottomCenter,
             child: Padding(
-              padding:
-              const EdgeInsets.only(left: 22.0, right: 22.0, bottom: 15.0),
+              padding: const EdgeInsets.only(left: 22.0, right: 22.0, bottom: 15.0),
               // Adjust the padding as needed
               child: SizedBox(
                 height: MediaQuery.of(context).size.height / 2.1,
@@ -143,24 +134,19 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                       const Align(
                         alignment: Alignment.topCenter,
                         child: Padding(
-                          padding: EdgeInsets.only(
-                              top: 10.0, left: 12.0, right: 12.0),
-                          child: Text('Forgot Password',
-                              style: CommonUtils.header_Styles18),
+                          padding: EdgeInsets.only(top: 10.0, left: 12.0, right: 12.0),
+                          child: Text('Forgot Password', style: CommonUtils.header_Styles18),
                         ),
                       ),
                       const SizedBox(height: 10.0),
                       const SizedBox(height: 5.0),
-                      const Text('Enter your Email address or User Name',
-                          style: CommonUtils.Mediumtext_14),
+                      const Text('Enter your Email address or User Name', style: CommonUtils.Mediumtext_14),
                       Padding(
-                        padding: const EdgeInsets.only(
-                            top: 30.0, left: 30.0, right: 30.0),
+                        padding: const EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            const Text('Email/Username',
-                                style: CommonUtils.Mediumtext_12),
+                            const Text('Email/Username', style: CommonUtils.Mediumtext_12),
                             const SizedBox(height: 4.0),
                             GestureDetector(
                               onTap: () {},
@@ -177,8 +163,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                 child: Row(
                                   children: [
                                     Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10.0, right: 5.0),
+                                      padding: const EdgeInsets.only(left: 10.0, right: 5.0),
                                       child: SvgPicture.asset(
                                         'assets/envelope.svg',
                                         width: 20.0,
@@ -194,13 +179,11 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Padding(
-                                          padding: const EdgeInsets.only(
-                                              left: 10.0, top: 0.0),
+                                          padding: const EdgeInsets.only(left: 10.0, top: 0.0),
                                           child: TextFormField(
                                             controller: forgotEmailController,
                                             maxLength: 30,
-                                            keyboardType:
-                                            TextInputType.emailAddress,
+                                            keyboardType: TextInputType.emailAddress,
                                             validator: (value) {
                                               if (value!.isEmpty) {
                                                 return 'Please enter your Email/Username';
@@ -209,11 +192,9 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                             },
                                             style: CommonUtils.Mediumtext_o_14,
                                             decoration: const InputDecoration(
-                                              counterText :"",
-                                              hintText:
-                                              'Enter Email or Username',
-                                              hintStyle:
-                                              CommonUtils.hintstyle_14,
+                                              counterText: "",
+                                              hintText: 'Enter Email or Username',
+                                              hintStyle: CommonUtils.hintstyle_14,
                                               border: InputBorder.none,
                                             ),
                                           ),
@@ -232,8 +213,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: 15.0, left: 30.0, right: 30.0),
+                            padding: const EdgeInsets.only(top: 15.0, left: 30.0, right: 30.0),
                             child: SizedBox(
                               width: MediaQuery.of(context).size.width,
                               height: 45.0,
@@ -250,10 +230,8 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                       color: const Color(0xFFe78337),
                                     ),
                                     child: Row(
-                                      crossAxisAlignment:
-                                      CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                      MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Stack(
                                           alignment: Alignment.center,
@@ -265,8 +243,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                             if (_isLoading)
                                               const Padding(
                                                 padding: EdgeInsets.all(8.0),
-                                                child: CircularProgressIndicator
-                                                    .adaptive(),
+                                                child: CircularProgressIndicator.adaptive(),
                                               ),
                                           ],
                                         ),
@@ -278,11 +255,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: 20.0,
-                                left: 12.0,
-                                right: 12.0,
-                                bottom: 13.0),
+                            padding: const EdgeInsets.only(top: 20.0, left: 12.0, right: 12.0, bottom: 13.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
@@ -296,9 +269,7 @@ class _ForgotPasswordScreenState extends State<ForgotPasswordScreen> {
                                       onTap: () {
                                         Navigator.of(context).pop(
                                           MaterialPageRoute(
-                                            builder: (context) => LoginScreen(
-                                                companyName: "companyName",
-                                                companyId: widget.companyId),
+                                            builder: (context) => LoginScreen(companyName: "companyName", companyId: widget.companyId),
                                           ),
                                         );
                                       },
