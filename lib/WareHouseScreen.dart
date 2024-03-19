@@ -7,6 +7,7 @@ import 'package:srikarbiotech/Createorderscreen.dart';
 import 'package:srikarbiotech/HomeScreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:srikarbiotech/Model/warehouse_model.dart';
+import 'package:srikarbiotech/Services/api_config.dart';
 
 import 'CreateReturnorderscreen.dart';
 
@@ -23,15 +24,15 @@ class WareHouseScreen extends StatefulWidget {
   final String from;
   const WareHouseScreen(
       {super.key,
-        required this.cardName,
-        required this.cardCode,
-        required this.address,
-        required this.proprietorName,
-        required this.gstRegnNo,
-        required this.state,
-        required this.phone,
-        required this.creditLine,
-        required this.balance,
+      required this.cardName,
+      required this.cardCode,
+      required this.address,
+      required this.proprietorName,
+      required this.gstRegnNo,
+      required this.state,
+      required this.phone,
+      required this.creditLine,
+      required this.balance,
       required this.from});
 
   @override
@@ -61,8 +62,10 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
     int companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
 
     try {
-      String apiUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetWarehousesByUserandCompany/$userId/$companyId";
+      //String apiUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetWarehousesByUserandCompany/$userId/$companyId";
+      String apiUrl = baseUrl + GetWarehouse + userId + "/" + companyId.toString();
 
+      print('WareHouseapi:$apiUrl');
 
       // String apiUrl = '$baseUrl$GetWarehousesByUserandCompany$userId 1';
       final jsonResponse = await http.get(Uri.parse(apiUrl));
@@ -72,9 +75,7 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
           List<dynamic> wareHouseList = response['response']['listResult'];
 
           debugPrint('wareHouseList: ${wareHouseList[0]['whsName']}');
-          return wareHouseList
-              .map((house) => WareHouseList.fromJson(house))
-              .toList();
+          return wareHouseList.map((house) => WareHouseList.fromJson(house)).toList();
         } else {
           debugPrint('warehouse list is empty');
           throw Exception('error: warehouse list is empty');
@@ -122,68 +123,60 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
                       setState(() {
                         selectedCardIndex = index;
                       });
-    if (screenFrom == "CreateOrder") {
-      Navigator.of(context).push(
-        MaterialPageRoute(
-          builder: (context) =>
-              Createorderscreen(
-                cardName: widget.cardName,
-                cardCode: widget.cardCode,
-                address: widget.address,
-                state: widget.state,
-                phone: widget.phone,
-                proprietorName: widget.proprietorName,
-                gstRegnNo: widget.gstRegnNo,
-                creditLine: widget.creditLine,
-                balance: widget.balance,
-                whsCode: data[index].whsCode,
-                whsName: data[index].whsName,
-                whsState: data[index].whsState,
-              ),
-        ),
-      );
-    }
-    else if (screenFrom == "CreatereturnOrder") {
-      try {
-        Navigator.push(
-          context,
-          MaterialPageRoute(
-            builder: (context) => CreateReturnorderscreen(
-              cardName: widget.cardName,
-              cardCode: widget.cardCode,
-              address: widget.address,
-              state: widget.state,
-              phone: widget.phone,
-              proprietorName: widget.proprietorName,
-              gstRegnNo: widget.gstRegnNo,
-              creditLine: widget.creditLine,
-              balance: widget.balance,
-              whsCode: data[index].whsCode,
-              whsName: data[index].whsName,
-              whsState: data[index].whsState
-            ),
-          ),
-        );
-      } catch (e) {
-        print("Error navigating: $e");
-      }
-
-    }
+                      if (screenFrom == "CreateOrder") {
+                        Navigator.of(context).push(
+                          MaterialPageRoute(
+                            builder: (context) => Createorderscreen(
+                              cardName: widget.cardName,
+                              cardCode: widget.cardCode,
+                              address: widget.address,
+                              state: widget.state,
+                              phone: widget.phone,
+                              proprietorName: widget.proprietorName,
+                              gstRegnNo: widget.gstRegnNo,
+                              creditLine: widget.creditLine,
+                              balance: widget.balance,
+                              whsCode: data[index].whsCode,
+                              whsName: data[index].whsName,
+                              whsState: data[index].whsState,
+                            ),
+                          ),
+                        );
+                      } else if (screenFrom == "CreatereturnOrder") {
+                        try {
+                          Navigator.push(
+                            context,
+                            MaterialPageRoute(
+                              builder: (context) => CreateReturnorderscreen(
+                                  cardName: widget.cardName,
+                                  cardCode: widget.cardCode,
+                                  address: widget.address,
+                                  state: widget.state,
+                                  phone: widget.phone,
+                                  proprietorName: widget.proprietorName,
+                                  gstRegnNo: widget.gstRegnNo,
+                                  creditLine: widget.creditLine,
+                                  balance: widget.balance,
+                                  whsCode: data[index].whsCode,
+                                  whsName: data[index].whsName,
+                                  whsState: data[index].whsState),
+                            ),
+                          );
+                        } catch (e) {
+                          print("Error navigating: $e");
+                        }
+                      }
                     },
                     child: SizedBox(
                       // margin: const EdgeInsets.symmetric(
                       //     horizontal: 16.0, vertical: 4.0),
                       child: Card(
                         elevation: 0,
-                        color: selectedCardIndex == index
-                            ? const Color(0xFFfff5ec)
-                            : null,
+                        color: selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
                         shape: RoundedRectangleBorder(
                           borderRadius: BorderRadius.circular(5.0),
                           side: BorderSide(
-                            color: selectedCardIndex == index
-                                ? const Color(0xFFe98d47)
-                                : Colors.grey,
+                            color: selectedCardIndex == index ? const Color(0xFFe98d47) : Colors.grey,
                             width: 1,
                           ),
                         ),
@@ -197,7 +190,7 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
                                     Text(
-                                      data[index].whsName + ' ('+  data[index].whsCode +') ',
+                                      data[index].whsName + ' (' + data[index].whsCode + ') ',
                                       style: CommonUtils.header_Styles16,
                                       maxLines: 2,
                                       overflow: TextOverflow.ellipsis,
@@ -243,11 +236,9 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
                                     //       ),
                                     //     ],
                                     //   ),
-                                    if (data[index].address != null &&
-                                        data[index].address!.isNotEmpty)
+                                    if (data[index].address != null && data[index].address!.isNotEmpty)
                                       Column(
-                                        crossAxisAlignment:
-                                        CrossAxisAlignment.start,
+                                        crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           const SizedBox(height: 5.0),
                                           const Text(
@@ -324,16 +315,10 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
               if (snapshot.connectionState == ConnectionState.done) {
                 return GestureDetector(
                   onTap: () {
-                    Navigator.pushAndRemoveUntil(
-                        context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()),
-                            (route) => false);
+                    Navigator.pushAndRemoveUntil(context, MaterialPageRoute(builder: (context) => const HomeScreen()), (route) => false);
                   },
                   child: Image.asset(
-                    companyId == 1
-                        ? 'assets/srikar-home-icon.png'
-                        : 'assets/seeds-home-icon.png',
+                    companyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
                     width: 30,
                     height: 30,
                   ),

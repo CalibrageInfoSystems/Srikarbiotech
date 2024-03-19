@@ -47,7 +47,6 @@ class _home_Screen extends State<HomeScreen> {
 
   late ExpandedTileController _expandedTileController;
 
-
   @override
   void initState() {
     super.initState();
@@ -515,10 +514,14 @@ class _imagesliderState extends State<imageslider> {
 
   Future<void> fetchImages() async {
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-    final url = Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Banner/GetBannersDataInfo/$CompneyId/null');
-    print('url==>127: $url');
+    final apiurl = '${baseUrl + GetBanners + CompneyId.toString() + "/null"}';
+
+    //final url = Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Banner/GetBannersDataInfo/$CompneyId/null');
+    print('BannersApi: $apiurl');
     try {
-      final response = await http.get(url);
+      final response = await http.get(
+        Uri.parse(apiurl),
+      );
 
       if (response.statusCode == 200) {
         final jsonData = json.decode(response.body);

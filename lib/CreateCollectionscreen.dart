@@ -17,6 +17,7 @@ import 'package:photo_view/photo_view.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/Model/account_modal.dart';
 import 'package:srikarbiotech/Payment_model.dart';
+import 'package:srikarbiotech/Services/api_config.dart';
 import 'package:srikarbiotech/categroy_model.dart';
 import 'package:srikarbiotech/sb_status.dart';
 import 'Common/CommonUtils.dart';
@@ -122,8 +123,8 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   }
 
   Future<void> fetchvirtualcode() async {
-    final apiurl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetVertualCodesByPartyCode/$CompneyId/${widget.code}';
-    print('virtualcode$apiurl');
+    final apiurl = baseUrl + GetVirtualCode + CompneyId.toString() + "/" + '${widget.code}';
+    print('virtualcode:$apiurl');
     try {
       final response = await http.get(Uri.parse(apiurl));
 
@@ -1476,8 +1477,8 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
       print(requestData);
       print(jsonEncode(requestData));
       // URL for the API endpoint
-      String apiUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/AddUpdateCollections";
-
+      String apiUrl = baseUrl + addCollections;
+      print('SubmitCreateCollectionApi:$apiUrl');
       // Encode the JSON data
       String requestBody = jsonEncode(requestData);
 
@@ -1705,7 +1706,9 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   }
 
   Future<void> getpaymentmethods() async {
-    final response = await http.get(Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Master/GetAllTypeCdDmt/2'));
+    String apiUrl = baseUrl + GetPaymentMode;
+    print('GetPaymentMode$apiUrl');
+    final response = await http.get(Uri.parse(apiUrl));
 
     if (response.statusCode == 200) {
       setState(() {
@@ -1819,11 +1822,12 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   }
 
   Future<void> fetchdropdownitems() async {
-    final apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'
-        '$CompneyId';
-
+    // final apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'
+    //     '$CompneyId';
+    final purpose = baseUrl + GetPurpose + CompneyId.toString();
+    print('GetPurposeApi:$purpose');
     try {
-      final response = await http.get(Uri.parse(apiUrl));
+      final response = await http.get(Uri.parse(purpose));
 
       if (response.statusCode == 200) {
         final data = json.decode(response.body);
@@ -1841,8 +1845,9 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   }
 
   Future<void> getAccountsData() async {
-    final apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetBankDetails/$CompneyId';
-
+    // final apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetBankDetails/$CompneyId';
+    final apiUrl = baseUrl + GetbankDetails + CompneyId.toString();
+    print('GetBankDetailsApi: $apiUrl');
     try {
       final response = await http.get(Uri.parse(apiUrl));
 
@@ -1863,8 +1868,9 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
   }
 
   Future<void> fetchdropdownitemscategory() async {
-    final apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Item/GetItemGroups/$CompneyId/null';
-
+    // final apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Item/GetItemGroups/$CompneyId/null';
+    final apiUrl = baseUrl + GetProductName + CompneyId.toString() + "/null";
+    print('Getproductnames: $apiUrl');
     try {
       final response = await http.get(Uri.parse(apiUrl));
 

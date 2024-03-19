@@ -13,6 +13,7 @@ import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'package:http/http.dart' as http;
+import 'package:srikarbiotech/Services/api_config.dart';
 
 import 'Common/SharedPrefsData.dart';
 import 'HomeScreen.dart';
@@ -28,16 +29,7 @@ class Ledgerscreen extends StatefulWidget {
   final double creditLine;
   final double balance;
 
-  Ledgerscreen(
-      {required this.cardName,
-      required this.cardCode,
-      required this.address,
-      required this.state,
-      required this.phone,
-      required this.proprietorName,
-      required this.gstRegnNo,
-        required this.creditLine,
-        required this.balance});
+  Ledgerscreen({required this.cardName, required this.cardCode, required this.address, required this.state, required this.phone, required this.proprietorName, required this.gstRegnNo, required this.creditLine, required this.balance});
   @override
   Ledger_screen createState() => Ledger_screen();
 }
@@ -51,7 +43,7 @@ class Ledger_screen extends State<Ledgerscreen> {
 
   DateTime? selectedToDate;
   int CompneyId = 0;
-  String companyCode ="";
+  String companyCode = "";
   @override
   initState() {
     super.initState();
@@ -69,8 +61,7 @@ class Ledger_screen extends State<Ledgerscreen> {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar:
-      AppBar(
+      appBar: AppBar(
         backgroundColor: Color(0xFFe78337),
         automaticallyImplyLeading: false,
         title: Row(
@@ -79,8 +70,7 @@ class Ledger_screen extends State<Ledgerscreen> {
             Row(
               children: [
                 Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
@@ -118,9 +108,7 @@ class Ledger_screen extends State<Ledgerscreen> {
                       );
                     },
                     child: Image.asset(
-                      CompneyId == 1
-                          ? 'assets/srikar-home-icon.png'
-                          : 'assets/seeds-home-icon.png',
+                      CompneyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
                       width: 30,
                       height: 30,
                     ),
@@ -138,8 +126,7 @@ class Ledger_screen extends State<Ledgerscreen> {
       body: Column(children: [
         Padding(
             padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children:
-            [
+            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               CommonUtils.buildCard(
                 widget.cardName,
                 widget.cardCode,
@@ -149,92 +136,86 @@ class Ledger_screen extends State<Ledgerscreen> {
                 Colors.white,
                 BorderRadius.circular(5.0),
               ),
-
-                  Container(
-                    width: MediaQuery.of(context).size.width,
-                    padding: EdgeInsets.only(top: 5.0, left: 0.0, right: 0.0),
-                    child: IntrinsicHeight(
-                      child: Card(
-                        shape: RoundedRectangleBorder(
-                          borderRadius: BorderRadius.circular(5.0),
-                        ),
-
-                        child: Container(
-
-                          decoration: BoxDecoration(
-                            borderRadius: BorderRadius.circular(5.0),
-                            color: Colors.white,
-                          ),
-                          padding: EdgeInsets.all(10.0),
-
-                          width: MediaQuery.of(context).size.width,
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
+              Container(
+                width: MediaQuery.of(context).size.width,
+                padding: EdgeInsets.only(top: 5.0, left: 0.0, right: 0.0),
+                child: IntrinsicHeight(
+                  child: Card(
+                    shape: RoundedRectangleBorder(
+                      borderRadius: BorderRadius.circular(5.0),
+                    ),
+                    child: Container(
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.0),
+                        color: Colors.white,
+                      ),
+                      padding: EdgeInsets.all(10.0),
+                      width: MediaQuery.of(context).size.width,
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          Row(
                             children: [
-
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      'Credit Limit',
-                                      style: TextStyle(
-                                        color: Color(0xFF5f5f5f),
-                                        fontFamily: "Roboto",
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
+                              Expanded(
+                                child: Text(
+                                  'Credit Limit',
+                                  style: TextStyle(
+                                    color: Color(0xFF5f5f5f),
+                                    fontFamily: "Roboto",
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14.0,
                                   ),
-                                  Expanded(
-                                    child: Text(
-                                      '₹${widget.creditLine}',
-                                      style: TextStyle(
-                                        color: Color(0xFF5f5f5f),
-                                        fontFamily: "Roboto",
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 14.0,
-                                      ),
-                                      textAlign: TextAlign.right,
-                                    ),
-                                  ),
-                                ],
+                                ),
                               ),
-                              SizedBox(height: 5.0), // Add some space between rows
-                              // Third Row: Outstanding Amount
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: Text(
-                                      'Outstanding Amount',
-                                      style: TextStyle(
-                                        color: Color(0xFF5f5f5f),
-                                        fontFamily: "Roboto",
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 14.0,
-                                      ),
-                                    ),
+                              Expanded(
+                                child: Text(
+                                  '₹${widget.creditLine}',
+                                  style: TextStyle(
+                                    color: Color(0xFF5f5f5f),
+                                    fontFamily: "Roboto",
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14.0,
                                   ),
-                                  Expanded(
-                                    child: Text(
-                                      '₹${widget.balance}',
-                                      style: TextStyle(
-                                        color: Color(0xFF5f5f5f),
-                                        fontFamily: "Roboto",
-                                        fontWeight: FontWeight.w700,
-                                        fontSize: 14.0,
-                                      ),
-                                      textAlign: TextAlign.right,
-                                    ),
-                                  ),
-                                ],
+                                  textAlign: TextAlign.right,
+                                ),
                               ),
-
                             ],
                           ),
-                        ),
+                          SizedBox(height: 5.0), // Add some space between rows
+                          // Third Row: Outstanding Amount
+                          Row(
+                            children: [
+                              Expanded(
+                                child: Text(
+                                  'Outstanding Amount',
+                                  style: TextStyle(
+                                    color: Color(0xFF5f5f5f),
+                                    fontFamily: "Roboto",
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                              ),
+                              Expanded(
+                                child: Text(
+                                  '₹${widget.balance}',
+                                  style: TextStyle(
+                                    color: Color(0xFF5f5f5f),
+                                    fontFamily: "Roboto",
+                                    fontWeight: FontWeight.w700,
+                                    fontSize: 14.0,
+                                  ),
+                                  textAlign: TextAlign.right,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ],
                       ),
                     ),
                   ),
+                ),
+              ),
               Card(
                   elevation: 2.0,
                   shape: RoundedRectangleBorder(
@@ -300,8 +281,7 @@ class Ledger_screen extends State<Ledgerscreen> {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
-                        fontWeight:
-                            FontWeight.bold, // Set the font weight to bold
+                        fontWeight: FontWeight.bold, // Set the font weight to bold
                         fontFamily: 'Roboto', // Set the font family to Roboto
                       ),
                     ),
@@ -331,8 +311,7 @@ class Ledger_screen extends State<Ledgerscreen> {
                   border: Border.all(
                     color: Color(0xFFe78337),
                   ),
-                  color: Color(
-                      0xFFF8dac2), // Replace with the desired background color
+                  color: Color(0xFFF8dac2), // Replace with the desired background color
                 ),
                 child: SvgPicture.asset(
                   'assets/share.svg', // Replace with your SVG file path
@@ -533,16 +512,13 @@ class Ledger_screen extends State<Ledgerscreen> {
     bool isValid = true;
     bool hasValidationFailed = false;
 
-
     if (isValid && fromDateController.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong(
-          'Please Select From Date', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong('Please Select From Date', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
     if (isValid && toDateController.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong(
-          'Please Select To Date', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong('Please Select To Date', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
@@ -553,15 +529,16 @@ class Ledger_screen extends State<Ledgerscreen> {
     print('pdffromdate: $pdffromdate');
     print('pdftodate: $pdftodate');
     if (isValid && todate.compareTo(fromdate) < 0) {
-      CommonUtils.showCustomToastMessageLong(
-          "To Date is less than From Date", context, 1, 5);
+      CommonUtils.showCustomToastMessageLong("To Date is less than From Date", context, 1, 5);
       isValid = false;
       hasValidationFailed = true;
     }
 
     if (isValid) {
-      final apiUrl =
-          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Party/GetCustomerLedgerReport';
+      // final apiUrl =
+      //     'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Party/GetCustomerLedgerReport';
+      final apiUrl = baseUrl + GetLedgerReport;
+      print('GetLedgerReportApi:$apiUrl');
       final requestHeaders = {'Content-Type': 'application/json'};
       // final requestBody = {
       //   "PartyCode": "SRIKARTS00139",
@@ -569,12 +546,7 @@ class Ledger_screen extends State<Ledgerscreen> {
       //   "ToDate": "2023-06-05"
       // };
 
-      final requestBody = {
-        "CompanyId": '$CompneyId',
-        "PartyCode": '${widget.cardCode}',
-        "FromDate": fromdate,
-        "ToDate": todate
-      };
+      final requestBody = {"CompanyId": '$CompneyId', "PartyCode": '${widget.cardCode}', "FromDate": fromdate, "ToDate": todate};
       print(requestBody);
       print(jsonEncode(requestBody));
       try {
@@ -594,8 +566,7 @@ class Ledger_screen extends State<Ledgerscreen> {
             // Convert base64 string to bytes
             if (jsonResponse['result']['response'] == null) {
               // Handle null response
-              CommonUtils.showCustomToastMessageLong(
-                  'PDF is not available.', context, 1, 4);
+              CommonUtils.showCustomToastMessageLong('PDF is not available.', context, 1, 4);
               print('Response is null.');
             } else {
               // Handle non-null response
@@ -604,12 +575,11 @@ class Ledger_screen extends State<Ledgerscreen> {
             }
             List<int> pdfBytes = base64.decode(jsonResponse['result']['response']);
             var status = await Permission.storage.request();
-            var manageExternalStorage =
-                await Permission.manageExternalStorage.request();
+            var manageExternalStorage = await Permission.manageExternalStorage.request();
             if (status!.isGranted || manageExternalStorage!.isGranted) {
               Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
               String fileName = "${companyCode}_${widget.cardCode}_${pdffromdate}_${pdftodate}.pdf";
-          //    String fileName = "'$companyCode'_'${widget.cardCode}'_${fromDateController.text}_${toDateController.text}.pdf";
+              //    String fileName = "'$companyCode'_'${widget.cardCode}'_${fromDateController.text}_${toDateController.text}.pdf";
 
               String filePath = '${downloadsDirectory.path}/$fileName';
 
@@ -623,15 +593,13 @@ class Ledger_screen extends State<Ledgerscreen> {
             } else {
               print('Permission denied');
 
-              CommonUtils.showCustomToastMessageLong(
-                  'Permission denied', context, 0, 4);
+              CommonUtils.showCustomToastMessageLong('Permission denied', context, 0, 4);
             }
 
             // Get the directory for saving files
           } else {
             print('API Error: ${jsonResponse['result']['endUserMessage']}');
-            CommonUtils.showCustomToastMessageLong(
-                '${jsonResponse['result']['endUserMessage']}', context, 1, 4);
+            CommonUtils.showCustomToastMessageLong('${jsonResponse['result']['endUserMessage']}', context, 1, 4);
           }
         } else {
           print('Error: ${response.reasonPhrase}');
@@ -653,28 +621,27 @@ class Ledger_screen extends State<Ledgerscreen> {
     print('pdftodate: $pdftodate');
 
     if (isValid && fromDateController.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong(
-          'Please Select From Date', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong('Please Select From Date', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
     if (isValid && toDateController.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong(
-          'Please Select To Date', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong('Please Select To Date', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
 
     if (isValid && todate.compareTo(fromdate) < 0) {
-      CommonUtils.showCustomToastMessageLong(
-          "To Date is less than From Date", context, 1, 5);
+      CommonUtils.showCustomToastMessageLong("To Date is less than From Date", context, 1, 5);
       isValid = false;
       hasValidationFailed = true;
     }
 
     if (isValid) {
-      final apiUrl =
-          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Party/GetCustomerLedgerReport';
+      // final apiUrl =
+      //     'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Party/GetCustomerLedgerReport';
+      final apiUrl = baseUrl + GetCustomerLedgerReport;
+      print('GetCustomerLedgerReportApi:$apiUrl');
       final requestHeaders = {'Content-Type': 'application/json'};
 
       // final requestBody = {
@@ -682,12 +649,7 @@ class Ledger_screen extends State<Ledgerscreen> {
       //   "FromDate": "2023-05-24",
       //   "ToDate": "2023-06-05"
       // };
-      final requestBody = {
-        "CompanyId": '$CompneyId',
-        "PartyCode": '${widget.cardCode}',
-        "FromDate": fromdate,
-        "ToDate": todate
-      };
+      final requestBody = {"CompanyId": '$CompneyId', "PartyCode": '${widget.cardCode}', "FromDate": fromdate, "ToDate": todate};
       print(requestBody);
       print(jsonEncode(requestBody));
       try {
@@ -702,19 +664,16 @@ class Ledger_screen extends State<Ledgerscreen> {
 
           if (jsonResponse['result']['isSuccess']) {
             // Convert base64 string to bytes
-            List<int> pdfBytes =
-                base64.decode(jsonResponse['result']['response']);
+            List<int> pdfBytes = base64.decode(jsonResponse['result']['response']);
             //   var status = await Permission.storage.request();
             final status = await Permission.storage.request();
             // if (status.isDenied ||
             //     status.isPermanentlyDenied ||
             //     status.isRestricted) {
-            var manageExternalStorage =
-                await Permission.manageExternalStorage.request();
+            var manageExternalStorage = await Permission.manageExternalStorage.request();
             if (status!.isGranted || manageExternalStorage!.isGranted) {
-              Directory downloadsDirectory =
-                  Directory('/storage/emulated/0/Download');
-             // String fileName = "srikar_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.pdf";
+              Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
+              // String fileName = "srikar_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.pdf";
               String fileName = "${companyCode}_${widget.cardCode}_${pdffromdate}_${pdftodate}.pdf";
 
               String filePath = '${downloadsDirectory.path}/$fileName';
@@ -733,8 +692,7 @@ class Ledger_screen extends State<Ledgerscreen> {
             // Get the directory for saving files
           } else {
             print('API Error: ${jsonResponse['result']['endUserMessage']}');
-            CommonUtils.showCustomToastMessageLong(
-                '${jsonResponse['result']['endUserMessage']}', context, 1, 4);
+            CommonUtils.showCustomToastMessageLong('${jsonResponse['result']['endUserMessage']}', context, 1, 4);
           }
         } else {
           print('Error: ${response.reasonPhrase}');
@@ -796,7 +754,7 @@ class Ledger_screen extends State<Ledgerscreen> {
 // Retrieve userId and slpCode
 
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-    companyCode  = await SharedPrefsData.getStringFromSharedPrefs("companyCode");
+    companyCode = await SharedPrefsData.getStringFromSharedPrefs("companyCode");
     print('companyCode: $companyCode');
     print('Company ID: $CompneyId');
   }

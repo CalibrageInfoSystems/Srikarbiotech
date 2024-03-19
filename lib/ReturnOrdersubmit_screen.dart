@@ -19,6 +19,7 @@ import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'package:http/http.dart' as http;
 import 'package:srikarbiotech/Returntransportdetails.dart';
+import 'package:srikarbiotech/Services/api_config.dart';
 import 'package:srikarbiotech/sb_status.dart';
 
 import 'CartProvider.dart';
@@ -52,25 +53,25 @@ class ReturnOrdersubmit_screen extends StatefulWidget {
 
   const ReturnOrdersubmit_screen(
       {super.key,
-        required this.cardName,
-        required this.cardCode,
-        required this.address,
-        required this.state,
-        required this.phone,
-        required this.proprietorName,
-        required this.gstRegnNo,
-        required this.LrNumber,
-        required this.Lrdate,
-        required this.Remarks,
-        required this.LRAttachment,
-        required this.ReturnOrderReceipt,
-        required this.addlattchments,
-        required this.creditLine,
-        required this.balance,
-        required this.transportname,
-        required this.whsCode,
-        required this.whsName,
-        required this.whsState});
+      required this.cardName,
+      required this.cardCode,
+      required this.address,
+      required this.state,
+      required this.phone,
+      required this.proprietorName,
+      required this.gstRegnNo,
+      required this.LrNumber,
+      required this.Lrdate,
+      required this.Remarks,
+      required this.LRAttachment,
+      required this.ReturnOrderReceipt,
+      required this.addlattchments,
+      required this.creditLine,
+      required this.balance,
+      required this.transportname,
+      required this.whsCode,
+      required this.whsName,
+      required this.whsState});
   @override
   returnOrder_submit_screen createState() => returnOrder_submit_screen();
 }
@@ -183,8 +184,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
             Row(
               children: [
                 Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
@@ -210,8 +210,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       // Access the cart data from the provider
-                      cartItems = Provider.of<CartProvider>(context)
-                          .getReturnCartItems();
+                      cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
                       // Update the globalCartLength
                       globalCartLength = cartItems.length;
                     }
@@ -238,14 +237,11 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                       // Handle the click event for the home icon
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(
-                            builder: (context) => const HomeScreen()),
+                        MaterialPageRoute(builder: (context) => const HomeScreen()),
                       );
                     },
                     child: Image.asset(
-                      CompneyId == 1
-                          ? 'assets/srikar-home-icon.png'
-                          : 'assets/seeds-home-icon.png',
+                      CompneyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
                       width: 30,
                       height: 30,
                     ),
@@ -326,8 +322,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                             ),
                           ],
                         ),
-                        const SizedBox(
-                            height: 5.0), // Add some space between rows
+                        const SizedBox(height: 5.0), // Add some space between rows
                         // Third Row: Outstanding Amount
                         Row(
                           children: [
@@ -370,8 +365,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                 //   return CircularProgressIndicator();
                 // } else
                 // if (snapshot.connectionState == ConnectionState.done) {
-                cartItems =
-                    Provider.of<CartProvider>(context).getReturnCartItems();
+                cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
 
                 return buildListView(cartItems, ValueKey(cartItems));
 
@@ -400,8 +394,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
             // const SizedBox(height: 10),
             Container(
               width: MediaQuery.of(context).size.width,
-              padding:
-              const EdgeInsets.only(top: 0.0, left: 10.0, right: 10.0),
+              padding: const EdgeInsets.only(top: 0.0, left: 10.0, right: 10.0),
               child: IntrinsicHeight(
                 child: Card(
                   elevation: 5,
@@ -416,8 +409,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                       children: <Widget>[
                         // row one
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
@@ -431,34 +423,27 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) =>
-                                            Returntransportdetails(
-                                              cardName: widget.cardName,
-                                              cardCode: widget.cardCode,
-                                              address: widget.address,
-                                              state: widget.state,
-                                              phone: widget.phone,
-                                              proprietorName:
-                                              widget.proprietorName,
-                                              gstRegnNo: widget.gstRegnNo,
-                                              lrnumber: widget.LrNumber,
-                                              lrdate: widget.Lrdate,
-                                              remarks: widget.Remarks,
-                                              creditLine: double.parse(
-                                                  '${widget.creditLine}'), // Convert to double
-                                              balance: double.parse(
-                                                  '${widget.balance}'),
-                                              transportname:
-                                              widget.transportname,
-                                                whsCode: widget.whsCode,
-                                                whsName: widget.whsName,
-                                                whsState: widget.whsState
-                                            )),
+                                        builder: (context) => Returntransportdetails(
+                                            cardName: widget.cardName,
+                                            cardCode: widget.cardCode,
+                                            address: widget.address,
+                                            state: widget.state,
+                                            phone: widget.phone,
+                                            proprietorName: widget.proprietorName,
+                                            gstRegnNo: widget.gstRegnNo,
+                                            lrnumber: widget.LrNumber,
+                                            lrdate: widget.Lrdate,
+                                            remarks: widget.Remarks,
+                                            creditLine: double.parse('${widget.creditLine}'), // Convert to double
+                                            balance: double.parse('${widget.balance}'),
+                                            transportname: widget.transportname,
+                                            whsCode: widget.whsCode,
+                                            whsName: widget.whsName,
+                                            whsState: widget.whsState)),
                                   );
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.all(
-                                      8), // Adjust padding as needed
+                                  padding: const EdgeInsets.all(8), // Adjust padding as needed
                                   child: SvgPicture.asset(
                                     'assets/edit.svg', // Replace 'your_icon.svg' with your SVG asset path
                                     width: 20, // Adjust width as needed
@@ -478,8 +463,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                           children: <Widget>[
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 10),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -499,8 +483,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                             dividerForVertical,
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 10),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -526,8 +509,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                           children: <Widget>[
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 10),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -553,8 +535,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                           children: <Widget>[
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 12, vertical: 10),
+                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
@@ -578,11 +559,9 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
 
                         // row four
                         Padding(
-                          padding: const EdgeInsets.symmetric(
-                              horizontal: 12, vertical: 10),
+                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
                           child: Container(
-                              padding: const EdgeInsets.symmetric(
-                                  horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
                                 color: Colors.orange.shade100,
                                 border: Border.all(
@@ -721,8 +700,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
           print('clicked ');
         },
         child: Padding(
-          padding: const EdgeInsets.only(
-              top: 0.0, left: 14.0, right: 14.0, bottom: 10.0),
+          padding: const EdgeInsets.only(top: 0.0, left: 14.0, right: 14.0, bottom: 10.0),
           child: Container(
             alignment: Alignment.bottomCenter,
             width: MediaQuery.of(context).size.width,
@@ -734,10 +712,8 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                     Addreturnorder();
                     // Add logic for the download button
                   } else {
-                    CommonUtils.showCustomToastMessageLong(
-                        'Please Add Atleast One Product', context, 1, 4);
+                    CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
                   }
-
                 },
                 child: Container(
                   // width: desiredWidth * 0.9,
@@ -747,20 +723,17 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                     borderRadius: BorderRadius.circular(6.0),
                     color: const Color(0xFFe78337),
                   ),
-                  child: const Row(
-                      crossAxisAlignment: CrossAxisAlignment.center,
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Text(
-                          'Place Your Return Order',
-                          style: TextStyle(
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w700,
-                            fontSize: 14,
-                            color: Colors.white,
-                          ),
-                        ),
-                      ]),
+                  child: const Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center, children: [
+                    Text(
+                      'Place Your Return Order',
+                      style: TextStyle(
+                        fontFamily: 'Roboto',
+                        fontWeight: FontWeight.w700,
+                        fontSize: 14,
+                        color: Colors.white,
+                      ),
+                    ),
+                  ]),
                 ),
               ),
             ),
@@ -793,8 +766,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       itemBuilder: (context, index) {
         ReturnOrderItemXrefType cartItem = cartItems[index];
         if (cartItems.length != textEditingControllers.length) {
-          textEditingControllers = List.generate(
-              cartItems.length, (index) => TextEditingController());
+          textEditingControllers = List.generate(cartItems.length, (index) => TextEditingController());
         }
         double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
         double price = cartItem.price ?? 0.0;
@@ -804,15 +776,12 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         // Update totalSumNotifier with the correct value
 
         return CartItemWidget(
-
           cartItem: cartItem,
           onDelete: () {
             setState(() {
               cartItems.removeAt(index);
 
               textEditingControllers.removeAt(index);
-
-
             });
           },
           cartItems: cartItems,
@@ -845,7 +814,9 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     // Format the date as 'yyyy-MM-dd'
     String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
     print('Formatted Date: $formattedcurrentDate');
-    const String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/AddReturnOrder';
+    //const String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/AddReturnOrder';
+    String apiUrl = baseUrl + AddReturnorder;
+    print('AddReturnorderApi: $apiUrl');
     List<Map<String, dynamic>> returnorderItemList = cartItems.map((cartItem) {
       double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
       double price = cartItem.price ?? 0.0;
@@ -903,9 +874,9 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       "OtherFileExtension": ".jpg",
       "OtherFileLocation": "",
       "TransportName": widget.transportname,
-      "WhsCode":  widget.whsCode,
-      "WhsName":  widget.whsName,
-      "WhsState":  widget.whsState
+      "WhsCode": widget.whsCode,
+      "WhsName": widget.whsName,
+      "WhsState": widget.whsState
     };
     print(jsonEncode(orderData));
 
@@ -933,9 +904,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) =>
-
-                ReturnorderStatusScreen(  responseData: responseData),
+            builder: (context) => ReturnorderStatusScreen(responseData: responseData),
           ),
         );
       } else {
@@ -969,6 +938,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
 
     return formattedDate;
   }
+
   void showAttachmentsDialog(List data) {
     showDialog(
       context: context,
@@ -1021,8 +991,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                           margin: const EdgeInsets.symmetric(horizontal: 4.0),
                           decoration: BoxDecoration(
                             shape: BoxShape.circle,
-                            color:
-                            currentPage == index ? Colors.red : Colors.grey,
+                            color: currentPage == index ? Colors.red : Colors.grey,
                           ),
                         );
                       }),
@@ -1136,8 +1105,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         return Dialog(
           child: Container(
             padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(10), color: Colors.white),
+            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
             width: double.infinity,
             height: 500,
             child: Stack(
@@ -1172,9 +1140,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                       ),
                       child: Container(
                         padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(
-                            color: Colors.red.withOpacity(0.2),
-                            borderRadius: BorderRadius.circular(20)),
+                        decoration: BoxDecoration(color: Colors.red.withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
                         child: const Icon(
                           Icons.close,
                           color: Colors.red,
@@ -1211,15 +1177,9 @@ class CartItemWidget extends StatefulWidget {
 
   final List<ReturnOrderItemXrefType> cartItems;
 
-  final VoidCallback
-  onQuantityChanged; // Callback function to notify when quantity changes
+  final VoidCallback onQuantityChanged; // Callback function to notify when quantity changes
 
-   CartItemWidget(
-      {
-        required this.cartItem,
-        required this.onDelete,
-        required this.cartItems,
-        required this.onQuantityChanged // Initialize here
+  CartItemWidget({required this.cartItem, required this.onDelete, required this.cartItems, required this.onQuantityChanged // Initialize here
       });
 
   @override
@@ -1273,8 +1233,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
         child: Container(
           color: Colors.white,
           padding: const EdgeInsets.all(8.0),
-          child:
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               '${widget.cartItem.itemName}',
               style: CommonUtils.Mediumtext_14,
@@ -1316,8 +1275,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                           // Call the updateQuantity method in your model class
                           widget.cartItem.updateQuantity(_orderQty);
 
-                          widget
-                              .onQuantityChanged(); // Call onQuantityChanged callback
+                          widget.onQuantityChanged(); // Call onQuantityChanged callback
                         });
                       },
                       deleteQuantity: () {
@@ -1327,21 +1285,18 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                             // totalSumForProduct =
                             //     calculateTotalSumForProduct(widget.cartItem);
                             formatNumber(totalSumForProduct);
-                            print(
-                                'totalSumForProductminus==$totalSumForProduct');
+                            print('totalSumForProductminus==$totalSumForProduct');
                             formatNumber(totalSumForProduct);
                             _orderQty = (_orderQty ?? 0) - 1;
                             _textController.text = _orderQty.toString();
                             widget.cartItem.updateQuantity(_orderQty);
 
-                            widget
-                                .onQuantityChanged(); // Call onQuantityChanged callback
+                            widget.onQuantityChanged(); // Call onQuantityChanged callback
                           }
                         });
                       },
                       textController: _textController,
-                      orderQuantity:
-                      _orderQty, // Pass _orderQty as orderQuantity
+                      orderQuantity: _orderQty, // Pass _orderQty as orderQuantity
                       // Pass the onQuantityChanged callback function
                       updateTotalPrice: (int value) {
                         // Your updateTotalPrice logic, if any
@@ -1560,8 +1515,7 @@ class _ImageSliderDialogState extends State<ImageSliderDialog> {
 
   @override
   void initState() {
-    setAttachments(
-        widget.LRAttachment, widget.ReturnOrderReceipt, widget.addlattchments);
+    setAttachments(widget.LRAttachment, widget.ReturnOrderReceipt, widget.addlattchments);
     super.initState();
   }
 
@@ -1627,10 +1581,10 @@ class _ImageSliderDialogState extends State<ImageSliderDialog> {
   int get getAttchementsLength => attachments.length;
 
   void setAttachments(
-      String att1,
-      String att2,
-      String att3,
-      ) {
+    String att1,
+    String att2,
+    String att3,
+  ) {
     if (att1.isNotEmpty) {
       attachments.add(att1);
     }

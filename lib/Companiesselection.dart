@@ -9,6 +9,7 @@ import 'package:http/http.dart' as http;
 import 'Common/CommonUtils.dart';
 import 'LoginScreen.dart';
 import 'Model/CompanyModel.dart';
+import 'Services/api_config.dart';
 
 class Companiesselection extends StatefulWidget {
   const Companiesselection({super.key});
@@ -86,31 +87,31 @@ class Companies_selection extends State<Companiesselection> {
                   height: 50, // Adjust the space height as needed
                 ),
                 // Using ListView.builder to add space between cards
-              _isLoading
+                _isLoading
                     ? Center(
-                  child: CircularProgressIndicator(),
-                ):
-                ListView.builder(
-                  shrinkWrap: true,
-                  itemCount: companies.length,
-                  itemBuilder: (context, index) {
-                    return Column(
-                      children: [
-                        CardForScreenOne(
-                          cardIndex: companies[index].companyId - 1,
-                          cardImage:companies[index].fileUrl,
-                          companyName: companies[index].companyName,
-                          companyAddress: companies[index].companyAddress,
-                          companyId: companies[index].companyId,
-                          fileUrl: companies[index].fileUrl,
-                        ),
-                        const SizedBox(
-                          height: 30, // Adjust the space height as needed
-                        ),
-                      ],
-                    );
-                  },
-                ),
+                        child: CircularProgressIndicator(),
+                      )
+                    : ListView.builder(
+                        shrinkWrap: true,
+                        itemCount: companies.length,
+                        itemBuilder: (context, index) {
+                          return Column(
+                            children: [
+                              CardForScreenOne(
+                                cardIndex: companies[index].companyId - 1,
+                                cardImage: companies[index].fileUrl,
+                                companyName: companies[index].companyName,
+                                companyAddress: companies[index].companyAddress,
+                                companyId: companies[index].companyId,
+                                fileUrl: companies[index].fileUrl,
+                              ),
+                              const SizedBox(
+                                height: 30, // Adjust the space height as needed
+                              ),
+                            ],
+                          );
+                        },
+                      ),
               ],
             ),
           ),
@@ -119,25 +120,22 @@ class Companies_selection extends State<Companiesselection> {
     );
   }
 
-
-
   void fetchGetCompaniesData() async {
     setState(() {
       _isLoading = true;
     });
-
+    final apiurl = '${baseUrl + getCompanies}';
+    print('GetCompaniesapi$apiurl');
     try {
       final response = await http.get(
-        Uri.parse(
-            'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetCompanies/null'),
+        Uri.parse(apiurl),
       );
 
       if (response.statusCode == 200) {
         final Map<String, dynamic> responseData = json.decode(response.body);
 
         final List<dynamic> listResult = responseData['response']['listResult'];
-        final List<CompanyModel> fetchedCompanies =
-        listResult.map((data) => CompanyModel.fromJson(data)).toList();
+        final List<CompanyModel> fetchedCompanies = listResult.map((data) => CompanyModel.fromJson(data)).toList();
 
         setState(() {
           companies = fetchedCompanies;
@@ -158,7 +156,6 @@ class Companies_selection extends State<Companiesselection> {
       });
     }
   }
-
 }
 
 class CardForScreenOne extends StatelessWidget {
@@ -220,36 +217,27 @@ class CardForScreenOne extends StatelessWidget {
                       // crossAxisAlignment: CrossAxisAlignment.center, // Center the content horizontally
                       children: [
                         Container(
-                          alignment:
-                              Alignment.center, // Center the text vertically
+                          alignment: Alignment.center, // Center the text vertically
                           child: RichText(
                             text: TextSpan(
                               children: [
                                 TextSpan(
-                                  text:
-                                      "${companyName.split(" ")[0]}\n", // First word
+                                  text: "${companyName.split(" ")[0]}\n", // First word
                                   style: TextStyle(
                                     fontSize: 22,
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w700,
-                                    color: cardIndex == 0
-                                        ? cardColors[1][0]
-                                        : cardColors[1][1],
+                                    color: cardIndex == 0 ? cardColors[1][0] : cardColors[1][1],
                                   ),
                                 ),
                                 const TextSpan(text: ''),
                                 TextSpan(
-                                  text: companyName
-                                      .split(" ")
-                                      .sublist(1)
-                                      .join(" "), // Remaining words
+                                  text: companyName.split(" ").sublist(1).join(" "), // Remaining words
                                   style: TextStyle(
                                     fontSize: 30,
                                     fontFamily: 'Roboto',
                                     fontWeight: FontWeight.w700,
-                                    color: cardIndex == 0
-                                        ? cardColors[1][0]
-                                        : cardColors[1][1],
+                                    color: cardIndex == 0 ? cardColors[1][0] : cardColors[1][1],
                                   ),
                                 ),
                               ],
@@ -277,8 +265,6 @@ class CardForScreenOne extends StatelessWidget {
                       ),
                     ),
                   ),
-
-
                 ],
               ),
             ),

@@ -45,8 +45,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
   @override
   void initState() {
     super.initState();
-    Provider.of<ViewPendingOrdersProvider>(context, listen: false)
-        .resetCheckBoxValues();
+    Provider.of<ViewPendingOrdersProvider>(context, listen: false).resetCheckBoxValues();
     initializeData();
   }
 
@@ -77,9 +76,10 @@ class _VieworderPageState extends State<Viewpendingorder> {
     String currentdate = DateFormat('yyyy-MM-dd').format(DateTime.now());
     DateTime oneWeekAgo = DateTime.now().subtract(const Duration(days: 7));
     String oneWeekdate = DateFormat('yyyy-MM-dd').format(oneWeekAgo);
+    String apiurl = baseUrl + GetAppOrderbySearch;
+    print('GetAppOrderbySearchApi:$apiurl');
 
-    final url = Uri.parse(
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetAppOrdersBySearch');
+    final url = Uri.parse(apiurl);
     final requestBody = {
       "PartyCode": null,
       "StatusId": 1,
@@ -109,8 +109,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
         print('===========>$listResult');
 
         setState(() {
-          orderesponselist =
-              listResult.map((json) => OrderResult.fromJson(json)).toList();
+          orderesponselist = listResult.map((json) => OrderResult.fromJson(json)).toList();
           filterorderesponselist = List.from(orderesponselist);
         });
 
@@ -133,10 +132,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
   void filterOrderBasedOnProduct(String input) {
     apiData.then((data) {
       setState(() {
-        viewPendingOrders.storeIntoViewPendingOrders(data!
-            .where((item) =>
-            item.partyName.toLowerCase().contains(input.toLowerCase()))
-            .toList());
+        viewPendingOrders.storeIntoViewPendingOrders(data!.where((item) => item.partyName.toLowerCase().contains(input.toLowerCase())).toList());
       });
     });
   }
@@ -145,8 +141,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
     final String searchTerm = searchController.text.toLowerCase();
     setState(() {
       filterorderesponselist = orderesponselist.where((dealer) {
-        return dealer.partyName.toLowerCase().contains(searchTerm) ||
-            dealer.partyGSTNumber.toLowerCase().contains(searchTerm);
+        return dealer.partyName.toLowerCase().contains(searchTerm) || dealer.partyGSTNumber.toLowerCase().contains(searchTerm);
       }).toList();
     });
   }
@@ -169,8 +164,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
             future: apiData,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: CircularProgressIndicator.adaptive());
+                return const Center(child: CircularProgressIndicator.adaptive());
               } else if (snapshot.hasError) {
                 return Center(
                   child: Text('Error occurred: ${snapshot.error}'),
@@ -192,45 +186,43 @@ class _VieworderPageState extends State<Viewpendingorder> {
                           children: [
                             isSelectedAll
                                 ? GestureDetector(
-                              onTap: () {
-                                pendingsProvider.toggleUnSelectAll();
-                                setState(() {
-                                  isSelectedAll = false;
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: const Color(0xFFe78337),
-                                ),
-                                child: const Text(
-                                  'Unselect All Orders',
-                                  style: CommonUtils.Buttonstyle,
-                                ),
-                              ),
-                            )
+                                    onTap: () {
+                                      pendingsProvider.toggleUnSelectAll();
+                                      setState(() {
+                                        isSelectedAll = false;
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: const Color(0xFFe78337),
+                                      ),
+                                      child: const Text(
+                                        'Unselect All Orders',
+                                        style: CommonUtils.Buttonstyle,
+                                      ),
+                                    ),
+                                  )
                                 : GestureDetector(
-                              onTap: () {
-                                pendingsProvider.toggleSelectAll();
-                                setState(() {
-                                  isSelectedAll = true;
-                                });
-                              },
-                              child: Container(
-                                padding: const EdgeInsets.symmetric(
-                                    vertical: 5, horizontal: 10),
-                                decoration: BoxDecoration(
-                                  borderRadius: BorderRadius.circular(8),
-                                  color: const Color(0xFFe78337),
-                                ),
-                                child: const Text(
-                                  'Select All for Approve Orders',
-                                  style: CommonUtils.Buttonstyle,
-                                ),
-                              ),
-                            )
+                                    onTap: () {
+                                      pendingsProvider.toggleSelectAll();
+                                      setState(() {
+                                        isSelectedAll = true;
+                                      });
+                                    },
+                                    child: Container(
+                                      padding: const EdgeInsets.symmetric(vertical: 5, horizontal: 10),
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(8),
+                                        color: const Color(0xFFe78337),
+                                      ),
+                                      child: const Text(
+                                        'Select All for Approve Orders',
+                                        style: CommonUtils.Buttonstyle,
+                                      ),
+                                    ),
+                                  )
                           ],
                         ),
 
@@ -245,16 +237,14 @@ class _VieworderPageState extends State<Viewpendingorder> {
                             itemBuilder: (context, index) {
                               String dateString = data[index].orderDate;
                               DateTime date = DateTime.parse(dateString);
-                              String formattedDate =
-                              DateFormat('dd MMM, yyyy').format(date);
+                              String formattedDate = DateFormat('dd MMM, yyyy').format(date);
 
                               return OrderCard(
                                 orderIndex: index,
                                 orderResult: data[index],
                                 formattedDate: formattedDate,
                                 // Add isSelected parameter to determine if the item is selected
-                                isSelected:
-                                selectedOrders.contains(data[index]),
+                                isSelected: selectedOrders.contains(data[index]),
                                 // Pass a callback function to handle selection
                                 onSelected: (isSelected) {
                                   setState(() {
@@ -295,22 +285,19 @@ class _VieworderPageState extends State<Viewpendingorder> {
                           onTap: pendingsProvider.getSelectedOrderIds().isEmpty
                               ? null
                               : () {
-                            // Add your logic here for when the button is clicked
-                            print('Approve button clicked');
-                            print(
-                                'Selected order IDs: ${pendingsProvider.getSelectedOrderIds().length}');
-                            if (pendingsProvider
-                                .getSelectedOrderIds()
-                                .isNotEmpty) {
-                              showRemarksBottomSheet(
-                                context,
-                                pendingsProvider.getSelectedOrderIds(),
-                              );
-                            } else {
-                              // Handle case when no order is selected
-                              print('No orders selected');
-                            }
-                          },
+                                  // Add your logic here for when the button is clicked
+                                  print('Approve button clicked');
+                                  print('Selected order IDs: ${pendingsProvider.getSelectedOrderIds().length}');
+                                  if (pendingsProvider.getSelectedOrderIds().isNotEmpty) {
+                                    showRemarksBottomSheet(
+                                      context,
+                                      pendingsProvider.getSelectedOrderIds(),
+                                    );
+                                  } else {
+                                    // Handle case when no order is selected
+                                    print('No orders selected');
+                                  }
+                                },
                           child: Container(
                             color: Colors.white,
                             padding: const EdgeInsets.all(16),
@@ -320,11 +307,8 @@ class _VieworderPageState extends State<Viewpendingorder> {
                                 padding: const EdgeInsets.all(10),
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(5),
-                                  color: pendingsProvider
-                                      .getSelectedOrderIds()
-                                      .isEmpty
-                                      ? const Color(0xFFe58338).withOpacity(
-                                      0.2) // Change to your disabled button color
+                                  color: pendingsProvider.getSelectedOrderIds().isEmpty
+                                      ? const Color(0xFFe58338).withOpacity(0.2) // Change to your disabled button color
                                       : const Color(0xFFe78337),
                                 ),
                                 child: Row(
@@ -335,22 +319,16 @@ class _VieworderPageState extends State<Viewpendingorder> {
                                       height: 18,
                                       width: 18,
                                       fit: BoxFit.fitWidth,
-                                      color: pendingsProvider
-                                          .getSelectedOrderIds()
-                                          .isEmpty
-                                          ? Colors
-                                          .grey // Change to your disabled button color
+                                      color: pendingsProvider.getSelectedOrderIds().isEmpty
+                                          ? Colors.grey // Change to your disabled button color
                                           : Colors.white,
                                     ),
                                     const SizedBox(width: 8.0),
                                     Text(
                                       'Approve',
                                       style: TextStyle(
-                                        color: pendingsProvider
-                                            .getSelectedOrderIds()
-                                            .isEmpty
-                                            ? Colors
-                                            .grey // Change to your disabled button color
+                                        color: pendingsProvider.getSelectedOrderIds().isEmpty
+                                            ? Colors.grey // Change to your disabled button color
                                             : Colors.white,
                                         fontSize: 18,
                                         fontWeight: FontWeight.w700,
@@ -393,8 +371,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                     // Handle the click event for the back button
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomeScreen()),
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
                     );
                     //     viewPendingOrders.Clearpendingcheckbox();
                   },
@@ -425,15 +402,12 @@ class _VieworderPageState extends State<Viewpendingorder> {
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomeScreen()),
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
                     );
                     //
                   },
                   child: Image.asset(
-                    companyId == 1
-                        ? 'assets/srikar-home-icon.png'
-                        : 'assets/seeds-home-icon.png',
+                    companyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
                     width: 30,
                     height: 30,
                   ),
@@ -466,8 +440,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                   hintStyle: CommonUtils.hintstyle_14,
                   suffixIcon: const Icon(Icons.search),
                   border: CommonUtils.searchBarOutPutInlineBorder,
-                  focusedBorder:
-                  CommonUtils.searchBarEnabledNdFocuedOutPutInlineBorder,
+                  focusedBorder: CommonUtils.searchBarEnabledNdFocuedOutPutInlineBorder,
                 ),
               ),
             ),
@@ -493,10 +466,11 @@ class _VieworderPageState extends State<Viewpendingorder> {
       "UpdatedDate": currentdate
     };
     print('==>${jsonEncode(requestBody)}');
+    String apiurl = baseUrl + UpdateOrderStatus;
+    print('UpdateOrderStatusApi:$apiurl');
     // Make the HTTP POST request
     var response = await http.post(
-      Uri.parse(
-          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus'),
+      Uri.parse(apiurl),
       headers: <String, String>{
         'Content-Type': 'application/json; charset=UTF-8',
       },
@@ -507,15 +481,13 @@ class _VieworderPageState extends State<Viewpendingorder> {
       // Request successful, handle response here
       print('Request successful');
       if (responseBody['isSuccess'] == true) {
-        CommonUtils.showCustomToastMessageLong(
-            responseBody['endUserMessage'], context, 0, 4);
+        CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 0, 4);
         Navigator.push(
           context,
           MaterialPageRoute(builder: (context) => const Viewpendingorder()),
         );
       } else {
-        CommonUtils.showCustomToastMessageLong(
-            responseBody['endUserMessage'], context, 1, 4);
+        CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 1, 4);
       }
     } else {
       // Request failed, handle error here
@@ -525,8 +497,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
     }
   }
 
-  void showRemarksBottomSheet(
-      BuildContext context, List<int> selectedOrderIds) {
+  void showRemarksBottomSheet(BuildContext context, List<int> selectedOrderIds) {
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -545,8 +516,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Padding(
-                  padding: EdgeInsets.only(
-                      top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
+                  padding: EdgeInsets.only(top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
                   child: Text(
                     'Remarks',
                     style: CommonUtils.Mediumtext_o_14,
@@ -556,8 +526,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
-                    border:
-                    Border.all(color: const Color(0xFFe78337), width: 1),
+                    border: Border.all(color: const Color(0xFFe78337), width: 1),
                     borderRadius: BorderRadius.circular(5.0),
                     color: Colors.white,
                   ),
@@ -579,9 +548,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                           border: InputBorder.none,
                         ),
                       ),
-                      const SizedBox(
-                          height:
-                          10), // Add space between TextFormField and counter
+                      const SizedBox(height: 10), // Add space between TextFormField and counter
                     ],
                   ),
                 ),
@@ -611,8 +578,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
@@ -667,8 +633,7 @@ class _VieworderPageState extends State<Viewpendingorder> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
@@ -826,16 +791,13 @@ class _OrderCardState extends State<OrderCard> {
                           // beside info
                           Expanded(
                             child: Padding(
-                              padding: const EdgeInsets.only(
-                                  left: 10, top: 0, bottom: 0),
+                              padding: const EdgeInsets.only(left: 10, top: 0, bottom: 0),
                               child: Column(
                                 crossAxisAlignment: CrossAxisAlignment.start,
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                 children: [
                                   Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       // Add Text
                                       Expanded(
@@ -851,21 +813,15 @@ class _OrderCardState extends State<OrderCard> {
                                       SizedBox(
                                         width: 24,
                                         height: 24,
-                                        child:
-                                        Consumer<ViewPendingOrdersProvider>(
+                                        child: Consumer<ViewPendingOrdersProvider>(
                                           builder: (context, pendingOrders, _) {
-                                            final int index =
-                                                widget.orderIndex ?? 0;
+                                            final int index = widget.orderIndex ?? 0;
 
                                             return Checkbox(
-                                              activeColor:
-                                              const Color(0xFFe78337),
-                                              value: pendingOrders
-                                                  .getCheckBoxValues[index],
+                                              activeColor: const Color(0xFFe78337),
+                                              value: pendingOrders.getCheckBoxValues[index],
                                               onChanged: (bool? newValue) {
-                                                pendingOrders
-                                                    .setCheckBoxStatusByIndex(
-                                                    index, newValue);
+                                                pendingOrders.setCheckBoxStatusByIndex(index, newValue);
                                               },
                                             );
                                           },
@@ -877,8 +833,7 @@ class _OrderCardState extends State<OrderCard> {
                                     height: 5.0,
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Row(
                                         children: [
@@ -887,8 +842,7 @@ class _OrderCardState extends State<OrderCard> {
                                             style: CommonUtils.txSty_13B_Fb,
                                           ),
                                           Text(
-                                            widget.orderResult.orderNumber
-                                                .toString(),
+                                            widget.orderResult.orderNumber.toString(),
                                             style: CommonUtils.txSty_13O_F6,
                                           ),
                                         ],
@@ -899,14 +853,13 @@ class _OrderCardState extends State<OrderCard> {
                                     height: 5.0,
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       widget.orderResult.whsName != null
                                           ? Text(
-                                        '${widget.orderResult.whsName}',
-                                        style: CommonUtils.txSty_13O_F6,
-                                      )
+                                              '${widget.orderResult.whsName}',
+                                              style: CommonUtils.txSty_13O_F6,
+                                            )
                                           : const SizedBox(),
                                       Row(
                                         children: [
@@ -926,8 +879,7 @@ class _OrderCardState extends State<OrderCard> {
                                     height: 5.0,
                                   ),
                                   Row(
-                                    mainAxisAlignment:
-                                    MainAxisAlignment.spaceBetween,
+                                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
                                     children: [
                                       Text(
                                         widget.formattedDate,
@@ -997,8 +949,7 @@ class _OrderCardState extends State<OrderCard> {
                         children: <Widget>[
                           Container(
                             margin: const EdgeInsets.only(left: 5.0),
-                            padding: const EdgeInsets.symmetric(
-                                vertical: 3, horizontal: 7),
+                            padding: const EdgeInsets.symmetric(vertical: 3, horizontal: 7),
                             decoration: BoxDecoration(
                               borderRadius: BorderRadius.circular(10),
                               color: statusBgColor,
@@ -1021,22 +972,15 @@ class _OrderCardState extends State<OrderCard> {
                               alignment: Alignment.centerRight,
                               child: GestureDetector(
                                 onTap: () {
-                                  showRemarksBottomSheet(
-                                      context, widget.orderResult.id);
+                                  showRemarksBottomSheet(context, widget.orderResult.id);
                                 },
                                 child: Container(
                                   decoration: BoxDecoration(
-                                    color: HexColor(
-                                        '#ffecee'), // Background color of the card
-                                    border: Border.all(
-                                        color: HexColor(
-                                            '#ee1d23')), // Add red border
-                                    borderRadius: BorderRadius.circular(
-                                        8), // Adjust the radius as needed
+                                    color: HexColor('#ffecee'), // Background color of the card
+                                    border: Border.all(color: HexColor('#ee1d23')), // Add red border
+                                    borderRadius: BorderRadius.circular(8), // Adjust the radius as needed
                                   ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10,
-                                      vertical: 5), // Adjust padding as needed
+                                  padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 5), // Adjust padding as needed
                                   child: Row(
                                     mainAxisSize: MainAxisSize.min,
                                     children: [
@@ -1047,9 +991,7 @@ class _OrderCardState extends State<OrderCard> {
                                         fit: BoxFit.fitWidth,
                                         color: HexColor('#ee1d23'),
                                       ),
-                                      const SizedBox(
-                                          width:
-                                          8.0), // Add some spacing between icon and text
+                                      const SizedBox(width: 8.0), // Add some spacing between icon and text
                                       Text(
                                         'Reject',
                                         style: TextStyle(
@@ -1167,8 +1109,7 @@ class _OrderCardState extends State<OrderCard> {
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
                 const Padding(
-                  padding: EdgeInsets.only(
-                      top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
+                  padding: EdgeInsets.only(top: 15.0, left: 0.0, right: 0.0, bottom: 5.0),
                   child: Text(
                     'Remarks *',
                     style: CommonUtils.Mediumtext_o_14,
@@ -1178,8 +1119,7 @@ class _OrderCardState extends State<OrderCard> {
                 Container(
                   width: MediaQuery.of(context).size.width,
                   decoration: BoxDecoration(
-                    border:
-                    Border.all(color: const Color(0xFFe78337), width: 1),
+                    border: Border.all(color: const Color(0xFFe78337), width: 1),
                     borderRadius: BorderRadius.circular(5.0),
                     color: Colors.white,
                   ),
@@ -1201,9 +1141,7 @@ class _OrderCardState extends State<OrderCard> {
                           border: InputBorder.none,
                         ),
                       ),
-                      const SizedBox(
-                          height:
-                          10), // Add space between TextFormField and counter
+                      const SizedBox(height: 10), // Add space between TextFormField and counter
                     ],
                   ),
                 ),
@@ -1233,8 +1171,7 @@ class _OrderCardState extends State<OrderCard> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
@@ -1266,8 +1203,7 @@ class _OrderCardState extends State<OrderCard> {
                       onTap: () {
                         String remarks = remarkstext.text.trim();
                         if (remarks.isEmpty) {
-                          CommonUtils.showCustomToastMessageLong(
-                              'Please Enter Remarks', context, 1, 4);
+                          CommonUtils.showCustomToastMessageLong('Please Enter Remarks', context, 1, 4);
                         } else {
                           // Call the API to update invoice status with remarks
                           handlereject(id, remarks);
@@ -1293,8 +1229,7 @@ class _OrderCardState extends State<OrderCard> {
                             mainAxisAlignment: MainAxisAlignment.center,
                             children: [
                               Container(
-                                padding: const EdgeInsets.symmetric(
-                                    horizontal: 10.0),
+                                padding: const EdgeInsets.symmetric(horizontal: 10.0),
                                 child: Row(
                                   children: [
                                     SvgPicture.asset(
@@ -1356,8 +1291,7 @@ class _OrderCardState extends State<OrderCard> {
       print('==>${jsonEncode(requestBody)}');
       // Make the HTTP POST request
       var response = await http.post(
-        Uri.parse(
-            'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus'),
+        Uri.parse('http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/UpdateOrderStatus'),
         headers: <String, String>{
           'Content-Type': 'application/json; charset=UTF-8',
         },
@@ -1370,15 +1304,13 @@ class _OrderCardState extends State<OrderCard> {
         // Request successful, handle response here
         print('Request successful');
         if (responseBody['isSuccess'] == true) {
-          CommonUtils.showCustomToastMessageLong(
-              responseBody['endUserMessage'], context, 0, 4);
+          CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 0, 4);
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const Viewpendingorder()),
           );
         } else {
-          CommonUtils.showCustomToastMessageLong(
-              responseBody['endUserMessage'], context, 1, 4);
+          CommonUtils.showCustomToastMessageLong(responseBody['endUserMessage'], context, 1, 4);
         }
       } else {
         // Request failed, handle error here

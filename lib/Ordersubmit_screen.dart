@@ -16,6 +16,7 @@ import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'package:http/http.dart' as http;
+import 'package:srikarbiotech/Services/api_config.dart';
 import 'package:srikarbiotech/sb_status.dart';
 import 'package:srikarbiotech/transport_payment.dart';
 
@@ -26,6 +27,7 @@ import 'HomeScreen.dart';
 import 'Model/CartHelper.dart';
 import 'Model/OrderItemXrefType.dart';
 import 'orderStatusScreen.dart';
+import 'package:srikarbiotech/Services/api_config.dart';
 
 class Ordersubmit_screen extends StatefulWidget {
   final String cardName;
@@ -106,13 +108,11 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     // print('quantityinordersubmitscreen: ${cartItems.}');
 
     totalSumNotifier = ValueNotifier<double>(calculateTotalSum(cartItems));
-    totalGstAmountNotifier =
-        ValueNotifier<double>(calculateTotalGstAmount(cartItems));
+    totalGstAmountNotifier = ValueNotifier<double>(calculateTotalGstAmount(cartItems));
 
     print('totalGstAmountNotifier $totalGstAmountNotifier');
 
-    double newTotalSumIncludingGst =
-        calculateTotalSum(cartItems) + calculateTotalGstAmount(cartItems);
+    double newTotalSumIncludingGst = calculateTotalSum(cartItems) + calculateTotalGstAmount(cartItems);
     print('totalSumIncludingGst: $newTotalSumIncludingGst');
 
     // Only update the state if the new value is different from the current value
@@ -134,8 +134,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
             Row(
               children: [
                 Padding(
-                  padding:
-                  const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
@@ -144,18 +143,18 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                           context,
                           MaterialPageRoute(
                             builder: (context) => Createorderscreen(
-                              cardName: widget.cardName,
-                              cardCode: widget.cardCode,
-                              address: widget.address,
-                              state: widget.state,
-                              phone: widget.phone,
-                              proprietorName: widget.proprietorName,
-                              gstRegnNo: widget.gstRegnNo,
-                              creditLine: widget.creditLine,
-                              balance: widget.balance,
-                              whsCode: widget.whsCode,
-                              whsName: widget.whsName,
-                              whsState: widget.whsState),
+                                cardName: widget.cardName,
+                                cardCode: widget.cardCode,
+                                address: widget.address,
+                                state: widget.state,
+                                phone: widget.phone,
+                                proprietorName: widget.proprietorName,
+                                gstRegnNo: widget.gstRegnNo,
+                                creditLine: widget.creditLine,
+                                balance: widget.balance,
+                                whsCode: widget.whsCode,
+                                whsName: widget.whsName,
+                                whsState: widget.whsState),
                           ),
                         );
                       } catch (e) {
@@ -182,8 +181,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
                       // Access the cart data from the provider
-                      cartItems =
-                          Provider.of<CartProvider>(context).getCartItems();
+                      cartItems = Provider.of<CartProvider>(context).getCartItems();
                       // Update the globalCartLength
                       globalCartLength = cartItems.length;
                     }
@@ -214,9 +212,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                       );
                     },
                     child: Image.asset(
-                      CompneyId == 1
-                          ? 'assets/srikar-home-icon.png'
-                          : 'assets/seeds-home-icon.png',
+                      CompneyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
                       width: 30,
                       height: 30,
                     ),
@@ -300,8 +296,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                             ),
                           ],
                         ),
-                        const SizedBox(
-                            height: 5.0), // Add some space between rows
+                        const SizedBox(height: 5.0), // Add some space between rows
                         // Third Row: Outstanding Amount
                         Row(
                           children: [
@@ -344,8 +339,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                 //   return CircularProgressIndicator();
                 // } else
                 // if (snapshot.connectionState == ConnectionState.done) {
-                List<OrderItemXrefType> cartItems =
-                Provider.of<CartProvider>(context).getCartItems();
+                List<OrderItemXrefType> cartItems = Provider.of<CartProvider>(context).getCartItems();
 
                 return buildListView(cartItems, ValueKey(cartItems));
 
@@ -376,8 +370,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                 //       EdgeInsets.only(top: 10.0, left: 10, right: 10, bottom: 10),
                 //   child:
                 Container(
-                  padding: EdgeInsets.only(
-                      top: 5.0, left: 10, right: 10, bottom: 15),
+                  padding: EdgeInsets.only(top: 5.0, left: 10, right: 10, bottom: 15),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
                     // color: Colors.white,
@@ -392,182 +385,148 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                     // Other card properties go here
 
                     child: Container(
-                        padding: EdgeInsets.only(
-                            top: 0.0, left: 0, right: 0, bottom: 10),
+                        padding: EdgeInsets.only(top: 0.0, left: 0, right: 0, bottom: 10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5.0),
                           color: Colors.white,
                         ),
                         child: IntrinsicHeight(
                             child: Column(
-                              // mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  color: Colors.white,
-                                  padding: EdgeInsets.only(
-                                      top: 15.0, left: 15.0, right: 15.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 0.0, left: 0.0, right: 0.0),
-                                        child: Text(
-                                          'Booking Place * ',
-                                          style: TextStyle(
-                                              color: Color(0xFF5f5f5f),
-                                              fontFamily: 'Roboto',
-                                              fontWeight: FontWeight.w600,
-                                              fontSize: 14),
-                                          textAlign: TextAlign.start,
+                          // mainAxisAlignment: MainAxisAlignment.center,
+                          children: [
+                            Container(
+                              color: Colors.white,
+                              padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0),
+                                    child: Text(
+                                      'Booking Place * ',
+                                      style: TextStyle(color: Color(0xFF5f5f5f), fontFamily: 'Roboto', fontWeight: FontWeight.w600, fontSize: 14),
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ),
+                                  SizedBox(height: 2.0),
+                                  //  SizedBox(height: 8.0),
+                                  GestureDetector(
+                                    onTap: () {
+                                      // Handle the click event for the second text view
+                                      print('first textview clicked');
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5.0),
+                                        border: Border.all(
+                                          color: Color(0xFFe78337),
+                                          width: 1,
                                         ),
                                       ),
-                                      SizedBox(height: 2.0),
-                                      //  SizedBox(height: 8.0),
-                                      GestureDetector(
-                                        onTap: () {
-                                          // Handle the click event for the second text view
-                                          print('first textview clicked');
-                                        },
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.circular(5.0),
-                                            border: Border.all(
-                                              color: Color(0xFFe78337),
-                                              width: 1,
-                                            ),
-                                          ),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Align(
-                                                  alignment: Alignment.centerLeft,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10.0, top: 0.0),
-                                                    child: TextFormField(
-                                                      controller:
-                                                      bookingplacecontroller,
-                                                      keyboardType:
-                                                      TextInputType.name,
-                                                      maxLength: 50,
-                                                      style: TextStyle(
-                                                          color: Color(0xFFe78337),
-                                                          fontFamily: 'Roboto',
-                                                          fontWeight:
-                                                          FontWeight.w600,
-                                                          fontSize: 14),
-                                                      decoration: InputDecoration(
-                                                        counterText: '',
-                                                        hintText:
-                                                        'Enter Booking Place',
-                                                        hintStyle: TextStyle(
-                                                          fontSize: 14,
-                                                          fontFamily: 'Roboto',
-                                                          fontWeight:
-                                                          FontWeight.w700,
-                                                          color: Color(0xa0e78337),
-                                                        ),
-                                                        border: InputBorder.none,
-                                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Padding(
+                                                padding: EdgeInsets.only(left: 10.0, top: 0.0),
+                                                child: TextFormField(
+                                                  controller: bookingplacecontroller,
+                                                  keyboardType: TextInputType.name,
+                                                  maxLength: 50,
+                                                  style: TextStyle(color: Color(0xFFe78337), fontFamily: 'Roboto', fontWeight: FontWeight.w600, fontSize: 14),
+                                                  decoration: InputDecoration(
+                                                    counterText: '',
+                                                    hintText: 'Enter Booking Place',
+                                                    hintStyle: TextStyle(
+                                                      fontSize: 14,
+                                                      fontFamily: 'Roboto',
+                                                      fontWeight: FontWeight.w700,
+                                                      color: Color(0xa0e78337),
                                                     ),
+                                                    border: InputBorder.none,
                                                   ),
                                                 ),
                                               ),
-                                            ],
-                                          ),
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                                Container(
-                                  color: Colors.white,
-                                  padding: EdgeInsets.only(
-                                      top: 15.0,
-                                      left: 15.0,
-                                      right: 15.0,
-                                      bottom: 20.0),
-                                  child: Column(
-                                    crossAxisAlignment: CrossAxisAlignment.start,
-                                    children: [
-                                      Padding(
-                                        padding: EdgeInsets.only(
-                                            top: 0.0, left: 0.0, right: 0.0),
-                                        child: Text(
-                                          'Transport Name * ',
-                                          style: TextStyle(
-                                            color: Color(0xFF5f5f5f),
-                                            fontFamily: 'Roboto',
-                                            fontWeight: FontWeight.w600,
-                                            fontSize: 14,
-                                          ),
-                                          textAlign: TextAlign.start,
-                                        ),
-                                      ),
-                                      SizedBox(height: 2.0),
-                                      GestureDetector(
-                                        onTap: () {
-                                          print('first textview clicked');
-                                        },
-                                        child: Container(
-                                          width: MediaQuery.of(context).size.width,
-                                          decoration: BoxDecoration(
-                                            borderRadius:
-                                            BorderRadius.circular(5.0),
-                                            border: Border.all(
-                                              color: Color(0xFFe78337),
-                                              width: 1,
                                             ),
                                           ),
-                                          child: Row(
-                                            children: [
-                                              Expanded(
-                                                child: Align(
-                                                  alignment: Alignment.centerLeft,
-                                                  child: Padding(
-                                                    padding: EdgeInsets.only(
-                                                        left: 10.0, top: 0.0),
-                                                    child: TextFormField(
-                                                      controller:
-                                                      Parcelservicecontroller,
-                                                      keyboardType:
-                                                      TextInputType.name,
-                                                      maxLength: 50,
-                                                      style: TextStyle(
-                                                          color: Color(0xFFe78337),
-                                                          fontFamily: 'Roboto',
-                                                          fontWeight:
-                                                          FontWeight.w600,
-                                                          fontSize: 14),
-                                                      decoration: InputDecoration(
-                                                        counterText: '',
-                                                        hintText:
-                                                        'Enter Transport Name',
-                                                        hintStyle: TextStyle(
-                                                          fontSize: 14,
-                                                          fontFamily: 'Roboto',
-                                                          fontWeight:
-                                                          FontWeight.w700,
-                                                          color: Color(0xa0e78337),
-                                                        ),
-                                                        border: InputBorder.none,
-                                                      ),
+                                        ],
+                                      ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Container(
+                              color: Colors.white,
+                              padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0, bottom: 20.0),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0),
+                                    child: Text(
+                                      'Transport Name * ',
+                                      style: TextStyle(
+                                        color: Color(0xFF5f5f5f),
+                                        fontFamily: 'Roboto',
+                                        fontWeight: FontWeight.w600,
+                                        fontSize: 14,
+                                      ),
+                                      textAlign: TextAlign.start,
+                                    ),
+                                  ),
+                                  SizedBox(height: 2.0),
+                                  GestureDetector(
+                                    onTap: () {
+                                      print('first textview clicked');
+                                    },
+                                    child: Container(
+                                      width: MediaQuery.of(context).size.width,
+                                      decoration: BoxDecoration(
+                                        borderRadius: BorderRadius.circular(5.0),
+                                        border: Border.all(
+                                          color: Color(0xFFe78337),
+                                          width: 1,
+                                        ),
+                                      ),
+                                      child: Row(
+                                        children: [
+                                          Expanded(
+                                            child: Align(
+                                              alignment: Alignment.centerLeft,
+                                              child: Padding(
+                                                padding: EdgeInsets.only(left: 10.0, top: 0.0),
+                                                child: TextFormField(
+                                                  controller: Parcelservicecontroller,
+                                                  keyboardType: TextInputType.name,
+                                                  maxLength: 50,
+                                                  style: TextStyle(color: Color(0xFFe78337), fontFamily: 'Roboto', fontWeight: FontWeight.w600, fontSize: 14),
+                                                  decoration: InputDecoration(
+                                                    counterText: '',
+                                                    hintText: 'Enter Transport Name',
+                                                    hintStyle: TextStyle(
+                                                      fontSize: 14,
+                                                      fontFamily: 'Roboto',
+                                                      fontWeight: FontWeight.w700,
+                                                      color: Color(0xa0e78337),
                                                     ),
+                                                    border: InputBorder.none,
                                                   ),
                                                 ),
                                               ),
-                                            ],
+                                            ),
                                           ),
-                                        ),
+                                        ],
                                       ),
-                                    ],
+                                    ),
                                   ),
-                                ),
-                              ],
-                            ))),
+                                ],
+                              ),
+                            ),
+                          ],
+                        ))),
                   ),
                 ),
               ],
@@ -693,8 +652,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                     AddOrder();
                     // Add logic for the download button
                   } else {
-                    CommonUtils.showCustomToastMessageLong(
-                        'Please Add Atleast One Product', context, 1, 4);
+                    CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
                   }
                   print(' button clicked');
                 },
@@ -710,8 +668,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
-                        fontWeight:
-                        FontWeight.w700, // Set the font weight to bold
+                        fontWeight: FontWeight.w700, // Set the font weight to bold
                         fontFamily: 'Roboto', // Set the font family to Roboto
                       ),
                     ),
@@ -733,8 +690,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     // Format the date as 'yyyy-MM-dd'
     String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
     print('Formatted Date: $formattedcurrentDate');
-    const String apiUrl =
-        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/AddOrder';
+    String apiUrl = baseUrl + SubmitCreateOrderapi;
+    print('SubmitOrderApi: $apiUrl');
     List<Map<String, dynamic>> orderItemList = cartItems.map((cartItem) {
       int NoOfPcs = cartItem.orderQty! * cartItem.numInSale!;
 
@@ -744,8 +701,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
 
       double totalPrice = orderQty * price * numInSale;
       double totalgstPrice = (totalPrice * cartItem.gst! / 100);
-      double totalPriceWithGST =
-          totalPrice + (totalPrice * cartItem.gst! / 100);
+      double totalPriceWithGST = totalPrice + (totalPrice * cartItem.gst! / 100);
 
       print('Order Quantity: $orderQty');
       print('Price: $price');
@@ -770,33 +726,28 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
         "TotalPrice": totalPrice,
         "TotalPriceWithGST": totalPriceWithGST,
         "GSTPrice": totalgstPrice,
-        "TaxCode":"",
+        "TaxCode": "",
 
         // Map other cart item properties to corresponding fields
         // ...
       };
     }).toList();
     // Calculate the sum of prices for the entire order
-    double totalCost = orderItemList.fold(
-        0.0, (sum, item) => sum + (item['TotalPrice'] ?? 0.0));
-    double totalCostWithGST = orderItemList.fold(
-        0.0, (sum, item) => sum + (item['TotalPriceWithGST'] ?? 0.0));
-    double totalGSTCost =
-    orderItemList.fold(0.0, (sum, item) => sum + (item['GSTPrice'] ?? 0.0));
+    double totalCost = orderItemList.fold(0.0, (sum, item) => sum + (item['TotalPrice'] ?? 0.0));
+    double totalCostWithGST = orderItemList.fold(0.0, (sum, item) => sum + (item['TotalPriceWithGST'] ?? 0.0));
+    double totalGSTCost = orderItemList.fold(0.0, (sum, item) => sum + (item['GSTPrice'] ?? 0.0));
     print('Total Price: $totalCostWithGST');
     print('Total Price With GST: $totalGSTCost');
     bool isValid = true;
     bool hasValidationFailed = false;
     if (isValid && bookingplacecontroller.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong(
-          'Please Enter Booking Place', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong('Please Enter Booking Place', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
 
     if (isValid && Parcelservicecontroller.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong(
-          'Please Enter Transport Name', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong('Please Enter Transport Name', context, 1, 4);
 
       isValid = false;
       hasValidationFailed = true;
@@ -834,9 +785,9 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       "UpdatedDate": formattedcurrentDate,
       "SHRemarks": "",
       "RejectedRemarks": "",
-      "WhsCode":  widget.whsCode,
-      "WhsName":  widget.whsName,
-      "WhsState":  widget.whsState
+      "WhsCode": widget.whsCode,
+      "WhsName": widget.whsName,
+      "WhsState": widget.whsState
     };
     print(jsonEncode(orderData));
     if (isValid) {
@@ -869,8 +820,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
               ),
             );
           } else {
-            CommonUtils.showCustomToastMessageLong(
-                responseData['endUserMessage'], context, 1, 4);
+            CommonUtils.showCustomToastMessageLong(responseData['endUserMessage'], context, 1, 4);
           }
           // clearCartItems();
           // printRemainingCartItems();
@@ -884,6 +834,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       }
     }
   }
+
   void printRemainingCartItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? cartItems = prefs.getStringList('cartItems');
@@ -919,8 +870,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       itemBuilder: (context, index) {
         OrderItemXrefType cartItem = cartItems[index];
         if (cartItems.length != textEditingControllers.length) {
-          textEditingControllers = List.generate(
-              cartItems.length, (index) => TextEditingController());
+          textEditingControllers = List.generate(cartItems.length, (index) => TextEditingController());
         }
         double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
         double price = cartItem.price ?? 0.0;
@@ -998,8 +948,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
 
   void updateTotalSumIncludingGst() {
     // Recalculate totalSumIncludingGst without triggering a rebuild
-    double newTotalSumIncludingGst =
-        calculateTotalSum(cartItems) + calculateTotalGstAmount(cartItems);
+    double newTotalSumIncludingGst = calculateTotalSum(cartItems) + calculateTotalGstAmount(cartItems);
     print('totalSumIncludingGst: $newTotalSumIncludingGst');
 
     // Only update the state if the new value is different from the current value
@@ -1016,8 +965,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
   Future<void> GetPreviousOrderBookingByPartyCode(String cardCode) async {
     try {
       // Make a GET request to the API endpoint
-      http.Response response = await http.get(Uri.parse(
-          "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetPreviousOrderBookingByPartyCode/$cardCode"));
+      http.Response response = await http.get(Uri.parse("http://182.18.157.215/Srikar_Biotech_Dev/API/api/Order/GetPreviousOrderBookingByPartyCode/$cardCode"));
 
       // Check if the request was successful (status code 200)
       if (response.statusCode == 200) {
@@ -1049,8 +997,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
   }
 }
 
-
-
 // In CartItemWidget
 
 // In CartItemWidget
@@ -1062,8 +1008,7 @@ class CartItemWidget extends StatefulWidget {
   final List<OrderItemXrefType> cartItems;
   final ValueNotifier<double> totalSumNotifier;
   final ValueNotifier<double> totalGstAmountNotifier;
-  final VoidCallback
-  onQuantityChanged; // Callback function to notify when quantity changes
+  final VoidCallback onQuantityChanged; // Callback function to notify when quantity changes
 
   CartItemWidget({
     required this.cartItem,
@@ -1097,8 +1042,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
 
     _textController = TextEditingController(text: _orderQty.toString());
     widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
-    widget.totalGstAmountNotifier.value =
-        calculateTotalGstAmount(widget.cartItems);
+    widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
     // Initialize totalSumNotifier in initState
   }
 
@@ -1120,8 +1064,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
     print('totalSumForProduct==$totalSumForProduct');
 
     widget.onQuantityChanged();
-    double totalSumIncludingGst =
-        totalSum + widget.totalGstAmountNotifier.value;
+    double totalSumIncludingGst = totalSum + widget.totalGstAmountNotifier.value;
     print('totalSumIncludingGst==$totalSumIncludingGst');
 
     return Padding(
@@ -1135,8 +1078,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
         child: Container(
           color: Colors.white,
           padding: const EdgeInsets.all(8.0),
-          child:
-          Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               '${widget.cartItem.itemName}',
               style: CommonUtils.Mediumtext_14,
@@ -1177,12 +1119,9 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                           _textController.text = _orderQty.toString();
                           // Call the updateQuantity method in your model class
                           widget.cartItem.updateQuantity(_orderQty);
-                          widget.totalSumNotifier.value =
-                              calculateTotalSum(widget.cartItems);
-                          widget.totalGstAmountNotifier.value =
-                              calculateTotalGstAmount(widget.cartItems);
-                          widget
-                              .onQuantityChanged(); // Call onQuantityChanged callback
+                          widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
+                          widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
+                          widget.onQuantityChanged(); // Call onQuantityChanged callback
                         });
                       },
                       deleteQuantity: () {
@@ -1192,24 +1131,19 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                             // totalSumForProduct =
                             //     calculateTotalSumForProduct(widget.cartItem);
                             formatNumber(totalSumForProduct);
-                            print(
-                                'totalSumForProductminus==$totalSumForProduct');
+                            print('totalSumForProductminus==$totalSumForProduct');
                             formatNumber(totalSumForProduct);
                             _orderQty = (_orderQty ?? 0) - 1;
                             _textController.text = _orderQty.toString();
                             widget.cartItem.updateQuantity(_orderQty);
-                            widget.totalSumNotifier.value =
-                                calculateTotalSum(widget.cartItems);
-                            widget.totalGstAmountNotifier.value =
-                                calculateTotalGstAmount(widget.cartItems);
-                            widget
-                                .onQuantityChanged(); // Call onQuantityChanged callback
+                            widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
+                            widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
+                            widget.onQuantityChanged(); // Call onQuantityChanged callback
                           }
                         });
                       },
                       textController: _textController,
-                      orderQuantity:
-                      _orderQty, // Pass _orderQty as orderQuantity
+                      orderQuantity: _orderQty, // Pass _orderQty as orderQuantity
                       // Pass the onQuantityChanged callback function
                       updateTotalPrice: (int value) {
                         // Your updateTotalPrice logic, if any
@@ -1217,10 +1151,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                           Quantity = value;
                           _orderQty = value;
                           widget.cartItem.updateQuantity(_orderQty);
-                          widget.totalSumNotifier.value =
-                              calculateTotalSum(widget.cartItems);
-                          widget.totalGstAmountNotifier.value =
-                              calculateTotalGstAmount(widget.cartItems);
+                          widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
+                          widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
                           widget.onQuantityChanged();
                         });
                       },
@@ -1229,10 +1161,8 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                           _orderQty = value;
                           Quantity = value;
                           widget.cartItem.updateQuantity(_orderQty);
-                          widget.totalSumNotifier.value =
-                              calculateTotalSum(widget.cartItems);
-                          widget.totalGstAmountNotifier.value =
-                              calculateTotalGstAmount(widget.cartItems);
+                          widget.totalSumNotifier.value = calculateTotalSum(widget.cartItems);
+                          widget.totalGstAmountNotifier.value = calculateTotalGstAmount(widget.cartItems);
                           widget.onQuantityChanged();
                         });
                       },
@@ -1413,24 +1343,17 @@ class PlusMinusButtons extends StatelessWidget {
   }
 }
 
-
-
 double calculateTotalSumForProduct(OrderItemXrefType cartItem) {
-  return cartItem.orderQty! *
-      cartItem.price! *
-      (cartItem.numInSale?.toDouble() ?? 0.0);
+  return cartItem.orderQty! * cartItem.price! * (cartItem.numInSale?.toDouble() ?? 0.0);
 }
 
 double calculateTotalSum(List<OrderItemXrefType> cartItems) {
   double totalSum = 0.0;
   for (OrderItemXrefType cartItem in cartItems) {
-    totalSum += cartItem.orderQty! *
-        cartItem.price! *
-        (cartItem.numInSale?.toDouble() ?? 0.0);
+    totalSum += cartItem.orderQty! * cartItem.price! * (cartItem.numInSale?.toDouble() ?? 0.0);
   }
   return totalSum;
 }
-
 
 //
 // import 'dart:async';
