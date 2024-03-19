@@ -950,6 +950,48 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                               ),
                             ),
                           ),
+        if (widget.data.whsName != null) ...[
+                          dividerForVertical,
+
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Warehouse',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  Row(
+                                    children: [
+                                      Text(
+                                        widget.data.whsName.toString(),
+                                        style: TextStyle(
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
+                                          color: HexColor('#e58338'),
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                      Text(
+                                        ' (${widget.data.whsCode.toString()})',
+                                        style: TextStyle(
+                                          fontFamily: 'Roboto',
+                                          fontWeight: FontWeight.bold,
+                                          color: HexColor('#e58338'),
+                                          fontSize: 13,
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+
+                                ],
+                              ),
+                            ),
+                          ),
+                          ]
                         ],
                       ),
                     ],

@@ -40,8 +40,8 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
   );
 
   List tableCellTitles = [
-    ['Date', 'Payment Mode', 'Credit Bank', 'Purpose'],
-    ['Total Amount', 'Credit Account No', 'UTR Number', 'Category', '']
+    ['Date', 'Payment Mode', 'Account Code', 'Purpose'],
+    ['Total Amount', 'Virtual Code', 'UTR Number', 'Category', '']
     // ['Date', 'Payment Mode', 'Cheque Date', 'Purpose', '']
   ];
   List tableCellTitles2 = [
@@ -52,6 +52,17 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
   int CompneyId = 0;
   String checkdate = "";
   String payment_mode = "";
+  final dividerForHorizontal = Container(
+    width: double.infinity,
+    height: 0.2,
+    color: Colors.grey,
+  );
+  final dividerForVertical = Container(
+    width: 0.2,
+    height: 60,
+    color: Colors.grey,
+  );
+
   @override
   void initState() {
     super.initState();
@@ -77,10 +88,10 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
       // Handle the error as needed, e.g., set a default date or display an error message
     }
     List tableCellValues = [
-      [formattedDate, widget.listResult.paymentTypeName, widget.listResult.creditBank, widget.listResult.purposeName, widget.listResult.remarks],
+      [formattedDate, widget.listResult.paymentTypeName, widget.listResult.otherBankName +' ( ${widget.listResult.otherBankCode} )', widget.listResult.purposeName, widget.listResult.remarks],
       [
         '₹${formatNumber(widget.listResult.amount)}',
-        widget.listResult.creditAccountNo,
+        widget.listResult.virtualBankCode,
         widget.listResult.utrNumber,
         widget.listResult.categoryName,
         '' // int

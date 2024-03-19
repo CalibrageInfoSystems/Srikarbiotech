@@ -164,58 +164,64 @@ class _ProductListState extends State<CreateReturnorderscreen> {
             titleSpacing: -10,
             centerTitle: false,
             actions: [
-              GestureDetector(
-                onTap: () {
-                  // Handle the click event for the home icon
-                  Navigator.pushReplacement(
-                    context,
-                    MaterialPageRoute(builder: (context) => HomeScreen()),
-                  );
-                },
-                child: Image.asset(
-                  CompneyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
-                  width: 30,
-                  height: 30,
-                ),
-              ),
-              Stack(
+              Row(
+                mainAxisAlignment: MainAxisAlignment.center,
                 children: [
-                  IconButton(
-                    onPressed: () {
-                      // Navigate to the CartScreen
-                      // Navigator.push(
-                      //   context,
-                      //   MaterialPageRoute(
-                      //     builder: (context) => const CartScreen(),
-                      //   ),
-                      // );
+                  GestureDetector(
+                    onTap: () {
+                      // Handle the click event for the home icon
+                      Navigator.pushReplacement(
+                        context,
+                        MaterialPageRoute(builder: (context) => const HomeScreen()),
+                      );
                     },
-                    icon: Icon(
-                      Icons.shopping_cart,
-                      size: 30.0,
+                    child: SizedBox(
+                      width: 30, // Same width as the cart icon
+                      height: 30, // Same height as the cart icon
+                      child: Image.asset(
+                        CompneyId == 1
+                            ? 'assets/srikar-home-icon.png'
+                            : 'assets/seeds-home-icon.png',
+                        width: 30,
+                        height: 30,
+                      ),
                     ),
                   ),
-                  Positioned(
-                    right: 5,
-                    top: 1,
-                    child: Container(
-                      padding: const EdgeInsets.all(5),
-                      decoration: BoxDecoration(
-                        shape: BoxShape.circle,
-                        color: Color(0xFFD6D6D6), // Customize the badge color
+                  Stack(
+                    children: [
+                      IconButton(
+                        onPressed: () {
+
+                        },
+                        icon: const Icon(
+                          Icons.shopping_cart,
+                          size: 30.0,
+                        ),
+
                       ),
-                      child: Text(
-                        '${globalCartLength}',
-                        style: TextStyle(
-                          color: Color(0xFFe78337),
-                          fontWeight: FontWeight.bold,
+                      Positioned(
+                        right: 5,
+                        top: 1,
+                        child: Container(
+                          padding: const EdgeInsets.all(5),
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                            color: Color(0xFFD6D6D6), // Customize the badge color
+                          ),
+                          child: Text(
+                            '$globalCartLength',
+                            style: const TextStyle(
+                              color: Color(0xFFe78337),
+                              fontWeight: FontWeight.bold,
+                            ),
+                          ),
                         ),
                       ),
-                    ),
+                    ],
                   ),
                 ],
               ),
-              SizedBox(width: 20.0),
+              const SizedBox(width: 20.0),
             ],
           ),
           body: Column(

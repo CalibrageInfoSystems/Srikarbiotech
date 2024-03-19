@@ -111,6 +111,7 @@ class ViewReturnOrdersProvider extends ChangeNotifier {
     _selectedPurpose = null;
     _selectedParty = null;
     _displayWareHouse = null;
+    _apiWareHouse = null;
     apiPurpose = null;
     apiPartyCode = null;
     apiStatusId = null;

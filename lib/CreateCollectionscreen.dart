@@ -514,7 +514,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                       const Padding(
                                         padding: EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
                                         child: Text(
-                                          'Account No *',
+                                          'Account Code *',
                                           style: CommonUtils.Mediumtext_12,
                                           textAlign: TextAlign.start,
                                         ),

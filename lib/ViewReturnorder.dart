@@ -907,7 +907,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   ],
                 ),
                 Padding(
-                  padding: const EdgeInsets.only(left: 5.0),
+                  padding: const EdgeInsets.only(left: 5.0,top: 5.0),
                   child: Text(
                     'Warehouse',
                     style: CommonUtils.txSty_13O_F6,
@@ -1502,6 +1502,37 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                                 height: 5.0,
                               ),
                               Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  widget.data.whsName != null
+                                      ? Text(
+                                    '${widget.data.whsName}',
+                                    style: CommonUtils.txSty_13O_F6,
+                                  )
+                                      : const SizedBox(),
+                                  // Text(
+                                  //   '${widget.orderResult.whsName}',
+                                  //   style: CommonUtils.txSty_13O_F6,
+                                  // ),
+                                  Row(
+                                    children: [
+                                      const Text(
+                                        'No.of Items: ',
+                                        style: CommonUtils.txSty_13B_Fb,
+                                      ),
+                                      Text(
+                                        '${widget.data.noOfItems}',
+                                        style: CommonUtils.txSty_13O_F6,
+                                      ),
+                                    ],
+                                  )
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 5.0,
+                              ),
+                              Row(
                                 children: [
                                   const Text(
                                     'LR No :  ',
@@ -1513,6 +1544,8 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                                   ),
                                 ],
                               ),
+
+
                             ],
                           ),
                         ),
@@ -1570,18 +1603,18 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                               //   ),
                               // ],
                               // ),
-                              Row(
-                                children: [
-                                  const Text(
-                                    'No.of Items : ',
-                                    style: CommonUtils.txSty_13B_Fb,
-                                  ),
-                                  Text(
-                                    '${widget.data.noOfItems}',
-                                    style: CommonUtils.txSty_13O_F6,
-                                  ),
-                                ],
-                              ),
+                              // Row(
+                              //   children: [
+                              //     const Text(
+                              //       'No.of Items : ',
+                              //       style: CommonUtils.txSty_13B_Fb,
+                              //     ),
+                              //     Text(
+                              //       '${widget.data.noOfItems}',
+                              //       style: CommonUtils.txSty_13O_F6,
+                              //     ),
+                              //   ],
+                              // ),
                               Row(
                                 children: [
                                   // const Text(

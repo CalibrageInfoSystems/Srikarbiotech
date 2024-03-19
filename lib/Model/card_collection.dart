@@ -72,8 +72,8 @@ class ListResult {
   String checkNumber;
   String checkDate;
   String checkIssuedBank;
-  String creditAccountNo;
-  String creditBank;
+  // String creditAccountNo;
+  // String creditBank;
   String utrNumber;
   String fileName;
   String fileLocation;
@@ -89,6 +89,10 @@ class ListResult {
   String createdDate;
   String updatedBy;
   String updatedDate;
+  String virtualBankCode;
+  String otherAccountNo;
+  String otherBankName;
+  String otherBankCode;
 
   ListResult({
     required this.id,
@@ -114,8 +118,8 @@ class ListResult {
     required this.checkNumber,
     required this.checkDate,
     required this.checkIssuedBank,
-    required this.creditAccountNo,
-    required this.creditBank,
+    // required this.creditAccountNo,
+    // required this.creditBank,
     required this.utrNumber,
     required this.fileName,
     required this.fileLocation,
@@ -131,6 +135,10 @@ class ListResult {
     required this.createdDate,
     required this.updatedBy,
     required this.updatedDate,
+    required this.virtualBankCode,
+    required this.otherAccountNo,
+    required this.otherBankName,
+    required this.otherBankCode,
   });
 
   factory ListResult.fromJson(Map<String, dynamic> json) {
@@ -158,8 +166,8 @@ class ListResult {
       checkNumber: json['checkNumber'] ?? "",
       checkDate: json['checkDate'] ?? "",
       checkIssuedBank: json['checkIssuedBank'] ?? "",
-      creditAccountNo: json['creditAccountNo'] ?? "",
-      creditBank: json['creditBank'] ?? "",
+      // creditAccountNo: json['creditAccountNo'] ?? "",
+      // creditBank: json['creditBank'] ?? "",
       utrNumber: json['utrNumber'] ?? "",
       fileName: json['fileName'] ?? "",
       fileLocation: json['fileLocation'] ?? "",
@@ -175,6 +183,10 @@ class ListResult {
       createdDate: json['createdDate'] ?? "",
       updatedBy: json['updatedBy'] ?? "",
       updatedDate: json['updatedDate'] ?? "",
+      virtualBankCode: json['virtualBankCode'] ?? "",
+      otherAccountNo: json['otherAccountNo'] ?? "",
+      otherBankName: json['otherBankName'] ?? "",
+      otherBankCode: json['otherBankCode'] ?? "",
     );
   }
 
