@@ -402,11 +402,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   Future<void> getWareHouses() async {
     String userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
     int companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-    String apiurl = baseUrl + GetWarehouse + userId.toString() + companyId.toString();
+   String apiurl = baseUrl + GetWarehouse + userId.toString() +"/"+ companyId.toString();
     try {
-      //   String apiUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetWarehousesByUserandCompany/$userId/$companyId";
-      // String apiUrl = '$baseUrl$GetWarehousesByUserandCompany$userId 1';
-      final jsonResponse = await http.get(Uri.parse(apiurl));
+      String apiUrl = baseUrl + GetWarehouse + userId.toString() +"/"+ companyId.toString();
+      debugPrint('apiUrl: ${apiUrl}');
+     //  String apiUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetWarehousesByUserandCompany/$userId/$companyId";
+     // String apiUrl = '$baseUrl$GetWarehousesByUserandCompany$userId 1';
+      final jsonResponse = await http.get(Uri.parse(apiUrl));
       if (jsonResponse.statusCode == 200) {
         Map<String, dynamic> response = jsonDecode(jsonResponse.body);
         if (response['response']['listResult'] != null) {
@@ -1283,7 +1285,7 @@ class _OrderCardState extends State<OrderCard> {
                       // beside info
                       Expanded(
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 10, top: 0, bottom: 0),
+                          padding: const EdgeInsets.only(left: 2, top: 0, bottom: 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

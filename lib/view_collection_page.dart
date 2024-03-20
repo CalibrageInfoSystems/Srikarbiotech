@@ -134,7 +134,18 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ViewCollectionProvider>(
+    return WillPopScope(
+        onWillPop: () async {
+          viewProvider.clearFilter();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(
+                builder: (context) => const HomeScreen()),
+          );
+
+      return true; // Allow the back navigation
+    },
+    child: Consumer<ViewCollectionProvider>(
       builder: (context, viewCollectionProvider, _) => Scaffold(
         appBar: _viewCollectionAppBar(),
         body: FutureBuilder(
@@ -201,7 +212,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
           },
         ),
       ),
-    );
+    ));
   }
 
   AppBar _viewCollectionAppBar() {
@@ -435,7 +446,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     // final apiUrl =
     //     'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'
     //     '$savedCompanyId';
-    final apiUrl = '$baseUrl$GetPurposes$savedCompanyId';
+    final apiUrl = baseUrl + GetPurpose + '$savedCompanyId';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));

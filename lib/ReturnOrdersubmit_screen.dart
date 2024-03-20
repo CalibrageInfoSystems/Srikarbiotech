@@ -688,58 +688,98 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
           ],
         ),
       ),
-
-      bottomNavigationBar: InkWell(
-        onTap: () {
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   const SnackBar(
-          //     content: Text('Payment Successful'),
-          //     duration: Duration(seconds: 2),
-          //   ),
-          // );
-          print('clicked ');
-        },
-        child: Padding(
-          padding: const EdgeInsets.only(top: 0.0, left: 14.0, right: 14.0, bottom: 10.0),
-          child: Container(
-            alignment: Alignment.bottomCenter,
-            width: MediaQuery.of(context).size.width,
-            height: 55.0,
-            child: Center(
-              child: GestureDetector(
-                onTap: () {
-                  if (globalCartLength > 0) {
-                    Addreturnorder();
-                    // Add logic for the download button
-                  } else {
-                    CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
-                  }
-                },
-                child: Container(
-                  // width: desiredWidth * 0.9,
-                  width: MediaQuery.of(context).size.width,
-                  height: 55.0,
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(6.0),
-                    color: const Color(0xFFe78337),
-                  ),
-                  child: const Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center, children: [
-                    Text(
-                      'Place Your Return Order',
-                      style: TextStyle(
-                        fontFamily: 'Roboto',
-                        fontWeight: FontWeight.w700,
-                        fontSize: 14,
-                        color: Colors.white,
+      bottomNavigationBar: Container(
+        height: 60,
+        margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 45.0,
+                child: Center(
+                  child: GestureDetector(
+                    onTap: () {
+                      if (globalCartLength > 0) {
+                        Addreturnorder();
+                        // Add logic for the download button
+                      } else {
+                        CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
+                      }
+                    },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 45.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.0),
+                        color: const Color(0xFFe78337),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Place Your Return Order',
+                          style: CommonUtils.Buttonstyle,
+                        ),
                       ),
                     ),
-                  ]),
+                  ),
                 ),
               ),
             ),
-          ),
+          ],
         ),
       ),
+      // bottomNavigationBar: InkWell(
+      //   onTap: () {
+      //     // ScaffoldMessenger.of(context).showSnackBar(
+      //     //   const SnackBar(
+      //     //     content: Text('Payment Successful'),
+      //     //     duration: Duration(seconds: 2),
+      //     //   ),
+      //     // );
+      //     print('clicked ');
+      //   },
+      //   child: Padding(
+      //     padding: const EdgeInsets.only(top: 0.0, left: 14.0, right: 14.0, bottom: 10.0),
+      //     child: Container(
+      //       alignment: Alignment.bottomCenter,
+      //       width: MediaQuery.of(context).size.width,
+      //       height: 55.0,
+      //       child: Center(
+      //         child: GestureDetector(
+      //           onTap: () {
+      //             if (globalCartLength > 0) {
+      //               Addreturnorder();
+      //               // Add logic for the download button
+      //             } else {
+      //               CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
+      //             }
+      //           },
+      //           child: Container(
+      //             // width: desiredWidth * 0.9,
+      //             width: MediaQuery.of(context).size.width,
+      //             height: 55.0,
+      //             decoration: BoxDecoration(
+      //               borderRadius: BorderRadius.circular(6.0),
+      //               color: const Color(0xFFe78337),
+      //             ),
+      //             child: const Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center, children: [
+      //               Text(
+      //                 'Place Your Return Order',
+      //                 style: TextStyle(
+      //                   fontFamily: 'Roboto',
+      //                   fontWeight: FontWeight.w700,
+      //                   fontSize: 14,
+      //                   color: Colors.white,
+      //                 ),
+      //               ),
+      //             ]),
+      //           ),
+      //         ),
+      //       ),
+      //     ),
+      //   ),
+      // ),
       //    ),
     );
   }
@@ -817,10 +857,16 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     //const String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/AddReturnOrder';
     String apiUrl = baseUrl + AddReturnorder;
     print('AddReturnorderApi: $apiUrl');
+    bool isValid = true;
+    bool hasValidationFailed = false;
     List<Map<String, dynamic>> returnorderItemList = cartItems.map((cartItem) {
       double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
       double price = cartItem.price ?? 0.0;
-
+      if (isValid && orderQty == 0.0) {
+        CommonUtils.showCustomToastMessageLong('Please add quantity to selected product(s)', context, 1, 4);
+        isValid = false;
+        hasValidationFailed = true;
+      }
       double totalPrice = orderQty * price;
       return {
         "Id": 1,
@@ -938,90 +984,184 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
 
     return formattedDate;
   }
-
   void showAttachmentsDialog(List data) {
+    int? currentPage = 0; // Initialize to the first page index
+
     showDialog(
       context: context,
       builder: (BuildContext context) {
-        int currentPage = 0; // Track the current page index
-
-        return Dialog(
-          child: Container(
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-            ),
-            width: double.infinity,
-            height: 500,
-            child: Stack(
-              children: [
-                PhotoViewGallery.builder(
-                  itemCount: data.length,
-                  builder: (context, index) {
-                    Uint8List imgBytes = base64Decode(data[index]);
-                    return PhotoViewGalleryPageOptions(
-                      imageProvider: MemoryImage(imgBytes),
-                      minScale: PhotoViewComputedScale.contained,
-                      maxScale: PhotoViewComputedScale.covered,
-                    );
-                  },
-                  scrollDirection: Axis.horizontal,
-                  scrollPhysics: const PageScrollPhysics(),
-                  allowImplicitScrolling: true,
-                  backgroundDecoration: const BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  onPageChanged: (index) {
-                    setState(() {
-                      currentPage = index;
-                    });
-                  },
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
                 ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(data.length, (index) {
-                        return Container(
-                          width: 8.0,
-                          height: 8.0,
-                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                          decoration: BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: currentPage == index ? Colors.red : Colors.grey,
-                          ),
+                width: double.infinity,
+                height: 500,
+                child: Stack(
+                  children: [
+                    PhotoViewGallery.builder(
+                      itemCount: data.length,
+                      builder: (context, index) {
+                        Uint8List imgBytes = base64Decode(data[index]);
+                        return PhotoViewGalleryPageOptions(
+                          imageProvider: MemoryImage(imgBytes),
+                          minScale: PhotoViewComputedScale.contained,
+                          maxScale: PhotoViewComputedScale.covered,
                         );
-                      }),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Container(
-                      padding: const EdgeInsets.all(3.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
+                      },
+                      scrollDirection: Axis.horizontal,
+                      scrollPhysics: const PageScrollPhysics(),
+                      allowImplicitScrolling: true,
+                      backgroundDecoration: const BoxDecoration(
+                        color: Colors.white,
                       ),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.red,
+                      onPageChanged: (index) {
+                        setState(() {
+                          currentPage = index;
+                        });
+                      },
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(data.length, (index) {
+                            return Container(
+                              width: 8.0,
+                              height: 8.0,
+                              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: currentPage == index ? Colors.orange : Colors.grey,
+                              ),
+                            );
+                          }),
+                        ),
                       ),
                     ),
-                  ),
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          currentPage = 0; // Reset currentPage to 0 when dialog is closed
+                        },
+                        child: Container(
+                          padding: const EdgeInsets.all(3.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.red.withOpacity(0.2),
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.red,
+                            size: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
                 ),
-              ],
-            ),
-          ),
+              ),
+            );
+          },
         );
       },
     );
   }
+
+  // void showAttachmentsDialog(List data) {
+  //   int? currentPage = 0; // Initialize to the first page index
+  //
+  //   showDialog(
+  //     context: context,
+  //     builder: (BuildContext context) {
+  //
+  //
+  //       return Dialog(
+  //         child: Container(
+  //           padding: const EdgeInsets.all(5),
+  //           decoration: BoxDecoration(
+  //             borderRadius: BorderRadius.circular(10),
+  //             color: Colors.white,
+  //           ),
+  //           width: double.infinity,
+  //           height: 500,
+  //           child: Stack(
+  //             children: [
+  //               PhotoViewGallery.builder(
+  //                 itemCount: data.length,
+  //                 builder: (context, index) {
+  //                   Uint8List imgBytes = base64Decode(data[index]);
+  //                   return PhotoViewGalleryPageOptions(
+  //                     imageProvider: MemoryImage(imgBytes),
+  //                     minScale: PhotoViewComputedScale.contained,
+  //                     maxScale: PhotoViewComputedScale.covered,
+  //                   );
+  //                 },
+  //                 scrollDirection: Axis.horizontal,
+  //                 scrollPhysics: const PageScrollPhysics(),
+  //                 allowImplicitScrolling: true,
+  //                 backgroundDecoration: const BoxDecoration(
+  //                   color: Colors.white,
+  //                 ),
+  //                 onPageChanged: (index) {
+  //                   setState(() {
+  //                     currentPage = index;
+  //                   });
+  //                 },
+  //               ),
+  //               Align(
+  //                 alignment: Alignment.bottomCenter,
+  //                 child: Container(
+  //                   padding: const EdgeInsets.symmetric(vertical: 10),
+  //                   child: Row(
+  //                     mainAxisAlignment: MainAxisAlignment.center,
+  //                     children: List.generate(data.length, (index) {
+  //                       return Container(
+  //                         width: 8.0,
+  //                         height: 8.0,
+  //                         margin: const EdgeInsets.symmetric(horizontal: 4.0),
+  //                         decoration: BoxDecoration(
+  //                           shape: BoxShape.circle,
+  //                           color: currentPage == index ? Colors.orange : Colors.grey,
+  //                         ),
+  //                       );
+  //                     }),
+  //                   ),
+  //                 ),
+  //               ),
+  //               Positioned(
+  //                 top: 0,
+  //                 right: 0,
+  //                 child: GestureDetector(
+  //                   onTap: () => Navigator.of(context).pop(),
+  //                   child: Container(
+  //                     padding: const EdgeInsets.all(3.0),
+  //                     decoration: BoxDecoration(
+  //                       borderRadius: BorderRadius.circular(20),
+  //                     ),
+  //                     child: const Icon(
+  //                       Icons.close,
+  //                       color: Colors.red,
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ],
+  //           ),
+  //         ),
+  //       );
+  //     },
+  //   );
+  // }
   // void showAttachmentsDialog(List data) {
   //   showDialog(
   //     context: context,
@@ -1098,65 +1238,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
   //   );
   // }
 
-  void _showZoomedAttachments(Uint8List imgBytes) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(borderRadius: BorderRadius.circular(10), color: Colors.white),
-            width: double.infinity,
-            height: 500,
-            child: Stack(
-              children: [
-                Center(
-                  child: PhotoViewGallery.builder(
-                    itemCount: 1,
-                    builder: (context, index) {
-                      return PhotoViewGalleryPageOptions(
-                        imageProvider: MemoryImage(imgBytes),
-                        minScale: PhotoViewComputedScale.contained,
-                        maxScale: PhotoViewComputedScale.covered,
-                      );
-                    },
-                    scrollDirection: Axis.vertical,
-                    scrollPhysics: const PageScrollPhysics(),
-                    allowImplicitScrolling: true,
-                    backgroundDecoration: const BoxDecoration(
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Container(
-                      padding: const EdgeInsets.all(3.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: Container(
-                        padding: const EdgeInsets.all(5),
-                        decoration: BoxDecoration(color: Colors.red.withOpacity(0.2), borderRadius: BorderRadius.circular(20)),
-                        child: const Icon(
-                          Icons.close,
-                          color: Colors.red,
-                          size: 16,
-                        ),
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
+
 
   Widget buildIndicator(int index) {
     return Container(

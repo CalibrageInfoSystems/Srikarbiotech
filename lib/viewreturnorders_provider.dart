@@ -21,9 +21,9 @@ class ViewReturnOrdersProvider extends ChangeNotifier {
 
   TextEditingController get getPartyController => _partyController;
 
-  String partyCode = '';
-  String get getPartyCode => partyCode;
-  set getPartyCode(String newCode) {
+  String? partyCode;
+  String? get getPartyCode => partyCode;
+  set getPartyCode(String? newCode) {
     partyCode = newCode;
   }
 
@@ -91,11 +91,13 @@ class ViewReturnOrdersProvider extends ChangeNotifier {
     _selectedPurpose = newPurpose;
     notifyListeners();
   }
+
   String? get apiWareHouse => _apiWareHouse;
   set apiWareHouse(String? newPurpose) {
     _apiWareHouse = newPurpose;
     notifyListeners();
   }
+
   String? get dropDownWareHouse => _displayWareHouse;
   set dropDownWareHouse(String? newPurpose) {
     _displayWareHouse = newPurpose;
@@ -114,6 +116,7 @@ class ViewReturnOrdersProvider extends ChangeNotifier {
     _apiWareHouse = null;
     apiPurpose = null;
     apiPartyCode = null;
+    partyCode = null;
     apiStatusId = null;
 
     _partyController.clear();

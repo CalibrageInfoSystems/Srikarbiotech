@@ -36,19 +36,10 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
     fontFamily: 'Roboto',
     fontWeight: FontWeight.w600,
     color: Color(0xFFe78337),
-    fontSize: 16,
+    fontSize: 12,
   );
 
-  List tableCellTitles = [
-    ['Date', 'Payment Mode', 'Account Code', 'Purpose'],
-    ['Total Amount', 'Virtual Code', 'UTR Number', 'Category', '']
-    // ['Date', 'Payment Mode', 'Cheque Date', 'Purpose', '']
-  ];
-  List tableCellTitles2 = [
-    ['Date', 'Payment Mode', 'Cheque Date', 'Purpose'],
-    ['Total Amount', 'Cheque Number', 'Cheque Issued Bank', 'Category', '']
-    // ['Date', 'Payment Mode', 'Cheque Date', 'Purpose', '']
-  ];
+
   int CompneyId = 0;
   String checkdate = "";
   String payment_mode = "";
@@ -87,26 +78,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
       print('Error parsing date: $e');
       // Handle the error as needed, e.g., set a default date or display an error message
     }
-    List tableCellValues = [
-      [formattedDate, widget.listResult.paymentTypeName, widget.listResult.otherBankName +' ( ${widget.listResult.otherBankCode} )', widget.listResult.purposeName, widget.listResult.remarks],
-      [
-        '₹${formatNumber(widget.listResult.amount)}',
-        widget.listResult.virtualBankCode,
-        widget.listResult.utrNumber,
-        widget.listResult.categoryName,
-        '' // int
-      ]
-    ];
-    List tableCellValues2 = [
-      [formattedDate, widget.listResult.paymentTypeName, checkdate, widget.listResult.purposeName, widget.listResult.remarks],
-      [
-        '₹${formatNumber(widget.listResult.amount)}',
-        widget.listResult.checkNumber,
-        widget.listResult.checkIssuedBank,
-        widget.listResult.categoryName,
-        '' // int
-      ]
-    ];
+
 
     return Scaffold(
       appBar: AppBar(
@@ -196,7 +168,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
               Card(
                 elevation: 7,
                 child: Container(
-                  padding: const EdgeInsets.all(10),
+                  // padding: const EdgeInsets.all(10),
                   width: double.infinity,
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
@@ -205,170 +177,537 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                   child: Column(
                     children: [
                       // Table
+                      Container(
+                        padding: const EdgeInsets.all(10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                          children: [
+                            Column(
+                              mainAxisAlignment: MainAxisAlignment.start,
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                const Text(
+                                  'Collection ID',
+                                  textAlign: TextAlign.start,
+                                  style: CommonUtils.txSty_13B_Fb,
+                                ),
+                                const SizedBox(
+                                  height: 2.0,
+                                ),
+                                Text(
+                                  widget.listResult.collectionNumber,
+                                  style: const TextStyle(
+                                      fontFamily: 'Roboto',
+                                      fontSize: 13,
+                                      color: Color(0xFFe58338),
+                                      fontWeight: FontWeight.w600),
+                                ),
+                              ],
+                            ),
+                            widget.statusBar,
+                          ],
+                        ),
+                      ),
+
+                      Visibility(
+                          visible: payment_mode == "Online",
+                          child: Column(
+                            children: [
+                      dividerForHorizontal,
+
+                      // row two
                       Row(
-                        //  crossAxisAlignment: CrossAxisAlignment.start,
                         mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                        children: [
-                          Container(
-                            padding: const EdgeInsets.all(10),
-                            child: Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start, children: [
-                              const Text(
-                                'Collection ID',
-                                textAlign: TextAlign.start,
-                                style: CommonUtils.txSty_13B_Fb,
+                        children: <Widget>[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Date',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  const SizedBox(
+                                    height: 2.0,
+                                  ),
+                                  Text(
+                                    formattedDate,
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
                               ),
-                              Text(
-                                widget.listResult.collectionNumber,
-                                style: const TextStyle(fontFamily: 'Roboto', fontSize: 13, color: Color(0xFFe58338), fontWeight: FontWeight.w600),
-                              ),
-                            ]),
+                            ),
                           ),
-                          // _collectionStatus(widget.listResult.statusName),
-                          widget.statusBar,
+                          dividerForVertical,
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Total Amount',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  const SizedBox(
+                                    height: 2.0,
+                                  ),
+                                  Text(
+                                    '₹${formatNumber(widget.listResult.amount)}',
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
                         ],
                       ),
-                      if (payment_mode == "Online")
-                        Table(
-                          border: TableBorder.all(
-                            width: 1,
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(10),
-                          ),
-                          children: List.generate(4, (index) {
-                            return TableRow(
-                              children: [
-                                TableCell(
-                                  child: Container(
-                                    padding: _tableCellPadding,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          tableCellTitles[0][index],
-                                          style: CommonUtils.txSty_14B_Fb,
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Text(
-                                          tableCellValues[0][index].toString(),
-                                          style: CommonUtils.txSty_13O_F6,
-                                        )
-                                      ],
+                      dividerForHorizontal,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 10),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Payment Mode',
+                                            style: CommonUtils.txSty_13B_Fb,
+                                          ),
+                                          const SizedBox(
+                                            height: 2.0,
+                                          ),
+                                          Text(
+                                            widget.listResult.paymentTypeName,
+                                            style: _dataTextStyle,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                                TableCell(
-                                  child: Container(
-                                    padding: _tableCellPadding,
-                                    child: Column(
-                                      crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          tableCellTitles[1][index],
-                                          style: CommonUtils.txSty_14B_Fb,
-                                        ),
-                                        const SizedBox(height: 5),
-                                        Text(
-                                          tableCellValues[1][index].toString(),
-                                          // '₹${formatNumber(tableCellValues[1][index].toString() as double)}',
-                                          style: CommonUtils.txSty_13O_F6,
-                                        )
-                                      ],
+                  if (widget.listResult.virtualBankCode == "Other") ...[
+                                  dividerForVertical,
+                                  Expanded(
+                                    child: Padding(
+                                      padding: const EdgeInsets.symmetric(
+                                          horizontal: 12, vertical: 10),
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Text(
+                                            'Bank Name ',
+                                            style: CommonUtils.txSty_13B_Fb,
+                                          ),
+                                          const SizedBox(
+                                            height: 2.0,
+                                          ),
+                                          Text(
+                                            widget.listResult.otherBankName +
+                                                ' ( ${widget.listResult.otherBankCode} )',
+                                            style: _dataTextStyle,
+                                          ),
+                                        ],
+                                      ),
                                     ),
                                   ),
-                                ),
-                              ],
-                            );
-                          }),
-                        ),
+                                  ],
+                                ],
+                              ),
+                              dividerForHorizontal,
+                      // row two
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          if (widget.listResult.virtualBankCode != "Other") ...[
 
-                      // Table for Cheque
-                      if (payment_mode == "Cheque")
-                        Table(
-                          border: TableBorder.all(
-                            width: 1,
-                            color: Colors.grey.shade200,
-                            borderRadius: BorderRadius.circular(10),
+                            Expanded(
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
+                                child: Column(
+                                  crossAxisAlignment: CrossAxisAlignment.start,
+                                  children: [
+                                    const Text(
+                                      'Virtual Bank Code',
+                                      style: CommonUtils.txSty_13B_Fb,
+                                    ),
+                                    const SizedBox(
+                                      height: 2.0,
+                                    ),
+                                    Text(
+                                      widget.listResult.virtualBankCode,
+                                      style: _dataTextStyle,
+                                    ),
+                                  ],
+                                ),
+                              ),
+                            ),
+                          dividerForVertical,
+
+
+
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'UTR Number',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  const SizedBox(
+                                    height: 2.0,
+                                  ),
+                                  Text(
+                                    widget.listResult.utrNumber,
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
                           ),
-                          children: List.generate(4, (index) {
-                            return TableRow(
-                              children: [
-                                TableCell(
-                                  child: Container(
-                                    padding: _tableCellPadding,
+                        ],
+                        ],
+                      ),
+                      dividerForHorizontal,
+                              Row(
+                                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                                children: <Widget>[
+                              if (widget.listResult.virtualBankCode == "Other") ...[
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 10),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          tableCellTitles2[0][index],
-                                          style: CommonUtils.txSty_14B_Fb,
+                                      children: [
+                                        const Text(
+                                          'Account No',
+                                          style: CommonUtils.txSty_13B_Fb,
                                         ),
-                                        const SizedBox(height: 5),
+                                        const SizedBox(
+                                          height: 2.0,
+                                        ),
                                         Text(
-                                          tableCellValues2[0][index].toString(),
-                                          style: CommonUtils.txSty_13O_F6,
-                                        )
+                                          widget.listResult.otherAccountNo,
+                                          style: _dataTextStyle,
+                                        ),
                                       ],
                                     ),
                                   ),
                                 ),
-                                TableCell(
-                                  child: Container(
-                                    padding: _tableCellPadding,
+                                  dividerForVertical,
+
+
+
+                                Expanded(
+                                  child: Padding(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 12, vertical: 10),
                                     child: Column(
                                       crossAxisAlignment: CrossAxisAlignment.start,
-                                      children: <Widget>[
-                                        Text(
-                                          tableCellTitles2[1][index],
-                                          style: CommonUtils.txSty_14B_Fb,
+                                      children: [
+                                        const Text(
+                                          'UTR Number',
+                                          style: CommonUtils.txSty_13B_Fb,
                                         ),
-                                        const SizedBox(height: 5),
+                                        const SizedBox(
+                                          height: 2.0,
+                                        ),
                                         Text(
-                                          tableCellValues2[1][index].toString(),
-                                          style: CommonUtils.txSty_13O_F6,
-                                        )
+                                          widget.listResult.utrNumber,
+                                          style: _dataTextStyle,
+                                        ),
                                       ],
                                     ),
                                   ),
                                 ),
                               ],
-                            );
-                          }),
-                        ),
-                      // Visibility(
-                      //   visible: widget.listResult.remarks != null,
-                      //   child: Row(
-                      //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      //     children: [
-                      //       if (widget.listResult.remarks != null)
-                      //         Container(
-                      //           padding: const EdgeInsets.all(10),
-                      //           child: Column(
-                      //             mainAxisAlignment: MainAxisAlignment.start,
-                      //             crossAxisAlignment: CrossAxisAlignment.start,
-                      //             children: [
-                      //               const Text(
-                      //                 'Remarks',
-                      //                 textAlign: TextAlign.start,
-                      //                 style: CommonUtils.txSty_13B_Fb,
-                      //               ),
-                      //               const SizedBox(
-                      //                 height: 2,
-                      //               ),
-                      //               Text(
-                      //                 widget.listResult.remarks,
-                      //                 style: const TextStyle(
-                      //                   fontFamily: 'Roboto',
-                      //                   fontSize: 13,
-                      //                   color: Color(0xFFe58338),
-                      //                   fontWeight: FontWeight.w600,
-                      //                 ),
-                      //               ),
-                      //             ],
-                      //           ),
-                      //         ),
-                      //     ],
-                      //   ),
-                      // ),
+
+                                ],
+                              ),
+
+                      dividerForHorizontal,
+
+                      // row two
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Purpose',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  const SizedBox(
+                                    height: 2.0,
+                                  ),
+                                  Text(
+                                    widget.listResult.purposeName,
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          dividerForVertical,
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Category',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  const SizedBox(
+                                    height: 2.0,
+                                  ),
+                                  Text(
+                                    widget.listResult.categoryName,
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                              dividerForHorizontal,
+                            ],
+                          ),
+                      ),
+                      // Table for Cheque
+
+                        Visibility(
+                          visible: payment_mode == "Cheque",
+                          child: Column(
+                            children: [
+                        dividerForHorizontal,
+                      // row two
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Date',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  const SizedBox(
+                                    height: 2.0,
+                                  ),
+                                  Text(
+                                    formattedDate,
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          dividerForVertical,
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Total Amount',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  Text(
+                                    '₹${formatNumber(widget.listResult.amount)}',
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      dividerForHorizontal,
+
+                      // row two
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Payment Mode',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  const SizedBox(
+                                    height: 2.0,
+                                  ),
+                                  Text(
+                                    widget.listResult.paymentTypeName,
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          dividerForVertical,
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Cheque Number',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  Text(
+                                    widget.listResult.checkNumber,
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      dividerForHorizontal,
+
+                      // row two
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Cheque Date',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  const SizedBox(
+                                    height: 2.0,
+                                  ),
+                                  Text(
+                                    checkdate,
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          dividerForVertical,
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Cheque Issued Bank',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  const SizedBox(
+                                    height: 2.0,
+                                  ),
+                                  Text(
+                                    widget.listResult.checkIssuedBank,
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                      dividerForHorizontal,
+
+                      // row two
+                      Row(
+                        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                        children: <Widget>[
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Purpose',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  const SizedBox(
+                                    height: 2.0,
+                                  ),
+                                  Text(
+                                    widget.listResult.purposeName,
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                          dividerForVertical,
+                          Expanded(
+                            child: Padding(
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 12, vertical: 10),
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Text(
+                                    'Category',
+                                    style: CommonUtils.txSty_13B_Fb,
+                                  ),
+                                  const SizedBox(
+                                    height: 2.0,
+                                  ),
+                                  Text(
+                                    widget.listResult.categoryName,
+                                    style: _dataTextStyle,
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        ],
+                      ),
+                    ],
+                  ),
+                ),
+
                       Visibility(
                         visible: widget.listResult.remarks != null && widget.listResult.remarks.isNotEmpty,
                         child: Row(
@@ -412,15 +751,18 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                       const SizedBox(
                         height: 10,
                       ),
-
+                  Container(
+                    padding: const EdgeInsets.all(10),
                       // Attachment
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
+                  child:Column(mainAxisAlignment: MainAxisAlignment.start, crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           // ignore: prefer_const_constructors
                           Text(
                             'Attachment',
                             style: CommonUtils.txSty_14B_Fb,
+                          ),
+                          const SizedBox(
+                            height: 4.0,
                           ),
                           SizedBox(
                             width: double.infinity,
@@ -445,10 +787,10 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
                           ),
                         ],
                       ),
-                    ],
+                  )]),
                   ),
                 ),
-              ),
+
             ],
           ),
         ),
@@ -462,114 +804,7 @@ class _ViewCollectionCheckOutState extends State<ViewCollectionCheckOut> {
     print('Company ID: $CompneyId');
   }
 
-  void _showZoomedDialog() {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Column(
-            crossAxisAlignment: CrossAxisAlignment.end,
-            children: [
-              GestureDetector(
-                onTap: () => Navigator.of(context).pop(),
-                child: const Padding(
-                  padding: EdgeInsets.all(8.0),
-                  child: Icon(
-                    Icons.close,
-                    color: Colors.red,
-                  ),
-                ),
-              ),
-              SizedBox(
-                width: double.infinity,
-                // height: MediaQuery.of(context)
-                //     .size
-                //     .height,
-                height: 600,
 
-                // Adjust the height as needed
-                child: IntrinsicHeight(
-                    child: PhotoViewGallery.builder(
-                  itemCount: 1, // Only one image in the gallery
-                  builder: (context, index) {
-                    return PhotoViewGalleryPageOptions(
-                      imageProvider: NetworkImage(widget.listResult.fileUrl ?? ''),
-                      minScale: PhotoViewComputedScale.contained,
-                      maxScale: PhotoViewComputedScale.covered * 2,
-                    );
-                  },
-                  scrollDirection: Axis.vertical,
-                  scrollPhysics: const PageScrollPhysics(),
-                  allowImplicitScrolling: true,
-                  //   scrollPhysics: PageScrollPhysics(),
-                  backgroundDecoration: const BoxDecoration(
-                    color: Colors.white,
-                  ),
-                  // pageController: PageController(),
-                  // onPageChanged: (index) {
-                  //   // Handle page change if needed
-                  // },
-                )),
-              ),
-            ],
-          ),
-        );
-      },
-    );
-  }
-
-  Widget _collectionStatus(String statusName) {
-    final Color statusColor;
-    final Color statusBgColor;
-    switch (statusName) {
-      case 'Pending':
-        statusColor = const Color(0xFFe58338);
-        statusBgColor = const Color(0xFFe58338).withOpacity(0.2);
-        break;
-      case 'Received':
-        statusColor = Colors.green;
-        statusBgColor = Colors.green.withOpacity(0.2);
-        break;
-      case 'Reject':
-        statusColor = HexColor('#C42121');
-        statusBgColor = HexColor('#C42121').withOpacity(0.2);
-        break;
-
-      default:
-        statusColor = Colors.black26;
-        statusBgColor = Colors.black26.withOpacity(0.2);
-        break;
-    }
-    return Container(
-      decoration: BoxDecoration(
-        borderRadius: BorderRadius.circular(16),
-        color: statusBgColor,
-      ),
-      padding: const EdgeInsets.symmetric(vertical: 4, horizontal: 12),
-      child: Row(
-        children: [
-          SvgPicture.asset(
-            'assets/shipping-fast.svg',
-            fit: BoxFit.fill,
-            width: 15,
-            height: 15,
-            color: statusColor,
-          ),
-          const SizedBox(
-            width: 5,
-          ),
-          Text(
-            statusName,
-            style: TextStyle(
-              fontFamily: 'Roboto',
-              fontSize: 13,
-              color: statusColor,
-            ),
-          ),
-        ],
-      ),
-    );
-  }
 
   String formatNumber(double number) {
     NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");

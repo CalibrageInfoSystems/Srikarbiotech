@@ -372,7 +372,8 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                                           child: GestureDetector(
                                                             onTap: () async {
                                                               String? pdfUrl = credit.fileUrl;
-                                                              String? invoiceNo = "ReturnOrderCreditNoteFile";
+
+                                                              String? invoiceNo = "ReturnOrderCreditNoteFile_";
                                                               downloadFile(pdfUrl, invoiceNo);
                                                               // Add your download functionality here
                                                             },
@@ -514,6 +515,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
 
   Future<void> ReturnOrderCreditmethod() async {
     String apiurl = baseUrl + GetReturnOrderCreditById + widget.orderId.toString();
+    print('ReturnOrderCredit==>$apiurl');
     final response = await http.get(Uri.parse(apiurl));
 
     if (response.statusCode == 200) {
@@ -552,9 +554,9 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
       // Check if the request was successful (status code 200)
       if (response.statusCode == 200) {
         // Get the application documents directory
-
-        Directory appDocDir = Directory('/storage/emulated/0/Download');
-        String fileName = "srikar_invoice_$invoiceNo.pdf";
+        String formattedDateTime = DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+        Directory appDocDir = Directory('/storage/emulated/0/Download/Srikar_Groups');
+        String fileName = "srikar_Credit_$invoiceNo$formattedDateTime.pdf";
 
         String filePath = '${appDocDir.path}/$fileName';
         // Get the download directory

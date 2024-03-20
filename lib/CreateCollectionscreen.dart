@@ -105,7 +105,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
-    getAccountsData();
+
     getshareddata();
     DateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
     CommonUtils.checkInternetConnectivity().then((isConnected) {
@@ -116,6 +116,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
         fetchvirtualcode();
         print('srikarcode${widget.code}');
         fetchdropdownitemscategory();
+        getAccountsData();
       } else {
         print('The Internet Is not  Connected');
       }
@@ -370,9 +371,12 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                             checkDateController.text = "";
                                           }
                                           if (Selected_PaymentMode == 'Cheque') {
-                                            accountnumcontroller.text = "";
-                                            creditbankcontroller.text = "";
+
                                             utrcontroller.text = "";
+                                            setState(() {
+                                              accountValue = null;
+                                              virtualcodeValue =  null;
+                                            });
                                           }
                                         },
                                         child: Container(
@@ -431,7 +435,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                   const Padding(
                                     padding: EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
                                     child: Text(
-                                      'Virtual Code *',
+                                      'Virtual Bank Code *',
                                       style: CommonUtils.Mediumtext_12,
                                       textAlign: TextAlign.start,
                                     ),
@@ -465,13 +469,19 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                                       )
                                                     : DropdownButton<String>(
                                                         hint: Text(
-                                                          'Select Virtual Code',
-                                                          style: CommonUtils.txSty_13O_F6,
+                                                          'Select Virtual Bank Code',
+                                                          style: TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily: 'Roboto',
+                                                          fontWeight: FontWeight.w700,
+                                                          color: Color(0xa0e78337),
+                                                        ),
                                                         ),
                                                         value: virtualcodeValue, // String? accountValue;
                                                         onChanged: (String? newValue) {
                                                           setState(() {
                                                             virtualcodeValue = newValue;
+                                                            accountValue = null;
                                                             print('Selected Virtual Code: ${virtualcodeValue}');
                                                             VirtualCodeItem selectedModel = VirtualModelList.firstWhere((model) => model.virtualCode == newValue);
                                                             //print('Selected Virtual Code: ${selectedModel.virtualCode}');
@@ -514,7 +524,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                       const Padding(
                                         padding: EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
                                         child: Text(
-                                          'Account Code *',
+                                          'Account Number *',
                                           style: CommonUtils.Mediumtext_12,
                                           textAlign: TextAlign.start,
                                         ),
@@ -548,8 +558,13 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                                           )
                                                         : DropdownButton<String>(
                                                             hint: Text(
-                                                              'Select Account',
-                                                              style: CommonUtils.txSty_13O_F6,
+                                                              'Select Account Number',
+                                                              style:  TextStyle(
+                                                              fontSize: 14,
+                                                              fontFamily: 'Roboto',
+                                                              fontWeight: FontWeight.w700,
+                                                              color: Color(0xa0e78337),
+                                                            ),
                                                             ),
                                                             value: accountValue, // String? accountValue;
                                                             onChanged: (String? newValue) {
@@ -566,7 +581,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                                               return DropdownMenuItem<String>(
                                                                 value: account.bankCode,
                                                                 child: Text(
-                                                                  '${account.branch} (${account.bankCode})',
+                                                                  '${account.account} (${account.bankCode})',
                                                                   style: CommonUtils.txSty_13O_F6,
                                                                 ),
                                                               );
@@ -1349,13 +1364,13 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
       //   hasValidationFailed = true;
       // }
       if (isValid && (virtualcodeValue == null || virtualcodeValue!.isEmpty)) {
-        CommonUtils.showCustomToastMessageLong('Please Select Virtual Code', context, 1, 6);
+        CommonUtils.showCustomToastMessageLong('Please Select Virtual Bank Code', context, 1, 6);
 
         isValid = false;
         hasValidationFailed = true;
       } else if (virtualcodeValue == 'Other') {
         if (accountValue == null || accountValue!.isEmpty) {
-          CommonUtils.showCustomToastMessageLong('Please Select Account No', context, 1, 6);
+          CommonUtils.showCustomToastMessageLong('Please Select Account Number', context, 1, 6);
 
           isValid = false;
           hasValidationFailed = true;

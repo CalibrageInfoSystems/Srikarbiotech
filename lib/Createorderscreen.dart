@@ -10,6 +10,7 @@ import 'dart:convert';
 import 'package:http/http.dart' as http;
 import 'package:badges/src/badge.dart' as badge;
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:srikarbiotech/Ordersubmit_screen.dart';
 import 'package:srikarbiotech/Services/api_config.dart';
 import 'package:srikarbiotech/transport_payment.dart';
@@ -59,6 +60,8 @@ class _ProductListState extends State<Createorderscreen> {
   bool isLoading = false;
   List<bool> isItemAddedToCart = [];
 
+  bool _dataLoaded = false; // Initially set dataLoaded to false
+
   // List<ProductResponse> products = [];
   List<int> quantities = [];
   List<TextEditingController> textEditingControllers = [];
@@ -98,6 +101,7 @@ class _ProductListState extends State<Createorderscreen> {
     //  fetchProducts();
     selectindex = 0;
     getshareddata();
+    fetchproductlist("");
     initSharedPreferences();
   }
 
@@ -468,24 +472,38 @@ class _ProductListState extends State<Createorderscreen> {
                   child: Padding(
                 padding: const EdgeInsets.only(left: 8.0, right: 8.0, top: 0.0), // Adjust the padding as needed
 
-                child: filteredproducts.isEmpty
-                    ? const Center(
-                        child: Text(
-                          'No products available',
-                          style: TextStyle(
-                            fontSize: 18.0,
-                            color: Color(0xFF424242),
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      )
-                    : Consumer<CartProvider>(builder: (context, cartProvider, _) {
+    child: Consumer<CartProvider>(
+    builder: (context, cartProvider, _) {
+    if (isLoading) {
+    // Show loading indicator while waiting for data
+    return buildShimmerEffect();
+    } else
+      if (filteredproducts.isEmpty) {
+    // Show "No products available" message if data is not loaded or both lists are empty
+    return Center(
+    child: Text(
+    'No products available',
+    style: TextStyle(
+    fontSize: 18.0,
+    color: Color(0xFF424242),
+    fontWeight: FontWeight.bold,
+    ),
+    ),
+    );
+    }
+    else{
+    // Display the data
+    // Modify this part according to your data display logic
+    // return YourDataDisplayWidget();
+
+
+      return Consumer<CartProvider>(builder: (context, cartProvider, _) {
                         List<OrderItemXrefType> cartItems = cartProvider.getCartItems();
                         // Set the global cart length
                         globalCartLength = cartItems.length;
                         print('Added cart: $globalCartLength');
                         return ListView.builder(
-                          itemCount: filteredproducts.length,
+                          itemCount: isLoading ? 5 : filteredproducts.length,
                           itemBuilder: (context, index) {
                             if (index < 0 || index >= filteredproducts.length) {
                               return Container(
@@ -632,7 +650,7 @@ class _ProductListState extends State<Createorderscreen> {
                                               )
                                             else
                                               Image.asset(
-                                                CompneyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
+                                                CompneyId == 1 ? 'assets/srikar-bio.png' : 'assets/srikar-seed.png',
                                                 width: 85,
                                                 height: 85,
                                               ),
@@ -981,8 +999,15 @@ class _ProductListState extends State<Createorderscreen> {
                             // rest of your code...
                           },
                         );
-                      }),
-              ))
+
+      },
+      );
+    }
+    }
+
+    )
+                  ),
+              )
             ],
           ),
           bottomNavigationBar: Container(
@@ -1048,7 +1073,184 @@ class _ProductListState extends State<Createorderscreen> {
           ),
         ));
   }
-
+  Widget buildShimmerEffect() {
+    return Shimmer.fromColors(
+      baseColor: Colors.grey[300]!,
+      highlightColor: Colors.grey[100]!,
+      child: Column(
+        crossAxisAlignment: CrossAxisAlignment.start,
+        children: [
+          Container(
+            width: double.infinity,
+            height: 20.0,
+            color: Colors.white,
+            margin: const EdgeInsets.only(bottom: 8.0),
+          ),
+          Container(
+            width: 200.0, // Adjust the width as needed
+            height: 16.0,
+            color: Colors.white,
+            margin: const EdgeInsets.only(bottom: 8.0),
+          ),
+          Row(
+            children: [
+              Container(
+                width: 100.0, // Adjust the width as needed
+                height: 16.0,
+                color: Colors.white,
+                margin: const EdgeInsets.only(right: 8.0),
+              ),
+              Container(
+                width: 50.0, // Adjust the width as needed
+                height: 16.0,
+                color: Colors.white,
+              ),
+              Spacer(),
+              Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Container(
+                  width: 85,
+                  height: 85,
+                  color: Colors.grey[300], // Placeholder color during shimmer
+                ),
+              )
+            ],
+          ),
+          SizedBox(
+            height: 5.0,
+          ),
+          Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: [
+            Padding(
+                padding: const EdgeInsets.only(right: 0, left: 0, bottom: 0),
+                child: Row(crossAxisAlignment: CrossAxisAlignment.start, mainAxisAlignment: MainAxisAlignment.start, children: [
+                  Shimmer.fromColors(
+                    baseColor: Colors.grey[300]!,
+                    highlightColor: Colors.grey[100]!,
+                    child: Container(
+                      height: 36,
+                      width: MediaQuery.of(context).size.width / 2.3,
+                      decoration: BoxDecoration(
+                        color: const Color(0xFFe78337),
+                        borderRadius: BorderRadius.circular(8.0),
+                      ),
+                      child: Row(
+                        children: [
+                          IconButton(
+                            icon: Icon(Icons.minimize, color: Colors.white),
+                            onPressed: () {}, // Placeholder onPressed function
+                            iconSize: 30.0,
+                          ),
+                          Expanded(
+                            child: Align(
+                              alignment: Alignment.center,
+                              child: SizedBox(
+                                height: 35,
+                                child: Padding(
+                                  padding: const EdgeInsets.all(2.0),
+                                  child: Container(
+                                    alignment: Alignment.center,
+                                    width: MediaQuery.of(context).size.width / 5,
+                                    decoration: const BoxDecoration(
+                                      color: Colors.white,
+                                    ),
+                                    child: SizedBox(
+                                      height: 35,
+                                      child: TextField(
+                                        keyboardType: TextInputType.number,
+                                        decoration: InputDecoration(
+                                          hintText: 'Loading',
+                                          // Placeholder text during shimmer
+                                          hintStyle: TextStyle(color: Colors.grey[300]),
+                                          border: InputBorder.none,
+                                          focusedBorder: InputBorder.none,
+                                          enabledBorder: InputBorder.none,
+                                          contentPadding: EdgeInsets.only(bottom: 12.0),
+                                        ),
+                                        textAlign: TextAlign.center,
+                                        style: TextStyle(color: Colors.white),
+                                      ),
+                                    ),
+                                  ),
+                                ),
+                              ),
+                            ),
+                          ),
+                          IconButton(
+                            icon: Icon(Icons.add, color: Colors.white),
+                            onPressed: () {}, // Placeholder onPressed function
+                            iconSize: 30.0,
+                          ),
+                        ],
+                      ),
+                    ),
+                  )
+                ]))
+          ]),
+          SizedBox(
+            width: 5.0,
+          ),
+          Padding(
+            padding: const EdgeInsets.symmetric(horizontal: 4.0),
+            child: GestureDetector(
+              onTap: () async {},
+              child: Shimmer.fromColors(
+                baseColor: Colors.grey[300]!,
+                highlightColor: Colors.grey[100]!,
+                child: Shimmer.fromColors(
+                  baseColor: Colors.grey[300]!,
+                  highlightColor: Colors.grey[100]!,
+                  child: Container(
+                    height: 36,
+                    decoration: BoxDecoration(
+                      color: const Color(0xFFffefdf),
+                      border: Border.all(
+                        color: const Color(0xFFe78337),
+                        width: 1.0,
+                      ),
+                      borderRadius: BorderRadius.circular(8.0),
+                    ),
+                    child: Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 6.0),
+                      child: Row(
+                        children: [
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Icon(
+                              Icons.add_shopping_cart,
+                              size: 18.0,
+                              color: const Color(0xFFe78337),
+                            ),
+                          ),
+                          const SizedBox(width: 8.0),
+                          // Display "Added" if the item is already added to the cart
+                          Shimmer.fromColors(
+                            baseColor: Colors.grey[300]!,
+                            highlightColor: Colors.grey[100]!,
+                            child: Text(
+                              'Add',
+                              style: TextStyle(
+                                color: const Color(0xFFe78337),
+                                fontSize: 14,
+                                fontFamily: "Roboto",
+                                fontWeight: FontWeight.w600,
+                              ),
+                            ),
+                          ),
+                          const SizedBox(width: 6.0),
+                        ],
+                      ),
+                    ),
+                  ),
+                ),
+              ),
+            ),
+          ),
+        ],
+      ),
+    );
+  }
   Widget buildweight(int index, String mode, Function onTap, {bool isSelected = false}) {
     return GestureDetector(
       onTap: () {
@@ -1115,21 +1317,29 @@ class _ProductListState extends State<Createorderscreen> {
   void fetchproductlist(String getgropcode) async {
     searchController.clear();
     totalproducts.clear();
+    setState(() {
+      isLoading = true; // Set loading state to true before API call
+    });
+
     String apiUrl = baseUrl + GetProductbyItemcode;
     print('productApi: ${apiUrl}');
-    final requestBody = {"CompanyId": '$CompneyId', "PartyCode": widget.cardCode, "ItmsGrpCod": getgropcode};
+    final requestBody = {
+      "CompanyId": '$CompneyId',
+      "PartyCode": widget.cardCode,
+      "ItmsGrpCod": getgropcode
+    };
 
     print(jsonEncode(requestBody));
 
-    final response = await http.post(
-      Uri.parse(apiUrl),
-      headers: {'Content-Type': 'application/json'},
-      body: jsonEncode(requestBody),
-    );
-
-    print('productListResponse: ${response.body}');
-
     try {
+      final response = await http.post(
+        Uri.parse(apiUrl),
+        headers: {'Content-Type': 'application/json'},
+        body: jsonEncode(requestBody),
+      );
+
+      print('productListResponse: ${response.body}');
+
       if (response.statusCode == 200) {
         final Map<String, dynamic>? responseData = jsonDecode(response.body);
 
@@ -1144,15 +1354,14 @@ class _ProductListState extends State<Createorderscreen> {
         } else {
           // Print the length directly on the list
           print('productLength ${responseDataList.length}');
-
           setState(() {
-            isLoading = true; // or false
             totalproducts = responseDataList.map((response) => ProductResponse.fromJson(response)).toList();
             filteredproducts = List.from(totalproducts);
             isItemAddedToCart = List.generate(filteredproducts.length, (index) => false);
             quantities = List.generate(filteredproducts.length, (index) => 1);
             isSelectedList = List.generate(filteredproducts.length, (index) => false);
             textEditingControllers = List.generate(filteredproducts.length, (index) => TextEditingController());
+            isLoading = false; // Set loading state to false after data is fetched
             print('productResponse ${filteredproducts.length}');
           });
         }
@@ -1161,6 +1370,10 @@ class _ProductListState extends State<Createorderscreen> {
       }
     } catch (error) {
       print('Error: $error');
+      // Handle errors
+      setState(() {
+        isLoading = false; // Set loading state to false if error occurs
+      });
       throw Exception('Failed to connect to the API');
     }
   }

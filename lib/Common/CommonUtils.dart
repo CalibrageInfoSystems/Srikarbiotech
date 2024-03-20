@@ -277,13 +277,14 @@ class CommonUtils {
 
   static const txSty_13B = TextStyle(
     fontFamily: 'Roboto',
-    fontSize: 13,
+    fontSize: 14,
     color: Colors.black,
   );
   static final txSty_13O_F6 = TextStyle(
       fontFamily: 'Roboto',
-      fontSize: 13,
+      fontSize: 14,
       color: orangeColor,
+
       fontWeight: FontWeight.w600);
 
   static Widget showProgressIndicator() {

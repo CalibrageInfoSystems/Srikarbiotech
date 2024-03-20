@@ -577,10 +577,14 @@ class Ledger_screen extends State<Ledgerscreen> {
             var status = await Permission.storage.request();
             var manageExternalStorage = await Permission.manageExternalStorage.request();
             if (status!.isGranted || manageExternalStorage!.isGranted) {
-              Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
+              Directory downloadsDirectory = Directory('/storage/emulated/0/Download/Srikar_Groups');
+
               String fileName = "${companyCode}_${widget.cardCode}_${pdffromdate}_${pdftodate}.pdf";
               //    String fileName = "'$companyCode'_'${widget.cardCode}'_${fromDateController.text}_${toDateController.text}.pdf";
 
+              if (!downloadsDirectory.existsSync()) {
+                downloadsDirectory.createSync(recursive: true);
+              }
               String filePath = '${downloadsDirectory.path}/$fileName';
 
               // Write the bytes to a file

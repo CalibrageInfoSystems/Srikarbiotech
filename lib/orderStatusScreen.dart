@@ -233,8 +233,8 @@ class _orderStatusScreenState extends State<orderStatusScreen>
                         child: SvgPicture.asset(
                           'assets/share.svg',
                           color: const Color(0xFFe78337),
-                          width: 25,
-                          height: 25,
+                          width: 20,
+                          height: 20,
                         ),
                       ),
                     )

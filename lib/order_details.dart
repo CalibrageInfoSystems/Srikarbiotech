@@ -1908,7 +1908,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
         if (responseData['isSuccess']) {
           // Status updated successfully
           print(responseData['endUserMessage']);
-          CommonUtils.showCustomToastMessageLong('point 1', context, 0, 3);
+          CommonUtils.showCustomToastMessageLong(responseData['endUserMessage'], context, 0, 3);
           Navigator.push(
             context,
             MaterialPageRoute(builder: (context) => const ViewOrders()),
@@ -1938,15 +1938,16 @@ class _OrderdetailsPageState extends State<Orderdetails> {
       if (response.statusCode == 200) {
         // Get the application documents directory
 
-        Directory appDocDir = Directory('/storage/emulated/0/Download');
+        Directory appDocDir = Directory('/storage/emulated/0/Download/Srikar_Groups');
         String fileName = "srikar_invoice_$invoiceNo.pdf";
 
-        String filePath = '${appDocDir.path}/$fileName';
+       String filePath = '${appDocDir.path}/$fileName';
         // Get the download directory
 
         if (!appDocDir.existsSync()) {
           appDocDir.createSync(recursive: true);
         }
+
         await File(filePath).writeAsBytes(response.bodyBytes);
         // Create a File instance to save the PDF
 

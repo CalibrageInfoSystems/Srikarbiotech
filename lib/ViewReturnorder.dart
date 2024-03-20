@@ -1167,10 +1167,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     int companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
 
     try {
-      String apiurl = baseUrl + GetWarehouse + userId + companyId.toString();
+
+      String apiUrl = baseUrl + GetWarehouse + userId.toString() +"/"+ companyId.toString();
       //  String apiUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetWarehousesByUserandCompany/$userId/$companyId";
       // String apiUrl = '$baseUrl$GetWarehousesByUserandCompany$userId 1';
-      final jsonResponse = await http.get(Uri.parse(apiurl));
+      final jsonResponse = await http.get(Uri.parse(apiUrl));
       if (jsonResponse.statusCode == 200) {
         Map<String, dynamic> response = jsonDecode(jsonResponse.body);
         if (response['response']['listResult'] != null) {

@@ -123,8 +123,34 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     // Calculate totalSumIncludingGst in the main widget
     //  totalSumIncludingGst = calculateTotalSum(cartItems) + calculateTotalGstAmount(cartItems);
     // print('totalSumIncludingGst $totalSumIncludingGst');
-
-    return Scaffold(
+    return WillPopScope(
+        onWillPop: () async {
+          // Clear the cart data here
+          try {
+            Navigator.push(
+              context,
+              MaterialPageRoute(
+                builder: (context) => Createorderscreen(
+                    cardName: widget.cardName,
+                    cardCode: widget.cardCode,
+                    address: widget.address,
+                    state: widget.state,
+                    phone: widget.phone,
+                    proprietorName: widget.proprietorName,
+                    gstRegnNo: widget.gstRegnNo,
+                    creditLine: widget.creditLine,
+                    balance: widget.balance,
+                    whsCode: widget.whsCode,
+                    whsName: widget.whsName,
+                    whsState: widget.whsState),
+              ),
+            );
+          } catch (e) {
+            print("Error navigating: $e");
+          }
+          return true; // Allow the back navigation
+        },
+    child: Scaffold(
       appBar: AppBar(
         backgroundColor: Color(0xFFe78337),
         automaticallyImplyLeading: false,
@@ -681,7 +707,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       ),
 
       //    ),
-    );
+    ));
   }
 
   void AddOrder() async {
@@ -692,6 +718,9 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     print('Formatted Date: $formattedcurrentDate');
     String apiUrl = baseUrl + SubmitCreateOrderapi;
     print('SubmitOrderApi: $apiUrl');
+    bool isValid = true;
+    bool hasValidationFailed = false;
+
     List<Map<String, dynamic>> orderItemList = cartItems.map((cartItem) {
       int NoOfPcs = cartItem.orderQty! * cartItem.numInSale!;
 
@@ -708,7 +737,11 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       print('Num In Sale: $numInSale');
       print('Total Price: $totalPrice');
       print('Total Price With GST: $totalPriceWithGST');
-
+      if (isValid && orderQty == 0.0) {
+        CommonUtils.showCustomToastMessageLong('Please add quantity to selected product(s)', context, 1, 4);
+        isValid = false;
+        hasValidationFailed = true;
+      }
       return {
         "Id": 1,
         "OrderId": 2,
@@ -738,8 +771,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     double totalGSTCost = orderItemList.fold(0.0, (sum, item) => sum + (item['GSTPrice'] ?? 0.0));
     print('Total Price: $totalCostWithGST');
     print('Total Price With GST: $totalGSTCost');
-    bool isValid = true;
-    bool hasValidationFailed = false;
+    // bool isValid = true;
+    // bool hasValidationFailed = false;
     if (isValid && bookingplacecontroller.text.isEmpty) {
       CommonUtils.showCustomToastMessageLong('Please Enter Booking Place', context, 1, 4);
       isValid = false;
@@ -1030,7 +1063,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   late int _orderQty;
   double gstPrice = 0.0;
   double totalGstAmount = 0.0;
-  late int Quantity = 0;
+  late int Quantity = 1;
   double totalSumForProduct = 0.0;
   double totalSum = 0.0;
   @override
