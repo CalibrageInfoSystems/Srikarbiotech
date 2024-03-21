@@ -2,6 +2,7 @@ import 'dart:convert';
 import 'dart:io';
 
 import 'package:collection/collection.dart';
+import 'package:connectivity/connectivity.dart';
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
@@ -1291,7 +1292,17 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                               color: isButtonEnabled ? const Color(0xFFe78337) : Colors.grey, // Change color based on button state
                             ),
                             child: GestureDetector(
-                              onTap: isButtonEnabled ? () => AddUpdateCollections(context) : null,
+                              onTap: isButtonEnabled ? () async {
+                                var connectivityResult = await Connectivity().checkConnectivity();
+                                if (connectivityResult == ConnectivityResult.none) {
+                                  // No internet connection, show a message or handle it accordingly
+                                  CommonUtils.showCustomToastMessageLong(
+                                      'Please check your internet  connection', context, 1, 4);
+                                } else {
+                                  // Internet connection is available, proceed with button action
+                                  AddUpdateCollections(context);
+                                }
+                              } : null,
                               child: Container(
                                 width: double.infinity,
                                 decoration: BoxDecoration(
@@ -1311,6 +1322,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                 ),
                               ),
                             ),
+
                           ),
                         ],
                       ),

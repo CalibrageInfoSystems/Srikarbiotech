@@ -35,7 +35,7 @@ class _MyHomePageState extends State<LoginScreen> {
   String? userId;
   String? slpCode;
   bool isLoading = false;
-  late LocationUpdatesService _locationUpdatesService;
+
   @override
   initState() {
     super.initState();
@@ -43,7 +43,7 @@ class _MyHomePageState extends State<LoginScreen> {
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
-    _locationUpdatesService = LocationUpdatesService();
+
     print("Company Name: ${widget.companyName}");
     print("Company ID: ${widget.companyId}");
     compneyid = widget.companyId;

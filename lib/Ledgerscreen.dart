@@ -266,7 +266,19 @@ class Ledger_screen extends State<Ledgerscreen> {
               child: InkWell(
                 onTap: () {
                   // Add logic for the download button
-                  downloadData();
+                  CommonUtils.checkInternetConnectivity().then(
+                        (isConnected) {
+                      if (isConnected) {
+                        downloadData();
+                        print('The Internet Is Connected');
+                      } else {
+                        CommonUtils.showCustomToastMessageLong(
+                            'Please check your internet  connection', context, 1, 4);
+                        print('The Internet Is not  Connected');
+                      }
+                    },
+                  );
+
                   print('Download button clicked');
                 },
                 child: Container(
@@ -302,7 +314,19 @@ class Ledger_screen extends State<Ledgerscreen> {
             InkWell(
               onTap: () {
                 print('Share button clicked');
-                shareData();
+                CommonUtils.checkInternetConnectivity().then(
+                      (isConnected) {
+                    if (isConnected) {
+                      shareData();
+                      print('The Internet Is Connected');
+                    } else {
+                      CommonUtils.showCustomToastMessageLong(
+                          'Please check your internet  connection', context, 1, 4);
+                      print('The Internet Is not  Connected');
+                    }
+                  },
+                );
+
               },
               child: Container(
                 padding: const EdgeInsets.all(10),

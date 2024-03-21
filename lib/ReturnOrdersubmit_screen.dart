@@ -701,8 +701,22 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                 child: Center(
                   child: GestureDetector(
                     onTap: () {
+
+
                       if (globalCartLength > 0) {
-                        Addreturnorder();
+                        CommonUtils.checkInternetConnectivity().then(
+                              (isConnected) {
+                            if (isConnected) {
+                              Addreturnorder();
+                              print('The Internet Is Connected');
+                            } else {
+                              CommonUtils.showCustomToastMessageLong(
+                                  'Please check your internet  connection', context, 1, 4);
+                              print('The Internet Is not  Connected');
+                            }
+                          },
+                        );
+
                         // Add logic for the download button
                       } else {
                         CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
