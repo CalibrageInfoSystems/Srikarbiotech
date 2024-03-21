@@ -235,8 +235,8 @@ class OrderResult {
   final String createdDate;
   final String updatedBy;
   final String updatedDate;
-  final String shRemarks;
-  final String rejectedRemarks;
+  final String? shRemarks;
+  final String? rejectedRemarks;
   final String? whsCode;
   final String? whsName;
   final String? whsState;

@@ -42,7 +42,20 @@ class Selectparty_screen extends State<Selectpartyscreen> {
   @override
   void initState() {
     super.initState();
-    getshareddata();
+    CommonUtils.checkInternetConnectivity().then(
+          (isConnected) {
+        if (isConnected) {
+          getshareddata();
+          print('The Internet Is Connected');
+        } else {
+          print('The Internet Is not  Connected');
+          CommonUtils.showCustomToastMessageLong(
+              'Please check your internet  connection', context, 1, 4);
+        }
+      },
+    );
+
+
 
 //getslpcode();
 

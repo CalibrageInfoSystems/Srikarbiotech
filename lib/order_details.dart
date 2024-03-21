@@ -1121,7 +1121,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                             style: CommonUtils.txSty_13B_Fb,
                                                           ),
                                                           Text(
-                                                            '₹${formatNumber(invoice.totalInvoiceAmount)}',
+                                                            '₹${formatNumber(invoice.totalAmountWithGST)}',
                                                             style: TextStyle(
                                                               fontFamily: 'Roboto',
                                                               fontWeight: FontWeight.bold,
@@ -1318,6 +1318,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                       ),
                                                     ),
                                                   ),
+                                                  const Spacer(), // This will push the container to the right corner
                                                   Visibility(
                                                     visible: invoice.isReceived == false,
                                                     child: Container(
@@ -1365,6 +1366,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                                         color: Colors.black,
                                                                       ),
                                                                       const SizedBox(width: 8.0),
+
                                                                       const Text(
                                                                         'Received',
                                                                         style: TextStyle(
@@ -1534,6 +1536,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
   Future<InvoiceApiResponse> fetchinvoicedata() async {
     ordernum = widget.ordernumber;
     String apiurl = baseUrl + GetInvoiceDetails + ordernum;
+    print('apiurl===$apiurl');
     final response = await http.get(Uri.parse(apiurl));
 
     if (response.statusCode == 200) {
@@ -1739,6 +1742,8 @@ class _OrderdetailsPageState extends State<Orderdetails> {
   }
 
   void showRemarksBottomSheet(BuildContext context, String invoiceNo, String invoicedateDate) {
+    remarkstext.text = "";
+    ordernumber = widget.ordernumber;
     showModalBottomSheet(
       isScrollControlled: true,
       context: context,
@@ -1805,6 +1810,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                         if (remarks.isEmpty) {
                           CommonUtils.showCustomToastMessageLong('Please Enter Remarks', context, 1, 4);
                         } else {
+
                           // Call the API to update invoice status with remarks
                           updateInvoiceStatus(ordernumber!, invoiceNo, remarks);
                           Navigator.of(context).pop(); // Close the bottom sheet

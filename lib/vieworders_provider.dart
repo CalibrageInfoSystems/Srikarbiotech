@@ -109,6 +109,7 @@ class ViewOrdersProvider extends ChangeNotifier {
 
     _displayParty = null;
     apiPartyCode = null;
+    partyCode = null;
     apiStatusId = null;
     _partyController.clear();
 

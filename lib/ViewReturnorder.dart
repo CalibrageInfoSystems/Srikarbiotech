@@ -56,6 +56,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
   @override
   void initState() {
     super.initState();
+
     initializeApiData();
   }
 
@@ -133,7 +134,18 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ViewReturnOrdersProvider>(
+    return WillPopScope(
+        onWillPop: () async {
+          // Disable the back button functionality
+      returnOrdersProvider.clearFilter();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+          return true;
+        },
+        child:
+     Consumer<ViewReturnOrdersProvider>(
       builder: (context, viewReturnOrdersProvider, _) => Scaffold(
         appBar: _appBar(),
         body: FutureBuilder(
@@ -192,7 +204,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
           },
         ),
       ),
-    );
+    ));
   }
 
   AppBar _appBar() {
@@ -210,7 +222,10 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                 child: GestureDetector(
                   onTap: () {
                     returnOrdersProvider.clearFilter();
-                    Navigator.of(context).pop();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    );
                   },
                   child: const Icon(
                     Icons.chevron_left,
@@ -1385,7 +1400,7 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
         child: Card(
           elevation: 5,
           child: Container(
-            padding: const EdgeInsets.all(12),
+            padding: const EdgeInsets.only(left: 5, right: 5, top: 12, bottom: 12),
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               color: Colors.white,
@@ -1421,7 +1436,7 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                       SizedBox(
                         width: MediaQuery.of(context).size.width / 1.6,
                         child: Padding(
-                          padding: const EdgeInsets.only(left: 10, top: 0, bottom: 0),
+                          padding: const EdgeInsets.only(left: 2, top: 0, bottom: 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,

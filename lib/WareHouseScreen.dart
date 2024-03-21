@@ -54,7 +54,19 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
     print("screenFrom: ${widget.from}");
 
     screenFrom = '${widget.from}'.trim();
+    CommonUtils.checkInternetConnectivity().then(
+          (isConnected) {
+        if (isConnected) {
+        print('The Internet Is Connected');
+        } else {
+          CommonUtils.showCustomToastMessageLong(
+              'Please check your internet  connection', context, 1, 4);
+          print('The Internet Is not  Connected');
+        }
+      },
+    );
     wareHousesData = getWareHouses();
+
   }
 
   Future<List<WareHouseList>> getWareHouses() async {

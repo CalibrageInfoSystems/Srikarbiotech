@@ -99,7 +99,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
         future: apiData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator.adaptive());
+            return   Center(child: CommonUtils.showProgressIndicator());
           } else if (snapshot.hasError) {
             return const Center(
               child: Text(
@@ -733,7 +733,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
       future: imageApiData,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return const CircularProgressIndicator.adaptive();
+          return  CommonUtils.showProgressIndicator();
         } else if (snapshot.hasError) {
           return const Center(child: Text('No data present'));
         } else {
@@ -1018,93 +1018,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
     );
   }
 
-  int currentPage = 0;
 
-  void showAttachmentsDialog(List<ReturnOrdersImageList> data) {
-    showDialog(
-      context: context,
-      builder: (BuildContext context) {
-        return Dialog(
-          child: Container(
-            padding: const EdgeInsets.all(5),
-            decoration: BoxDecoration(
-              borderRadius: BorderRadius.circular(10),
-              color: Colors.white,
-            ),
-            width: double.infinity,
-            height: 500,
-            child: Stack(
-              children: [
-                Center(
-                  child: PhotoViewGallery.builder(
-                    itemCount: data.length,
-                    builder: (context, index) {
-                      return PhotoViewGalleryPageOptions(
-                        imageProvider: NetworkImage(data[index].imageString),
-                        minScale: PhotoViewComputedScale.contained,
-                        maxScale: PhotoViewComputedScale.covered,
-                      );
-                    },
-                    scrollDirection: Axis.horizontal,
-                    scrollPhysics: const PageScrollPhysics(),
-                    allowImplicitScrolling: true,
-                    backgroundDecoration: const BoxDecoration(
-                      color: Colors.white,
-                    ),
-                    onPageChanged: (index) {
-                      currentPage = index;
-                      // Provider.of<ViewReturnOrdersProvider>(context)
-                      //     .changeIndex = index;
-                    },
-                  ),
-                ),
-                Align(
-                  alignment: Alignment.bottomCenter,
-                  child: Container(
-                    padding: const EdgeInsets.symmetric(vertical: 10),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: List.generate(data.length, (index) {
-                        debugPrint('currentPage2: $currentPage');
-                        return Container(
-                          width: 8.0,
-                          height: 8.0,
-                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                          decoration: const BoxDecoration(
-                            shape: BoxShape.circle,
-                            color: Colors.red,
-                          ),
-                        );
-                      }),
-                    ),
-                  ),
-                ),
-                Positioned(
-                  top: 0,
-                  right: 0,
-                  child: GestureDetector(
-                    onTap: () => Navigator.of(context).pop(),
-                    child: Container(
-                      padding: const EdgeInsets.all(3.0),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(20),
-                        color: Colors.red.withOpacity(0.2),
-                      ),
-                      child: const Icon(
-                        Icons.close,
-                        color: Colors.red,
-                        size: 15,
-                      ),
-                    ),
-                  ),
-                ),
-              ],
-            ),
-          ),
-        );
-      },
-    );
-  }
 
   Future<void> getReturnOrderReceivedAttchImagesById() async {
     String apiUrl = baseUrl + GetReturnOrderImagesById + widget.orderId.toString() + "/20";
@@ -1125,7 +1039,98 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
       throw Exception('catch');
     }
   }
+  void showAttachmentsDialog(List<ReturnOrdersImageList> data) {
+    int? currentPage = 0; // Initialize to the first page index
 
+    showDialog(
+      context: context,
+      builder: (BuildContext context) {
+        return StatefulBuilder(
+          builder: (context, setState) {
+            return Dialog(
+              child: Container(
+                padding: const EdgeInsets.all(5),
+                decoration: BoxDecoration(
+                  borderRadius: BorderRadius.circular(10),
+                  color: Colors.white,
+                ),
+                width: double.infinity,
+                height: 500,
+                child: Stack(
+                  children: [
+                    Center(
+                      child: PhotoViewGallery.builder(
+                        itemCount: data.length,
+                        builder: (context, index) {
+                          return PhotoViewGalleryPageOptions(
+                            imageProvider: NetworkImage(data[index].imageString),
+                            minScale: PhotoViewComputedScale.contained,
+                            maxScale: PhotoViewComputedScale.covered,
+                          );
+                        },
+                        scrollDirection: Axis.horizontal,
+                        scrollPhysics: const PageScrollPhysics(),
+                        allowImplicitScrolling: true,
+                        backgroundDecoration: const BoxDecoration(
+                          color: Colors.white,
+                        ),
+                        onPageChanged: (index) {
+                          setState(() {
+                            currentPage = index; // Update currentPage when page changes
+                          });
+                        },
+                      ),
+                    ),
+                    Align(
+                      alignment: Alignment.bottomCenter,
+                      child: Container(
+                        padding: const EdgeInsets.symmetric(vertical: 10),
+                        child: Row(
+                          mainAxisAlignment: MainAxisAlignment.center,
+                          children: List.generate(data.length, (index) {
+                            return Container(
+                              width: 8.0,
+                              height: 8.0,
+                              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                              decoration: BoxDecoration(
+                                shape: BoxShape.circle,
+                                color: currentPage == index ? Colors.orange : Colors.grey,
+                              ),
+                            );
+                          }),
+                        ),
+                      ),
+                    ),
+
+                    Positioned(
+                      top: 0,
+                      right: 0,
+                      child: GestureDetector(
+                        onTap: () => Navigator.of(context).pop(),
+
+                        child: Container(
+                          padding: const EdgeInsets.all(3.0),
+                          decoration: BoxDecoration(
+                            borderRadius: BorderRadius.circular(20),
+                            color: Colors.red.withOpacity(0.2),
+                          ),
+                          child: const Icon(
+                            Icons.close,
+                            color: Colors.red,
+                            size: 15,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ],
+                ),
+              ),
+            );
+          },
+        );
+      },
+    );
+  }
 // void showAttachmentsDialog(List<ReturnOrdersImageList> data) {
 //   showDialog(
 //     context: context,

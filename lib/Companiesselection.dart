@@ -40,6 +40,8 @@ class Companies_selection extends State<Companiesselection> {
           fetchGetCompaniesData();
           print('The Internet Is Connected');
         } else {
+          CommonUtils.showCustomToastMessageLong(
+              'Please check your internet  connection', context, 1, 4);
           print('The Internet Is not  Connected');
         }
       },

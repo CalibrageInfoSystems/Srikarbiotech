@@ -21,6 +21,7 @@ import '../Model/GetItemGroups.dart';
 import '../Model/OrderItemXrefType.dart';
 import 'Common/SharedPrefsData.dart';
 import 'HomeScreen.dart';
+import 'WareHouseScreen.dart';
 
 class Createorderscreen extends StatefulWidget {
   final String cardName;
@@ -100,9 +101,21 @@ class _ProductListState extends State<Createorderscreen> {
     // fetchProducts();
     //  fetchProducts();
     selectindex = 0;
-    getshareddata();
-    fetchproductlist("");
-    initSharedPreferences();
+    CommonUtils.checkInternetConnectivity().then(
+          (isConnected) {
+        if (isConnected) {
+          getshareddata();
+          fetchproductlist("");
+          initSharedPreferences();
+          print('The Internet Is Connected');
+        } else {
+          CommonUtils.showCustomToastMessageLong(
+              'Please check your internet  connection', context, 1, 4);
+          print('The Internet Is not  Connected');
+        }
+      },
+    );
+
   }
 
   Future<ApiResponse> fetchProducts() async {
@@ -140,7 +153,24 @@ class _ProductListState extends State<Createorderscreen> {
           final cartProvider = context.read<CartProvider>();
 
           clearCartData(cartProvider);
-
+          Navigator.of(context).pop();
+          // Navigator.pushReplacement(
+          //     context,
+          //     MaterialPageRoute(builder: (context) =>  WareHouseScreen(
+          //         from: 'CreateOrder',
+          //         cardName: widget.cardName,
+          //         cardCode: widget.cardCode,
+          //         address: widget.address,
+          //         state: widget.state,
+          //         phone: widget.phone,
+          //         proprietorName: widget.proprietorName,
+          //         gstRegnNo: widget.gstRegnNo,
+          //
+          //         creditLine: double.parse('${widget.creditLine}'),
+          //         // Convert to double
+          //         balance: double.parse('${widget.balance}'
+          //
+          //         ))));
           return true; // Allow the back navigation
         },
         child: Scaffold(
@@ -153,7 +183,25 @@ class _ProductListState extends State<Createorderscreen> {
 
                 // Clear the cart data here
                 clearCartData(cartProvider);
-                Navigator.pop(context); // This line will navigate back
+                Navigator.of(context).pop();
+                // Navigator.pushReplacement(
+                //   context,
+                //   MaterialPageRoute(builder: (context) =>  WareHouseScreen(
+                //       from: 'CreateOrder',
+                //       cardName: widget.cardName,
+                //       cardCode: widget.cardCode,
+                //       address: widget.address,
+                //       state: widget.state,
+                //       phone: widget.phone,
+                //       proprietorName: widget.proprietorName,
+                //       gstRegnNo: widget.gstRegnNo,
+                //
+                //       creditLine: double.parse('${widget.creditLine}'),
+                //       // Convert to double
+                //       balance: double.parse('${widget.balance}'
+                //
+                // )))); // This line will navigate back
+                // Navigator.pop(context); // This line will navigate back
               },
             ),
             title: const Row(

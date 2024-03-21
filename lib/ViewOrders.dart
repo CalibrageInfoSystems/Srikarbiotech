@@ -137,7 +137,17 @@ class _VieworderPageState extends State<ViewOrders> {
 
   @override
   Widget build(BuildContext context) {
-    return Consumer<ViewOrdersProvider>(
+    return WillPopScope(
+        onWillPop: () async {
+          // Disable the back button functionality
+          viewOrdersProvider.clearFilter();
+          Navigator.pushReplacement(
+            context,
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
+          );
+          return true;
+        },
+        child:Consumer<ViewOrdersProvider>(
       builder: (context, ordersProvider, _) => Scaffold(
         appBar: _appBar(),
         body: FutureBuilder(
@@ -207,7 +217,7 @@ class _VieworderPageState extends State<ViewOrders> {
           },
         ),
       ),
-    );
+    ));
   }
 
   AppBar _appBar() {
@@ -1117,6 +1127,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         if (jsonResponse['isSuccess']) {
           List<dynamic>? data = jsonResponse['response']['listResult'];
 
+          debugPrint('_______view orders____filter___${data}');
           if (data != null) {
             List<OrderResult> result = data.map((item) => OrderResult.fromJson(item)).toList();
             viewOrdersProvider.storeIntoViewOrderProvider(result);
@@ -1132,6 +1143,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         }
       } else {}
     } catch (e) {
+      debugPrint('_______view orders____filter___${e.toString()}');
       CommonUtils.showCustomToastMessageLong('Something went wrong', context, 2, 2);
     }
     Navigator.of(context).pop();
@@ -1220,7 +1232,8 @@ class _OrderCardState extends State<OrderCard> {
         child: Card(
           elevation: 5,
           child: Container(
-            padding: const EdgeInsets.all(12),
+            // const EdgeInsets.only(left: 5, right: 5, top: 12, bottom: 12),
+            padding:    const EdgeInsets.only(left: 5, right: 5, top: 12, bottom: 12),
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               color: Colors.white,

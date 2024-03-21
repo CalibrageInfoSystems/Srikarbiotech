@@ -56,8 +56,11 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   @override
   void initState() {
     super.initState();
+
     getshareddata();
     initializeData();
+
+
   }
 
   @override
@@ -1366,8 +1369,8 @@ class _MyCardState extends State<MyCard> {
             elevation: 5,
             child: Container(
               padding:
-              // const EdgeInsets.only(left: 12, right: 5, top: 12, bottom: 12),
-              const EdgeInsets.all(12),
+            const EdgeInsets.only(left: 5, right: 5, top: 12, bottom: 12),
+           //   const EdgeInsets.all(12),
               //   width: double.infinity,
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
@@ -1412,7 +1415,7 @@ class _MyCardState extends State<MyCard> {
                           width: MediaQuery.of(context).size.width / 1.6,
                           child: Padding(
                             padding: const EdgeInsets.only(
-                                left: 5, top: 0, bottom: 0),
+                                left: 1, top: 0, bottom: 0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1534,13 +1537,10 @@ class _MyCardState extends State<MyCard> {
                             //Spacer(),
                             Row(
                               children: [
-                                Icon(
-                                  Icons.currency_rupee,
-                                  size: 12,
-                                  color: HexColor('#e58338'),
-                                ),
+
                                 Text(
-                                  '${widget.listResult.amount}',
+                                  '₹${formatNumber(widget.listResult.amount)}',
+
                                   style: CommonUtils.txSty_13O_F6,
                                 ),
                               ],
@@ -1653,5 +1653,10 @@ class _MyCardState extends State<MyCard> {
         ],
       ),
     );
+  }
+
+  String formatNumber(double number) {
+    NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+    return formatter.format(number);
   }
 }

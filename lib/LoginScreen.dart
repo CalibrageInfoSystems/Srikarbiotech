@@ -296,8 +296,19 @@ class _MyHomePageState extends State<LoginScreen> {
                                 child: GestureDetector(
                                   onTap: () {
                                     FocusManager.instance.primaryFocus?.unfocus();
+                                    CommonUtils.checkInternetConnectivity().then(
+                                          (isConnected) {
+                                        if (isConnected) {
+                                          _login();
+                                          print('The Internet Is Connected');
+                                        } else {
+                                          CommonUtils.showCustomToastMessageLong(
+                                              'Please check your internet  connection', context, 1, 4);
+                                          print('The Internet Is not  Connected');
+                                        }
+                                      },
+                                    );
 
-                                    _login();
 
                                   },
                                   child: Container(

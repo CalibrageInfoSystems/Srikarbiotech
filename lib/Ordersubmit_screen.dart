@@ -126,28 +126,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     return WillPopScope(
         onWillPop: () async {
           // Clear the cart data here
-          try {
-            Navigator.push(
-              context,
-              MaterialPageRoute(
-                builder: (context) => Createorderscreen(
-                    cardName: widget.cardName,
-                    cardCode: widget.cardCode,
-                    address: widget.address,
-                    state: widget.state,
-                    phone: widget.phone,
-                    proprietorName: widget.proprietorName,
-                    gstRegnNo: widget.gstRegnNo,
-                    creditLine: widget.creditLine,
-                    balance: widget.balance,
-                    whsCode: widget.whsCode,
-                    whsName: widget.whsName,
-                    whsState: widget.whsState),
-              ),
-            );
-          } catch (e) {
-            print("Error navigating: $e");
-          }
+          Navigator.of(context).pop();
           return true; // Allow the back navigation
         },
     child: Scaffold(
@@ -163,29 +142,30 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                   padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
+                      Navigator.of(context).pop();
                       // Handle the click event for the back button
-                      try {
-                        Navigator.push(
-                          context,
-                          MaterialPageRoute(
-                            builder: (context) => Createorderscreen(
-                                cardName: widget.cardName,
-                                cardCode: widget.cardCode,
-                                address: widget.address,
-                                state: widget.state,
-                                phone: widget.phone,
-                                proprietorName: widget.proprietorName,
-                                gstRegnNo: widget.gstRegnNo,
-                                creditLine: widget.creditLine,
-                                balance: widget.balance,
-                                whsCode: widget.whsCode,
-                                whsName: widget.whsName,
-                                whsState: widget.whsState),
-                          ),
-                        );
-                      } catch (e) {
-                        print("Error navigating: $e");
-                      }
+                      // try {
+                      //   Navigator.push(
+                      //     context,
+                      //     MaterialPageRoute(
+                      //       builder: (context) => Createorderscreen(
+                      //           cardName: widget.cardName,
+                      //           cardCode: widget.cardCode,
+                      //           address: widget.address,
+                      //           state: widget.state,
+                      //           phone: widget.phone,
+                      //           proprietorName: widget.proprietorName,
+                      //           gstRegnNo: widget.gstRegnNo,
+                      //           creditLine: widget.creditLine,
+                      //           balance: widget.balance,
+                      //           whsCode: widget.whsCode,
+                      //           whsName: widget.whsName,
+                      //           whsState: widget.whsState),
+                      //     ),
+                      //   );
+                      // } catch (e) {
+                      //   print("Error navigating: $e");
+                      // }
                     },
                     child: Icon(
                       Icons.chevron_left,
@@ -270,7 +250,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                     Colors.white,
                     BorderRadius.circular(5.0),
                   ),
-                  SizedBox(height: 15.0),
+
                 ],
               ),
             ),
@@ -396,7 +376,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
                 //       EdgeInsets.only(top: 10.0, left: 10, right: 10, bottom: 10),
                 //   child:
                 Container(
-                  padding: EdgeInsets.only(top: 5.0, left: 10, right: 10, bottom: 15),
+                  padding: EdgeInsets.only( left: 10, right: 10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(5.0),
                     // color: Colors.white,
@@ -675,7 +655,19 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
               child: InkWell(
                 onTap: () {
                   if (globalCartLength > 0) {
-                    AddOrder();
+                    CommonUtils.checkInternetConnectivity().then(
+                          (isConnected) {
+                        if (isConnected) {
+                          AddOrder();
+                          print('The Internet Is Connected');
+                        } else {
+                          CommonUtils.showCustomToastMessageLong(
+                              'Please check your internet  connection', context, 1, 4);
+                          print('The Internet Is not  Connected');
+                        }
+                      },
+                    );
+
                     // Add logic for the download button
                   } else {
                     CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);

@@ -66,9 +66,35 @@ class _home_Screen extends State<HomeScreen> {
     getshareddata();
     return WillPopScope(
       onWillPop: () async {
-        // Handle back button press here
-        // You can add any custom logic before closing the app
-        return true; // Return true to allow back button press and close the app
+        // Show a confirmation dialog
+        bool confirmClose = await showDialog(
+          context: context,
+          builder: (BuildContext context) {
+            return AlertDialog(
+              title: Text('Confirm Exit'),
+              content: Text('Are you sure you want to close the app?'),
+              actions: <Widget>[
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(false), // Close the dialog and return false
+                  child: Text('No'),
+                ),
+                TextButton(
+                  onPressed: () => Navigator.of(context).pop(true), // Close the dialog and return true
+                  child: Text('Yes'),
+                ),
+              ],
+            );
+          },
+        );
+
+        // Close the app if user confirms
+        if (confirmClose == true) {
+          // Close the app
+          SystemNavigator.pop();
+        }
+
+        // Return false to prevent default back button behavior
+        return false;
       },
       child: Scaffold(
         appBar: AppBar(
@@ -508,7 +534,19 @@ class _imagesliderState extends State<imageslider> {
       DeviceOrientation.portraitUp,
     ]);
     // getshareddata();
-    fetchImages();
+    CommonUtils.checkInternetConnectivity().then(
+          (isConnected) {
+        if (isConnected) {
+          fetchImages();
+          print('The Internet Is Connected');
+        } else {
+          CommonUtils.showCustomToastMessageLong(
+              'Please check your internet  connection', context, 1, 4);
+          print('The Internet Is not  Connected');
+        }
+      },
+    );
+
     //  imageList.length = 3;
   }
 
