@@ -27,6 +27,9 @@ class _ChangePasswordState extends State<ChangePassword> {
   TextEditingController currentPasswordController = TextEditingController();
   TextEditingController newPasswordController = TextEditingController();
   TextEditingController confirmPasswordController = TextEditingController();
+  bool _currentpassword = true;
+  bool _newpassword = true;
+  bool _confirmpassword = true;
 
   bool _isLoading = false;
 
@@ -48,11 +51,9 @@ class _ChangePasswordState extends State<ChangePassword> {
 
       ForgotModel res = forgotModelFromJson(data);
       if (res.isSuccess) {
-        CommonUtils.showCustomToastMessageLong(
-            res.endUserMessage, context, 0, 2);
+        CommonUtils.showCustomToastMessageLong(res.endUserMessage, context, 0, 2);
       } else {
-        CommonUtils.showCustomToastMessageLong(
-            res.endUserMessage, context, 1, 2);
+        CommonUtils.showCustomToastMessageLong(res.endUserMessage, context, 1, 2);
       }
     }).catchError((err) {
       setState(() {
@@ -71,11 +72,7 @@ class _ChangePasswordState extends State<ChangePassword> {
     // String url =
     //     'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/ChangePassword';99
     final requestHeaders = {'Content-Type': 'application/json'};
-    final requestBody = {
-      "Email": email,
-      "CurrentPassword": currentPasswordController.text,
-      "NewPassword": newPasswordController.text
-    };
+    final requestBody = {"Email": email, "CurrentPassword": currentPasswordController.text, "NewPassword": newPasswordController.text};
     if (currentPasswordController.text.isEmpty) {
       throw Exception('Please Enter Current Password');
     }
@@ -111,8 +108,7 @@ class _ChangePasswordState extends State<ChangePassword> {
         // );
         return response.body;
       } else {
-        throw Exception(
-            'API call failed with status code: ${response.statusCode}');
+        throw Exception('API call failed with status code: ${response.statusCode}');
       }
     } catch (e) {
       throw Exception('Error Occurred!');
@@ -146,16 +142,12 @@ class _ChangePasswordState extends State<ChangePassword> {
                   const Align(
                     alignment: Alignment.topCenter,
                     child: Padding(
-                      padding:
-                      EdgeInsets.only(top: 10.0, left: 12.0, right: 12.0),
+                      padding: EdgeInsets.only(top: 10.0, left: 12.0, right: 12.0),
                       child: Column(
                         children: [
-                          Text('Change Password',
-                              style: CommonUtils.header_Styles18),
+                          Text('Change Password', style: CommonUtils.header_Styles18),
                           SizedBox(height: 5.0),
-                          Text(
-                              'Please enter below details to change your password',
-                              style: CommonUtils.Mediumtext_12),
+                          Text('Please enter below details to change your password', style: CommonUtils.Mediumtext_12),
                         ],
                       ),
                     ),
@@ -164,13 +156,11 @@ class _ChangePasswordState extends State<ChangePassword> {
 
                   // current password
                   Padding(
-                    padding: const EdgeInsets.only(
-                        top: 15.0, left: 30.0, right: 30.0),
+                    padding: const EdgeInsets.only(top: 15.0, left: 30.0, right: 30.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text('Current Password',
-                            style: CommonUtils.Mediumtext_12),
+                        const Text('Current Password', style: CommonUtils.Mediumtext_12),
                         const SizedBox(height: 4.0),
                         GestureDetector(
                           onTap: () {},
@@ -187,8 +177,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                             child: Row(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10.0, right: 5.0),
+                                  padding: const EdgeInsets.only(left: 10.0, right: 5.0),
                                   child: SvgPicture.asset(
                                     'assets/lock.svg',
                                     width: 20.0,
@@ -204,11 +193,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10.0, top: 0.0),
+                                      padding: const EdgeInsets.only(left: 10.0, top: 0.0),
                                       child: TextFormField(
                                         controller: currentPasswordController,
-                                        obscureText: true,
+                                        obscureText: _currentpassword,
                                         maxLength: 20,
                                         validator: (value) {
                                           if (value!.isEmpty) {
@@ -217,11 +205,23 @@ class _ChangePasswordState extends State<ChangePassword> {
                                           return null;
                                         },
                                         style: CommonUtils.Mediumtext_o_14,
-                                        decoration: const InputDecoration(
+                                        decoration: InputDecoration(
                                           counterText: "",
                                           hintText: 'Enter Current Password',
                                           hintStyle: CommonUtils.hintstyle_14,
                                           border: InputBorder.none,
+                                          suffixIcon: IconButton(
+                                            icon: Icon(
+                                              _currentpassword ? Icons.visibility_off : Icons.visibility,
+                                              color: Colors.black,
+                                            ),
+                                            onPressed: () {
+                                              // Toggle the password visibility
+                                              setState(() {
+                                                _currentpassword = !_currentpassword;
+                                              });
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -237,8 +237,7 @@ class _ChangePasswordState extends State<ChangePassword> {
 
                   // new password
                   Padding(
-                    padding: const EdgeInsets.only(
-                        top: 15.0, left: 30.0, right: 30.0),
+                    padding: const EdgeInsets.only(top: 15.0, left: 30.0, right: 30.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -260,8 +259,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                             child: Row(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10.0, right: 5.0),
+                                  padding: const EdgeInsets.only(left: 10.0, right: 5.0),
                                   child: SvgPicture.asset(
                                     'assets/lock.svg',
                                     width: 20.0,
@@ -277,11 +275,10 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10.0, top: 0.0),
+                                      padding: const EdgeInsets.only(left: 10.0, top: 0.0),
                                       child: TextFormField(
                                         controller: newPasswordController,
-                                        obscureText: true,
+                                        obscureText: _newpassword,
                                         maxLength: 20,
                                         validator: (value) {
                                           if (value!.isEmpty) {
@@ -290,11 +287,23 @@ class _ChangePasswordState extends State<ChangePassword> {
                                           return null;
                                         },
                                         style: CommonUtils.Mediumtext_o_14,
-                                        decoration: const InputDecoration(
+                                        decoration: InputDecoration(
                                           counterText: "",
                                           hintText: 'Enter New Password',
                                           hintStyle: CommonUtils.hintstyle_14,
                                           border: InputBorder.none,
+                                          suffixIcon: IconButton(
+                                            icon: Icon(
+                                              _newpassword ? Icons.visibility_off : Icons.visibility,
+                                              color: Colors.black,
+                                            ),
+                                            onPressed: () {
+                                              // Toggle the password visibility
+                                              setState(() {
+                                                _newpassword = !_newpassword;
+                                              });
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -310,13 +319,11 @@ class _ChangePasswordState extends State<ChangePassword> {
 
                   // confirm password
                   Padding(
-                    padding: const EdgeInsets.only(
-                        top: 15.0, left: 30.0, right: 30.0),
+                    padding: const EdgeInsets.only(top: 15.0, left: 30.0, right: 30.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
-                        const Text(
-                            'Confirm Password', // Add your desired text here
+                        const Text('Confirm Password', // Add your desired text here
                             style: CommonUtils.Mediumtext_12),
                         const SizedBox(height: 4.0),
                         GestureDetector(
@@ -334,8 +341,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                             child: Row(
                               children: [
                                 Padding(
-                                  padding: const EdgeInsets.only(
-                                      left: 10.0, right: 5.0),
+                                  padding: const EdgeInsets.only(left: 10.0, right: 5.0),
                                   child: SvgPicture.asset(
                                     'assets/lock.svg',
                                     width: 20.0,
@@ -351,12 +357,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                                   child: Align(
                                     alignment: Alignment.centerLeft,
                                     child: Padding(
-                                      padding: const EdgeInsets.only(
-                                          left: 10.0, top: 0.0),
+                                      padding: const EdgeInsets.only(left: 10.0, top: 0.0),
                                       child: TextFormField(
                                         controller: confirmPasswordController,
                                         maxLength: 20,
-                                        obscureText: true,
+                                        obscureText: _confirmpassword,
                                         validator: (value) {
                                           if (value!.isEmpty) {
                                             return 'Please enter your confirm password';
@@ -364,11 +369,23 @@ class _ChangePasswordState extends State<ChangePassword> {
                                           return null;
                                         },
                                         style: CommonUtils.Mediumtext_o_14,
-                                        decoration: const InputDecoration(
+                                        decoration: InputDecoration(
                                           counterText: "",
                                           hintText: 'Enter Confirm Password',
                                           hintStyle: CommonUtils.hintstyle_14,
                                           border: InputBorder.none,
+                                          suffixIcon: IconButton(
+                                            icon: Icon(
+                                              _confirmpassword ? Icons.visibility_off : Icons.visibility,
+                                              color: Colors.black,
+                                            ),
+                                            onPressed: () {
+                                              // Toggle the password visibility
+                                              setState(() {
+                                                _confirmpassword = !_confirmpassword;
+                                              });
+                                            },
+                                          ),
                                         ),
                                       ),
                                     ),
@@ -389,8 +406,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                     mainAxisAlignment: MainAxisAlignment.end,
                     children: [
                       Padding(
-                        padding: const EdgeInsets.only(
-                            top: 15.0, left: 30.0, right: 30.0),
+                        padding: const EdgeInsets.only(top: 15.0, left: 30.0, right: 30.0),
                         child: SizedBox(
                           width: MediaQuery.of(context).size.width,
                           height: 45.0,
@@ -418,8 +434,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                                         if (_isLoading)
                                           const Padding(
                                             padding: EdgeInsets.all(8.0),
-                                            child: CircularProgressIndicator
-                                                .adaptive(),
+                                            child: CircularProgressIndicator.adaptive(),
                                           ),
                                       ],
                                     ),
@@ -463,8 +478,7 @@ class _ChangePasswordState extends State<ChangePassword> {
                   onTap: () {
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomeScreen()),
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
                     );
                   },
                   child: const Icon(
@@ -495,14 +509,11 @@ class _ChangePasswordState extends State<ChangePassword> {
                     // Handle the click event for the home icon
                     Navigator.pushReplacement(
                       context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomeScreen()),
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
                     );
                   },
                   child: Image.asset(
-                    companyId == 1
-                        ? 'assets/srikar-home-icon.png'
-                        : 'assets/seeds-home-icon.png',
+                    companyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
                     width: 30,
                     height: 30,
                   ),

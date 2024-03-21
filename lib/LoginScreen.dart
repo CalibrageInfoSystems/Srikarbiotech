@@ -35,7 +35,7 @@ class _MyHomePageState extends State<LoginScreen> {
   String? userId;
   String? slpCode;
   bool isLoading = false;
-
+  bool _obscureText = true;
   @override
   initState() {
     super.initState();
@@ -48,11 +48,9 @@ class _MyHomePageState extends State<LoginScreen> {
     print("Company ID: ${widget.companyId}");
     compneyid = widget.companyId;
     print("Company ID: $compneyid");
-   //  emailController.text = "Superadmin";
-   // passwordController.text = "Abcd@123";
-
+    //  emailController.text = "Superadmin";
+    // passwordController.text = "Abcd@123";
   }
-
 
   @override
   Widget build(BuildContext context) {
@@ -75,9 +73,7 @@ class _MyHomePageState extends State<LoginScreen> {
             ),
             child: Center(
               child: Image.asset(
-                compneyid == 1
-                    ? 'assets/login_screen_logo.png'
-                    : 'assets/srikar_seeds.png',
+                compneyid == 1 ? 'assets/login_screen_logo.png' : 'assets/srikar_seeds.png',
                 width: MediaQuery.of(context).size.height / 3.2,
                 height: MediaQuery.of(context).size.height / 3.2,
                 // Other styling properties as needed
@@ -88,8 +84,7 @@ class _MyHomePageState extends State<LoginScreen> {
           Align(
             alignment: FractionalOffset.bottomCenter,
             child: Padding(
-              padding:
-                  const EdgeInsets.only(left: 22.0, right: 22.0, bottom: 15.0),
+              padding: const EdgeInsets.only(left: 22.0, right: 22.0, bottom: 15.0),
               // Adjust the padding as needed
               child: Container(
                 height: MediaQuery.of(context).size.height / 1.9,
@@ -104,22 +99,19 @@ class _MyHomePageState extends State<LoginScreen> {
                       Align(
                         alignment: Alignment.topCenter,
                         child: Padding(
-                          padding: const EdgeInsets.only(
-                              top: 10.0, left: 12.0, right: 12.0),
-                          child:
-                              Text('LogIn', style: CommonUtils.header_Styles18),
+                          padding: const EdgeInsets.only(top: 10.0, left: 12.0, right: 12.0),
+                          child: Text('LogIn', style: CommonUtils.header_Styles18),
                         ),
                       ),
                       SizedBox(height: 10.0),
-                      Text('Hi, Welcome to ${widget.companyName} ',
+                      Text(
+                        'Hi, Welcome to ${widget.companyName} ',
                         style: CommonUtils.header_Styles16,
                       ),
                       SizedBox(height: 10.0),
-                      Text('Enter your login credentials to continue',
-                          style: CommonUtils.Mediumtext_14),
+                      Text('Enter your login credentials to continue', style: CommonUtils.Mediumtext_14),
                       Padding(
-                        padding:
-                            EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
+                        padding: EdgeInsets.only(top: 30.0, left: 30.0, right: 30.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -144,8 +136,7 @@ class _MyHomePageState extends State<LoginScreen> {
                                 child: Row(
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 10.0, right: 5.0),
+                                      padding: EdgeInsets.only(left: 10.0, right: 5.0),
                                       child: SvgPicture.asset(
                                         'assets/envelope.svg',
                                         width: 20.0,
@@ -161,12 +152,10 @@ class _MyHomePageState extends State<LoginScreen> {
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 10.0, top: 0.0),
+                                          padding: EdgeInsets.only(left: 10.0, top: 0.0),
                                           child: TextFormField(
                                             controller: emailController,
-                                            keyboardType:
-                                                TextInputType.emailAddress,
+                                            keyboardType: TextInputType.emailAddress,
                                             maxLength: 30,
                                             validator: (value) {
                                               if (value!.isEmpty) {
@@ -176,11 +165,9 @@ class _MyHomePageState extends State<LoginScreen> {
                                             },
                                             style: CommonUtils.Mediumtext_o_14,
                                             decoration: InputDecoration(
-                                              counterText:"",
-                                              hintText:
-                                                  'Enter Email or Username',
-                                              hintStyle:
-                                                  CommonUtils.hintstyle_14,
+                                              counterText: "",
+                                              hintText: 'Enter Email or Username',
+                                              hintStyle: CommonUtils.hintstyle_14,
                                               border: InputBorder.none,
                                             ),
                                           ),
@@ -208,8 +195,7 @@ class _MyHomePageState extends State<LoginScreen> {
                       //   ),
                       // ),
                       Padding(
-                        padding:
-                            EdgeInsets.only(top: 15.0, left: 30.0, right: 30.0),
+                        padding: EdgeInsets.only(top: 15.0, left: 30.0, right: 30.0),
                         child: Column(
                           crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
@@ -234,8 +220,7 @@ class _MyHomePageState extends State<LoginScreen> {
                                 child: Row(
                                   children: [
                                     Padding(
-                                      padding: EdgeInsets.only(
-                                          left: 10.0, right: 5.0),
+                                      padding: EdgeInsets.only(left: 10.0, right: 5.0),
                                       child: SvgPicture.asset(
                                         'assets/lock.svg',
                                         width: 20.0,
@@ -251,11 +236,10 @@ class _MyHomePageState extends State<LoginScreen> {
                                       child: Align(
                                         alignment: Alignment.centerLeft,
                                         child: Padding(
-                                          padding: EdgeInsets.only(
-                                              left: 10.0, top: 0.0),
+                                          padding: EdgeInsets.only(left: 10.0, top: 0.0),
                                           child: TextFormField(
                                             controller: passwordController,
-                                            obscureText: true,
+                                            obscureText: _obscureText,
                                             maxLength: 20,
                                             validator: (value) {
                                               if (value!.isEmpty) {
@@ -267,9 +251,20 @@ class _MyHomePageState extends State<LoginScreen> {
                                             decoration: InputDecoration(
                                               counterText: "",
                                               hintText: 'Enter Password',
-                                              hintStyle:
-                                                  CommonUtils.hintstyle_14,
+                                              hintStyle: CommonUtils.hintstyle_14,
                                               border: InputBorder.none,
+                                              suffixIcon: IconButton(
+                                                icon: Icon(
+                                                  _obscureText ? Icons.visibility_off : Icons.visibility,
+                                                  color: Colors.black,
+                                                ),
+                                                onPressed: () {
+                                                  // Toggle the password visibility
+                                                  setState(() {
+                                                    _obscureText = !_obscureText;
+                                                  });
+                                                },
+                                              ),
                                             ),
                                           ),
                                         ),
@@ -287,8 +282,7 @@ class _MyHomePageState extends State<LoginScreen> {
                         mainAxisAlignment: MainAxisAlignment.end,
                         children: [
                           Padding(
-                            padding: EdgeInsets.only(
-                                top: 15.0, left: 30.0, right: 30.0),
+                            padding: EdgeInsets.only(top: 15.0, left: 30.0, right: 30.0),
                             child: Container(
                               width: MediaQuery.of(context).size.width,
                               height: 45.0,
@@ -297,19 +291,16 @@ class _MyHomePageState extends State<LoginScreen> {
                                   onTap: () {
                                     FocusManager.instance.primaryFocus?.unfocus();
                                     CommonUtils.checkInternetConnectivity().then(
-                                          (isConnected) {
+                                      (isConnected) {
                                         if (isConnected) {
                                           _login();
                                           print('The Internet Is Connected');
                                         } else {
-                                          CommonUtils.showCustomToastMessageLong(
-                                              'Please check your internet  connection', context, 1, 4);
+                                          CommonUtils.showCustomToastMessageLong('Please check your internet  connection', context, 1, 4);
                                           print('The Internet Is not  Connected');
                                         }
                                       },
                                     );
-
-
                                   },
                                   child: Container(
                                     width: MediaQuery.of(context).size.width,
@@ -325,10 +316,8 @@ class _MyHomePageState extends State<LoginScreen> {
                                         //             CircularProgressIndicator())
                                         //     :
                                         Row(
-                                      crossAxisAlignment:
-                                          CrossAxisAlignment.center,
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
+                                      crossAxisAlignment: CrossAxisAlignment.center,
+                                      mainAxisAlignment: MainAxisAlignment.center,
                                       children: [
                                         Text(
                                           'LogIn',
@@ -348,16 +337,11 @@ class _MyHomePageState extends State<LoginScreen> {
                             ),
                           ),
                           Padding(
-                            padding: const EdgeInsets.only(
-                                top: 12.0,
-                                left: 12.0,
-                                right: 12.0,
-                                bottom: 13.0),
+                            padding: const EdgeInsets.only(top: 12.0, left: 12.0, right: 12.0, bottom: 13.0),
                             child: Row(
                               mainAxisAlignment: MainAxisAlignment.center,
                               children: [
-                                Text('Forgot Password?',
-                                    style: CommonUtils.Mediumtext_14),
+                                Text('Forgot Password?', style: CommonUtils.Mediumtext_14),
                                 SizedBox(width: 8.0),
                                 GestureDetector(
                                   onTap: () {
@@ -366,15 +350,11 @@ class _MyHomePageState extends State<LoginScreen> {
                                     // Add your custom logic or navigation code here
                                     Navigator.of(context).push(
                                       MaterialPageRoute(
-                                        builder: (context) => ForgotPasswordScreen(
-                                            companyId: widget.companyId,
-                                            companyName: widget.companyName
-                                        ),
+                                        builder: (context) => ForgotPasswordScreen(companyId: widget.companyId, companyName: widget.companyName),
                                       ),
                                     );
                                   },
-                                  child: Text('Click here!',
-                                      style: CommonUtils.Mediumtext_o_14),
+                                  child: Text('Click here!', style: CommonUtils.Mediumtext_o_14),
                                 )
                               ],
                             ),
@@ -398,27 +378,18 @@ class _MyHomePageState extends State<LoginScreen> {
     });
     final apiUrl = baseUrl + post_Login;
 
-    final payload = {
-      "Username": emailController.text,
-      "Password": passwordController.text,
-      "CompanyId": compneyid,
-      "IsWeb": false
-    };
+    final payload = {"Username": emailController.text, "Password": passwordController.text, "CompanyId": compneyid, "IsWeb": false};
 
     print('object==${jsonEncode(payload)}');
     if (emailController.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong(
-          'Please Enter Email/Username', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong('Please Enter Email/Username', context, 1, 4);
       return;
     }
     if (passwordController.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong(
-          'Please Enter Password', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong('Please Enter Password', context, 1, 4);
       return;
     }
-    final response = await http.post(Uri.parse(apiUrl),
-        headers: {'Content-Type': 'application/json'},
-        body: jsonEncode(payload));
+    final response = await http.post(Uri.parse(apiUrl), headers: {'Content-Type': 'application/json'}, body: jsonEncode(payload));
 
     if (response.statusCode == 200) {
       final jsonResponse = json.decode(response.body);
@@ -443,20 +414,16 @@ class _MyHomePageState extends State<LoginScreen> {
         prefs.setString("email", jsonResponse['response']['email']);
         prefs.setString("userName", jsonResponse['response']['userName']);
         prefs.setString("roleName", jsonResponse['response']['roleName']);
-        SharedPrefsData.updateStringValue(
-            "userId", jsonResponse['response']['userId']);
-        SharedPrefsData.updateStringValue(
-            "slpCode", jsonResponse['response']['slpCode']);
-        SharedPrefsData.updateIntValue(
-            "companyId", jsonResponse['response']['companyId']);
+        SharedPrefsData.updateStringValue("userId", jsonResponse['response']['userId']);
+        SharedPrefsData.updateStringValue("slpCode", jsonResponse['response']['slpCode']);
+        SharedPrefsData.updateIntValue("companyId", jsonResponse['response']['companyId']);
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
         );
 
         // Start the foreground service after successful login
-       // FlutterForegroundTask.initialize(isolateService: LocationUpdatesService(), androidServiceOptions: AndroidServiceOptions(channelId: "ForegroundChannel"));
-
+        // FlutterForegroundTask.initialize(isolateService: LocationUpdatesService(), androidServiceOptions: AndroidServiceOptions(channelId: "ForegroundChannel"));
       } else {
         print('Login failed. Please check your credentials.');
         CommonUtils.showCustomToastMessageLong(jsonResponse['endUserMessage'], context, 1, 4);
@@ -468,7 +435,6 @@ class _MyHomePageState extends State<LoginScreen> {
       isLoading = false; // Set loading state back to false after the response
     });
   }
-
 
   void _startService() {
     // Start your service here
