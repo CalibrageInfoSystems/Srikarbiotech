@@ -20,6 +20,7 @@ class LoginScreen extends StatefulWidget {
   // Assuming you have a class named Company
   final String companyName;
   final int companyId;
+
   LoginScreen({
     required this.companyName,
     required this.companyId,
@@ -36,6 +37,7 @@ class _MyHomePageState extends State<LoginScreen> {
   String? slpCode;
   bool isLoading = false;
   bool _obscureText = true;
+  final LocationUpdatesService locationService = LocationUpdatesService();
   @override
   initState() {
     super.initState();
@@ -417,6 +419,7 @@ class _MyHomePageState extends State<LoginScreen> {
         SharedPrefsData.updateStringValue("userId", jsonResponse['response']['userId']);
         SharedPrefsData.updateStringValue("slpCode", jsonResponse['response']['slpCode']);
         SharedPrefsData.updateIntValue("companyId", jsonResponse['response']['companyId']);
+        startLocationService();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -442,4 +445,20 @@ class _MyHomePageState extends State<LoginScreen> {
     // Intent serviceIntent = Intent(context, YourServiceClass);
     // context.startService(serviceIntent);
   }
+
+  static const platform = MethodChannel('com.calibrage.srikarbiotech.srikarbiotech');
+
+  void startLocationService() {
+    locationService.startLocationService((success, result, msg) {
+      if (success) {
+        // Location service started successfully
+        print(msg);
+      } else {
+        // Failed to start location service
+        print(msg);
+      }
+    });
+  }
+
+  
 }

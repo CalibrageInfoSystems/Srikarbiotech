@@ -20,6 +20,8 @@ import 'Companiesselection.dart';
 import 'LoginScreen.dart';
 import 'Selectpartyscreen.dart';
 import 'Services/api_config.dart';
+import 'StateSelectionScreen.dart';
+import 'ViewGroupreportsStatewise.dart';
 import 'ViewReturnorder.dart';
 import 'Viewpendingorder.dart';
 
@@ -881,13 +883,14 @@ class _imagesliderState extends State<imageslider> {
                                     ),
                                     if (categoriesList.contains("CanSHApprovalRejectOrder"))
                                       Row(
+                                        crossAxisAlignment: CrossAxisAlignment.center, // Align items vertically centered
                                         children: [
                                           // First Container with single card view
                                           Expanded(
                                             child: Container(
                                               height: MediaQuery.of(context).size.height / 10, // Match height with the first container
                                               child: Column(
-                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                                mainAxisAlignment: MainAxisAlignment.spaceEvenly, // Align items vertically centered
                                                 children: [
                                                   Expanded(
                                                     child: Container(
@@ -914,6 +917,44 @@ class _imagesliderState extends State<imageslider> {
                                           // Second Container divided into two equal-sized containers
                                         ],
                                       ),
+
+
+
+
+                                    Row(
+                                      children: [
+                                        // First Container with single card view
+                                        Expanded(
+                                          child: Container(
+                                            height: MediaQuery.of(context).size.height / 10, // Match height with the first container
+                                            child: Column(
+                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                              children: [
+                                                Expanded(
+                                                  child: Container(
+                                                    child: _customcontainernewCard(
+                                                      imageUrl: "bags-orders.svg",
+                                                      item: "Group Summary Report ",
+                                                      item1: "View All Pending Orders ",
+                                                      color: Color(0xFFF8dac2),
+                                                      color_1: Color(0xFFec9d62),
+                                                      textcolor: Color(0xFFe78337),
+                                                      onTap: () {
+                                                        Navigator.push(
+                                                          context,
+                                                          MaterialPageRoute(builder: (context) => StateSelectionScreen()),
+                                                        );
+                                                      },
+                                                    ),
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                        ),
+                                        // Second Container divided into two equal-sized containers
+                                      ],
+                                    ),
                                   ],
                                 ),
                               ),
@@ -1203,7 +1244,6 @@ class _imagesliderState extends State<imageslider> {
     return GestureDetector(
       onTap: onTap,
       child: SizedBox(
-        //height: 260 / 2,
         height: MediaQuery.of(context).size.height / 10,
         width: MediaQuery.of(context).size.width,
         child: Card(
@@ -1213,10 +1253,9 @@ class _imagesliderState extends State<imageslider> {
           child: Padding(
             padding: const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
             child: Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
+              crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
               children: <Widget>[
-                // SizedBox(height: 8),
                 Container(
                   margin: const EdgeInsets.only(bottom: 6),
                   padding: const EdgeInsets.all(6),
@@ -1232,28 +1271,25 @@ class _imagesliderState extends State<imageslider> {
                   ),
                 ),
                 const SizedBox(width: 8),
-                Column(
-                  // Wrap item and item1 with a Column widget
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      child: Align(
-                        alignment: Alignment.topLeft,
-                        child: Text(
-                          item,
-                          maxLines: 1,
-                          style: TextStyle(fontSize: 16, fontFamily: "Roboto", fontWeight: FontWeight.w700, color: textcolor),
-                        ),
+                Expanded(
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start, // Adjusted to center
+                    mainAxisAlignment: MainAxisAlignment.center, // Added to center
+                    children: [
+                      Text(
+                        item,
+                        maxLines: 1,
+                        style: TextStyle(fontSize: 16, fontFamily: "Roboto", fontWeight: FontWeight.w700, color: textcolor),
                       ),
-                    ),
-                    const SizedBox(
-                      height: 5.0,
-                    ),
-                    Text(
-                      item1,
-                      style: const TextStyle(fontSize: 12, fontFamily: "Roboto", fontWeight: FontWeight.w500, color: Color(0xFF414141)),
-                    ),
-                  ],
+                      const SizedBox(
+                        height: 5.0,
+                      ),
+                      Text(
+                        item1,
+                        style: const TextStyle(fontSize: 12, fontFamily: "Roboto", fontWeight: FontWeight.w500, color: Color(0xFF414141)),
+                      ),
+                    ],
+                  ),
                 ),
               ],
             ),
@@ -1262,4 +1298,6 @@ class _imagesliderState extends State<imageslider> {
       ),
     );
   }
+
+
 }

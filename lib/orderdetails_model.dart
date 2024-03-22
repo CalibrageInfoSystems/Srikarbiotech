@@ -102,8 +102,8 @@ class GetOrderDetailsResult {
   final String createdDate;
   final String updatedBy;
   final String updatedDate;
-  final String shRemarks;
-  final String rejectedRemarks;
+  final String? shRemarks;
+  final String? rejectedRemarks;
   final String? whsCode;
   final String? whsState;
   final String? whsName;

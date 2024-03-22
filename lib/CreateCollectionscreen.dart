@@ -126,23 +126,29 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
 
   Future<void> fetchvirtualcode() async {
     final apiurl = baseUrl + GetVirtualCode + CompneyId.toString() + "/" + '${widget.code}';
-    print('virtualcode:$apiurl');
+    print('Virtual code API URL: $apiurl'); // Add this print statement
+
     try {
       final response = await http.get(Uri.parse(apiurl));
+      print('Response status code: ${response.statusCode}'); // Add this print statement
 
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = json.decode(response.body);
+        debugPrint('====jsonResponse $jsonResponse');
         List<dynamic> resultList = jsonResponse['response']['listResult'];
         VirtualModelList = resultList.map((account) => VirtualCodeItem.fromJson(account)).toList();
+        debugPrint('====VirtualModelList $VirtualModelList');
+        print('Virtual Model List Size: ${VirtualModelList.length}');
       } else {
-        debugPrint('Error: api failed');
-        throw Exception('Error: api failed');
+        debugPrint('Error: API failed with status code ${response.statusCode}');
+        throw Exception('Error: API failed with status code ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('catch: $e');
-      throw Exception('catch: $e');
+      debugPrint('Exception occurred: $e');
+      throw Exception('Exception occurred: $e');
     }
   }
+
 
   @override
   Widget build(BuildContext context) {
@@ -463,7 +469,8 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                               alignment: Alignment.centerLeft,
                                               child: Padding(
                                                 padding: const EdgeInsets.only(left: 10.0, top: 0.0),
-                                                child: VirtualModelList.isEmpty
+
+                                                child: VirtualModelList.length == 0
                                                     ? LoadingAnimationWidget.newtonCradle(
                                                         color: Colors.blue,
                                                         size: 40.0,
@@ -478,6 +485,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
                                                           color: Color(0xa0e78337),
                                                         ),
                                                         ),
+
                                                         value: virtualcodeValue, // String? accountValue;
                                                         onChanged: (String? newValue) {
                                                           setState(() {
@@ -1739,6 +1747,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
 
     if (response.statusCode == 200) {
       setState(() {
+
         apiResponse = ApiResponse.fromJson(jsonDecode(response.body));
         print('========>apiResponse$apiResponse');
       });
@@ -1929,6 +1938,7 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
     print('Company ID: $CompneyId');
     print('Compneyname : $Compneyname');
     print('Retrieved CompneyId: $CompneyId');
+    fetchvirtualcode();
   }
 
   void disableButton() {

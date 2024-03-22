@@ -1,101 +1,151 @@
 import 'dart:async';
+import 'dart:io';
 import 'dart:math';
+import 'package:location/location.dart';
 
-import 'package:flutter/material.dart';
-import 'package:location/location.dart' as loc;
-import 'package:geocoding/geocoding.dart';
-import 'package:shared_preferences/shared_preferences.dart';
-class LocationUpdatesService extends StatefulWidget {
-  @override
-  _LocationUpdatesServiceState createState() => _LocationUpdatesServiceState();
+typedef OnComplete = void Function(bool success, dynamic result, String? msg);
 
+class LocationUpdatesService {
+  static const String LOG_TAG = "MyService";
+  late Timer _timer;
+  Location location = Location();
+  LocationData? currentLocation;
+  double latitude = 0.0;
+  double longitude = 0.0;
+  late StreamSubscription<LocationData> _locationSubscription;
 
-}
+  late bool _serviceEnabled;
+  late PermissionStatus _permissionGranted;
 
-class _LocationUpdatesServiceState extends State<LocationUpdatesService> {
-  loc.Location location = loc.Location();
-  loc.LocationData? currentLocation;
-  StreamSubscription<loc.LocationData>? locationStreamSubscription;
-
-  @override
-  void initState() {
-    super.initState();
-    requestLocationUpdates(); // Call the method to start location updates when the widget initializes
-    locationStreamSubscription = location.onLocationChanged.listen((loc.LocationData newLocation) {
-      setState(() {
-        currentLocation = newLocation;
-        onNewLocation(currentLocation!);
-      });
-    });
+  FalogService() {
+    _serviceEnabled = false;
+    _permissionGranted = PermissionStatus.denied;
+    location.changeSettings(accuracy: LocationAccuracy.high);
   }
 
-  @override
-  void dispose() {
-    super.dispose();
-    locationStreamSubscription?.cancel();
-  }
-
-  void requestLocationUpdates() {
-    location.requestPermission().then((granted) {
-      if (granted != loc.PermissionStatus.granted) {
-        return;
+  Future<void> startLocationService(OnComplete onComplete) async {
+    try {
+      _serviceEnabled = await location.serviceEnabled();
+      if (!_serviceEnabled) {
+        _serviceEnabled = await location.requestService();
+        if (!_serviceEnabled) {
+          return;
+        }
       }
-      location.changeSettings(
-        accuracy: loc.LocationAccuracy.high,
-        interval: 1000,
-        distanceFilter: 0,
-      );
-    });
-  }
 
-  // Future<void> onNewLocation(loc.LocationData locationData) async {
-  //   String address = await getAddress(locationData.latitude!, locationData.longitude!);
-  //
-  //   SharedPreferences prefs = await SharedPreferences.getInstance();
-  //   prefs.setDouble('latitude', locationData.latitude!);
-  //   prefs.setDouble('longitude', locationData.longitude!);
-  //   prefs.setString('address', address);
-  //
-  //   double savedLatitude = prefs.getDouble('latitude') ?? 0.0;
-  //   double savedLongitude = prefs.getDouble('longitude') ?? 0.0;
-  //   String savedAddress = prefs.getString('address') ?? '';
-  //
-  //   print('Saved Latitude: $savedLatitude');
-  //   print('Saved Longitude: $savedLongitude');
-  //   print('Saved Address: $savedAddress');
-  // }
+      _permissionGranted = await location.hasPermission();
+      if (_permissionGranted == PermissionStatus.denied) {
+        _permissionGranted = await location.requestPermission();
+        if (_permissionGranted != PermissionStatus.granted) {
+          return;
+        }
+      }
 
-  Future<void> onNewLocation(loc.LocationData locationData) async {
-    SharedPreferences prefs = await SharedPreferences.getInstance();
+      _locationSubscription = location.onLocationChanged.listen((LocationData locationData) {
+        onLocationChanged(locationData);
+      });
 
-    // Retrieve previous location details
-    double? prevLatitude = prefs.getDouble('latitude');
-    double? prevLongitude = prefs.getDouble('longitude');
+      await requestLocationUpdates(LocationAccuracy.high, 0, 10);
+      await requestLocationUpdates(LocationAccuracy.low, 0, 10);
 
-    // Calculate distance between previous and current location
-    double distance = calculateDistance(
-      prevLatitude ?? locationData.latitude!,
-      prevLongitude ?? locationData.longitude!,
-      locationData.latitude!,
-      locationData.longitude!,
-    );
-
-    print('Saved distance: ${distance}');
-    // If distance exceeds 200 meters, save the location details
-    if (distance >= 200) {
-      String address = await getAddress(locationData.latitude!, locationData.longitude!);
-
-      prefs.setDouble('latitude', locationData.latitude!);
-      prefs.setDouble('longitude', locationData.longitude!);
-      prefs.setString('address', address);
-
-      print('Saved Latitude: ${locationData.latitude!}');
-      print('Saved Longitude: ${locationData.longitude!}');
-      print('Saved Address: $address');
+      if (onComplete != null) {
+        onComplete(true, null, "Location service started");
+      }
+    } catch (e) {
+      print("Error starting location service: $e");
+      if (onComplete != null) {
+        onComplete(false, null, "Error starting location service: $e");
+      }
     }
   }
 
-// Function to calculate distance between two coordinates using Haversine formula
+  Future<void> requestLocationUpdates(LocationAccuracy accuracy, int interval, double distance) async {
+    try {
+      await location.changeSettings(interval: interval, distanceFilter: distance, accuracy: accuracy);
+    } catch (e) {
+      print("Error requesting location updates: $e");
+    }
+  }
+
+  void appendLog(String text) {
+    final String folderName = 'Srikar_Groups';
+    final String fileName = 'Usertrackinglog.file';
+
+    Directory appFolderPath = Directory('/storage/emulated/0/Download/$folderName');
+    if (!appFolderPath.existsSync()) {
+      appFolderPath.createSync(recursive: true);
+    }
+
+    final logFile = File('${appFolderPath.path}/$fileName');
+    if (!logFile.existsSync()) {
+      logFile.createSync();
+    }
+
+    try {
+      final buf = logFile.openWrite(mode: FileMode.append);
+      buf.writeln(text);
+      buf.close();
+    } catch (e) {
+      print("Error appending to log file: $e");
+    }
+  }
+  void onLocationChanged(LocationData locationData) {
+    if (currentLocation != null) {
+      double distance = calculateDistance(
+          currentLocation!.latitude!,
+          currentLocation!.longitude!,
+          locationData.latitude!,
+          locationData.longitude!);
+
+      // Check if the distance is greater than or equal to 200 meters
+      if (distance >= 200) {
+        // Update the current location
+        currentLocation = locationData;
+        latitude = currentLocation!.latitude!;
+        longitude = currentLocation!.longitude!;
+        print("Latitude: $latitude, Longitude: $longitude, Distance: $distance meters");
+        appendLog("Latitude: $latitude, Longitude: $longitude, Distance: $distance meters");
+      }
+    } else {
+      // For the first location update, always append the log
+      currentLocation = locationData;
+      latitude = currentLocation!.latitude!;
+      longitude = currentLocation!.longitude!;
+      print("latitude: $latitude, longitude: $longitude");
+      appendLog("Latitude: $latitude, Longitude: $longitude");
+
+      // Start a timer to save the location every 1 minute
+      _timer = Timer.periodic(Duration(minutes: 1), (timer) {
+        // Save the latitude and longitude to the log
+        appendLog("Latitude: $latitude, Longitude: $longitude");
+      });
+    }
+  }
+  // void onLocationChanged(LocationData locationData) {
+  //   if (currentLocation != null) {
+  //     double distance = calculateDistance(
+  //         currentLocation!.latitude!,
+  //         currentLocation!.longitude!,
+  //         locationData.latitude!,
+  //         locationData.longitude!);
+  //
+  //     if (distance >= 200) {
+  //       currentLocation = locationData;
+  //       latitude = currentLocation!.latitude!;
+  //       longitude = currentLocation!.longitude!;
+  //       print("Latitude: $latitude, Longitude: $longitude, Distance: $distance meters");
+  //       appendLog("Latitude: $latitude, Longitude: $longitude, Distance: $distance meters");
+  //     }
+  //   } else {
+  //     // For the first location update, always append the log
+  //     currentLocation = locationData;
+  //     latitude = currentLocation!.latitude!;
+  //     longitude = currentLocation!.longitude!;
+  //     print("latitude: $latitude, longitude: $longitude");
+  //     appendLog("Latitude: $latitude, Longitude: $longitude");
+  //   }
+  // }
+  // Function to calculate distance between two coordinates using Haversine formula
   double calculateDistance(double lat1, double lon1, double lat2, double lon2) {
     const int radius = 6371; // Earth's radius in km
 
@@ -110,28 +160,13 @@ class _LocationUpdatesServiceState extends State<LocationUpdatesService> {
     return radius * c * 1000; // Distance in meters
   }
 
-// Function to convert degrees to radians
+  // Function to convert degrees to radians
   double degreesToRadians(double degrees) {
     return degrees * pi / 180;
   }
 
 
-  Future<String> getAddress(double latitude, double longitude) async {
-    try {
-      List<Placemark> placemarks = await placemarkFromCoordinates(latitude, longitude);
-      if (placemarks.isNotEmpty) {
-        Placemark placemark = placemarks[0];
-        String address = '${placemark.street}, ${placemark.locality}, ${placemark.administrativeArea}, ${placemark.country}';
-        return address;
-      }
-    } catch (e) {
-      print('Error getting address: $e');
-    }
-    return '';
-  }
-
-  @override
-  Widget build(BuildContext context) {
-    return Container();
+  void dispose() {
+    _locationSubscription.cancel();
   }
 }
