@@ -321,7 +321,7 @@ class _orderStatusScreenState extends State<orderStatusScreen>
 
         NumberFormat amountFormatter =
         NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
-        double totalCost = response['totalCost'];
+        double totalCost = response['totalCostWithGST'];
         String formattedOrderAmount = '₹${amountFormatter.format(totalCost)}';
 
         String orderDetails =

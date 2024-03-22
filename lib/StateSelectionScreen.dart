@@ -1,10 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
+import 'dart:convert';
 import 'dart:io';
 
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
+import 'package:srikarbiotech/Common/SharedPrefsData.dart';
 import 'package:srikarbiotech/HomeScreen.dart';
 import 'package:http/http.dart' as http;
+import 'package:srikarbiotech/Model/state_selection_model.dart';
+import 'package:srikarbiotech/slp_selection_screen.dart';
+
 class StateSelectionScreen extends StatefulWidget {
   const StateSelectionScreen({super.key});
 
@@ -17,34 +24,100 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   TextEditingController fromDateController = TextEditingController();
   TextEditingController toDateController = TextEditingController();
   DateTime? selectedFromDate;
-
   DateTime? selectedToDate;
+  String fromDateText = 'From date';
+  String toDateText = 'To date';
+  late Future<List<StateListResult>> apiData;
+
+  @override
+  void initState() {
+    super.initState();
+    apiData = getStateData();
+  }
+
+  Future<List<StateListResult>> getStateData() async {
+    try {
+      String apiUrl =
+          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetGroupSummaryReportByState';
+      final requestBody = {
+        "FromDate": "2024-03-20",
+        "ToDate": "2024-03-22",
+        "CompanyId": 1
+      };
+
+      debugPrint('____state selection__${jsonEncode(requestBody)}');
+      final jsonResponse = await http.post(
+        Uri.parse(apiUrl),
+        body: json.encode(requestBody),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      if (jsonResponse.statusCode == 200) {
+        final Map<String, dynamic> data = json.decode(jsonResponse.body);
+
+        if (data['response']['listResult'] != null) {
+          final List<dynamic> listResult = data['response']['listResult'];
+          List<StateListResult> stateResult = listResult
+              .map((house) => StateListResult.fromJson(house))
+              .toList();
+          return stateResult;
+        } else {
+          throw Exception('State list is null');
+        }
+      } else {
+        throw Exception('Api failed');
+      }
+    } catch (e) {
+      throw Exception('Catch: Api got failed');
+    }
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: Padding(
-        padding: const EdgeInsets.all(10),
-        child: Column(
-          children: [
-            dateSection(),
-            const SizedBox(
-              height: 10,
-            ),
-            stateSection(),
-          ],
-        ),
-      ),
-      floatingActionButton: FloatingActionButton(
-        onPressed: () {
-          _downloadFile(context);
-          // Add your download functionality here
+      body: FutureBuilder(
+        future: apiData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const Center(child: CircularProgressIndicator.adaptive());
+          } else if (snapshot.hasError) {
+            return const Center(
+              child: Text('Error occurred.'),
+            );
+          } else {
+            if (snapshot.hasData) {
+              List<StateListResult> data = snapshot.data!;
+              if (data.isNotEmpty) {
+                return Padding(
+                  padding: const EdgeInsets.all(10),
+                  child: Column(
+                    children: [
+                      _dateSection(),
+                      const SizedBox(
+                        height: 10,
+                      ),
+                      _stateSection(data),
+                    ],
+                  ),
+                );
+              } else {
+                return const Center(
+                  child: Text('Collection is empty.'),
+                );
+              }
+            } else {
+              return const Center(
+                child: Text('No data available'),
+              );
+            }
+          }
         },
-        child: Icon(Icons.download),
-        backgroundColor: Color(0xFFe78337), // Change the color as needed
       ),
+      floatingActionButton: _downloadedBtn(),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-
     );
   }
 
@@ -62,11 +135,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                 padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                 child: GestureDetector(
                   onTap: () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomeScreen()),
-                    );
+                    Navigator.of(context).pop();
                   },
                   child: const Icon(
                     Icons.chevron_left,
@@ -87,10 +156,9 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-              );
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                      (route) => false);
             },
             child: Image.asset(
               'assets/srikar-home-icon.png',
@@ -103,47 +171,42 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
     );
   }
 
-  Widget dateSection() {
+  Widget _dateSection() {
     return Container(
-      padding: const EdgeInsets.all(10),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         border: Border.all(color: Colors.grey, width: 1),
       ),
-      child:
-      Row(
-        crossAxisAlignment: CrossAxisAlignment.end,
+      child: Row(
         children: [
           Expanded(
-            child: buildDateInput(
+            child: dateField(
               context,
-              'From Date',
-              fromDateController,
-                  () => _selectfromDate(context, fromDateController),
+              fromDateText,
+                  () => _selectfromDate(context),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 15),
           Expanded(
-            child: buildDateInput(
+            child: dateField(
               context,
-              'To Date',
-              toDateController,
-                  () => _selectDate(context, toDateController),
+              toDateText,
+                  () => _selectDate(context),
             ),
           ),
-          SizedBox(width: 10),
+          const SizedBox(width: 15),
           Expanded(
             child: GestureDetector(
-              onTap: () {
-                // Handle the button tap
-              },
+              onTap: () {},
               child: Container(
+                padding: const EdgeInsets.all(10),
                 height: 40.0,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6.0),
-                  color: Color(0xFFe78337),
+                  color: const Color(0xFFe78337),
                 ),
-                child: Center(
+                child: const Center(
                   child: Text(
                     'Submit',
                     style: CommonUtils.Buttonstyle,
@@ -154,26 +217,33 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
           ),
         ],
       ),
-
-
-
-
     );
   }
 
-  Widget stateSection() {
+  Widget _stateSection(List<StateListResult> data) {
     return Expanded(
         child: ListView.builder(
-          itemCount: 10,
+          itemCount: data.length,
           itemBuilder: (context, index) {
             return SizedBox(
               // margin: const EdgeInsets.symmetric(
               //     horizontal: 16.0, vertical: 4.0),
               child: GestureDetector(
                 onTap: () {
-                  // setState(() {
-                  //   selectedCardIndex = index;
-                  // });
+                  setState(() {
+                    selectedCardIndex = index;
+                  });
+
+                  // navigate to slp selection screen
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SlpSelection(
+                        fromDateText: fromDateText,
+                        toDateText: toDateText,
+                        state: data[index].state!,
+                      ),
+                    ),
+                  );
                 },
                 child: Card(
                   elevation: 0,
@@ -190,12 +260,12 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                   ),
                   child: Container(
                     padding: const EdgeInsets.all(10.0),
-                    child: const Row(
+                    child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Flexible(
                           child: Padding(
-                            padding: EdgeInsets.only(right: 10),
+                            padding: const EdgeInsets.only(right: 10),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               children: [
@@ -208,19 +278,19 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                         // mainAxisAlignment:
                                         //     MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
+                                          const Text(
                                             'State: ',
                                             style: CommonUtils.Mediumtext_12,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           Text(
-                                            'data',
+                                            data[index].state!,
                                             style: CommonUtils.Mediumtext_12_0,
                                           ),
                                         ],
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 10,
                                     ),
                                     Expanded(
@@ -228,13 +298,13 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                         // mainAxisAlignment:
                                         //     MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
+                                          const Text(
                                             'OB: ',
                                             style: CommonUtils.Mediumtext_12,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           Text(
-                                            'data',
+                                            data[index].ob.toString(),
                                             style: CommonUtils.Mediumtext_12_0,
                                           ),
                                         ],
@@ -243,7 +313,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                   ],
                                 ),
 
-                                SizedBox(
+                                const SizedBox(
                                   height: 5,
                                 ),
 
@@ -256,19 +326,19 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                         // mainAxisAlignment:
                                         //     MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
+                                          const Text(
                                             'Sales: ',
                                             style: CommonUtils.Mediumtext_12,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           Text(
-                                            'data',
+                                            data[index].sales.toString(),
                                             style: CommonUtils.Mediumtext_12_0,
                                           ),
                                         ],
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 10,
                                     ),
                                     Expanded(
@@ -276,13 +346,13 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                         // mainAxisAlignment:
                                         //     MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
+                                          const Text(
                                             'Returns: ',
                                             style: CommonUtils.Mediumtext_12,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           Text(
-                                            'data',
+                                            data[index].returns.toString(),
                                             style: CommonUtils.Mediumtext_12_0,
                                           ),
                                         ],
@@ -291,7 +361,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                   ],
                                 ),
 
-                                SizedBox(
+                                const SizedBox(
                                   height: 5,
                                 ),
 
@@ -304,19 +374,19 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                         // mainAxisAlignment:
                                         //     MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
+                                          const Text(
                                             'Receipts: ',
                                             style: CommonUtils.Mediumtext_12,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           Text(
-                                            'data',
+                                            data[index].receipts.toString(),
                                             style: CommonUtils.Mediumtext_12_0,
                                           ),
                                         ],
                                       ),
                                     ),
-                                    SizedBox(
+                                    const SizedBox(
                                       width: 10,
                                     ),
                                     Expanded(
@@ -324,13 +394,13 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                         // mainAxisAlignment:
                                         //     MainAxisAlignment.spaceBetween,
                                         children: [
-                                          Text(
+                                          const Text(
                                             'Others: ',
                                             style: CommonUtils.Mediumtext_12,
                                             overflow: TextOverflow.ellipsis,
                                           ),
                                           Text(
-                                            'data',
+                                            data[index].others.toString(),
                                             style: CommonUtils.Mediumtext_12_0,
                                           ),
                                         ],
@@ -338,19 +408,19 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                     ),
                                   ],
                                 ),
-                                SizedBox(
+                                const SizedBox(
                                   height: 5,
                                 ),
                                 // row4
                                 Row(
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Closing: ',
                                       style: CommonUtils.Mediumtext_12,
                                       overflow: TextOverflow.ellipsis,
                                     ),
                                     Text(
-                                      'data',
+                                      data[index].closing.toString(),
                                       style: CommonUtils.Mediumtext_12_0,
                                     ),
                                   ],
@@ -359,7 +429,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                             ),
                           ),
                         ),
-                        Icon(
+                        const Icon(
                           Icons.chevron_right,
                           color: Colors.orange,
                         ),
@@ -373,6 +443,29 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         ));
   }
 
+  Widget dateField(
+      BuildContext context,
+      String labelText,
+      VoidCallback onTap,
+      ) {
+    return GestureDetector(
+      onTap: onTap,
+      child: Container(
+        padding: const EdgeInsets.all(10),
+        decoration: BoxDecoration(
+          border: Border.all(
+            color: CommonUtils.orangeColor,
+          ),
+          borderRadius: BorderRadius.circular(5),
+        ),
+        child: Text(
+          labelText,
+          style: CommonUtils.Mediumtext_12_0,
+        ),
+      ),
+    );
+  }
+
   static Widget buildDateInput(
       BuildContext context,
       String labelText,
@@ -384,10 +477,10 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
           Padding(
-            padding: EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
+            padding: const EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
             child: Text(
               labelText,
-              style: TextStyle(
+              style: const TextStyle(
                 fontSize: 12.0,
                 color: Color(0xFF5f5f5f),
                 fontWeight: FontWeight.bold,
@@ -395,7 +488,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
               textAlign: TextAlign.start,
             ),
           ),
-          SizedBox(height: 8.0),
+          const SizedBox(height: 8.0),
           GestureDetector(
             onTap: onTap,
             child: Container(
@@ -403,7 +496,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5.0),
                 border: Border.all(
-                  color: Color(0xFFe78337),
+                  color: const Color(0xFFe78337),
                   width: 1,
                 ),
               ),
@@ -411,11 +504,11 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                 children: [
                   Expanded(
                     child: Padding(
-                      padding: EdgeInsets.only(left: 10.0, top: 0.0),
+                      padding: const EdgeInsets.only(left: 10.0, top: 0.0),
                       child: IgnorePointer(
                         child: TextFormField(
                           controller: controller,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w700,
@@ -423,7 +516,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                           ),
                           decoration: InputDecoration(
                             hintText: labelText,
-                            hintStyle: TextStyle(
+                            hintStyle: const TextStyle(
                               fontSize: 14,
                               fontFamily: 'Roboto',
                               fontWeight: FontWeight.w700,
@@ -454,15 +547,9 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
     );
   }
 
-
-  Future<void> _selectfromDate(
-      BuildContext context,
-      TextEditingController controller,
-      ) async {
+  Future<void> _selectfromDate(BuildContext context) async {
     DateTime currentDate = DateTime.now();
-    // DateTime initialDate;
     DateTime initialDate = selectedFromDate ?? currentDate;
-
 
     try {
       DateTime? picked = await showDatePicker(
@@ -471,11 +558,26 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         initialDate: initialDate,
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: ColorScheme.light(
+                primary: Color(0xFFe78337), // Change the primary color here
+                onPrimary: Colors.white,
+                // onSurface: Colors.blue,// Change the text color here
+              ),
+              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+            ),
+            child: child!,
+          );
+        },
       );
 
       if (picked != null) {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
-        controller.text = formattedDate;
+        setState(() {
+          fromDateText = formattedDate;
+        });
 
         // Save selected dates as DateTime objects
         selectedFromDate = picked;
@@ -492,7 +594,6 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
 
   Future<void> _selectDate(
       BuildContext context,
-      TextEditingController controller,
       ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate = selectedToDate ?? currentDate;
@@ -516,11 +617,26 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         initialDate: initialDate,
         firstDate: DateTime(2000),
         lastDate: DateTime(2101),
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: ColorScheme.light(
+                primary: Color(0xFFe78337), // Change the primary color here
+                onPrimary: Colors.white,
+                // onSurface: Colors.blue,// Change the text color here
+              ),
+              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+            ),
+            child: child!,
+          );
+        },
       );
 
       if (picked != null) {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
-        controller.text = formattedDate;
+        setState(() {
+          toDateText = formattedDate;
+        });
 
         // Save selected dates as DateTime objects
         selectedToDate = picked;
@@ -536,30 +652,54 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   void _downloadFile(BuildContext context) async {
-    final url = 'https://file-examples.com/wp-content/storage/2017/02/file_example_XLS_10.xlsx';
+    const url =
+        'https://file-examples.com/wp-content/storage/2017/02/file_example_XLS_10.xlsx';
 
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      Directory downloadsDirectory = Directory('/storage/emulated/0/Download/Srikar_Groups');
+      Directory downloadsDirectory =
+      Directory('/storage/emulated/0/Download/Srikar_Groups');
       if (!downloadsDirectory.existsSync()) {
         downloadsDirectory.createSync(recursive: true);
       }
-      String filePath = '${downloadsDirectory.path}';
-
+      String filePath = downloadsDirectory.path;
 
       final File file = File('$filePath/file_example_XLS_10.xls');
       await file.create(recursive: true);
       await file.writeAsBytes(response.bodyBytes);
 
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('File downloaded successfully')),
+        const SnackBar(content: Text('File downloaded successfully')),
       );
     } else {
       ScaffoldMessenger.of(context).showSnackBar(
-        SnackBar(content: Text('Failed to download file')),
+        const SnackBar(content: Text('Failed to download file')),
       );
     }
   }
+
+  Widget _downloadedBtn() {
+    Color buttonColor = const Color(0xFFe78337); // Set your desired color here
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+      child: SizedBox(
+        width: 40, // Adjust width as needed
+        height: 40, // Adjust height as needed
+        child: FloatingActionButton(
+          onPressed: () {
+            _downloadFile(context);
+            // Add your download functionality here
+          },
+          backgroundColor: buttonColor,
+          mini: true, // Make the button mini
+          child: const Icon(Icons.download),
+          shape: BeveledRectangleBorder(), // Beveled rectangle shape
+        ),
+      ),
+    );
+  }
+
 
 }

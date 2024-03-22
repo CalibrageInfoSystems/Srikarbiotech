@@ -2,7 +2,9 @@ library APIConstants;
 
 const String SUCCESS_MESSAGE = " You will be contacted by us very soon.";
 
-var baseUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/";
+//var baseUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/"; //local
+var baseUrl = "http://103.27.86.172/Srikar_Groups_UAT/API/api/"; //UAT
+
 
 var post_Login = "Account/Login";
 var GetWarehouse = 'Account/GetWarehousesByUserandCompany/';

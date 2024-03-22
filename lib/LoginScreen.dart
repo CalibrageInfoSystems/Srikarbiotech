@@ -398,6 +398,8 @@ class _MyHomePageState extends State<LoginScreen> {
       print('LoginjsonResponse ==>$jsonResponse');
       if (jsonResponse['isSuccess'] == true) {
         print('Login successful');
+        CommonUtils.showCustomToastMessageLong("Login Successfull", context, 0, 3);
+
         // Save boolean value in SharedPreferences
         final Map<String, dynamic> responseData = json.decode(response.body);
         //await AuthService.saveSecondApiResponse(responseData);

@@ -505,7 +505,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         context: context,
         initialDate: initialDate,
         initialEntryMode: DatePickerEntryMode.calendarOnly,
-        firstDate: DateTime(2000),
+        firstDate: selectedfromdateDate,
         lastDate: DateTime(2101),
       );
 
@@ -596,8 +596,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       TextEditingController controller,
       ) async {
     DateTime initialDate;
-
+    DateTime currentDate = DateTime.now();
     print('===>current date,${DateTime.now()}');
+
     if (controller.text.isNotEmpty) {
       try {
         print('===> date,${DateFormat('dd-MM-yyyy').parse(controller.text)}');
@@ -617,7 +618,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         initialDate: initialDate,
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         firstDate: DateTime(2000),
-        lastDate: DateTime(2101),
+        lastDate: currentDate,
       );
 
       if (picked != null) {

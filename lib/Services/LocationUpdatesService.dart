@@ -96,7 +96,8 @@ class LocationUpdatesService {
           currentLocation!.longitude!,
           locationData.latitude!,
           locationData.longitude!);
-
+      print(" Distance: $distance meters");
+      appendLog(" Distance: $distance meters");
       // Check if the distance is greater than or equal to 200 meters
       if (distance >= 200) {
         // Update the current location

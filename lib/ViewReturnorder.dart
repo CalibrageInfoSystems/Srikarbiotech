@@ -57,6 +57,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
   void initState() {
     super.initState();
 
+
     initializeApiData();
   }
 
@@ -244,19 +245,46 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
               ),
             ],
           ),
-          GestureDetector(
-            onTap: () {
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-              );
+
+          FutureBuilder(
+            future: getshareddata(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // Access the companyId after shared data is retrieved
+
+                return GestureDetector(
+                  onTap: () {
+                    returnOrdersProvider.clearFilter();
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    );
+                  },
+                  child: Image.asset(
+                    companyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
+                    width: 30,
+                    height: 30,
+                  ),
+                );
+              } else {
+                // Return a placeholder or loading indicator
+                return const SizedBox.shrink();
+              }
             },
-            child: Image.asset(
-              'assets/srikar-home-icon.png',
-              width: 30,
-              height: 30,
-            ),
           ),
+          // GestureDetector(
+          //   onTap: () {
+          //     Navigator.pushReplacement(
+          //       context,
+          //       MaterialPageRoute(builder: (context) => const HomeScreen()),
+          //     );
+          //   },
+          //   child: Image.asset(
+          //     'assets/srikar-home-icon.png',
+          //     width: 30,
+          //     height: 30,
+          //   ),
+          // ),
         ],
       ),
     );
@@ -338,6 +366,9 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
         ),
       ),
     );
+  }
+  Future<void> getshareddata() async {
+    companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
   }
 }
 
@@ -472,7 +503,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         context: context,
         initialDate: initialDate,
         initialEntryMode: DatePickerEntryMode.calendarOnly,
-        firstDate: DateTime(2000),
+        firstDate: selectedfromdateDate,
         lastDate: DateTime(2101),
       );
 
@@ -587,7 +618,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         initialDate: initialDate,
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         firstDate: DateTime(2000),
-        lastDate: DateTime(2101),
+        lastDate: currentDate,
       );
 
       if (picked != null) {

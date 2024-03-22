@@ -342,7 +342,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                         crossAxisAlignment: CrossAxisAlignment.start,
                                         children: [
                                           const Text(
-                                            'OrderDate',
+                                            'Order Date',
                                             style: CommonUtils.txSty_13B_Fb,
                                           ),
                                           const SizedBox(

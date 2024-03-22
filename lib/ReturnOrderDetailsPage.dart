@@ -15,6 +15,7 @@ import 'package:srikarbiotech/Model/viewreturnorders_model.dart';
 import 'package:srikarbiotech/Model/viewreturnorders_model.dart';
 import 'package:srikarbiotech/Services/api_config.dart';
 
+import 'Common/SharedPrefsData.dart';
 import 'HomeScreen.dart';
 import 'Model/ReturnOrderCredit.dart';
 import 'Model/ReturnOrderCredit.dart';
@@ -38,6 +39,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
   late List<ReturnOrderDetailsResult> returnOrderDetailsResultList = [];
   late List<ReturnOrderItemXrefList> returnOrderItemXrefList = [];
   late List<ReturnOrderCredit> returnOrderCredits = [];
+  int? companyId = 0;
 
   @override
   void initState() {
@@ -494,19 +496,31 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
               ),
             ],
           ),
-          GestureDetector(
-            onTap: () {
-              // Handle the click event for the home icon
-              Navigator.pushReplacement(
-                context,
-                MaterialPageRoute(builder: (context) => const HomeScreen()),
-              );
+          FutureBuilder(
+            future: getshareddata(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                // Access the companyId after shared data is retrieved
+
+                return GestureDetector(
+                  onTap: () {
+
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(builder: (context) => const HomeScreen()),
+                    );
+                  },
+                  child: Image.asset(
+                    companyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
+                    width: 30,
+                    height: 30,
+                  ),
+                );
+              } else {
+                // Return a placeholder or loading indicator
+                return const SizedBox.shrink();
+              }
             },
-            child: Image.asset(
-              'assets/srikar-home-icon.png',
-              width: 30,
-              height: 30,
-            ),
           ),
         ],
       ),
@@ -581,6 +595,10 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
       // If an error occurs during the download process, print the error
       print('Error downloading PDF: $e');
     }
+  }
+
+  Future<void> getshareddata() async {
+    companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
   }
 }
 
