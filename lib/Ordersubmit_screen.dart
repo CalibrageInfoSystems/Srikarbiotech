@@ -129,577 +129,575 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
           Navigator.of(context).pop();
           return true; // Allow the back navigation
         },
-    child: Scaffold(
-      appBar: AppBar(
-        backgroundColor: Color(0xFFe78337),
-        automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
+        child: Scaffold(
+          appBar: AppBar(
+            backgroundColor: Color(0xFFe78337),
+            automaticallyImplyLeading: false,
+            title: Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                  child: GestureDetector(
-                    onTap: () {
-                      Navigator.of(context).pop();
-                      // Handle the click event for the back button
-                      // try {
-                      //   Navigator.push(
-                      //     context,
-                      //     MaterialPageRoute(
-                      //       builder: (context) => Createorderscreen(
-                      //           cardName: widget.cardName,
-                      //           cardCode: widget.cardCode,
-                      //           address: widget.address,
-                      //           state: widget.state,
-                      //           phone: widget.phone,
-                      //           proprietorName: widget.proprietorName,
-                      //           gstRegnNo: widget.gstRegnNo,
-                      //           creditLine: widget.creditLine,
-                      //           balance: widget.balance,
-                      //           whsCode: widget.whsCode,
-                      //           whsName: widget.whsName,
-                      //           whsState: widget.whsState),
-                      //     ),
-                      //   );
-                      // } catch (e) {
-                      //   print("Error navigating: $e");
-                      // }
-                    },
-                    child: Icon(
-                      Icons.chevron_left,
-                      size: 30.0,
-                      color: Colors.white,
+                Row(
+                  children: [
+                    Padding(
+                      padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                      child: GestureDetector(
+                        onTap: () {
+                          Navigator.of(context).pop();
+                          // Handle the click event for the back button
+                          // try {
+                          //   Navigator.push(
+                          //     context,
+                          //     MaterialPageRoute(
+                          //       builder: (context) => Createorderscreen(
+                          //           cardName: widget.cardName,
+                          //           cardCode: widget.cardCode,
+                          //           address: widget.address,
+                          //           state: widget.state,
+                          //           phone: widget.phone,
+                          //           proprietorName: widget.proprietorName,
+                          //           gstRegnNo: widget.gstRegnNo,
+                          //           creditLine: widget.creditLine,
+                          //           balance: widget.balance,
+                          //           whsCode: widget.whsCode,
+                          //           whsName: widget.whsName,
+                          //           whsState: widget.whsState),
+                          //     ),
+                          //   );
+                          // } catch (e) {
+                          //   print("Error navigating: $e");
+                          // }
+                        },
+                        child: Icon(
+                          Icons.chevron_left,
+                          size: 30.0,
+                          color: Colors.white,
+                        ),
+                      ),
                     ),
-                  ),
-                ),
-                SizedBox(width: 8.0),
-                Text(
-                  'Order Submission ',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
+                    SizedBox(width: 8.0),
+                    Text(
+                      'Order Submission ',
+                      style: TextStyle(
+                        color: Colors.white,
+                        fontSize: 18,
+                      ),
+                    ),
+                    FutureBuilder(
+                      future: getshareddata(),
+                      builder: (context, snapshot) {
+                        if (snapshot.connectionState == ConnectionState.done) {
+                          // Access the cart data from the provider
+                          cartItems = Provider.of<CartProvider>(context).getCartItems();
+                          // Update the globalCartLength
+                          globalCartLength = cartItems.length;
+                        }
+                        // Always return a widget in the builder
+                        return Text(
+                          '($globalCartLength)',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                          ),
+                        );
+                      },
+                    ),
+                  ],
                 ),
                 FutureBuilder(
                   future: getshareddata(),
                   builder: (context, snapshot) {
                     if (snapshot.connectionState == ConnectionState.done) {
-                      // Access the cart data from the provider
-                      cartItems = Provider.of<CartProvider>(context).getCartItems();
-                      // Update the globalCartLength
-                      globalCartLength = cartItems.length;
+                      // Access the companyId after shared data is retrieved
+
+                      return GestureDetector(
+                        onTap: () {
+                          // Handle the click event for the home icon
+                          Navigator.pushReplacement(
+                            context,
+                            MaterialPageRoute(builder: (context) => HomeScreen()),
+                          );
+                        },
+                        child: Image.asset(
+                          CompneyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
+                          width: 30,
+                          height: 30,
+                        ),
+                      );
+                    } else {
+                      // Return a placeholder or loading indicator
+                      return SizedBox.shrink();
                     }
-                    // Always return a widget in the builder
-                    return Text(
-                      '($globalCartLength)',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    );
                   },
                 ),
               ],
             ),
-            FutureBuilder(
-              future: getshareddata(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  // Access the companyId after shared data is retrieved
+          ),
 
-                  return GestureDetector(
-                    onTap: () {
-                      // Handle the click event for the home icon
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
-                      );
-                    },
-                    child: Image.asset(
-                      CompneyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
-                      width: 30,
-                      height: 30,
-                    ),
-                  );
-                } else {
-                  // Return a placeholder or loading indicator
-                  return SizedBox.shrink();
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-
-      body: SingleChildScrollView(
-        child: Column(
-          children: [
-            Padding(
-              padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-              child: Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  CommonUtils.buildCard(
-                    widget.cardName,
-                    widget.cardCode,
-                    widget.proprietorName,
-                    widget.gstRegnNo,
-                    widget.address,
-                    Colors.white,
-                    BorderRadius.circular(5.0),
-                  ),
-
-                ],
-              ),
-            ),
-            //           }
-            //         },
-            //       ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: const EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-              child: IntrinsicHeight(
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  child: Container(
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5.0),
-                      color: Colors.white,
-                    ),
-                    padding: const EdgeInsets.all(10.0),
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          children: [
-                            const Expanded(
-                              child: Text(
-                                'Credit Limit',
-                                style: TextStyle(
-                                  color: Color(0xFF5f5f5f),
-                                  fontFamily: "Roboto",
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14.0,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                '₹${widget.creditLine}',
-                                style: const TextStyle(
-                                  color: Color(0xFF5f5f5f),
-                                  fontFamily: "Roboto",
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14.0,
-                                ),
-                                textAlign: TextAlign.right,
-                              ),
-                            ),
-                          ],
-                        ),
-                        const SizedBox(height: 5.0), // Add some space between rows
-                        // Third Row: Outstanding Amount
-                        Row(
-                          children: [
-                            const Expanded(
-                              child: Text(
-                                'Outstanding Amount',
-                                style: TextStyle(
-                                  color: Color(0xFF5f5f5f),
-                                  fontFamily: "Roboto",
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14.0,
-                                ),
-                              ),
-                            ),
-                            Expanded(
-                              child: Text(
-                                '₹${widget.balance}',
-                                style: const TextStyle(
-                                  color: Color(0xFF5f5f5f),
-                                  fontFamily: "Roboto",
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14.0,
-                                ),
-                                textAlign: TextAlign.right,
-                              ),
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
+          body: SingleChildScrollView(
+            child: Column(
+              children: [
+                Padding(
+                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      CommonUtils.buildCard(
+                        widget.cardName,
+                        widget.cardCode,
+                        widget.proprietorName,
+                        widget.gstRegnNo,
+                        widget.address,
+                        Colors.white,
+                        BorderRadius.circular(5.0),
+                      ),
+                    ],
                   ),
                 ),
-              ),
-            ),
-            SizedBox(height: 5),
-            FutureBuilder(
-              future: Future.value(),
-              builder: (context, snapshot) {
-                // if (snapshot.connectionState == ConnectionState.waiting) {
-                //   return CircularProgressIndicator();
-                // } else
-                // if (snapshot.connectionState == ConnectionState.done) {
-                List<OrderItemXrefType> cartItems = Provider.of<CartProvider>(context).getCartItems();
-
-                return buildListView(cartItems, ValueKey(cartItems));
-
-                // }
-                // else {
-                //   return Text('Error: Unable to fetch cart data');
-                // }
-              },
-            ),
-            // ListView.builder(
-            //     //  key: UniqueKey(),
-            //     shrinkWrap: true,
-            //     physics: PageScrollPhysics(),
-            //     scrollDirection: Axis.vertical,
-            //     itemCount: cartItems.length,
-            //     itemBuilder: (context, index) {
-            //       return buildListView(cartItems, ValueKey(cartItems[index]));
-            //     }),
-
-            Column(
-              children: [
-                // Padding(
-                //   // height: screenHeight / 2.8,
-                //   // width: screenWidth,
-                //   // alignment: Alignment.center,
-                //
-                //   padding:
-                //       EdgeInsets.only(top: 10.0, left: 10, right: 10, bottom: 10),
-                //   child:
+                //           }
+                //         },
+                //       ),
                 Container(
-                  padding: EdgeInsets.only( left: 10, right: 10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(5.0),
-                    // color: Colors.white,
-                  ),
-                  child: Card(
-                    // color: Colors.white,
-                    elevation: 5.0,
-                    shape: RoundedRectangleBorder(
-                      borderRadius: BorderRadius.circular(5.0),
-                    ),
-                    // You can adjust the elevation as needed
-                    // Other card properties go here
-
-                    child: Container(
-                        padding: EdgeInsets.only(top: 0.0, left: 0, right: 0, bottom: 10),
+                  width: MediaQuery.of(context).size.width,
+                  padding: const EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                  child: IntrinsicHeight(
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: Container(
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(5.0),
                           color: Colors.white,
                         ),
-                        child: IntrinsicHeight(
-                            child: Column(
-                          // mainAxisAlignment: MainAxisAlignment.center,
+                        padding: const EdgeInsets.all(10.0),
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
                           children: [
-                            Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0),
-                                    child: Text(
-                                      'Booking Place * ',
-                                      style: TextStyle(color: Color(0xFF5f5f5f), fontFamily: 'Roboto', fontWeight: FontWeight.w600, fontSize: 14),
-                                      textAlign: TextAlign.start,
+                            Row(
+                              children: [
+                                const Expanded(
+                                  child: Text(
+                                    'Credit Limit',
+                                    style: TextStyle(
+                                      color: Color(0xFF5f5f5f),
+                                      fontFamily: "Roboto",
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14.0,
                                     ),
                                   ),
-                                  SizedBox(height: 2.0),
-                                  //  SizedBox(height: 8.0),
-                                  GestureDetector(
-                                    onTap: () {
-                                      // Handle the click event for the second text view
-                                      print('first textview clicked');
-                                    },
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5.0),
-                                        border: Border.all(
-                                          color: Color(0xFFe78337),
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Padding(
-                                                padding: EdgeInsets.only(left: 10.0, top: 0.0),
-                                                child: TextFormField(
-                                                  controller: bookingplacecontroller,
-                                                  keyboardType: TextInputType.name,
-                                                  maxLength: 50,
-                                                  style: TextStyle(color: Color(0xFFe78337), fontFamily: 'Roboto', fontWeight: FontWeight.w600, fontSize: 14),
-                                                  decoration: InputDecoration(
-                                                    counterText: '',
-                                                    hintText: 'Enter Booking Place',
-                                                    hintStyle: TextStyle(
-                                                      fontSize: 14,
-                                                      fontFamily: 'Roboto',
-                                                      fontWeight: FontWeight.w700,
-                                                      color: Color(0xa0e78337),
-                                                    ),
-                                                    border: InputBorder.none,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    '₹${widget.creditLine}',
+                                    style: const TextStyle(
+                                      color: Color(0xFF5f5f5f),
+                                      fontFamily: "Roboto",
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14.0,
                                     ),
+                                    textAlign: TextAlign.right,
                                   ),
-                                ],
-                              ),
+                                ),
+                              ],
                             ),
-                            Container(
-                              color: Colors.white,
-                              padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0, bottom: 20.0),
-                              child: Column(
-                                crossAxisAlignment: CrossAxisAlignment.start,
-                                children: [
-                                  Padding(
-                                    padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0),
-                                    child: Text(
-                                      'Transport Name * ',
-                                      style: TextStyle(
-                                        color: Color(0xFF5f5f5f),
-                                        fontFamily: 'Roboto',
-                                        fontWeight: FontWeight.w600,
-                                        fontSize: 14,
-                                      ),
-                                      textAlign: TextAlign.start,
+                            const SizedBox(height: 5.0), // Add some space between rows
+                            // Third Row: Outstanding Amount
+                            Row(
+                              children: [
+                                const Expanded(
+                                  child: Text(
+                                    'Outstanding Amount',
+                                    style: TextStyle(
+                                      color: Color(0xFF5f5f5f),
+                                      fontFamily: "Roboto",
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14.0,
                                     ),
                                   ),
-                                  SizedBox(height: 2.0),
-                                  GestureDetector(
-                                    onTap: () {
-                                      print('first textview clicked');
-                                    },
-                                    child: Container(
-                                      width: MediaQuery.of(context).size.width,
-                                      decoration: BoxDecoration(
-                                        borderRadius: BorderRadius.circular(5.0),
-                                        border: Border.all(
-                                          color: Color(0xFFe78337),
-                                          width: 1,
-                                        ),
-                                      ),
-                                      child: Row(
-                                        children: [
-                                          Expanded(
-                                            child: Align(
-                                              alignment: Alignment.centerLeft,
-                                              child: Padding(
-                                                padding: EdgeInsets.only(left: 10.0, top: 0.0),
-                                                child: TextFormField(
-                                                  controller: Parcelservicecontroller,
-                                                  keyboardType: TextInputType.name,
-                                                  maxLength: 50,
-                                                  style: TextStyle(color: Color(0xFFe78337), fontFamily: 'Roboto', fontWeight: FontWeight.w600, fontSize: 14),
-                                                  decoration: InputDecoration(
-                                                    counterText: '',
-                                                    hintText: 'Enter Transport Name',
-                                                    hintStyle: TextStyle(
-                                                      fontSize: 14,
-                                                      fontFamily: 'Roboto',
-                                                      fontWeight: FontWeight.w700,
-                                                      color: Color(0xa0e78337),
-                                                    ),
-                                                    border: InputBorder.none,
-                                                  ),
-                                                ),
-                                              ),
-                                            ),
-                                          ),
-                                        ],
-                                      ),
+                                ),
+                                Expanded(
+                                  child: Text(
+                                    '₹${widget.balance}',
+                                    style: const TextStyle(
+                                      color: Color(0xFF5f5f5f),
+                                      fontFamily: "Roboto",
+                                      fontWeight: FontWeight.w700,
+                                      fontSize: 14.0,
                                     ),
+                                    textAlign: TextAlign.right,
                                   ),
-                                ],
-                              ),
-                            ),
-                          ],
-                        ))),
-                  ),
-                ),
-              ],
-            ),
-            Container(
-              width: MediaQuery.of(context).size.width,
-              padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
-              child: IntrinsicHeight(
-                child: Card(
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                  ),
-                  child: Container(
-                    padding: EdgeInsets.all(10.0),
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5.0),
-                      color: Colors.white,
-                    ),
-                    width: MediaQuery.of(context).size.width,
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Sub Total',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.0,
-                              ),
-                            ),
-                            ValueListenableBuilder<double>(
-                              valueListenable: totalSumNotifier,
-                              builder: (context, totalSum, child) {
-                                return Text(
-                                  '₹${formatNumber(totalSum)}',
-                                  style: TextStyle(
-                                    color: Color(0xFFe78337),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.0,
-                                  ),
-                                );
-                              },
+                                ),
+                              ],
                             ),
                           ],
                         ),
-                        SizedBox(height: 8.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'GST',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.0,
-                              ),
-                            ),
-                            ValueListenableBuilder<double>(
-                              valueListenable: totalGstAmountNotifier,
-                              builder: (context, totalGstAmount, _) {
-                                return Text(
-                                  '₹${formatNumber(totalGstAmount)}',
-                                  style: TextStyle(
-                                    color: Color(0xFFe78337),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.0,
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                        SizedBox(height: 8.0),
-                        Row(
-                          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                          children: [
-                            Text(
-                              'Total Amount',
-                              style: TextStyle(
-                                color: Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 14.0,
-                              ),
-                            ),
-                            ValueListenableBuilder<double>(
-                              valueListenable: totalSumIncludingGst,
-                              builder: (context, totalsumGstAmount, _) {
-                                return Text(
-                                  '₹${formatNumber(totalsumGstAmount)}',
-                                  style: TextStyle(
-                                    color: Color(0xFFe78337),
-                                    fontWeight: FontWeight.bold,
-                                    fontSize: 14.0,
-                                  ),
-                                );
-                              },
-                            ),
-                          ],
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ],
-        ),
-      ),
-
-      bottomNavigationBar: Container(
-        height: 60,
-        margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: InkWell(
-                onTap: () {
-                  if (globalCartLength > 0) {
-                    CommonUtils.checkInternetConnectivity().then(
-                          (isConnected) {
-                        if (isConnected) {
-                          AddOrder();
-                          print('The Internet Is Connected');
-                        } else {
-                          CommonUtils.showCustomToastMessageLong(
-                              'Please check your internet  connection', context, 1, 4);
-                          print('The Internet Is not  Connected');
-                        }
-                      },
-                    );
-
-                    // Add logic for the download button
-                  } else {
-                    CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
-                  }
-                  print(' button clicked');
-                },
-                child: Container(
-                  padding: const EdgeInsets.all(10),
-                  decoration: BoxDecoration(
-                    borderRadius: BorderRadius.circular(10),
-                    color: Color(0xFFe78337),
-                  ),
-                  child: const Center(
-                    child: Text(
-                      'Place Your Order',
-                      style: TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                        fontWeight: FontWeight.w700, // Set the font weight to bold
-                        fontFamily: 'Roboto', // Set the font family to Roboto
                       ),
                     ),
                   ),
                 ),
-              ),
-            ),
-          ],
-        ),
-      ),
+                SizedBox(height: 5),
+                FutureBuilder(
+                  future: Future.value(),
+                  builder: (context, snapshot) {
+                    // if (snapshot.connectionState == ConnectionState.waiting) {
+                    //   return CircularProgressIndicator();
+                    // } else
+                    // if (snapshot.connectionState == ConnectionState.done) {
+                    List<OrderItemXrefType> cartItems = Provider.of<CartProvider>(context).getCartItems();
 
-      //    ),
-    ));
+                    return buildListView(cartItems, ValueKey(cartItems));
+
+                    // }
+                    // else {
+                    //   return Text('Error: Unable to fetch cart data');
+                    // }
+                  },
+                ),
+                // ListView.builder(
+                //     //  key: UniqueKey(),
+                //     shrinkWrap: true,
+                //     physics: PageScrollPhysics(),
+                //     scrollDirection: Axis.vertical,
+                //     itemCount: cartItems.length,
+                //     itemBuilder: (context, index) {
+                //       return buildListView(cartItems, ValueKey(cartItems[index]));
+                //     }),
+
+                Column(
+                  children: [
+                    // Padding(
+                    //   // height: screenHeight / 2.8,
+                    //   // width: screenWidth,
+                    //   // alignment: Alignment.center,
+                    //
+                    //   padding:
+                    //       EdgeInsets.only(top: 10.0, left: 10, right: 10, bottom: 10),
+                    //   child:
+                    Container(
+                      padding: EdgeInsets.only(left: 10, right: 10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(5.0),
+                        // color: Colors.white,
+                      ),
+                      child: Card(
+                        // color: Colors.white,
+                        elevation: 5.0,
+                        shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(5.0),
+                        ),
+                        // You can adjust the elevation as needed
+                        // Other card properties go here
+
+                        child: Container(
+                            padding: EdgeInsets.only(top: 0.0, left: 0, right: 0, bottom: 10),
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(5.0),
+                              color: Colors.white,
+                            ),
+                            child: IntrinsicHeight(
+                                child: Column(
+                              // mainAxisAlignment: MainAxisAlignment.center,
+                              children: [
+                                Container(
+                                  color: Colors.white,
+                                  padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0),
+                                        child: Text(
+                                          'Booking Place * ',
+                                          style: TextStyle(color: Color(0xFF5f5f5f), fontFamily: 'Roboto', fontWeight: FontWeight.w600, fontSize: 14),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                      SizedBox(height: 2.0),
+                                      //  SizedBox(height: 8.0),
+                                      GestureDetector(
+                                        onTap: () {
+                                          // Handle the click event for the second text view
+                                          print('first textview clicked');
+                                        },
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5.0),
+                                            border: Border.all(
+                                              color: Color(0xFFe78337),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Align(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(left: 10.0, top: 0.0),
+                                                    child: TextFormField(
+                                                      controller: bookingplacecontroller,
+                                                      keyboardType: TextInputType.name,
+                                                      maxLength: 50,
+                                                      style: TextStyle(color: Color(0xFFe78337), fontFamily: 'Roboto', fontWeight: FontWeight.w600, fontSize: 14),
+                                                      decoration: InputDecoration(
+                                                        counterText: '',
+                                                        hintText: 'Enter Booking Place',
+                                                        hintStyle: TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily: 'Roboto',
+                                                          fontWeight: FontWeight.w700,
+                                                          color: Color(0xa0e78337),
+                                                        ),
+                                                        border: InputBorder.none,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                Container(
+                                  color: Colors.white,
+                                  padding: EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0, bottom: 20.0),
+                                  child: Column(
+                                    crossAxisAlignment: CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0),
+                                        child: Text(
+                                          'Transport Name * ',
+                                          style: TextStyle(
+                                            color: Color(0xFF5f5f5f),
+                                            fontFamily: 'Roboto',
+                                            fontWeight: FontWeight.w600,
+                                            fontSize: 14,
+                                          ),
+                                          textAlign: TextAlign.start,
+                                        ),
+                                      ),
+                                      SizedBox(height: 2.0),
+                                      GestureDetector(
+                                        onTap: () {
+                                          print('first textview clicked');
+                                        },
+                                        child: Container(
+                                          width: MediaQuery.of(context).size.width,
+                                          decoration: BoxDecoration(
+                                            borderRadius: BorderRadius.circular(5.0),
+                                            border: Border.all(
+                                              color: Color(0xFFe78337),
+                                              width: 1,
+                                            ),
+                                          ),
+                                          child: Row(
+                                            children: [
+                                              Expanded(
+                                                child: Align(
+                                                  alignment: Alignment.centerLeft,
+                                                  child: Padding(
+                                                    padding: EdgeInsets.only(left: 10.0, top: 0.0),
+                                                    child: TextFormField(
+                                                      controller: Parcelservicecontroller,
+                                                      keyboardType: TextInputType.name,
+                                                      maxLength: 50,
+                                                      style: TextStyle(color: Color(0xFFe78337), fontFamily: 'Roboto', fontWeight: FontWeight.w600, fontSize: 14),
+                                                      decoration: InputDecoration(
+                                                        counterText: '',
+                                                        hintText: 'Enter Transport Name',
+                                                        hintStyle: TextStyle(
+                                                          fontSize: 14,
+                                                          fontFamily: 'Roboto',
+                                                          fontWeight: FontWeight.w700,
+                                                          color: Color(0xa0e78337),
+                                                        ),
+                                                        border: InputBorder.none,
+                                                      ),
+                                                    ),
+                                                  ),
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                              ],
+                            ))),
+                      ),
+                    ),
+                  ],
+                ),
+                Container(
+                  width: MediaQuery.of(context).size.width,
+                  padding: EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
+                  child: IntrinsicHeight(
+                    child: Card(
+                      shape: RoundedRectangleBorder(
+                        borderRadius: BorderRadius.circular(5.0),
+                      ),
+                      child: Container(
+                        padding: EdgeInsets.all(10.0),
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(5.0),
+                          color: Colors.white,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Sub Total',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                                ValueListenableBuilder<double>(
+                                  valueListenable: totalSumNotifier,
+                                  builder: (context, totalSum, child) {
+                                    return Text(
+                                      '₹${formatNumber(totalSum)}',
+                                      style: TextStyle(
+                                        color: Color(0xFFe78337),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'GST',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                                ValueListenableBuilder<double>(
+                                  valueListenable: totalGstAmountNotifier,
+                                  builder: (context, totalGstAmount, _) {
+                                    return Text(
+                                      '₹${formatNumber(totalGstAmount)}',
+                                      style: TextStyle(
+                                        color: Color(0xFFe78337),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                            SizedBox(height: 8.0),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Text(
+                                  'Total Amount',
+                                  style: TextStyle(
+                                    color: Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 14.0,
+                                  ),
+                                ),
+                                ValueListenableBuilder<double>(
+                                  valueListenable: totalSumIncludingGst,
+                                  builder: (context, totalsumGstAmount, _) {
+                                    return Text(
+                                      '₹${formatNumber(totalsumGstAmount)}',
+                                      style: TextStyle(
+                                        color: Color(0xFFe78337),
+                                        fontWeight: FontWeight.bold,
+                                        fontSize: 14.0,
+                                      ),
+                                    );
+                                  },
+                                ),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          bottomNavigationBar: Container(
+            height: 60,
+            margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+            padding: const EdgeInsets.all(8.0),
+            child: Row(
+              children: [
+                Expanded(
+                  child: InkWell(
+                    onTap: () {
+                      if (globalCartLength > 0) {
+                        CommonUtils.checkInternetConnectivity().then(
+                          (isConnected) {
+                            if (isConnected) {
+                              AddOrder();
+                              print('The Internet Is Connected');
+                            } else {
+                              CommonUtils.showCustomToastMessageLong('Please check your internet  connection', context, 1, 4);
+                              print('The Internet Is not  Connected');
+                            }
+                          },
+                        );
+
+                        // Add logic for the download button
+                      } else {
+                        CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
+                      }
+                      print(' button clicked');
+                    },
+                    child: Container(
+                      padding: const EdgeInsets.all(10),
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(10),
+                        color: Color(0xFFe78337),
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Place Your Order',
+                          style: TextStyle(
+                            color: Colors.white,
+                            fontSize: 18,
+                            fontWeight: FontWeight.w700, // Set the font weight to bold
+                            fontFamily: 'Roboto', // Set the font family to Roboto
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ),
+
+          //    ),
+        ));
   }
 
   void AddOrder() async {
@@ -730,7 +728,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       print('Total Price: $totalPrice');
       print('Total Price With GST: $totalPriceWithGST');
       if (isValid && orderQty == 0.0) {
-        CommonUtils.showCustomToastMessageLong('Please add quantity to selected product(s)', context, 1, 4);
+        CommonUtils.showCustomToastMessageLong('Please Add Quantity to Selected product(s)', context, 1, 4);
         isValid = false;
         hasValidationFailed = true;
       }
@@ -1329,15 +1327,26 @@ class PlusMinusButtons extends StatelessWidget {
                           border: InputBorder.none,
                           focusedBorder: InputBorder.none,
                           enabledBorder: InputBorder.none,
+                          //  hintText: '1',
                           contentPadding: EdgeInsets.only(bottom: 10.0),
                         ),
                         textAlign: TextAlign.center,
                         style: CommonUtils.Mediumtext_o_14,
                         onChanged: (newValue) {
+                          int newOrderQuantity;
                           if (newValue.isNotEmpty) {
-                            int newOrderQuantity = int.tryParse(newValue) ?? 0;
+                            newOrderQuantity = int.tryParse(newValue) ?? 0;
                             print('textchanged:$newOrderQuantity');
                             onQuantityChanged(newOrderQuantity);
+                          } else {
+                            // newOrderQuantity = 1;
+                            if (textController.text.isNotEmpty) {
+                              newOrderQuantity = 1; // Set default value to 1 when becoming empty
+                              onQuantityChanged(newOrderQuantity);
+                            } else {
+                              newOrderQuantity = 0; // Alternatively, set to 0 or any other default value
+                              onQuantityChanged(newOrderQuantity);
+                            }
                           }
                         },
                       ),
