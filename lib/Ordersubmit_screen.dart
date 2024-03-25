@@ -67,6 +67,8 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
   // List<String> cartItems = [];
   List<OrderItemXrefType> cartItems = [];
   List<String> cartlistItems = [];
+ // List<OrderItemXrefType> cartItems = []; // Initialize as empty list
+
   List<TextEditingController> textEditingControllers = [];
   List<int> quantities = [];
   int globalCartLength = 0;
@@ -884,7 +886,6 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     updateTotalSum(cartItems);
 
     return ListView.builder(
-      // key: UniqueKey(),
       key: key,
       shrinkWrap: true,
       physics: PageScrollPhysics(),
@@ -892,40 +893,101 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       itemCount: cartItems.length,
       itemBuilder: (context, index) {
         OrderItemXrefType cartItem = cartItems[index];
-        if (cartItems.length != textEditingControllers.length) {
-          textEditingControllers = List.generate(cartItems.length, (index) => TextEditingController());
-        }
         double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
         double price = cartItem.price ?? 0.0;
         double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
         double totalPrice = orderQty * price * numInSale;
-
-        // Update totalSumNotifier with the correct value
-        totalSumNotifier.value = calculateTotalSum(cartItems);
-        totalGstAmountNotifier.value = calculateTotalGstAmount(cartItems);
-
-        double totalSumForProduct = calculateTotalSumForProduct(cartItem);
-        // Print totalSumNotifier
-        print('totalSumNotifier: ${totalSumNotifier.value}');
-
         return CartItemWidget(
+          key: ValueKey(cartItem), // Generate a unique key based on the cartItem
           cartItem: cartItem,
-          onDelete: () {
+          index: index,
+          onDelete: (int index) {
             setState(() {
-              cartItems.removeAt(index);
-              updateTotalSumIncludingGst(); // Update totalSumIncludingGst after removing an item
+             cartItems.removeAt(
+                 index); // Remove the item at the specified index
+              updateTotalSumIncludingGst();
             });
           },
-          totalPrice: totalPrice,
+          totalPrice:totalPrice,
           cartItems: cartItems,
           totalSumNotifier: totalSumNotifier,
           totalGstAmountNotifier: totalGstAmountNotifier,
           onQuantityChanged: () {
-            updateTotalSumIncludingGst(); // Update totalSumIncludingGst when quantity changes
+            updateTotalSumIncludingGst();
           },
         );
       },
     );
+
+    // return ListView.builder(
+    //   // key: UniqueKey(),
+    //   key: key,
+    //   shrinkWrap: true,
+    //   physics: PageScrollPhysics(),
+    //   scrollDirection: Axis.vertical,
+    //   itemCount: cartItems.length,
+    //   itemBuilder: (context, index) {
+    //     OrderItemXrefType cartItem = cartItems[index];
+    //     if (cartItems.length != textEditingControllers.length) {
+    //       textEditingControllers = List.generate(cartItems.length, (index) => TextEditingController());
+    //     }
+    //     double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
+    //     double price = cartItem.price ?? 0.0;
+    //     double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
+    //     double totalPrice = orderQty * price * numInSale;
+    //
+    //     // Update totalSumNotifier with the correct value
+    //     totalSumNotifier.value = calculateTotalSum(cartItems);
+    //     totalGstAmountNotifier.value = calculateTotalGstAmount(cartItems);
+    //
+    //     double totalSumForProduct = calculateTotalSumForProduct(cartItem);
+    //     // Print totalSumNotifier
+    //     print('totalSumNotifier: ${totalSumNotifier.value}');
+    // //     return CartItemWidget(
+    // //       cartItem: cartItem,
+    // //       index: index, // Pass the index here
+    // //       onDelete: (int index) { // Pass the index here
+    // //         setState(() {
+    // //           cartItems.removeAt(index);
+    // //           updateTotalSumIncludingGst();
+    // //         });
+    // //       },
+    // //       totalPrice: calculateTotalPrice(cartItem),
+    // //       cartItems: cartItems,
+    // //       totalSumNotifier: totalSumNotifier,
+    // //       totalGstAmountNotifier: totalGstAmountNotifier,
+    // //       onQuantityChanged: () {
+    // //         updateTotalSumIncludingGst();
+    // //       },
+    // //     );
+    // //   },
+    // // );
+    //     return CartItemWidget(
+    //       cartItem: cartItem,
+    //       index: index, // Pass the index here
+    //       onDelete: (int index) {
+    //         setState(() {
+    //           cartItems.removeAt(index); // Remove the item at the specified index
+    //           updateTotalSumIncludingGst();
+    //         });
+    //       },
+    //
+    //       // onDelete: () {
+    //       //   setState(() {
+    //       //     cartItems.removeAt(index);
+    //       //     updateTotalSumIncludingGst(); // Update totalSumIncludingGst after removing an item
+    //       //   });
+    //       // },
+    //       totalPrice: totalPrice,
+    //       cartItems: cartItems,
+    //       totalSumNotifier: totalSumNotifier,
+    //       totalGstAmountNotifier: totalGstAmountNotifier,
+    //       onQuantityChanged: () {
+    //         updateTotalSumIncludingGst(); // Update totalSumIncludingGst when quantity changes
+    //       },
+    //     );
+    //   },
+    // );
   }
 
   double calculateTotalSum(List<OrderItemXrefType> cartItems) {
@@ -1027,7 +1089,9 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
 
 class CartItemWidget extends StatefulWidget {
   final OrderItemXrefType cartItem;
-  final Function onDelete;
+  // final Function onDelete;
+  final Function(int) onDelete; // Update the onDelete callback to accept an index// Include item and index parameters
+  final int index; // Add index parameter
   final double totalPrice;
   final List<OrderItemXrefType> cartItems;
   final ValueNotifier<double> totalSumNotifier;
@@ -1035,14 +1099,16 @@ class CartItemWidget extends StatefulWidget {
   final VoidCallback onQuantityChanged; // Callback function to notify when quantity changes
 
   CartItemWidget({
+    Key? key, // Remove the key parameter here
     required this.cartItem,
     required this.onDelete,
+    required this.index, // Add index parameter// Update the onDelete parameter
     required this.totalPrice,
     required this.cartItems,
     required this.totalSumNotifier,
     required this.totalGstAmountNotifier,
     required this.onQuantityChanged, // Initialize here
-  });
+  }) : super(key: key); // Pass key to super constructor
 
   @override
   _CartItemWidgetState createState() => _CartItemWidgetState();
@@ -1054,6 +1120,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   double gstPrice = 0.0;
   double totalGstAmount = 0.0;
   late int Quantity = 1;
+
   double totalSumForProduct = 0.0;
   double totalSum = 0.0;
   @override
@@ -1196,7 +1263,10 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                 SizedBox(width: 8.0),
                 GestureDetector(
                   onTap: () {
-                    widget.onDelete();
+                    widget.onDelete(widget.index); // Pass the index here
+                    setState(() {
+                      Quantity = widget.cartItem.orderQty ?? 1; // Update the quantity after deletion
+                    });
                   },
                   child: Container(
                     height: 36,
@@ -1338,7 +1408,8 @@ class PlusMinusButtons extends StatelessWidget {
                             newOrderQuantity = int.tryParse(newValue) ?? 0;
                             print('textchanged:$newOrderQuantity');
                             onQuantityChanged(newOrderQuantity);
-                          } else {
+                          }
+                          else {
                             // newOrderQuantity = 1;
                             if (textController.text.isNotEmpty) {
                               newOrderQuantity = 1; // Set default value to 1 when becoming empty

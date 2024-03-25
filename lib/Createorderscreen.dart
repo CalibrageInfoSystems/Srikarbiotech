@@ -299,7 +299,47 @@ class _ProductListState extends State<Createorderscreen> {
               const SizedBox(width: 20.0),
             ],
           ),
-          body: Column(
+          body:RefreshIndicator(
+    onRefresh: () async {
+      CommonUtils.checkInternetConnectivity().then(
+            (isConnected) {
+          if (isConnected) {
+            getshareddata();
+            fetchproductlist("");
+            initSharedPreferences();
+            print('The Internet Is Connected');
+          } else {
+            CommonUtils.showCustomToastMessageLong(
+                'Please check your internet  connection', context, 1, 4);
+            print('The Internet Is not  Connected');
+          }
+        },
+      );
+      // Navigator.push(context, MaterialPageRoute(builder: (context) => Createorderscreen(
+      //   cardName: widget.cardName,
+      //   cardCode: widget.cardCode,
+      //   address: widget.address,
+      //   state: widget.state,
+      //   phone: widget.phone,
+      //   proprietorName: widget.proprietorName,
+      //   gstRegnNo: widget.gstRegnNo,
+      //   creditLine: widget.creditLine,
+      //   balance: widget.balance,
+      //   whsCode: widget.whsCode,
+      //   whsName: widget.whsName,
+      //   whsState: widget.whsState,)));
+    // Perform your refresh logic here, like fetching new data
+    try {
+    ApiResponse response = await fetchProducts();
+    setState(() {
+    // Update state variables with the new data
+    // Example: products = response.products;
+    });
+    } catch (error) {
+    // Handle errors if any
+    }
+    },
+    child:  Column(
             children: [
               Container(
                 width: MediaQuery.of(context).size.width,
@@ -1058,7 +1098,7 @@ class _ProductListState extends State<Createorderscreen> {
               )
             ],
           ),
-          bottomNavigationBar: Container(
+          ),bottomNavigationBar: Container(
             height: 60,
             margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
             padding: const EdgeInsets.all(8.0),

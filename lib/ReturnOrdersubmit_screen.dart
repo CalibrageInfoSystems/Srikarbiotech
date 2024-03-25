@@ -830,6 +830,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         // Update totalSumNotifier with the correct value
 
         return CartItemWidget(
+          key: ValueKey(cartItem), // Generate a unique key based on the cartItem
           cartItem: cartItem,
           onDelete: () {
             setState(() {
@@ -1275,8 +1276,10 @@ class CartItemWidget extends StatefulWidget {
 
   final VoidCallback onQuantityChanged; // Callback function to notify when quantity changes
 
-  CartItemWidget({required this.cartItem, required this.onDelete, required this.cartItems, required this.onQuantityChanged // Initialize here
-      });
+  CartItemWidget({
+    Key? key, // Remove the key parameter here
+    required this.cartItem, required this.onDelete, required this.cartItems, required this.onQuantityChanged // Initialize here
+  }) : super(key: key); // Pass key to super constructor
 
   @override
   _CartItemWidgetState createState() => _CartItemWidgetState();
@@ -1555,12 +1558,31 @@ class PlusMinusButtons extends StatelessWidget {
                         textAlign: TextAlign.center,
                         style: CommonUtils.Mediumtext_o_14,
                         onChanged: (newValue) {
+                          int newOrderQuantity;
                           if (newValue.isNotEmpty) {
-                            int newOrderQuantity = int.tryParse(newValue) ?? 0;
+                            newOrderQuantity = int.tryParse(newValue) ?? 0;
                             print('textchanged:$newOrderQuantity');
                             onQuantityChanged(newOrderQuantity);
                           }
+                          else {
+                            // newOrderQuantity = 1;
+                            if (textController.text.isNotEmpty) {
+                              newOrderQuantity = 1; // Set default value to 1 when becoming empty
+                              onQuantityChanged(newOrderQuantity);
+                            } else {
+                              newOrderQuantity = 0; // Alternatively, set to 0 or any other default value
+                              onQuantityChanged(newOrderQuantity);
+                            }
+                          }
                         },
+
+                        // onChanged: (newValue) {
+                        //   if (newValue.isNotEmpty) {
+                        //     int newOrderQuantity = int.tryParse(newValue) ?? 0;
+                        //     print('textchanged:$newOrderQuantity');
+                        //     onQuantityChanged(newOrderQuantity);
+                        //   }
+                        // },
                       ),
                     ),
                   ),

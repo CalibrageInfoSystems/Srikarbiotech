@@ -496,7 +496,7 @@ class _home_Screen extends State<HomeScreen> {
 
   void onConfirmLogout() {
     SharedPreferencesHelper.putBool(Constants.IS_LOGIN, false);
-    CommonUtils.showCustomToastMessageLong("Logout Successfull", context, 0, 3);
+    CommonUtils.showCustomToastMessageLong("Logout Successful", context, 0, 3);
 
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const Companiesselection()),
@@ -921,40 +921,40 @@ class _imagesliderState extends State<imageslider> {
 
 
 
-                                    Row(
-                                      children: [
-                                        // First Container with single card view
-                                        Expanded(
-                                          child: Container(
-                                            height: MediaQuery.of(context).size.height / 10, // Match height with the first container
-                                            child: Column(
-                                              mainAxisAlignment: MainAxisAlignment.spaceEvenly,
-                                              children: [
-                                                Expanded(
-                                                  child: Container(
-                                                    child: _customcontainernewCard(
-                                                      imageUrl: "bags-orders.svg",
-                                                      item: "Group Summary Report ",
-                                                      item1: "View Group Summary Report ",
-                                                      color: Color(0xFFF8dac2),
-                                                      color_1: Color(0xFFec9d62),
-                                                      textcolor: Color(0xFFe78337),
-                                                      onTap: () {
-                                                        Navigator.push(
-                                                          context,
-                                                          MaterialPageRoute(builder: (context) => StateSelectionScreen()),
-                                                        );
-                                                      },
-                                                    ),
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                        ),
-                                        // Second Container divided into two equal-sized containers
-                                      ],
-                                    ),
+                                    // Row(
+                                    //   children: [
+                                    //     // First Container with single card view
+                                    //     Expanded(
+                                    //       child: Container(
+                                    //         height: MediaQuery.of(context).size.height / 10, // Match height with the first container
+                                    //         child: Column(
+                                    //           mainAxisAlignment: MainAxisAlignment.spaceEvenly,
+                                    //           children: [
+                                    //             Expanded(
+                                    //               child: Container(
+                                    //                 child: _customcontainernewCard(
+                                    //                   imageUrl: "bags-orders.svg",
+                                    //                   item: "Group Summary Report ",
+                                    //                   item1: "View Group Summary Report ",
+                                    //                   color: Color(0xFFF8dac2),
+                                    //                   color_1: Color(0xFFec9d62),
+                                    //                   textcolor: Color(0xFFe78337),
+                                    //                   onTap: () {
+                                    //                     Navigator.push(
+                                    //                       context,
+                                    //                       MaterialPageRoute(builder: (context) => StateSelectionScreen()),
+                                    //                     );
+                                    //                   },
+                                    //                 ),
+                                    //               ),
+                                    //             ),
+                                    //           ],
+                                    //         ),
+                                    //       ),
+                                    //     ),
+                                    //     // Second Container divided into two equal-sized containers
+                                    //   ],
+                                    // ),
                                   ],
                                 ),
                               ),

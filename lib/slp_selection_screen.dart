@@ -6,6 +6,8 @@ import 'package:srikarbiotech/HomeScreen.dart';
 import 'package:srikarbiotech/Model/slp_selection_model.dart';
 import 'package:http/http.dart' as http;
 
+import 'DealerSummaryScreen.dart';
+
 class SlpSelection extends StatefulWidget {
   final String fromDateText;
   final String toDateText;
@@ -269,7 +271,16 @@ class _SlpSelectionState extends State<SlpSelection> {
               setState(() {
                 selectedCardIndex = index;
               });
-
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => DealerSummaryScreen(
+                      fromDateText: '',
+                      toDateText: '',
+                    slpName:'',
+                    stateName: '',
+                  ),
+                ),
+              );
               // navigate to slp selection screen
               // Navigator.of(context).push(
               //   MaterialPageRoute(

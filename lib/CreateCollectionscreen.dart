@@ -1676,6 +1676,20 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
         initialDate: initialDate,
         firstDate: currentDate,
         lastDate: DateTime(2101),
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: ColorScheme.light(
+                primary: Color(0xFFe78337), // Change the primary color here
+                onPrimary: Colors.white,
+                // onSurface: Colors.blue,// Change the text color here
+              ),
+              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+            ),
+            child: child!,
+          );
+        },
+
       );
 
       if (picked != null) {
@@ -1721,6 +1735,19 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
         initialDate: initialDate,
         firstDate: currentDate,
         lastDate: DateTime(2101),
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: ColorScheme.light(
+                primary: Color(0xFFe78337), // Change the primary color here
+                onPrimary: Colors.white,
+                // onSurface: Colors.blue,// Change the text color here
+              ),
+              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+            ),
+            child: child!,
+          );
+        },
       );
 
       if (picked != null) {

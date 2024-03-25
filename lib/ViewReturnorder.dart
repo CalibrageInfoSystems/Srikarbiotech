@@ -505,6 +505,19 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         firstDate: selectedfromdateDate,
         lastDate: DateTime(2101),
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: ColorScheme.light(
+                primary: Color(0xFFe78337), // Change the primary color here
+                onPrimary: Colors.white,
+                // onSurface: Colors.blue,// Change the text color here
+              ),
+              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+            ),
+            child: child!,
+          );
+        },
       );
 
       if (picked != null) {
@@ -619,6 +632,19 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         firstDate: DateTime(2000),
         lastDate: currentDate,
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: ColorScheme.light(
+                primary: Color(0xFFe78337), // Change the primary color here
+                onPrimary: Colors.white,
+                // onSurface: Colors.blue,// Change the text color here
+              ),
+              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+            ),
+            child: child!,
+          );
+        },
       );
 
       if (picked != null) {
