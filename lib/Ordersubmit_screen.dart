@@ -83,7 +83,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
   ValueNotifier<double> totalGstAmountNotifier = ValueNotifier<double>(0.0);
   ValueNotifier<double> totalAmountWithGst = ValueNotifier<double>(0.0);
   ValueNotifier<double> totalSumIncludingGst = ValueNotifier<double>(0.0);
-
+  bool _isButtonDisabled = false;
   // double totalSumIncludingGst = 0.0;
   @override
   initState() {
@@ -645,61 +645,115 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
               ],
             ),
           ),
+            bottomNavigationBar: Container(
+              height: 60,
+              margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+              padding: const EdgeInsets.all(8.0),
+              child: Row(
+                children: [
+                  Expanded(
+                    child: SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: 45.0,
+                      child: Center(
+                        child: GestureDetector(
+                          onTap: _isButtonDisabled
+                              ? null // If button is disabled, onTap will be null
+                              : () {
+                            if (globalCartLength > 0) {
+                              CommonUtils.checkInternetConnectivity().then(
+                                    (isConnected) {
+                                  if (isConnected) {
 
-          bottomNavigationBar: Container(
-            height: 60,
-            margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-            padding: const EdgeInsets.all(8.0),
-            child: Row(
-              children: [
-                Expanded(
-                  child: InkWell(
-                    onTap: () {
-                      if (globalCartLength > 0) {
-                        CommonUtils.checkInternetConnectivity().then(
-                          (isConnected) {
-                            if (isConnected) {
-                              AddOrder();
-                              print('The Internet Is Connected');
+                                    AddOrder();
+                                    print('The Internet Is Connected');
+                                  } else {
+                                    CommonUtils.showCustomToastMessageLong(
+                                        'Please check your internet connection', context, 1, 4);
+                                    print('The Internet Is not Connected');
+                                  }
+                                },
+                              );
                             } else {
-                              CommonUtils.showCustomToastMessageLong('Please check your internet  connection', context, 1, 4);
-                              print('The Internet Is not  Connected');
+                              CommonUtils.showCustomToastMessageLong(
+                                  'Please Add Atleast One Product', context, 1, 4);
                             }
                           },
-                        );
-
-                        // Add logic for the download button
-                      } else {
-                        CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
-                      }
-                      print(' button clicked');
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.all(10),
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(10),
-                        color: Color(0xFFe78337),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'Place Your Order',
-                          style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 18,
-                            fontWeight: FontWeight.w700, // Set the font weight to bold
-                            fontFamily: 'Roboto', // Set the font family to Roboto
+                          child: Container(
+                            width: MediaQuery.of(context).size.width,
+                            height: 45.0,
+                            decoration: BoxDecoration(
+                              borderRadius: BorderRadius.circular(6.0),
+                              color: _isButtonDisabled ? Colors.grey : const Color(0xFFe78337),
+                            ),
+                            child: const Center(
+                              child: Text(
+                                'Place Your Order',
+                                style: CommonUtils.Buttonstyle,
+                              ),
+                            ),
                           ),
                         ),
                       ),
                     ),
                   ),
-                ),
-              ],
-            ),
-          ),
+                ],
+              ),
+            )));
+          // bottomNavigationBar: Container(
+          //   height: 60,
+          //   margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          //   padding: const EdgeInsets.all(8.0),
+          //   child: Row(
+          //     children: [
+          //       Expanded(
+          //         child: InkWell(
+          //           onTap: () {
+          //             if (globalCartLength > 0) {
+          //               CommonUtils.checkInternetConnectivity().then(
+          //                 (isConnected) {
+          //                   if (isConnected) {
+          //                     AddOrder();
+          //                     print('The Internet Is Connected');
+          //                   } else {
+          //                     CommonUtils.showCustomToastMessageLong('Please check your internet  connection', context, 1, 4);
+          //                     print('The Internet Is not  Connected');
+          //                   }
+          //                 },
+          //               );
+          //
+          //               // Add logic for the download button
+          //             } else {
+          //               CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
+          //             }
+          //             print(' button clicked');
+          //           },
+          //           child: Container(
+          //             padding: const EdgeInsets.all(10),
+          //             decoration: BoxDecoration(
+          //               borderRadius: BorderRadius.circular(10),
+          //               color: Color(0xFFe78337),
+          //             ),
+          //             child: const Center(
+          //               child: Text(
+          //                 'Place Your Order',
+          //                 style: TextStyle(
+          //                   color: Colors.white,
+          //                   fontSize: 18,
+          //                   fontWeight: FontWeight.w700, // Set the font weight to bold
+          //                   fontFamily: 'Roboto', // Set the font family to Roboto
+          //                 ),
+          //               ),
+          //             ),
+          //           ),
+          //         ),
+          //       ),
+          //     ],
+          //   ),
+          // ),
 
           //    ),
-        ));
+
   }
 
   void AddOrder() async {
@@ -734,6 +788,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
         isValid = false;
         hasValidationFailed = true;
       }
+
       return {
         "Id": 1,
         "OrderId": 2,
@@ -816,6 +871,9 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
     };
     print(jsonEncode(orderData));
     if (isValid) {
+      setState(() {
+        _isButtonDisabled = true; // Disable the button
+      });
       try {
         final response = await http.post(
           Uri.parse(apiUrl),
@@ -845,6 +903,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
               ),
             );
           } else {
+            _isButtonDisabled = false;
             CommonUtils.showCustomToastMessageLong(responseData['endUserMessage'], context, 1, 4);
           }
           // clearCartItems();
@@ -852,11 +911,17 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
         } else {
           // Handle errors
           print('Error: ${response.reasonPhrase}');
+          setState(() {
+            _isButtonDisabled = false; // Disable the button
+          });
         }
       } catch (e) {
         // Handle exceptions
         print('Exception: $e');
       }
+    }
+    else{
+      _isButtonDisabled = false;
     }
   }
 

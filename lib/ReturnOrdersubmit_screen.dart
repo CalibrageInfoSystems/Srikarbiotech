@@ -119,6 +119,8 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
   String LrDate1 = "";
   String LrDate2 = "";
   int currentIndex = 0;
+  bool _isButtonDisabled = false;
+
 // late String lrattachment, ReturnOrderReceipt, addlattchments;
   @override
   initState() {
@@ -688,61 +690,118 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
           ],
         ),
       ),
-      bottomNavigationBar: Container(
-        height: 60,
-        margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-        padding: const EdgeInsets.all(8.0),
-        child: Row(
-          children: [
-            Expanded(
-              child: SizedBox(
-                width: MediaQuery.of(context).size.width,
-                height: 45.0,
-                child: Center(
-                  child: GestureDetector(
-                    onTap: () {
-
-
-                      if (globalCartLength > 0) {
-                        CommonUtils.checkInternetConnectivity().then(
-                              (isConnected) {
-                            if (isConnected) {
-                              Addreturnorder();
-                              print('The Internet Is Connected');
-                            } else {
-                              CommonUtils.showCustomToastMessageLong(
-                                  'Please check your internet  connection', context, 1, 4);
-                              print('The Internet Is not  Connected');
-                            }
-                          },
-                        );
-
-                        // Add logic for the download button
-                      } else {
-                        CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
-                      }
-                    },
-                    child: Container(
-                      width: MediaQuery.of(context).size.width,
-                      height: 45.0,
-                      decoration: BoxDecoration(
-                        borderRadius: BorderRadius.circular(6.0),
-                        color: const Color(0xFFe78337),
-                      ),
-                      child: const Center(
-                        child: Text(
-                          'Place Your Return Order',
-                          style: CommonUtils.Buttonstyle,
+        bottomNavigationBar: Container(
+          height: 60,
+          margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+          padding: const EdgeInsets.all(8.0),
+          child: Row(
+            children: [
+              Expanded(
+                child: SizedBox(
+                  width: MediaQuery.of(context).size.width,
+                  height: 45.0,
+                  child: Center(
+                    child: GestureDetector(
+                      onTap: _isButtonDisabled
+                          ? null // If button is disabled, onTap will be null
+                          : () {
+                        if (globalCartLength > 0) {
+                          CommonUtils.checkInternetConnectivity().then(
+                                (isConnected) {
+                              if (isConnected) {
+                                // setState(() {
+                                //   _isButtonDisabled = true; // Disable the button
+                                // });
+                                Addreturnorder();
+                                print('The Internet Is Connected');
+                              } else {
+                                CommonUtils.showCustomToastMessageLong(
+                                    'Please check your internet connection', context, 1, 4);
+                                print('The Internet Is not Connected');
+                              }
+                            },
+                          );
+                        } else {
+                          CommonUtils.showCustomToastMessageLong(
+                              'Please Add Atleast One Product', context, 1, 4);
+                        }
+                      },
+                      child: Container(
+                        width: MediaQuery.of(context).size.width,
+                        height: 45.0,
+                        decoration: BoxDecoration(
+                          borderRadius: BorderRadius.circular(6.0),
+                          color: _isButtonDisabled ? Colors.grey : const Color(0xFFe78337),
+                        ),
+                        child: const Center(
+                          child: Text(
+                            'Place Your Return Order',
+                            style: CommonUtils.Buttonstyle,
+                          ),
                         ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ),
-          ],
-        ),
-      ),
+            ],
+          ),
+        ));
+      // bottomNavigationBar: Container(
+      //   height: 60,
+      //   margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+      //   padding: const EdgeInsets.all(8.0),
+      //   child: Row(
+      //     children: [
+      //       Expanded(
+      //         child: SizedBox(
+      //           width: MediaQuery.of(context).size.width,
+      //           height: 45.0,
+      //           child: Center(
+      //             child: GestureDetector(
+      //               onTap: () {
+      //
+      //
+      //                 if (globalCartLength > 0) {
+      //                   CommonUtils.checkInternetConnectivity().then(
+      //                         (isConnected) {
+      //                       if (isConnected) {
+      //                         Addreturnorder();
+      //                         print('The Internet Is Connected');
+      //                       } else {
+      //                         CommonUtils.showCustomToastMessageLong(
+      //                             'Please check your internet  connection', context, 1, 4);
+      //                         print('The Internet Is not  Connected');
+      //                       }
+      //                     },
+      //                   );
+      //
+      //                   // Add logic for the download button
+      //                 } else {
+      //                   CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
+      //                 }
+      //               },
+      //               child: Container(
+      //                 width: MediaQuery.of(context).size.width,
+      //                 height: 45.0,
+      //                 decoration: BoxDecoration(
+      //                   borderRadius: BorderRadius.circular(6.0),
+      //                   color: const Color(0xFFe78337),
+      //                 ),
+      //                 child: const Center(
+      //                   child: Text(
+      //                     'Place Your Return Order',
+      //                     style: CommonUtils.Buttonstyle,
+      //                   ),
+      //                 ),
+      //               ),
+      //             ),
+      //           ),
+      //         ),
+      //       ),
+      //     ],
+      //   ),
+      // ),
       // bottomNavigationBar: InkWell(
       //   onTap: () {
       //     // ScaffoldMessenger.of(context).showSnackBar(
@@ -795,7 +854,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       //   ),
       // ),
       //    ),
-    );
+
   }
 
   Future<void> getshareddata() async {
@@ -865,11 +924,8 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
 
   void Addreturnorder() async {
     DateTime currentDate = DateTime.now();
-    //
-    // Format the date as 'yyyy-MM-dd'
     String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
     print('Formatted Date: $formattedcurrentDate');
-    //const String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/ReturnOrder/AddReturnOrder';
     String apiUrl = baseUrl + AddReturnorder;
     print('AddReturnorderApi: $apiUrl');
     bool isValid = true;
@@ -896,6 +952,17 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         "TotalPrice": totalPrice
       };
     }).toList();
+
+    if (hasValidationFailed) {
+
+      // If any validation failed, do not proceed with submission
+      return;
+    }
+    else{
+      setState(() {
+        _isButtonDisabled = true; // Disable the button
+      });
+    }
 
     Map<String, dynamic> orderData = {
       "ReturnOrderItemXrefList": returnorderItemList,
@@ -956,8 +1023,6 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         print(responseData);
         String returnOrderNumber = responseData['response']['returnOrderNumber'];
 
-// Navigate to the next screen while passing the returnOrderNumber
-
         final cartProvider = context.read<CartProvider>();
 
         clearCartData(cartProvider);
@@ -969,8 +1034,12 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
           ),
         );
       } else {
+
         // Handle errors
         print('Error: ${response.reasonPhrase}');
+        setState(() {
+          _isButtonDisabled = false; // Disable the button
+        });
       }
     } catch (e) {
       // Handle exceptions
