@@ -43,6 +43,7 @@ class OrderItemXrefType {
   int? orderQty;
   double? price;
   String? ugpName;
+  String? ugpEntry;
   int? numInSale;
   String? salUnitMsr;
   double? gst;
@@ -60,6 +61,7 @@ class OrderItemXrefType {
     required this.orderQty,
     required this.price,
     required this.ugpName,
+    required this.ugpEntry,
     required this.numInSale,
     required this.salUnitMsr,
     required this.gst,
@@ -80,6 +82,7 @@ class OrderItemXrefType {
       orderQty: json?['OrderQty'],
       price: json?['Price'],
       ugpName: json?['UgpName'],
+      ugpEntry:json?['ugpEntry'],
       numInSale: json?['NumInSale'],
       salUnitMsr: json?['SalUnitMsr'],
       gst: json?['GST'],
@@ -101,6 +104,7 @@ class OrderItemXrefType {
       'OrderQty': orderQty,
       'Price': price,
       'UgpName': ugpName,
+      "ugpEntry":ugpEntry,
       'NumInSale': numInSale,
       'SalUnitMsr': salUnitMsr,
       'GST': gst,

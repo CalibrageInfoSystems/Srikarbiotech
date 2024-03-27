@@ -11,8 +11,7 @@ class ViewOrdersProvider extends ChangeNotifier {
   String? apiPartyCode;
   int? apiStatusId;
   int selectedStatusIndex = 0;
-  String fromDate = DateFormat('dd-MM-yyyy')
-      .format(DateTime.now().subtract(const Duration(days: 7)));
+  String fromDate = DateFormat('dd-MM-yyyy').format(DateTime.now().subtract(const Duration(days: 7)));
   String toDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
   bool filterIconStatus = false;
 

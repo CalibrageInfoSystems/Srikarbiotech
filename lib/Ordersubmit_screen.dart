@@ -783,6 +783,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
       print('Num In Sale: $numInSale');
       print('Total Price: $totalPrice');
       print('Total Price With GST: $totalPriceWithGST');
+      print('cartItem.ugpEntry: ${cartItem.ugpEntry}');
       if (isValid && orderQty == 0.0) {
         CommonUtils.showCustomToastMessageLong('Please Add Quantity to Selected product(s)', context, 1, 4);
         isValid = false;
@@ -807,6 +808,7 @@ class Order_submit_screen extends State<Ordersubmit_screen> {
         "TotalPriceWithGST": totalPriceWithGST,
         "GSTPrice": totalgstPrice,
         "TaxCode": "",
+        "UgpEntry":cartItem.ugpEntry,
 
         // Map other cart item properties to corresponding fields
         // ...

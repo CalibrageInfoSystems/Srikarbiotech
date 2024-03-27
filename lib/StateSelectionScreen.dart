@@ -35,45 +35,38 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   void initState() {
     super.initState();
     _prepopulateFromDate(fromDateController);
-    toDateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    // fromdate = fromDateText;
-    // print('fromdate$fromdate');
-    todate = toDateController.text;
-    print('todate$todate');
 
-    apiData = getStateData(fromDateText, todate, 1);
+    print('todate$todate');
+    String fromDate = DateFormat('dd-MM-yyyy').format(DateTime.now().subtract(const Duration(days: 30)));
+    fromDateController.text = fromDate;
+    String toDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    toDateController.text = toDate;
+    apiData = getStateData(fromDate, toDate, 1);
 
     // _selectfromDate(context, fromDateController);
   }
 
   Future<List<StateListResult>> getStateData(String fromDateText, String todate, int id) async {
     try {
-      // print('fromDateText:insidemethod: $fromDateText');
-      //
-      // DateTime dateTime = DateTime.parse(fromDateText);
-      // String formattedfromDate = DateFormat('yyyy-MM-dd').format(dateTime);
-      //
-      // print('formattedfromDate$formattedfromDate');
-      // DateTime datetoTime = DateTime.parse(todate);
-      // String formattedtoDate = DateFormat('yyyy-MM-dd').format(datetoTime);
-      // print('formattedtoDate$formattedtoDate');
-      // todate = DateFormat('yyyy-MM-dd').format(DateTime.now());
-      // print('todate$todate');
+
       print('fromDateText: $fromDateText');
       print('todate: $todate');
 
       if (fromDateText.isEmpty || todate.isEmpty) {
         throw Exception('Date strings are empty');
       }
+      DateTime parsedDate = DateFormat('dd-MM-yyyy').parse(fromDateText);
+      String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+      DateTime parsedDate2 = DateFormat('dd-MM-yyyy').parse(todate);
+      String formattedtoDate = DateFormat('yyyy-MM-dd').format(parsedDate2);
+      print('formattedDate: $formattedDate');
+      print('formattedtoDate: $formattedtoDate');
 
-      DateTime dateTime = DateTime.parse(fromDateText);
-      String formattedfromDate = DateFormat('yyyy-MM-dd').format(dateTime);
 
-      DateTime datetoTime = DateTime.parse(todate);
-      String formattedtoDate = DateFormat('yyyy-MM-dd').format(datetoTime);
+
       String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetGroupSummaryReportByState';
       print('todate:insidemethod: $todate');
-      final requestBody = {"FromDate": "$formattedfromDate", "ToDate": "$formattedtoDate", "CompanyId": id};
+      final requestBody = {"FromDate": formattedDate, "ToDate": formattedtoDate , "CompanyId": id};
       print('StateDataapi:$apiUrl');
       debugPrint('____state selection__${jsonEncode(requestBody)}');
       final jsonResponse = await http.post(
@@ -130,7 +123,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                       const SizedBox(
                         height: 10,
                       ),
-                      _stateSection(data),
+                _stateSection(data),
                     ],
                   ),
                 );
@@ -244,7 +237,14 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
             width: 80,
             padding: const EdgeInsets.only(top: 22.0),
             child: GestureDetector(
-              onTap: () {},
+              onTap: () {
+                String fromDate = DateFormat('dd-MM-yyyy').format(DateTime.now().subtract(const Duration(days: 30)));
+                fromDateController.text = fromDate;
+                String toDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
+                toDateController.text = toDate;
+                apiData = getStateData(fromDate, toDate, 1);
+
+              },
               child: Container(
                 padding: const EdgeInsets.only(left: 10, right: 10.0),
                 height: 40.0,
