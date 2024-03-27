@@ -1,10 +1,8 @@
 import 'dart:convert';
 
-DealerSummaryModel dealerSummaryModelFromJson(String str) =>
-    DealerSummaryModel.fromJson(json.decode(str));
+DealerSummaryModel dealerSummaryModelFromJson(String str) => DealerSummaryModel.fromJson(json.decode(str));
 
-String dealerSummaryModelToJson(DealerSummaryModel data) =>
-    json.encode(data.toJson());
+String dealerSummaryModelToJson(DealerSummaryModel data) => json.encode(data.toJson());
 
 class DealerSummaryModel {
   Response response;
@@ -23,14 +21,12 @@ class DealerSummaryModel {
     required this.exception,
   });
 
-  factory DealerSummaryModel.fromJson(Map<String, dynamic> json) =>
-      DealerSummaryModel(
+  factory DealerSummaryModel.fromJson(Map<String, dynamic> json) => DealerSummaryModel(
         response: Response.fromJson(json["response"]),
         isSuccess: json["isSuccess"],
         endUserMessage: json["endUserMessage"],
         links: json["links"],
-        validationErrors:
-            List<dynamic>.from(json["validationErrors"].map((x) => x)),
+        validationErrors: List<dynamic>.from(json["validationErrors"].map((x) => x)),
         exception: json["exception"],
       );
 
@@ -56,16 +52,13 @@ class Response {
   });
 
   factory Response.fromJson(Map<String, dynamic> json) => Response(
-        dealerSummarylist: List<DealerSummarylist>.from(
-            json["dealerSummarylist"]
-                .map((x) => DealerSummarylist.fromJson(x))),
+        dealerSummarylist: List<DealerSummarylist>.from(json["dealerSummarylist"].map((x) => DealerSummarylist.fromJson(x))),
         count: json["count"],
         affectedRecords: json["affectedRecords"],
       );
 
   Map<String, dynamic> toJson() => {
-        "dealerSummarylist":
-            List<dynamic>.from(dealerSummarylist.map((x) => x.toJson())),
+        "dealerSummarylist": List<dynamic>.from(dealerSummarylist.map((x) => x.toJson())),
         "count": count,
         "affectedRecords": affectedRecords,
       };
@@ -76,12 +69,12 @@ class DealerSummarylist {
   String? cardName;
   int? slpCode;
   String? slpName;
-  int? ob;
-  int? sales;
-  int? returns;
-  int? receipts;
-  int? others;
-  int? closing;
+  double? ob;
+  double? sales;
+  double? returns;
+  double? receipts;
+  double? others;
+  double? closing;
 
   DealerSummarylist({
     required this.cardCode,
@@ -96,8 +89,7 @@ class DealerSummarylist {
     required this.closing,
   });
 
-  factory DealerSummarylist.fromJson(Map<String, dynamic> json) =>
-      DealerSummarylist(
+  factory DealerSummarylist.fromJson(Map<String, dynamic> json) => DealerSummarylist(
         cardCode: json["cardCode"],
         cardName: json["cardName"],
         slpCode: json["slpCode"],

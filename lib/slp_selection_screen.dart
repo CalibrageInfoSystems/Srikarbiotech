@@ -12,11 +12,7 @@ class SlpSelection extends StatefulWidget {
   final String fromDateText;
   final String toDateText;
   final String state;
-  const SlpSelection(
-      {super.key,
-      required this.fromDateText,
-      required this.toDateText,
-      required this.state});
+  const SlpSelection({super.key, required this.fromDateText, required this.toDateText, required this.state});
 
   @override
   State<SlpSelection> createState() => _SlpSelectionState();
@@ -35,14 +31,8 @@ class _SlpSelectionState extends State<SlpSelection> {
 
   Future<List<SlpListResult>> getSlpData() async {
     try {
-      String apiUrl =
-          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetGroupSummaryReportBySlp';
-      final requestBody = {
-        "FromDate": "2024-03-20",
-        "ToDate": "2024-03-22",
-        "State": "WB",
-        "CompanyId": 1
-      };
+      String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetGroupSummaryReportBySlp';
+      final requestBody = {"FromDate": "2024-03-20", "ToDate": "2024-03-22", "State": "WB", "CompanyId": 1};
 
       debugPrint('slp selection__${jsonEncode(requestBody)}');
       final jsonResponse = await http.post(
@@ -58,8 +48,7 @@ class _SlpSelectionState extends State<SlpSelection> {
 
         if (data['response']['listResult'] != null) {
           final List<dynamic> listResult = data['response']['listResult'];
-          List<SlpListResult> slpResult =
-              listResult.map((house) => SlpListResult.fromJson(house)).toList();
+          List<SlpListResult> slpResult = listResult.map((house) => SlpListResult.fromJson(house)).toList();
           return slpResult;
         } else {
           throw Exception('SLP list is null');
@@ -154,9 +143,7 @@ class _SlpSelectionState extends State<SlpSelection> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  (route) => false);
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomeScreen()), (route) => false);
             },
             child: Image.asset(
               'assets/srikar-home-icon.png',
@@ -274,9 +261,9 @@ class _SlpSelectionState extends State<SlpSelection> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => DealerSummaryScreen(
-                      fromDateText: '',
-                      toDateText: '',
-                    slpName:'',
+                    fromDateText: '',
+                    toDateText: '',
+                    slpName: '',
                     stateName: '',
                   ),
                 ),
@@ -290,14 +277,11 @@ class _SlpSelectionState extends State<SlpSelection> {
             },
             child: Card(
               elevation: 0,
-              color:
-                  selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
+              color: selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5.0),
                 side: BorderSide(
-                  color: selectedCardIndex == index
-                      ? const Color(0xFFe98d47)
-                      : Colors.grey,
+                  color: selectedCardIndex == index ? const Color(0xFFe98d47) : Colors.grey,
                   width: 1,
                 ),
               ),
@@ -316,172 +300,381 @@ class _SlpSelectionState extends State<SlpSelection> {
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-
+                                // Expanded(
+                                //   child: Row(
+                                //     // mainAxisAlignment:
+                                //     //     MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       const Text(
+                                //         'Slp Name: ',
+                                //         style: CommonUtils.Mediumtext_12,
+                                //         overflow: TextOverflow.ellipsis,
+                                //       ),
+                                //       Text(
+                                //         data[index].slpName!,
+                                //         style: CommonUtils.Mediumtext_12_0,
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
                                 Expanded(
-                                  child: Row(
-                                    // mainAxisAlignment:
-                                    //     MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'SLP Name: ',
-                                        style: CommonUtils.Mediumtext_12,
-                                        overflow: TextOverflow.ellipsis,
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'Slp Name',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        data[index].slpName!,
-                                        style: CommonUtils.Mediumtext_12_0,
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
+                                            child: Text(
+                                              data[index].slpName!,
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ),
+                                    )
+                                  ],
+                                )),
                               ],
                             ),
 
                             const SizedBox(
-                              height: 5,
+                              height: 8,
                             ),
 
                             // row2
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
+                                // Expanded(
+                                //   child: Row(
+                                //     // mainAxisAlignment:
+                                //     //     MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       // const Text(
+                                //       //   'Slp Code: ',
+                                //       //   style: CommonUtils.Mediumtext_12,
+                                //       //   overflow: TextOverflow.ellipsis,
+                                //       // ),
+                                //       // Text(
+                                //       //   data[index].slpCode.toString(),
+                                //       //   style: CommonUtils.Mediumtext_12_0,
+                                //       // ),
+                                //
+                                //     ],
+                                //   ),
+                                // ),
                                 Expanded(
-                                  child: Row(
-                                    // mainAxisAlignment:
-                                    //     MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'SLP Code: ',
-                                        style: CommonUtils.Mediumtext_12,
-                                        overflow: TextOverflow.ellipsis,
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 1,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'Slp Code',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        data[index].slpCode.toString(),
-                                        style: CommonUtils.Mediumtext_12_0,
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
+                                            child: Text(
+                                              data[index].slpCode.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
-                                Expanded(
-                                  child: Row(
-                                    // mainAxisAlignment:
-                                    //     MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'OB: ',
-                                        style: CommonUtils.Mediumtext_12,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        data[index].ob.toString(),
-                                        style: CommonUtils.Mediumtext_12_0,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-
-
+                                    )
+                                  ],
+                                )),
+                                // const SizedBox(
+                                //   width: 10,
+                                // ),
+                                // Expanded(
+                                //   child: Row(
+                                //     // mainAxisAlignment:
+                                //     //     MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       const Text(
+                                //         'OB: ',
+                                //         style: CommonUtils.Mediumtext_12,
+                                //         overflow: TextOverflow.ellipsis,
+                                //       ),
+                                //       Text(
+                                //         data[index].ob.toString(),
+                                //         style: CommonUtils.Mediumtext_12_0,
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
                               ],
                             ),
 
-                            const SizedBox(
-                              height: 5,
+                            SizedBox(
+                              height: 8,
                             ),
-
-                            // row3
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
-                                  child: Row(
-                                    // mainAxisAlignment:
-                                    //     MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'SalesReturns: ',
-                                        style: CommonUtils.Mediumtext_12,
-                                        overflow: TextOverflow.ellipsis,
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'OB',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        data[index].sales.toString(),
-                                        style: CommonUtils.Mediumtext_12_0,
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                            child: Text(
+                                              data[index].ob.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
+                                    )
+                                  ],
+                                )),
                                 Expanded(
-                                  child: Row(
-                                    // mainAxisAlignment:
-                                    //     MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'Receipts: ',
-                                        style: CommonUtils.Mediumtext_12,
-                                        overflow: TextOverflow.ellipsis,
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'Sales',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        data[index].receipts.toString(),
-                                        style: CommonUtils.Mediumtext_12_0,
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              data[index].sales.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ),
-
-
+                                    )
+                                  ],
+                                )),
                               ],
                             ),
-                            const SizedBox(
-                              height: 5,
+
+                            SizedBox(
+                              height: 8,
                             ),
                             // row4
                             Row(
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
                                 Expanded(
-                                  child: Row(
-                                    // mainAxisAlignment:
-                                    //     MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'Others: ',
-                                        style: CommonUtils.Mediumtext_12,
-                                        overflow: TextOverflow.ellipsis,
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'Returns',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        data[index].others.toString(),
-                                        style: CommonUtils.Mediumtext_12_0,
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              data[index].returns.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ),
-                                const SizedBox(
-                                  width: 10,
-                                ),
+                                    )
+                                  ],
+                                )),
                                 Expanded(
-                                  child: Row(
-                                    // mainAxisAlignment:
-                                    //     MainAxisAlignment.spaceBetween,
-                                    children: [
-                                      const Text(
-                                        'Closing: ',
-                                        style: CommonUtils.Mediumtext_12,
-                                        overflow: TextOverflow.ellipsis,
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'Receipts',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                      Text(
-                                        data[index].closing.toString(),
-                                        style: CommonUtils.Mediumtext_12_0,
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              data[index].receipts.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
                                       ),
-                                    ],
-                                  ),
-                                ),
+                                    )
+                                  ],
+                                )),
+                              ],
+                            ),
 
-
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            // row5
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'Others',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              data[index].others.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
+                                Expanded(
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'Closing',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              data[index].closing.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                               ],
                             ),
                           ],
@@ -512,7 +705,7 @@ class _SlpSelectionState extends State<SlpSelection> {
         height: 40, // Adjust height as needed
         child: FloatingActionButton(
           onPressed: () {
-          //  _downloadFile(context);
+            //  _downloadFile(context);
             // Add your download functionality here
           },
           backgroundColor: buttonColor,

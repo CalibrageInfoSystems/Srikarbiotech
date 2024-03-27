@@ -27,24 +27,54 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   DateTime? selectedToDate;
   String fromDateText = 'From date';
   String toDateText = 'To date';
-  late Future<List<StateListResult>> apiData;
 
+  String todate = '';
+  late Future<List<StateListResult>> apiData;
+  DateTime selectedDate = DateTime.now();
   @override
   void initState() {
     super.initState();
-    apiData = getStateData();
+    _prepopulateFromDate(fromDateController);
+    toDateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
+    // fromdate = fromDateText;
+    // print('fromdate$fromdate');
+    todate = toDateController.text;
+    print('todate$todate');
+
+    apiData = getStateData(fromDateText, todate, 1);
+
+    // _selectfromDate(context, fromDateController);
   }
 
-  Future<List<StateListResult>> getStateData() async {
+  Future<List<StateListResult>> getStateData(String fromDateText, String todate, int id) async {
     try {
-      String apiUrl =
-          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetGroupSummaryReportByState';
-      final requestBody = {
-        "FromDate": "2024-03-20",
-        "ToDate": "2024-03-22",
-        "CompanyId": 1
-      };
+      // print('fromDateText:insidemethod: $fromDateText');
+      //
+      // DateTime dateTime = DateTime.parse(fromDateText);
+      // String formattedfromDate = DateFormat('yyyy-MM-dd').format(dateTime);
+      //
+      // print('formattedfromDate$formattedfromDate');
+      // DateTime datetoTime = DateTime.parse(todate);
+      // String formattedtoDate = DateFormat('yyyy-MM-dd').format(datetoTime);
+      // print('formattedtoDate$formattedtoDate');
+      // todate = DateFormat('yyyy-MM-dd').format(DateTime.now());
+      // print('todate$todate');
+      print('fromDateText: $fromDateText');
+      print('todate: $todate');
 
+      if (fromDateText.isEmpty || todate.isEmpty) {
+        throw Exception('Date strings are empty');
+      }
+
+      DateTime dateTime = DateTime.parse(fromDateText);
+      String formattedfromDate = DateFormat('yyyy-MM-dd').format(dateTime);
+
+      DateTime datetoTime = DateTime.parse(todate);
+      String formattedtoDate = DateFormat('yyyy-MM-dd').format(datetoTime);
+      String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetGroupSummaryReportByState';
+      print('todate:insidemethod: $todate');
+      final requestBody = {"FromDate": "$formattedfromDate", "ToDate": "$formattedtoDate", "CompanyId": id};
+      print('StateDataapi:$apiUrl');
       debugPrint('____state selection__${jsonEncode(requestBody)}');
       final jsonResponse = await http.post(
         Uri.parse(apiUrl),
@@ -53,15 +83,15 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
           'Content-Type': 'application/json',
         },
       );
+      print('responsestate:${jsonResponse}');
 
       if (jsonResponse.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(jsonResponse.body);
+        print('data:${data}');
 
         if (data['response']['listResult'] != null) {
           final List<dynamic> listResult = data['response']['listResult'];
-          List<StateListResult> stateResult = listResult
-              .map((house) => StateListResult.fromJson(house))
-              .toList();
+          List<StateListResult> stateResult = listResult.map((house) => StateListResult.fromJson(house)).toList();
           return stateResult;
         } else {
           throw Exception('State list is null');
@@ -70,6 +100,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         throw Exception('Api failed');
       }
     } catch (e) {
+      print('errorfromapi:$e');
       throw Exception('Catch: Api got failed');
     }
   }
@@ -156,9 +187,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                      (route) => false);
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomeScreen()), (route) => false);
             },
             child: Image.asset(
               'assets/srikar-home-icon.png',
@@ -180,27 +209,44 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
       ),
       child: Row(
         children: [
-          Expanded(
-            child: dateField(
-              context,
-              fromDateText,
-                  () => _selectfromDate(context),
-            ),
+          buildDateInput(
+            context,
+            'FromDate *',
+            fromDateController,
+            () => _selectfromDate(context, fromDateController),
           ),
-          const SizedBox(width: 15),
-          Expanded(
-            child: dateField(
-              context,
-              toDateText,
-                  () => _selectDate(context),
-            ),
+
+          // Expanded(
+          //   child: dateField(
+          //     context,
+          //     fromDateText,
+          //     () => _selectfromDate(context, fromDateController),
+          //   ),
+          // ),
+          SizedBox(width: 15),
+          buildDateInput(
+            context,
+            'ToDate *',
+            toDateController,
+            () => _selectDate(context, toDateController),
           ),
-          const SizedBox(width: 15),
-          Expanded(
+          // Expanded(
+          //   child: dateField(
+          //     context,
+          //     toDateText,
+          //     () => _selectDate(context),
+          //   ),
+          // ),
+          SizedBox(
+            width: 15,
+          ),
+          Container(
+            width: 80,
+            padding: const EdgeInsets.only(top: 22.0),
             child: GestureDetector(
               onTap: () {},
               child: Container(
-                padding: const EdgeInsets.all(10),
+                padding: const EdgeInsets.only(left: 10, right: 10.0),
                 height: 40.0,
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(6.0),
@@ -208,7 +254,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                 ),
                 child: const Center(
                   child: Text(
-                    'Submit',
+                    'Search',
                     style: CommonUtils.Buttonstyle,
                   ),
                 ),
@@ -220,234 +266,461 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
     );
   }
 
+  // Future<void> _selectDate(
+  //   BuildContext context,
+  //   TextEditingController controller,
+  // ) async {
+  //   DateTime currentDate = DateTime.now();
+  //
+  //   DateTime initialDate = selectedDate ?? currentDate;
+  //   // if (controller.text.isNotEmpty) {
+  //   //   try {
+  //   //     initialDate = DateTime.parse(controller.text);
+  //   //   } catch (e) {
+  //   //     // Handle the case where the current text is not a valid date format
+  //   //     print("Invalid date format: $e");
+  //   //     initialDate = currentDate;
+  //   //   }
+  //   // } else {
+  //   //   initialDate = currentDate;
+  //   // }
+  //
+  //   try {
+  //     DateTime? picked = await showDatePicker(
+  //       context: context,
+  //       initialEntryMode: DatePickerEntryMode.calendarOnly,
+  //       initialDate: initialDate,
+  //       firstDate: DateTime(1900), // Set the first selectable date
+  //       lastDate: currentDate, // Set the last selectable date to current date
+  //       builder: (BuildContext context, Widget? child) {
+  //         return Theme(
+  //           data: ThemeData.light().copyWith(
+  //             colorScheme: ColorScheme.light(
+  //               primary: Color(0xFFe78337), // Change the primary color here
+  //               onPrimary: Colors.white,
+  //               // onSurface: Colors.blue,// Change the text color here
+  //             ),
+  //             dialogBackgroundColor: Colors.white, // Change the dialog background color here
+  //           ),
+  //           child: child!,
+  //         );
+  //       },
+  //     );
+  //
+  //     if (picked != null) {
+  //       String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
+  //       controller.text = formattedDate;
+  //
+  //       // Save selected dates as DateTime objects
+  //       selectedDate = picked;
+  //       print("Selected Date: $selectedDate");
+  //
+  //       // Print formatted date
+  //       print("Selected Date: ${DateFormat('yyyy-MM-dd').format(picked)}");
+  //     }
+  //   } catch (e) {
+  //     print("Error selecting date: $e");
+  //     // Handle the error, e.g., show a message to the user or log it.
+  //   }
+  // }
+  Future<void> _selectDate(
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
+    DateTime currentDate = DateTime.now();
+    DateTime thirtyDaysAgo = currentDate.subtract(Duration(days: 30));
+
+    DateTime initialDate = selectedDate ?? currentDate;
+
+    try {
+      DateTime? picked = await showDatePicker(
+        context: context,
+        initialEntryMode: DatePickerEntryMode.calendarOnly,
+        initialDate: initialDate,
+        firstDate: thirtyDaysAgo, // Set the first selectable date to 30 days ago
+        lastDate: currentDate, // Set the last selectable date to current date
+        builder: (BuildContext context, Widget? child) {
+          return Theme(
+            data: ThemeData.light().copyWith(
+              colorScheme: ColorScheme.light(
+                primary: Color(0xFFe78337), // Change the primary color here
+                onPrimary: Colors.white,
+                // onSurface: Colors.blue,// Change the text color here
+              ),
+              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+            ),
+            child: child!,
+          );
+        },
+      );
+
+      if (picked != null) {
+        String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
+        controller.text = formattedDate;
+
+        // Save selected dates as DateTime objects
+        selectedDate = picked;
+        print("Selected Date: $selectedDate");
+
+        // Print formatted date
+        print("Selected Date: ${DateFormat('yyyy-MM-dd').format(picked)}");
+      }
+    } catch (e) {
+      print("Error selecting date: $e");
+      // Handle the error, e.g., show a message to the user or log it.
+    }
+  }
+
   Widget _stateSection(List<StateListResult> data) {
     return Expanded(
         child: ListView.builder(
-          itemCount: data.length,
-          itemBuilder: (context, index) {
-            return SizedBox(
-              // margin: const EdgeInsets.symmetric(
-              //     horizontal: 16.0, vertical: 4.0),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedCardIndex = index;
-                  });
+      itemCount: data.length,
+      itemBuilder: (context, index) {
+        return SizedBox(
+          // margin: const EdgeInsets.symmetric(
+          //     horizontal: 16.0, vertical: 4.0),
+          child: GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedCardIndex = index;
+              });
 
-                  // navigate to slp selection screen
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => SlpSelection(
-                        fromDateText: fromDateText,
-                        toDateText: toDateText,
-                        state: data[index].state!,
-                      ),
-                    ),
-                  );
-                },
-                child: Card(
-                  elevation: 0,
-                  color:
-                  selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                    side: BorderSide(
-                      color: selectedCardIndex == index
-                          ? const Color(0xFFe98d47)
-                          : Colors.grey,
-                      width: 1,
-                    ),
-                  ),
-                  child: Container(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // row1
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        // mainAxisAlignment:
-                                        //     MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text(
-                                            'State: ',
-                                            style: CommonUtils.Mediumtext_12,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                            data[index].state!,
-                                            style: CommonUtils.Mediumtext_12_0,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        // mainAxisAlignment:
-                                        //     MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text(
-                                            'OB: ',
-                                            style: CommonUtils.Mediumtext_12,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                            data[index].ob.toString(),
-                                            style: CommonUtils.Mediumtext_12_0,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                const SizedBox(
-                                  height: 5,
-                                ),
-
-                                // row2
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        // mainAxisAlignment:
-                                        //     MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text(
-                                            'Sales: ',
-                                            style: CommonUtils.Mediumtext_12,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                            data[index].sales.toString(),
-                                            style: CommonUtils.Mediumtext_12_0,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        // mainAxisAlignment:
-                                        //     MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text(
-                                            'Returns: ',
-                                            style: CommonUtils.Mediumtext_12,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                            data[index].returns.toString(),
-                                            style: CommonUtils.Mediumtext_12_0,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-
-                                const SizedBox(
-                                  height: 5,
-                                ),
-
-                                // row3
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        // mainAxisAlignment:
-                                        //     MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text(
-                                            'Receipts: ',
-                                            style: CommonUtils.Mediumtext_12,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                            data[index].receipts.toString(),
-                                            style: CommonUtils.Mediumtext_12_0,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    const SizedBox(
-                                      width: 10,
-                                    ),
-                                    Expanded(
-                                      child: Row(
-                                        // mainAxisAlignment:
-                                        //     MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text(
-                                            'Others: ',
-                                            style: CommonUtils.Mediumtext_12,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                            data[index].others.toString(),
-                                            style: CommonUtils.Mediumtext_12_0,
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                  ],
-                                ),
-                                const SizedBox(
-                                  height: 5,
-                                ),
-                                // row4
-                                Row(
-                                  children: [
-                                    const Text(
-                                      'Closing: ',
-                                      style: CommonUtils.Mediumtext_12,
-                                      overflow: TextOverflow.ellipsis,
-                                    ),
-                                    Text(
-                                      data[index].closing.toString(),
-                                      style: CommonUtils.Mediumtext_12_0,
-                                    ),
-                                  ],
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                        const Icon(
-                          Icons.chevron_right,
-                          color: Colors.orange,
-                        ),
-                      ],
-                    ),
+              // navigate to slp selection screen
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SlpSelection(
+                    fromDateText: fromDateText,
+                    toDateText: toDateText,
+                    state: data[index].state!,
                   ),
                 ),
+              );
+            },
+            child: Card(
+              elevation: 0,
+              color: selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                side: BorderSide(
+                  color: selectedCardIndex == index ? const Color(0xFFe98d47) : Colors.grey,
+                  width: 1,
+                ),
               ),
-            );
-          },
-        ));
+              child: Container(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // row1
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Row(
+                                    // mainAxisAlignment:
+                                    //     MainAxisAlignment.spaceBetween,
+                                    children: [
+                                      const Text(
+                                        'State: ',
+                                        style: CommonUtils.Mediumtext_12,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        data[index].state!,
+                                        style: CommonUtils.Mediumtext_12_0,
+                                      ),
+                                    ],
+                                  ),
+                                ),
+                                // const SizedBox(
+                                //   width: 10,
+                                // ),
+                                // Expanded(
+                                //   child: Row(
+                                //     // mainAxisAlignment:
+                                //     //     MainAxisAlignment.spaceBetween,
+                                //     children: [
+                                //       const Text(
+                                //         'OB: ',
+                                //         style: CommonUtils.Mediumtext_12,
+                                //         overflow: TextOverflow.ellipsis,
+                                //       ),
+                                //       Text(
+                                //         data[index].ob.toString(),
+                                //         style: CommonUtils.Mediumtext_12_0,
+                                //       ),
+                                //     ],
+                                //   ),
+                                // ),
+                              ],
+                            ),
+                            SizedBox(
+                              height: 8,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'OB',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
+                                            child: Text(
+                                              data[index].ob.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
+                                Expanded(
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'Sales',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              data[index].sales.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
+                              ],
+                            ),
+
+                            SizedBox(
+                              height: 8,
+                            ),
+                            // row4
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'Returns',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              data[index].returns.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
+                                Expanded(
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'Receipts',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              data[index].receipts.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
+                              ],
+                            ),
+
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            // row5
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'Others',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              data[index].others.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
+                                Expanded(
+                                    child: Row(
+                                  children: [
+                                    Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          const Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              'Closing',
+                                              style: CommonUtils.Mediumtext_12,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment: CrossAxisAlignment.start,
+                                        children: [
+                                          Padding(
+                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                            child: Text(
+                                              data[index].closing.toString(),
+                                              style: CommonUtils.Mediumtext_12_0,
+                                            ),
+                                          ),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
+                              ],
+                            ),
+                          ],
+                        ),
+                      ),
+                    ),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: Colors.orange,
+                    ),
+                  ],
+                ),
+              ),
+            ),
+          ),
+        );
+      },
+    ));
   }
 
   Widget dateField(
-      BuildContext context,
-      String labelText,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String labelText,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -467,11 +740,11 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   static Widget buildDateInput(
-      BuildContext context,
-      String labelText,
-      TextEditingController controller,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String labelText,
+    TextEditingController controller,
+    VoidCallback onTap,
+  ) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -547,26 +820,96 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
     );
   }
 
-  Future<void> _selectfromDate(BuildContext context) async {
+  void _prepopulateFromDate(TextEditingController controller) {
+    // Calculate the date 30 days ago from the current date
     DateTime currentDate = DateTime.now();
-    DateTime initialDate = selectedFromDate ?? currentDate;
+    DateTime thirtyDaysAgo = currentDate.subtract(Duration(days: 30));
+
+    // Format the date as per your desired format
+    fromDateText = DateFormat('dd-MM-yyyy').format(thirtyDaysAgo);
+    print('fromDateText$fromDateText');
+    // Set the text in the controller
+    controller.text = fromDateText;
+  }
+
+  // Future<void> _selectfromDate(
+  //   BuildContext context,
+  //   TextEditingController controller,
+  // ) async {
+  //   DateTime currentDate = DateTime.now();
+  //   DateTime initialDate = selectedFromDate ?? currentDate;
+  //
+  //   // Calculate the date 30 days ago from the current date
+  //   DateTime thirtyDaysAgo = currentDate.subtract(Duration(days: 30));
+  //
+  //   try {
+  //     DateTime? picked = await showDatePicker(
+  //       context: context,
+  //       initialEntryMode: DatePickerEntryMode.calendarOnly,
+  //       initialDate: initialDate,
+  //       firstDate: thirtyDaysAgo, // Set the first selectable date to 30 days ago
+  //       lastDate: currentDate, // Set the last selectable date to the current date
+  //       builder: (BuildContext context, Widget? child) {
+  //         return Theme(
+  //           data: ThemeData.light().copyWith(
+  //             colorScheme: ColorScheme.light(
+  //               primary: Color(0xFFe78337), // Change the primary color here
+  //               onPrimary: Colors.white,
+  //               // onSurface: Colors.blue,// Change the text color here
+  //             ),
+  //             dialogBackgroundColor: Colors.white, // Change the dialog background color here
+  //           ),
+  //           child: child!,
+  //         );
+  //       },
+  //     );
+  //
+  //     if (picked != null) {
+  //       String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
+  //       setState(() {
+  //         fromDateText = formattedDate;
+  //         controller.text = fromDateText;
+  //       });
+  //
+  //       // Save selected dates as DateTime objects
+  //       selectedFromDate = picked;
+  //       print("Selected From Date: $selectedFromDate");
+  //
+  //       // Print formatted date
+  //       print("Selected To Date: ${DateFormat('yyyy-MM-dd').format(picked)}");
+  //     }
+  //   } catch (e) {
+  //     print("Error selecting date: $e");
+  //     // Handle the error, e.g., show a message to the user or log it.
+  //   }
+  // }
+  Future<void> _selectfromDate(
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
+    DateTime currentDate = DateTime.now();
+
+    // Calculate the date 30 days ago from the current date
+    DateTime thirtyDaysAgo = currentDate.subtract(Duration(days: 30));
+
+    // Use thirtyDaysAgo as the initialDate if selectedFromDate is null
+    DateTime initialDate = selectedFromDate ?? thirtyDaysAgo;
 
     try {
       DateTime? picked = await showDatePicker(
         context: context,
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: initialDate,
-        firstDate: DateTime(2000),
-        lastDate: DateTime(2101),
+        firstDate: DateTime(1900), // Set the first selectable date to a past date (e.g., January 1, 1900)
+        lastDate: currentDate, // Set the last selectable date to the current date
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.light().copyWith(
               colorScheme: ColorScheme.light(
                 primary: Color(0xFFe78337), // Change the primary color here
                 onPrimary: Colors.white,
-                // onSurface: Colors.blue,// Change the text color here
               ),
-              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+              dialogBackgroundColor: Colors.white,
             ),
             child: child!,
           );
@@ -577,6 +920,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         setState(() {
           fromDateText = formattedDate;
+          controller.text = fromDateText;
         });
 
         // Save selected dates as DateTime objects
@@ -592,74 +936,115 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
     }
   }
 
-  Future<void> _selectDate(
-      BuildContext context,
-      ) async {
-    DateTime currentDate = DateTime.now();
-    DateTime initialDate = selectedToDate ?? currentDate;
-    // if (controller.text.isNotEmpty) {
-    //   try {
-    //     initialDate = DateTime.parse(controller.text);
-    //   } catch (e) {
-    //     // Handle the case where the current text is not a valid date format
-    //     print("Invalid date format: $e");
-    //     initialDate = currentDate;
-    //   }
-    // } else {
-    //   initialDate = currentDate;
-    // }
-
-    try {
-      DateTime? picked = await showDatePicker(
-        context: context,
-        initialDatePickerMode: DatePickerMode.day, // Add this line
-        initialEntryMode: DatePickerEntryMode.calendarOnly,
-        initialDate: initialDate,
-        firstDate: DateTime(2000),
-        lastDate: DateTime(2101),
-        builder: (BuildContext context, Widget? child) {
-          return Theme(
-            data: ThemeData.light().copyWith(
-              colorScheme: ColorScheme.light(
-                primary: Color(0xFFe78337), // Change the primary color here
-                onPrimary: Colors.white,
-                // onSurface: Colors.blue,// Change the text color here
-              ),
-              dialogBackgroundColor: Colors.white, // Change the dialog background color here
-            ),
-            child: child!,
-          );
-        },
-      );
-
-      if (picked != null) {
-        String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
-        setState(() {
-          toDateText = formattedDate;
-        });
-
-        // Save selected dates as DateTime objects
-        selectedToDate = picked;
-        print("Selected to Date: $selectedToDate");
-
-        // Print formatted date
-        print("Selected To Date: ${DateFormat('yyyy-MM-dd').format(picked)}");
-      }
-    } catch (e) {
-      print("Error selecting date: $e");
-      // Handle the error, e.g., show a message to the user or log it.
-    }
-  }
+  // Future<void> _selectDate(
+  //   BuildContext context,
+  // ) async {
+  //   DateTime currentDate = DateTime.now();
+  //   DateTime initialDate = selectedToDate ?? currentDate;
+  //   // if (controller.text.isNotEmpty) {
+  //   //   try {
+  //   //     initialDate = DateTime.parse(controller.text);
+  //   //   } catch (e) {
+  //   //     // Handle the case where the current text is not a valid date format
+  //   //     print("Invalid date format: $e");
+  //   //     initialDate = currentDate;
+  //   //   }
+  //   // } else {
+  //   //   initialDate = currentDate;
+  //   // }
+  //
+  //   try {
+  //     DateTime? picked = await showDatePicker(
+  //       context: context,
+  //       initialDatePickerMode: DatePickerMode.day, // Add this line
+  //       initialEntryMode: DatePickerEntryMode.calendarOnly,
+  //       initialDate: initialDate,
+  //       firstDate: DateTime(2000),
+  //       lastDate: DateTime(2101),
+  //       builder: (BuildContext context, Widget? child) {
+  //         return Theme(
+  //           data: ThemeData.light().copyWith(
+  //             colorScheme: ColorScheme.light(
+  //               primary: Color(0xFFe78337), // Change the primary color here
+  //               onPrimary: Colors.white,
+  //               // onSurface: Colors.blue,// Change the text color here
+  //             ),
+  //             dialogBackgroundColor: Colors.white, // Change the dialog background color here
+  //           ),
+  //           child: child!,
+  //         );
+  //       },
+  //     );
+  //
+  //     if (picked != null) {
+  //       String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
+  //       setState(() {
+  //         toDateText = formattedDate;
+  //       });
+  //
+  //       // Save selected dates as DateTime objects
+  //       selectedToDate = picked;
+  //       print("Selected to Date: $selectedToDate");
+  //
+  //       // Print formatted date
+  //       print("Selected To Date: ${DateFormat('yyyy-MM-dd').format(picked)}");
+  //     }
+  //   } catch (e) {
+  //     print("Error selecting date: $e");
+  //     // Handle the error, e.g., show a message to the user or log it.
+  //   }
+  // }
+  // Future<void> _selectDate(BuildContext context) async {
+  //   try {
+  //     DateTime currentDate = DateTime.now(); // Get the current date here
+  //     DateTime? picked = await showDatePicker(
+  //       context: context,
+  //       initialDatePickerMode: DatePickerMode.day, // Add this line
+  //       initialEntryMode: DatePickerEntryMode.calendarOnly,
+  //       initialDate: currentDate, // Use current date as the initial date
+  //       firstDate: DateTime(2000),
+  //       lastDate: DateTime(2101),
+  //       builder: (BuildContext context, Widget? child) {
+  //         return Theme(
+  //           data: ThemeData.light().copyWith(
+  //             colorScheme: ColorScheme.light(
+  //               primary: Color(0xFFe78337), // Change the primary color here
+  //               onPrimary: Colors.white,
+  //               // onSurface: Colors.blue,// Change the text color here
+  //             ),
+  //             dialogBackgroundColor: Colors.white, // Change the dialog background color here
+  //           ),
+  //           child: child!,
+  //         );
+  //       },
+  //     );
+  //
+  //     if (picked != null) {
+  //       String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
+  //       setState(() {
+  //         toDateText = formattedDate;
+  //       });
+  //
+  //       // Save selected dates as DateTime objects
+  //       selectedToDate = picked;
+  //       print("Selected to Date: $selectedToDate");
+  //
+  //       // Print formatted date
+  //       print("Selected To Date: ${DateFormat('yyyy-MM-dd').format(picked)}");
+  //     }
+  //   } catch (e) {
+  //     print("Error selecting date: $e");
+  //     // Handle the error, e.g., show a message to the user or log it.
+  //   }
+  // }
 
   void _downloadFile(BuildContext context) async {
-    const url =
-        'https://file-examples.com/wp-content/storage/2017/02/file_example_XLS_10.xlsx';
+    const url = 'https://file-examples.com/wp-content/storage/2017/02/file_example_XLS_10.xlsx';
 
     final response = await http.get(Uri.parse(url));
 
     if (response.statusCode == 200) {
-      Directory downloadsDirectory =
-      Directory('/storage/emulated/0/Download/Srikar_Groups');
+      Directory downloadsDirectory = Directory('/storage/emulated/0/Download/Srikar_Groups');
       if (!downloadsDirectory.existsSync()) {
         downloadsDirectory.createSync(recursive: true);
       }
@@ -700,6 +1085,4 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
       ),
     );
   }
-
-
 }

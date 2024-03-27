@@ -11,12 +11,7 @@ class DealerSummaryScreen extends StatefulWidget {
   final String toDateText;
   final String stateName;
   final String slpName;
-  const DealerSummaryScreen(
-      {super.key,
-      required this.fromDateText,
-      required this.toDateText,
-      required this.stateName,
-      required this.slpName});
+  const DealerSummaryScreen({super.key, required this.fromDateText, required this.toDateText, required this.stateName, required this.slpName});
 
   @override
   State<DealerSummaryScreen> createState() => _DealerSummaryScreenState();
@@ -35,14 +30,8 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
 
   Future<List<DealerSummarylist>> getSlpData() async {
     try {
-      String apiUrl =
-          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetGroupSummaryReportByParty';
-      final requestBody = {
-        "FromDate": "2024-03-20",
-        "ToDate": "2024-03-22",
-        "SOName": "-No Sales Employee-",
-        "CompanyId": 1
-      };
+      String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetGroupSummaryReportByParty';
+      final requestBody = {"FromDate": "2024-03-20", "ToDate": "2024-03-22", "SOName": "-No Sales Employee-", "CompanyId": 1};
 
       debugPrint('slp selection__${jsonEncode(requestBody)}');
       final jsonResponse = await http.post(
@@ -54,13 +43,20 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
       );
 
       if (jsonResponse.statusCode == 200) {
+        // final Map<String, dynamic> data = json.decode(jsonResponse.body);
+        //
+        // if (data['response']['listResult'] != null) {
+        //   final List<dynamic> listResult = data['response']['listResult'];
+        //   List<DealerSummarylist> dealerSummarylist = listResult.map((house) => DealerSummarylist.fromJson(house)).toList();
+        //   return dealerSummarylist;
+        // } else {
+        //   throw Exception('SLP list is null');
+        // }
         final Map<String, dynamic> data = json.decode(jsonResponse.body);
 
         if (data['response']['listResult'] != null) {
           final List<dynamic> listResult = data['response']['listResult'];
-          List<DealerSummarylist> dealerSummarylist = listResult
-              .map((house) => DealerSummarylist.fromJson(house))
-              .toList();
+          List<DealerSummarylist> dealerSummarylist = listResult.map((house) => DealerSummarylist.fromJson(house)).toList();
           return dealerSummarylist;
         } else {
           throw Exception('SLP list is null');
@@ -69,6 +65,7 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
         throw Exception('Api failed');
       }
     } catch (e) {
+      print('dealersapierror:$e');
       throw Exception('Catch: Api got failed');
     }
   }
@@ -145,7 +142,7 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
               ),
               const SizedBox(width: 8.0),
               const Text(
-                'Dealer Summary',
+                'Party Summary',
                 style: TextStyle(
                   color: Colors.white,
                   fontSize: 18,
@@ -155,9 +152,7 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).pushAndRemoveUntil(
-                  MaterialPageRoute(builder: (context) => const HomeScreen()),
-                  (route) => false);
+              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomeScreen()), (route) => false);
             },
             child: Image.asset(
               'assets/srikar-home-icon.png',
@@ -304,14 +299,11 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
             },
             child: Card(
               elevation: 0,
-              color:
-                  selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
+              color: selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5.0),
                 side: BorderSide(
-                  color: selectedCardIndex == index
-                      ? const Color(0xFFe98d47)
-                      : Colors.grey,
+                  color: selectedCardIndex == index ? const Color(0xFFe98d47) : Colors.grey,
                   width: 1,
                 ),
               ),
@@ -320,135 +312,258 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
                 child: Column(
                   children: [
                     // row1
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Expanded(
+                    //         child: Row(
+                    //       children: [
+                    //         Text(
+                    //           'Card Name',
+                    //           style: CommonUtils.Mediumtext_12,
+                    //         ),
+                    //         SizedBox(
+                    //           width: 10,
+                    //         ),
+                    //         Flexible(
+                    //           child: Text(
+                    //             data[index].cardName!,
+                    //             style: CommonUtils.Mediumtext_12_0,
+                    //             overflow: TextOverflow.clip, // Optional: handle overflow with ellipsis
+                    //           ),
+                    //         ),
+                    //       ],
+                    //     )),
+                    //   ],
+                    // ),
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
+                        // Expanded(
+                        //   flex: 4,
+                        //   child: Column(
+                        //     crossAxisAlignment: CrossAxisAlignment.start,
+                        //     children: [
+                        //       const Padding(
+                        //         padding: EdgeInsets.fromLTRB(12, 5, 0, 0),
+                        //         child: Text(
+                        //           "Card Name",
+                        //           style: CommonUtils.Mediumtext_12,
+                        //         ),
+                        //       ),
+                        //     ],
+                        //   ),
+                        // ),
                         Expanded(
-                            child: Row(
-                          children: [
-                            const Expanded(
+                          flex: 5,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(0, 5, 0, 0),
                                 child: Text(
-                              'Card Code',
-                              style: CommonUtils.Mediumtext_12,
-                            )),
-                            Expanded(
-                                child: Text(
-                              data[index].cardCode!,
-                              style: CommonUtils.Mediumtext_12_0,
-                            )),
-                          ],
-                        )),
-                        Expanded(
-                            child: Row(
-                          children: [
-                            const Expanded(
-                                child: Text(
-                              'Slp Code',
-                              style: CommonUtils.Mediumtext_12,
-                            )),
-                            Expanded(
-                                child: Text(
-                              data[index].slpCode.toString(),
-                              style: CommonUtils.Mediumtext_12_0,
-                            )),
-                          ],
-                        )),
+                                  data[index].cardName!,
+                                  style: CommonUtils.Mediumtext_12_0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
-                    const SizedBox(
+                    // Row(
+                    //   mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    //   children: [
+                    //     Expanded(
+                    //         child: Row(
+                    //       children: [
+                    //         const Expanded(
+                    //             child: Text(
+                    //           'Card Code',
+                    //           style: CommonUtils.Mediumtext_12,
+                    //         )),
+                    //         Expanded(
+                    //             child: Text(
+                    //           data[index].cardCode!,
+                    //           style: CommonUtils.Mediumtext_12_0,
+                    //         )),
+                    //       ],
+                    //     )),
+                    //     Expanded(
+                    //         child: Row(
+                    //       children: [
+                    //         const Expanded(
+                    //             child: Text(
+                    //           'Slp Code',
+                    //           style: CommonUtils.Mediumtext_12,
+                    //         )),
+                    //         Expanded(
+                    //             child: Text(
+                    //           data[index].slpCode.toString(),
+                    //           style: CommonUtils.Mediumtext_12_0,
+                    //         )),
+                    //       ],
+                    //     )),
+                    //   ],
+                    // ),
+                    SizedBox(
+                      height: 8,
+                    ),
+                    Row(
+                      children: [
+                        Expanded(
+                          flex: 1,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                child: Text(
+                                  "Party Code",
+                                  style: CommonUtils.Mediumtext_12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                child: Text(
+                                  data[index].cardCode!,
+                                  style: CommonUtils.Mediumtext_12_0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
+                      ],
+                    ),
+                    //  SizedBox(
+                    //   height: 8,
+                    // ),
+                    //
+
+                    SizedBox(
                       height: 8,
                     ),
                     // row2  // single value
                     Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
-                            child: Row(
-                          children: [
-                            const Expanded(
+                          flex: 1,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              const Padding(
+                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
                                 child: Text(
-                              'Card Name',
-                              style: CommonUtils.Mediumtext_12,
-                            )),
-                            Expanded(
+                                  'Party Name',
+                                  style: CommonUtils.Mediumtext_12,
+                                ),
+                              ),
+                            ],
+                          ),
+                        ),
+                        Expanded(
+                          flex: 4,
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Padding(
+                                padding: EdgeInsets.fromLTRB(3, 0, 0, 0),
                                 child: Text(
-                              data[index].cardName!,
-                              style: CommonUtils.Mediumtext_12_0,
-                            )),
-                          ],
-                        )),
+                                  data[index].slpName!,
+                                  style: CommonUtils.Mediumtext_12_0,
+                                ),
+                              ),
+                            ],
+                          ),
+                        )
                       ],
                     ),
 
-                    const SizedBox(
-                      height: 8,
-                    ),
-                    // row2  // single value
-                    Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Expanded(
-                            child: Row(
-                          children: [
-                            const Expanded(
-                                child: Text(
-                              'Slp Name',
-                              style: CommonUtils.Mediumtext_12,
-                            )),
-                            Expanded(
-                                child: Text(
-                              data[index].slpName!,
-                              style: CommonUtils.Mediumtext_12_0,
-                            )),
-                          ],
-                        )),
-                      ],
-                    ),
-
-                    const SizedBox(
+                    SizedBox(
                       height: 8,
                     ),
                     // row3
+
                     Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: [
                         Expanded(
                             child: Row(
                           children: [
-                            const Expanded(
-                                child: Text(
-                              'OB',
-                              style: CommonUtils.Mediumtext_12,
-                            )),
                             Expanded(
-                                child: Text(
-                              data[index].ob.toString(),
-                              style: CommonUtils.Mediumtext_12_0,
-                            )),
+                              flex: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Text(
+                                      'OB',
+                                      style: CommonUtils.Mediumtext_12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Text(
+                                      data[index].ob.toString(),
+                                      style: CommonUtils.Mediumtext_12_0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
                         )),
                         Expanded(
                             child: Row(
                           children: [
-                            const Expanded(
-                                child: Text(
-                              'Sales',
-                              style: CommonUtils.Mediumtext_12,
-                            )),
                             Expanded(
-                                child: Text(
-                              data[index].sales.toString(),
-                              style: CommonUtils.Mediumtext_12_0,
-                            )),
+                              flex: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Text(
+                                      'Sales',
+                                      style: CommonUtils.Mediumtext_12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Text(
+                                      data[index].sales.toString(),
+                                      style: CommonUtils.Mediumtext_12_0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
                         )),
-                        // Flexible(
-                        //   child: ,
-                        // ),
-                        // const Icon(
-                        //   Icons.chevron_right,
-                        //   color: Colors.orange,
-                        // ),
                       ],
                     ),
 
@@ -462,31 +577,71 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
                         Expanded(
                             child: Row(
                           children: [
-                            const Expanded(
-                                child: Text(
-                              'Returns',
-                              style: CommonUtils.Mediumtext_12,
-                            )),
                             Expanded(
-                                child: Text(
-                              data[index].returns.toString(),
-                              style: CommonUtils.Mediumtext_12_0,
-                            )),
+                              flex: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Text(
+                                      'Returns',
+                                      style: CommonUtils.Mediumtext_12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Text(
+                                      data[index].returns.toString(),
+                                      style: CommonUtils.Mediumtext_12_0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
                         )),
                         Expanded(
                             child: Row(
                           children: [
-                            const Expanded(
-                                child: Text(
-                              'Receipts',
-                              style: CommonUtils.Mediumtext_12,
-                            )),
                             Expanded(
-                                child: Text(
-                              data[index].receipts.toString(),
-                              style: CommonUtils.Mediumtext_12_0,
-                            )),
+                              flex: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Text(
+                                      'Receipts',
+                                      style: CommonUtils.Mediumtext_12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Text(
+                                      data[index].receipts.toString(),
+                                      style: CommonUtils.Mediumtext_12_0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
                         )),
                       ],
@@ -502,31 +657,71 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
                         Expanded(
                             child: Row(
                           children: [
-                            const Expanded(
-                                child: Text(
-                              'Others',
-                              style: CommonUtils.Mediumtext_12,
-                            )),
                             Expanded(
-                                child: Text(
-                              data[index].others.toString(),
-                              style: CommonUtils.Mediumtext_12_0,
-                            )),
+                              flex: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Text(
+                                      'Others',
+                                      style: CommonUtils.Mediumtext_12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Text(
+                                      data[index].others.toString(),
+                                      style: CommonUtils.Mediumtext_12_0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
                         )),
                         Expanded(
                             child: Row(
                           children: [
-                            const Expanded(
-                                child: Text(
-                              'Closing',
-                              style: CommonUtils.Mediumtext_12,
-                            )),
                             Expanded(
-                                child: Text(
-                              data[index].closing.toString(),
-                              style: CommonUtils.Mediumtext_12_0,
-                            )),
+                              flex: 3,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  const Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Text(
+                                      'Closing',
+                                      style: CommonUtils.Mediumtext_12,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                            Expanded(
+                              flex: 4,
+                              child: Column(
+                                crossAxisAlignment: CrossAxisAlignment.start,
+                                children: [
+                                  Padding(
+                                    padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                    child: Text(
+                                      data[index].closing.toString(),
+                                      style: CommonUtils.Mediumtext_12_0,
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            )
                           ],
                         )),
                       ],
@@ -541,14 +736,35 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
     ));
   }
 
+  // Widget _downloadedBtn() {
+  //   return FloatingActionButton(
+  //     onPressed: () {
+  //       // _downloadFile(context);
+  //       // Add your download functionality here
+  //     },
+  //     backgroundColor: const Color(0xFFe58338),
+  //     child: const Icon(Icons.download), // Change the color as needed
+  //   );
+  // }
   Widget _downloadedBtn() {
-    return FloatingActionButton(
-      onPressed: () {
-        // _downloadFile(context);
-        // Add your download functionality here
-      },
-      backgroundColor: const Color(0xFFe78337),
-      child: const Icon(Icons.download), // Change the color as needed
+    Color buttonColor = Color(0xFFe78337).withOpacity(1.0); // Background color
+    Color borderColor = Color(0xFFe78337); // Border color
+
+    return ClipRRect(
+      //  borderRadius: BorderRadius.circular(10),
+      child: SizedBox(
+        width: 40,
+        height: 40,
+        child: FloatingActionButton(
+          onPressed: () {},
+          backgroundColor: buttonColor, // Background color
+          mini: true,
+          child: const Icon(
+            Icons.download,
+            color: Colors.black, // Icon color
+          ),
+        ),
+      ),
     );
   }
 }

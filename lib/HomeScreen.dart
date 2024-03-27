@@ -537,13 +537,12 @@ class _imagesliderState extends State<imageslider> {
     ]);
     // getshareddata();
     CommonUtils.checkInternetConnectivity().then(
-          (isConnected) {
+      (isConnected) {
         if (isConnected) {
           fetchImages();
           print('The Internet Is Connected');
         } else {
-          CommonUtils.showCustomToastMessageLong(
-              'Please check your internet  connection', context, 1, 4);
+          CommonUtils.showCustomToastMessageLong('Please check your internet  connection', context, 1, 4);
           print('The Internet Is not  Connected');
         }
       },
@@ -634,7 +633,6 @@ class _imagesliderState extends State<imageslider> {
                                     width: MediaQuery.of(context).size.width,
                                     child: Stack(
                                       children: [
-
                                         Align(
                                           alignment: Alignment.topCenter,
                                           child: CarouselSlider(
@@ -895,7 +893,7 @@ class _imagesliderState extends State<imageslider> {
                                                   Expanded(
                                                     child: Container(
                                                       child: _customcontainernewCard(
-                                                        imageUrl: "bags-orders.svg",
+                                                        imageUrl: "Approve.svg",
                                                         item: "Approve Orders",
                                                         item1: "View All Pending Orders ",
                                                         color: Color(0xFFb7dbc1),
@@ -918,9 +916,6 @@ class _imagesliderState extends State<imageslider> {
                                         ],
                                       ),
 
-
-
-
                                     Row(
                                       children: [
                                         // First Container with single card view
@@ -933,7 +928,7 @@ class _imagesliderState extends State<imageslider> {
                                                 Expanded(
                                                   child: Container(
                                                     child: _customcontainernewCard(
-                                                      imageUrl: "bags-orders.svg",
+                                                      imageUrl: "report.svg",
                                                       item: "Group Summary Report ",
                                                       item1: "View Group Summary Report ",
                                                       color: Color(0xFFF8dac2),
@@ -1298,6 +1293,4 @@ class _imagesliderState extends State<imageslider> {
       ),
     );
   }
-
-
 }
