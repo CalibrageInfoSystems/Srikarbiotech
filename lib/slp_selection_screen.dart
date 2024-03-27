@@ -1,6 +1,7 @@
 import 'dart:convert';
 
 import 'package:flutter/material.dart';
+import 'package:intl/intl.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'package:srikarbiotech/HomeScreen.dart';
 import 'package:srikarbiotech/Model/slp_selection_model.dart';
@@ -31,8 +32,15 @@ class _SlpSelectionState extends State<SlpSelection> {
 
   Future<List<SlpListResult>> getSlpData() async {
     try {
+      DateTime parsedDate = DateFormat('dd-MM-yyyy').parse(widget.fromDateText);
+      String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
+      DateTime parsedDate2 = DateFormat('dd-MM-yyyy').parse(widget.toDateText);
+      String formattedtoDate = DateFormat('yyyy-MM-dd').format(parsedDate2);
+      print('formattedDate: $formattedDate');
+      print('formattedtoDate: $formattedtoDate');
+
       String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetGroupSummaryReportBySlp';
-      final requestBody = {"FromDate": "2024-03-20", "ToDate": "2024-03-22", "State": "WB", "CompanyId": 1};
+      final requestBody = {"FromDate": "${formattedDate}", "ToDate": "${formattedtoDate}", "State": "${widget.state}", "CompanyId": 1};
 
       debugPrint('slp selection__${jsonEncode(requestBody)}');
       final jsonResponse = await http.post(
@@ -82,7 +90,16 @@ class _SlpSelectionState extends State<SlpSelection> {
                   padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
-                      _dateSection(),
+                      Container(
+                        padding: const EdgeInsets.only(
+                          left: 5,
+                          right: 5,
+                          top: 10,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        //   height: MediaQuery.of(context).size.height,
+                        child: _dateSection(),
+                      ),
                       const SizedBox(
                         height: 10,
                       ),
@@ -158,7 +175,7 @@ class _SlpSelectionState extends State<SlpSelection> {
 
   Widget _dateSection() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
         border: Border.all(color: Colors.grey, width: 1),
@@ -261,10 +278,10 @@ class _SlpSelectionState extends State<SlpSelection> {
               Navigator.of(context).push(
                 MaterialPageRoute(
                   builder: (context) => DealerSummaryScreen(
-                    fromDateText: '',
-                    toDateText: '',
-                    slpName: '',
-                    stateName: '',
+                    fromDateText: '${widget.fromDateText}',
+                    toDateText: '${widget.toDateText}',
+                    slpName: data[index].slpCode.toString(),
+                    stateName: '${widget.state}',
                   ),
                 ),
               );

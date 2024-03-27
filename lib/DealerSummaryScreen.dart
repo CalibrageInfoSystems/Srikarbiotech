@@ -91,7 +91,16 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
                   padding: const EdgeInsets.all(10),
                   child: Column(
                     children: [
-                      _dateSection(),
+                      Container(
+                        padding: const EdgeInsets.only(
+                          left: 5,
+                          right: 5,
+                          top: 10,
+                        ),
+                        width: MediaQuery.of(context).size.width,
+                        //   height: MediaQuery.of(context).size.height,
+                        child: _dateSection(),
+                      ),
                       const SizedBox(
                         height: 10,
                       ),
@@ -113,7 +122,7 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
         },
       ),
       floatingActionButton: _downloadedBtn(),
-      floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      floatingActionButtonLocation: FloatingActionButtonLocation.endDocked,
     );
   }
 
@@ -237,7 +246,7 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
                 child: Row(
                   children: [
                     const Text(
-                      'slp: ',
+                      'Party Code: ',
                       style: CommonUtils.Mediumtext_12,
                     ),
                     Text(
