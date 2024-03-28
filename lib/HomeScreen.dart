@@ -445,6 +445,7 @@ class _home_Screen extends State<HomeScreen> {
     userName = await SharedPrefsData.getStringFromSharedPrefs("userName");
     roleName = await SharedPrefsData.getStringFromSharedPrefs("roleName");
     final categories = await SharedPreferencesHelper.getCategories();
+    print("===========>companyId ${CompneyId}");
 
     fullname = categories!['response']['fullName'];
     phoneNumber = categories['response']['phoneNumber'];

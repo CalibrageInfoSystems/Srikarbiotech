@@ -434,7 +434,11 @@ class Selectparty_screen extends State<Selectpartyscreen> {
     slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     print('User ID: $userId');
-    print('SLP Code: $slpCode');
+    print('SLP Code:2 $slpCode');
+    if (slpCode!.isEmpty) {
+      slpCode = null;
+    }
+    print('SLP Code:3 $slpCode');
     print('Company ID: $CompneyId');
     fetchData();
     // final loadedData = await SharedPreferencesHelper.getCategories();

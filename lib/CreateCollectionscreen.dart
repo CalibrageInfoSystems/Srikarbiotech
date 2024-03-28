@@ -1961,7 +1961,12 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     Compneyname = await SharedPrefsData.getStringFromSharedPrefs("companyName");
     print('User ID: $userId');
-    print('SLP Code: $slpCode');
+
+    print('SLP Code:2 $slpCode');
+    if (slpCode!.isEmpty) {
+      slpCode = null;
+    }
+    print('SLP Code:3 $slpCode');
     print('Company ID: $CompneyId');
     print('Compneyname : $Compneyname');
     print('Retrieved CompneyId: $CompneyId');

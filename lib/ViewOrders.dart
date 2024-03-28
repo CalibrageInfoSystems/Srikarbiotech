@@ -708,6 +708,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
   Future<void> fetchData() async {
     slpCode = await SharedPrefsData.getStringFromSharedPrefs("slpCode");
+    print('SLP Code:2 $slpCode');
+    if (slpCode!.isEmpty) {
+      slpCode = null;
+    }
+    print('SLP Code:3 $slpCode');
     savedCompanyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     final response = await http.get(Uri.parse(baseUrl + GetAllDealersBySlpCode + '$savedCompanyId' + "/" + '$slpCode'));
 

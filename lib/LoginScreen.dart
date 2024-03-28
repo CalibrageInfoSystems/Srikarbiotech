@@ -411,7 +411,7 @@ class _MyHomePageState extends State<LoginScreen> {
         SharedPreferences prefs = await SharedPreferences.getInstance();
 
         prefs.setString("userId", jsonResponse['response']['userId']);
-        prefs.setString("slpCode", jsonResponse['response']['slpCode']);
+        prefs.setString("slpCode", jsonResponse['response']['slpCode'] ?? '');
         prefs.setInt("companyId", jsonResponse['response']['companyId']);
         prefs.setString("companyName", jsonResponse['response']['companyName']);
         prefs.setString("companyCode", jsonResponse['response']['companyCode']);
@@ -419,8 +419,9 @@ class _MyHomePageState extends State<LoginScreen> {
         prefs.setString("userName", jsonResponse['response']['userName']);
         prefs.setString("roleName", jsonResponse['response']['roleName']);
         SharedPrefsData.updateStringValue("userId", jsonResponse['response']['userId']);
-        SharedPrefsData.updateStringValue("slpCode", jsonResponse['response']['slpCode']);
+        SharedPrefsData.updateStringValue("slpCode", jsonResponse['response']['slpCode'] ?? '');
         SharedPrefsData.updateIntValue("companyId", jsonResponse['response']['companyId']);
+        print("===========>companyId ${jsonResponse['response']['companyId']}");
         startLocationService();
         Navigator.pushReplacement(
           context,
