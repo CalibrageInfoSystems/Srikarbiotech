@@ -45,7 +45,7 @@ class _MyAppState extends State<MyApp> {
   @override
   void initState() {
     super.initState();
-    checkStoragePermission();
+    checkPermissions                                  ();
   }
 
   @override
@@ -63,44 +63,42 @@ class _MyAppState extends State<MyApp> {
         child: MyHomePage(),
       ),
     );
-    //
-    // return MultiProvider(
-    //   providers: [
-    //     ChangeNotifierProvider(create: (context) => ViewCollectionProvider()),
-    //     ChangeNotifierProvider(create: (context) => CartProvider()),
-    //     // Add other providers as needed
-    //   ],
-    //   child: MaterialApp(
-    //     debugShowCheckedModeBanner: false,
-    //     home: MyHomePage(),
-    //   ),
-    // );
+
   }
 
-  // @override
-  // Widget build(BuildContext context) {
-  //   return MaterialApp(
-  //   debugShowCheckedModeBanner: false,
-  //     home: MyHomePage(),
-  //   );
-  // }
 
-  Future<void> checkStoragePermission() async {
-    Map<Permission, PermissionStatus> statuses = await [
+  Future<void> checkPermissions() async {
+    // Request storage permission
+    Map<Permission, PermissionStatus> storageStatuses = await [
       Permission.storage,
       Permission.manageExternalStorage,
     ].request();
 
-    var storage = statuses[Permission.storage];
-    print('Storage permission is granted $storage');
-    var manageExternalStorage = statuses[Permission.manageExternalStorage];
-    print('Storage permission is granted $manageExternalStorage');
-    if (storage!.isGranted || manageExternalStorage!.isGranted) {
-      // // do something
-      // Navigator.of(context).pushReplacement(
-      //     MaterialPageRoute(builder: (context) =>  MyApp())
-      //   );
+    var storagePermission = storageStatuses[Permission.storage];
+    print('Storage permission is granted: $storagePermission');
+    var manageExternalStoragePermission = storageStatuses[Permission.manageExternalStorage];
+    print('Manage external storage permission is granted: $manageExternalStoragePermission');
+
+    // Request location permission
+    Map<Permission, PermissionStatus> locationStatuses = await [
+      Permission.location,
+    ].request();
+
+    var locationPermission = locationStatuses[Permission.location];
+    print('Location permission is granted: $locationPermission');
+
+    // Handle permissions accordingly
+    if (storagePermission!.isGranted || manageExternalStoragePermission!.isGranted) {
+      // Storage permissions granted, do something
     } else {
+      // Storage permissions not granted, handle accordingly
+      openAppSettings();
+    }
+
+    if (locationPermission!.isGranted) {
+      // Location permission granted, do something
+    } else {
+      // Location permission not granted, handle accordingly
       openAppSettings();
     }
   }

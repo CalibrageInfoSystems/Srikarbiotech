@@ -33,28 +33,31 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   String pickedtodate = '';
   String todate = '';
   String state = '';
+  bool isLoading = false;
   late Future<List<StateListResult>> apiData;
   DateTime selectedDate = DateTime.now();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin = FlutterLocalNotificationsPlugin();
+  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
+  FlutterLocalNotificationsPlugin();
   @override
   void initState() {
     super.initState();
     _prepopulateFromDate(fromDateController);
 
-    print('todate$todate');
-    String fromDate = DateFormat('dd-MM-yyyy').format(DateTime.now().subtract(const Duration(days: 30)));
+    String fromDate = DateFormat('dd-MM-yyyy')
+        .format(DateTime.now().subtract(const Duration(days: 30)));
     fromDateController.text = fromDate;
     String toDate = DateFormat('dd-MM-yyyy').format(DateTime.now());
     toDateController.text = toDate;
 
     fromDateText = pickedfromdate = fromDate;
     toDateText = pickedtodate = toDate;
+    print('====.54 $fromDateText  =========== $toDateText');
     apiData = getStateData(fromDate, toDate, 1);
-    // _selectfromDate(context, fromDateController);
   }
 
   Future<void> showDownloadNotification() async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics = AndroidNotificationDetails(
+    const AndroidNotificationDetails androidPlatformChannelSpecifics =
+    AndroidNotificationDetails(
       'download_channel_id',
       'Download Notifications',
       importance: Importance.max,
@@ -63,7 +66,8 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
       sound: RawResourceAndroidNotificationSound('notification_sound'),
     );
 
-    const NotificationDetails platformChannelSpecifics = NotificationDetails(android: androidPlatformChannelSpecifics);
+    const NotificationDetails platformChannelSpecifics =
+    NotificationDetails(android: androidPlatformChannelSpecifics);
 
     await flutterLocalNotificationsPlugin.show(
       0,
@@ -74,11 +78,9 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
     );
   }
 
-  Future<List<StateListResult>> getStateData(String fromDateText, String todate, int id) async {
+  Future<List<StateListResult>> getStateData(
+      String fromDateText, String todate, int id) async {
     try {
-      print('fromDateText: $fromDateText');
-      print('todate: $todate');
-
       if (fromDateText.isEmpty || todate.isEmpty) {
         throw Exception('Date strings are empty');
       }
@@ -86,13 +88,16 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
       String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
       DateTime parsedDate2 = DateFormat('dd-MM-yyyy').parse(todate);
       String formattedtoDate = DateFormat('yyyy-MM-dd').format(parsedDate2);
-      print('formattedDate: $formattedDate');
-      print('formattedtoDate: $formattedtoDate');
+    print('pickedDate F: $formattedDate');
+      print('pickedDate F: $formattedtoDate');
 
-      String apiUrl = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetGroupSummaryReportByState';
-      print('todate:insidemethod: $todate');
-      final requestBody = {"FromDate": formattedDate, "ToDate": formattedtoDate, "CompanyId": id};
-      print('StateDataapi:$apiUrl');
+      String apiUrl =
+          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/GetGroupSummaryReportByState';
+      final requestBody = {
+        "FromDate": formattedDate,
+        "ToDate": formattedtoDate,
+        "CompanyId": id
+      };
       debugPrint('____state selection__${jsonEncode(requestBody)}');
       final jsonResponse = await http.post(
         Uri.parse(apiUrl),
@@ -101,15 +106,16 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
           'Content-Type': 'application/json',
         },
       );
-      print('responsestate:${jsonResponse}');
+      debugPrint('____state selection__${jsonResponse.body}');
 
       if (jsonResponse.statusCode == 200) {
         final Map<String, dynamic> data = json.decode(jsonResponse.body);
-        print('data:${data}');
 
         if (data['response']['listResult'] != null) {
           final List<dynamic> listResult = data['response']['listResult'];
-          List<StateListResult> stateResult = listResult.map((house) => StateListResult.fromJson(house)).toList();
+          List<StateListResult> stateResult = listResult
+              .map((house) => StateListResult.fromJson(house))
+              .toList();
           return stateResult;
         } else {
           throw Exception('State list is null');
@@ -128,10 +134,8 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
     return Scaffold(
       appBar: _appBar(),
       body: SingleChildScrollView(
-        child: Container(
+        child: SizedBox(
           width: MediaQuery.of(context).size.width,
-          // height: MediaQuery.of(context).size.height,
-          //  padding: const EdgeInsets.only(left: 20, right: 20),
           child: Column(
             children: [
               Container(
@@ -141,16 +145,21 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                   top: 20,
                 ),
                 width: MediaQuery.of(context).size.width,
-                //   height: MediaQuery.of(context).size.height,
                 child: _dateSection(),
               ),
               FutureBuilder(
                 future: apiData,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
-                    return Center(child: CircularProgressIndicator.adaptive());
+                    return SizedBox(
+                      width: MediaQuery.of(context).size.width,
+                      height: MediaQuery.of(context).size.height,
+                      child: const Center(
+                        child: CircularProgressIndicator.adaptive(),
+                      ),
+                    );
                   } else if (snapshot.hasError) {
-                    return Center(
+                    return const Center(
                       child: Text('Error occurred.'),
                     );
                   } else {
@@ -158,20 +167,24 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                       List<StateListResult> data = snapshot.data!;
 
                       if (data.isNotEmpty) {
-                        return Padding(
+                        return isLoading
+                            ? const Center(
+                          child: CircularProgressIndicator.adaptive(),
+                        )
+                            : Padding(
                           padding: const EdgeInsets.all(10),
                           child: Column(
                             children: [
-                              const SizedBox(
-                                height: 10,
-                              ),
+                              // const SizedBox(
+                              //   height: 10,
+                              // ),
                               _stateSection(data),
                             ],
                           ),
                         );
                       } else {
                         return const Center(
-                          child: Text('Collection is empty.'),
+                          child: Text(' No data available.'),
                         );
                       }
                     } else {
@@ -186,8 +199,32 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
           ),
         ),
       ),
-      floatingActionButton: _downloadedBtn(),
+
+      floatingActionButton: FutureBuilder(
+        future: apiData,
+        builder: (context, snapshot) {
+          if (snapshot.connectionState == ConnectionState.waiting) {
+            return const SizedBox(); // Return an empty SizedBox while waiting for data
+          } else if (snapshot.hasError) {
+            return const SizedBox(); // Return an empty SizedBox if an error occurred
+          } else {
+            if (snapshot.hasData) {
+              List<StateListResult> data =
+              snapshot.data!.cast<StateListResult>();
+              if (data.isNotEmpty) {
+                return downloadedBtn(data); // Pass data to downloadedBtn widget
+              } else {
+                return const SizedBox(); // Return an empty SizedBox if data is empty
+              }
+            } else {
+              return const SizedBox(); // Return an empty SizedBox if no data is available
+            }
+          }
+        },
+      ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
+      // floatingActionButton: _downloadedBtn(),
+      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
@@ -226,7 +263,9 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
           ),
           GestureDetector(
             onTap: () {
-              Navigator.of(context).pushAndRemoveUntil(MaterialPageRoute(builder: (context) => const HomeScreen()), (route) => false);
+              Navigator.of(context).pushAndRemoveUntil(
+                  MaterialPageRoute(builder: (context) => const HomeScreen()),
+                      (route) => false);
             },
             child: Image.asset(
               'assets/srikar-home-icon.png',
@@ -241,7 +280,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
 
   Widget _dateSection() {
     return Container(
-      padding: EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
       // padding: const EdgeInsets.only(left: 0, right: 0),
       decoration: BoxDecoration(
         borderRadius: BorderRadius.circular(5),
@@ -253,7 +292,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
             context,
             'FromDate *',
             fromDateController,
-            () => _selectfromDate(context, fromDateController),
+                () => _selectfromDate(context, fromDateController),
           ),
 
           // Expanded(
@@ -263,12 +302,12 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
           //     () => _selectfromDate(context, fromDateController),
           //   ),
           // ),
-          SizedBox(width: 15),
+          const SizedBox(width: 15),
           buildDateInput(
             context,
             'ToDate *',
             toDateController,
-            () => _selectDate(context, toDateController),
+                () => _selectDate(context, toDateController),
           ),
           // Expanded(
           //   child: dateField(
@@ -277,53 +316,26 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
           //     () => _selectDate(context),
           //   ),
           // ),
-          SizedBox(
+          const SizedBox(
             width: 15,
           ),
           Container(
             width: 80,
             padding: const EdgeInsets.only(top: 22.0),
             child: GestureDetector(
-              onTap: () {
-                apiData = getStateData(pickedfromdate, pickedtodate, 1);
+              onTap: () async {
+                setState(() {
+                  isLoading = true;
+                });
+                fromDateText = pickedfromdate;
+                toDateText = pickedtodate;
 
-                // FutureBuilder(
-                //   future: apiData,
-                //   builder: (context, snapshot) {
-                //     if (snapshot.connectionState == ConnectionState.waiting) {
-                //       return Center(child: CircularProgressIndicator.adaptive());
-                //     } else if (snapshot.hasError) {
-                //       return Center(
-                //         child: Text('Error occurred.'),
-                //       );
-                //     } else {
-                //       if (snapshot.hasData) {
-                //         List<StateListResult> data = snapshot.data!;
-                //         if (data.isNotEmpty) {
-                //           return Padding(
-                //             padding: const EdgeInsets.all(10),
-                //             child: Column(
-                //               children: [
-                //                 const SizedBox(
-                //                   height: 10,
-                //                 ),
-                //                 _stateSection(data),
-                //               ],
-                //             ),
-                //           );
-                //         } else {
-                //           return const Center(
-                //             child: Text('Collection is empty.'),
-                //           );
-                //         }
-                //       } else {
-                //         return const Center(
-                //           child: Text('No data available'),
-                //         );
-                //       }
-                //     }
-                //   },
-                // );
+                apiData = getStateData(pickedfromdate, pickedtodate, 1);
+                apiData.then((value) {
+                  setState(() {
+                    isLoading = false;
+                  });
+                });
               },
               child: Container(
                 padding: const EdgeInsets.only(left: 10, right: 10.0),
@@ -347,11 +359,11 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   Future<void> _selectDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
     DateTime currentDate = DateTime.now();
-    DateTime thirtyDaysAgo = currentDate.subtract(Duration(days: 30));
+    DateTime thirtyDaysAgo = currentDate.subtract(const Duration(days: 30));
 
     DateTime initialDate = selectedDate ?? currentDate;
 
@@ -360,17 +372,19 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         context: context,
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: initialDate,
-        firstDate: thirtyDaysAgo, // Set the first selectable date to 30 days ago
+        firstDate:
+        thirtyDaysAgo, // Set the first selectable date to 30 days ago
         lastDate: currentDate, // Set the last selectable date to current date
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.light().copyWith(
-              colorScheme: ColorScheme.light(
+              colorScheme: const ColorScheme.light(
                 primary: Color(0xFFe78337), // Change the primary color here
                 onPrimary: Colors.white,
                 // onSurface: Colors.blue,// Change the text color here
               ),
-              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+              dialogBackgroundColor:
+              Colors.white, // Change the dialog background color here
             ),
             child: child!,
           );
@@ -396,314 +410,360 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   Widget _stateSection(List<StateListResult> data) {
-    return Container(
-        width: MediaQuery.of(context).size.width,
-        height: MediaQuery.of(context).size.height,
-        child: ListView.builder(
-          itemCount: data.length,
-          itemBuilder: (context, index) {
-            // setState(() {
-            //   state = data[index].state!;
-            // });
-            state = data[index].state!;
-            return SizedBox(
-              // margin: const EdgeInsets.symmetric(
-              //     horizontal: 16.0, vertical: 4.0),
-              child: GestureDetector(
-                onTap: () {
-                  setState(() {
-                    selectedCardIndex = index;
-                  });
+    return SizedBox(
+      width: MediaQuery.of(context).size.width,
+      height: MediaQuery.of(context).size.height,
+      child: ListView.builder(
+        itemCount: data.length,
+        itemBuilder: (context, index) {
+          // setState(() {
+          //   state = data[index].state!;
+          // });
+          state = data[index].state!;
+          return SizedBox(
+            // margin: const EdgeInsets.symmetric(
+            //     horizontal: 16.0, vertical: 4.0),
+            child: GestureDetector(
+              onTap: () {
+                setState(() {
+                  selectedCardIndex = index;
+                });
 
-                  // navigate to slp selection screen
-                  Navigator.of(context).push(
-                    MaterialPageRoute(
-                      builder: (context) => SlpSelection(
-                        fromDateText: fromDateText,
-                        toDateText: toDateText,
-                        state: data[index].state!,
-                      ),
-                    ),
-                  );
-                },
-                child: Card(
-                  elevation: 0,
-                  color: selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
-                    side: BorderSide(
-                      color: selectedCardIndex == index ? const Color(0xFFe98d47) : Colors.grey,
-                      width: 1,
+                // navigate to slp selection screen
+                Navigator.of(context).push(
+                  MaterialPageRoute(
+                    builder: (context) => SlpSelection(
+                      fromDateText: fromDateText,
+                      toDateText: toDateText,
+                      state: data[index].state!,
                     ),
                   ),
-                  child: Container(
-                    padding: const EdgeInsets.all(10.0),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                      children: [
-                        Flexible(
-                          child: Padding(
-                            padding: const EdgeInsets.only(right: 10),
-                            child: Column(
-                              crossAxisAlignment: CrossAxisAlignment.start,
-                              children: [
-                                // row1
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                      child: Row(
-                                        // mainAxisAlignment:
-                                        //     MainAxisAlignment.spaceBetween,
-                                        children: [
-                                          const Text(
-                                            'State: ',
-                                            style: CommonUtils.Mediumtext_12,
-                                            overflow: TextOverflow.ellipsis,
-                                          ),
-                                          Text(
-                                            data[index].state!,
-                                            style: CommonUtils.Mediumtext_12_0,
-                                          ),
-                                        ],
-                                      ),
+                );
+              },
+              child: Card(
+                elevation: 0,
+                color:
+                selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(5.0),
+                  side: BorderSide(
+                    color: selectedCardIndex == index
+                        ? const Color(0xFFe98d47)
+                        : Colors.grey,
+                    width: 1,
+                  ),
+                ),
+                child: Container(
+                  padding: const EdgeInsets.all(10.0),
+                  child: Row(
+                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                    children: [
+                      Flexible(
+                        child: Padding(
+                          padding: const EdgeInsets.only(right: 10),
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              // row1
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                    child: Row(
+                                      // mainAxisAlignment:
+                                      //     MainAxisAlignment.spaceBetween,
+                                      children: [
+                                        const Text(
+                                          'State: ',
+                                          style: CommonUtils.Mediumtext_12,
+                                          overflow: TextOverflow.ellipsis,
+                                        ),
+                                        Text(
+                                          data[index].state!,
+                                          style: CommonUtils.Mediumtext_12_0,
+                                        ),
+                                      ],
                                     ),
-                                    // const SizedBox(
-                                    //   width: 10,
-                                    // ),
-                                    // Expanded(
-                                    //   child: Row(
-                                    //     // mainAxisAlignment:
-                                    //     //     MainAxisAlignment.spaceBetween,
-                                    //     children: [
-                                    //       const Text(
-                                    //         'OB: ',
-                                    //         style: CommonUtils.Mediumtext_12,
-                                    //         overflow: TextOverflow.ellipsis,
-                                    //       ),
-                                    //       Text(
-                                    //         data[index].ob.toString(),
-                                    //         style: CommonUtils.Mediumtext_12_0,
-                                    //       ),
-                                    //     ],
-                                    //   ),
-                                    // ),
-                                  ],
-                                ),
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                        child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'OB',
-                                                  style: CommonUtils.Mediumtext_12,
+                                  ),
+                                  // const SizedBox(
+                                  //   width: 10,
+                                  // ),
+                                  // Expanded(
+                                  //   child: Row(
+                                  //     // mainAxisAlignment:
+                                  //     //     MainAxisAlignment.spaceBetween,
+                                  //     children: [
+                                  //       const Text(
+                                  //         'OB: ',
+                                  //         style: CommonUtils.Mediumtext_12,
+                                  //         overflow: TextOverflow.ellipsis,
+                                  //       ),
+                                  //       Text(
+                                  //         data[index].ob.toString(),
+                                  //         style: CommonUtils.Mediumtext_12_0,
+                                  //       ),
+                                  //     ],
+                                  //   ),
+                                  // ),
+                                ],
+                              ),
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                      child: Row(
+                                        children: [
+                                          const Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 0),
+                                                  child: Text(
+                                                    'OB',
+                                                    style:
+                                                    CommonUtils.Mediumtext_12,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 5, 0),
-                                                child: Text(
-                                                  data[index].ob.toString(),
-                                                  style: CommonUtils.Mediumtext_12_0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    )),
-                                    Expanded(
-                                        child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Sales',
-                                                  style: CommonUtils.Mediumtext_12,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  data[index].sales.toString(),
-                                                  style: CommonUtils.Mediumtext_12_0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    )),
-                                  ],
-                                ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 0, 5, 0),
+                                                  child: Text(
+                                                    '₹${formatNumber(data[index].ob)}',
 
-                                SizedBox(
-                                  height: 8,
-                                ),
-                                // row4
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                        child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Returns',
-                                                  style: CommonUtils.Mediumtext_12,
+                                                    style:
+                                                    CommonUtils.Mediumtext_12_0,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  data[index].returns.toString(),
-                                                  style: CommonUtils.Mediumtext_12_0,
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                  Expanded(
+                                      child: Row(
+                                        children: [
+                                          const Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 0),
+                                                  child: Text(
+                                                    'Sales',
+                                                    style:
+                                                    CommonUtils.Mediumtext_12,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
+                                              ],
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
-                                    Expanded(
-                                        child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Receipts',
-                                                  style: CommonUtils.Mediumtext_12,
+                                          Expanded(
+                                            flex: 4,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 0),
+                                                  child: Text(
+                                                    '₹${formatNumber(data[index].sales)}',
+                                                    style:
+                                                    CommonUtils.Mediumtext_12_0,
+                                                  ),
                                                 ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  data[index].receipts.toString(),
-                                                  style: CommonUtils.Mediumtext_12_0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    )),
-                                  ],
-                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                ],
+                              ),
 
-                                const SizedBox(
-                                  height: 8,
-                                ),
-                                // row5
-                                Row(
-                                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                                  children: [
-                                    Expanded(
-                                        child: Row(
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              // row4
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                      child: Row(
+                                        children: [
+                                          const Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 0),
+                                                  child: Text(
+                                                    'Returns',
+                                                    style:
+                                                    CommonUtils.Mediumtext_12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 0),
+                                                  child: Text(
+                                                    '₹${formatNumber(data[index].returns)}',
+                                                    style:
+                                                    CommonUtils.Mediumtext_12_0,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                  Expanded(
+                                      child: Row(
+                                        children: [
+                                          const Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 0),
+                                                  child: Text(
+                                                    'Receipts',
+                                                    style:
+                                                    CommonUtils.Mediumtext_12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 0),
+                                                  child: Text(
+                                                    '₹${formatNumber(data[index].receipts)}',
+                                                    style:
+                                                    CommonUtils.Mediumtext_12_0,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                ],
+                              ),
+
+                              const SizedBox(
+                                height: 8,
+                              ),
+                              // row5
+                              Row(
+                                mainAxisAlignment:
+                                MainAxisAlignment.spaceBetween,
+                                children: [
+                                  Expanded(
+                                      child: Row(
+                                        children: [
+                                          const Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 0),
+                                                  child: Text(
+                                                    'Others',
+                                                    style:
+                                                    CommonUtils.Mediumtext_12,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                              CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 0),
+                                                  child: Text(
+                                                    '₹${formatNumber(data[index].others)}',
+                                                    style:
+                                                    CommonUtils.Mediumtext_12_0,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      )),
+                                  Expanded(
+                                    child: Row(
                                       children: [
-                                        Expanded(
+                                        const Expanded(
                                           flex: 3,
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Others',
-                                                  style: CommonUtils.Mediumtext_12,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  data[index].others.toString(),
-                                                  style: CommonUtils.Mediumtext_12_0,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
-                                        )
-                                      ],
-                                    )),
-                                    Expanded(
-                                        child: Row(
-                                      children: [
-                                        Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
-                                            children: [
-                                              const Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
                                                 child: Text(
                                                   'Closing',
-                                                  style: CommonUtils.Mediumtext_12,
+                                                  style:
+                                                  CommonUtils.Mediumtext_12,
                                                 ),
                                               ),
                                             ],
@@ -712,45 +772,51 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                         Expanded(
                                           flex: 4,
                                           child: Column(
-                                            crossAxisAlignment: CrossAxisAlignment.start,
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
                                             children: [
                                               Padding(
-                                                padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                padding:
+                                                const EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
                                                 child: Text(
-                                                  data[index].closing.toString(),
-                                                  style: CommonUtils.Mediumtext_12_0,
+                                                  '₹${formatNumber(data[index].closing)}',
+                                                  style: CommonUtils
+                                                      .Mediumtext_12_0,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         )
                                       ],
-                                    )),
-                                  ],
-                                ),
-                              ],
-                            ),
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ],
                           ),
                         ),
-                        const Icon(
-                          Icons.chevron_right,
-                          color: Colors.orange,
-                        ),
-                      ],
-                    ),
+                      ),
+                      const Icon(
+                        Icons.chevron_right,
+                        color: Colors.orange,
+                      ),
+                    ],
                   ),
                 ),
               ),
-            );
-          },
-        ));
+            ),
+          );
+        },
+      ),
+    );
   }
 
   Widget dateField(
-    BuildContext context,
-    String labelText,
-    VoidCallback onTap,
-  ) {
+      BuildContext context,
+      String labelText,
+      VoidCallback onTap,
+      ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -770,11 +836,11 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   static Widget buildDateInput(
-    BuildContext context,
-    String labelText,
-    TextEditingController controller,
-    VoidCallback onTap,
-  ) {
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      VoidCallback onTap,
+      ) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -853,7 +919,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   void _prepopulateFromDate(TextEditingController controller) {
     // Calculate the date 30 days ago from the current date
     DateTime currentDate = DateTime.now();
-    DateTime thirtyDaysAgo = currentDate.subtract(Duration(days: 30));
+    DateTime thirtyDaysAgo = currentDate.subtract(const Duration(days: 30));
 
     // Format the date as per your desired format
     fromDateText = DateFormat('dd-MM-yyyy').format(thirtyDaysAgo);
@@ -914,13 +980,13 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   //   }
   // }
   Future<void> _selectfromDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
     DateTime currentDate = DateTime.now();
 
     // Calculate the date 30 days ago from the current date
-    DateTime thirtyDaysAgo = currentDate.subtract(Duration(days: 30));
+    DateTime thirtyDaysAgo = currentDate.subtract(const Duration(days: 30));
 
     // Use thirtyDaysAgo as the initialDate if selectedFromDate is null
     DateTime initialDate = selectedFromDate ?? thirtyDaysAgo;
@@ -930,12 +996,14 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         context: context,
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: initialDate,
-        firstDate: DateTime(1900), // Set the first selectable date to a past date (e.g., January 1, 1900)
-        lastDate: currentDate, // Set the last selectable date to the current date
+        firstDate: DateTime(
+            1900), // Set the first selectable date to a past date (e.g., January 1, 1900)
+        lastDate:
+        currentDate, // Set the last selectable date to the current date
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.light().copyWith(
-              colorScheme: ColorScheme.light(
+              colorScheme: const ColorScheme.light(
                 primary: Color(0xFFe78337), // Change the primary color here
                 onPrimary: Colors.white,
               ),
@@ -968,19 +1036,31 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   Future<void> _downloadFile(BuildContext context) async {
-    const url = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/ExportStateGroupSummaryReport';
+    const url =
+        'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/ExportStateGroupSummaryReport';
 
     final List<Map<String, dynamic>> requestBody = [
-      {"State": "AP", "OB": 2.0, "Sales": 3.0, "Returns": 4.0, "Receipts": 5.0, "Others": 6.0, "Closing": 7.0},
+      {
+        "State": "AP",
+        "OB": 2.0,
+        "Sales": 3.0,
+        "Returns": 4.0,
+        "Receipts": 5.0,
+        "Others": 6.0,
+        "Closing": 7.0
+      },
     ];
 
     try {
-      final response = await http.post(Uri.parse(url), headers: {'Content-Type': 'application/json'}, body: jsonEncode(requestBody));
+      final response = await http.post(Uri.parse(url),
+          headers: {'Content-Type': 'application/json'},
+          body: jsonEncode(requestBody));
       print('response${response.body}');
       print('jsonEncode${jsonEncode(requestBody)}');
       final jsonResponse = json.decode(response.body);
       if (response.statusCode == 200) {
-        Directory downloadsDirectory = Directory('/storage/emulated/0/Download/Srikar_Groups');
+        Directory downloadsDirectory =
+        Directory('/storage/emulated/0/Download/Srikar_Groups');
         //  final decodedResponse = utf8.decode(base64.decode(response.body['response']));
         //showDownloadNotification();
         if (!downloadsDirectory.existsSync()) {
@@ -990,7 +1070,8 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         List<int> pdfBytes = base64.decode(jsonResponse['response']);
         // Get external storage directory
         Directory? directory = await getExternalStorageDirectory();
-        String filePath = '${directory!.path}/3F_${DateTime.now().toString()}.xlsx';
+        String filePath =
+            '${directory!.path}/3F_${DateTime.now().toString()}.xlsx';
 
         // Write decoded data to file
         File file = File(filePath);
@@ -1004,7 +1085,8 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         // Here, we're using http package to download file
         // Replace this with appropriate download method as per your requirement
         // and update DownloadManager accordingly
-        DownloadManager.addCompletedDownload(file.path, file.path, '3F Akshaya', 'application/octet-stream');
+        DownloadManager.addCompletedDownload(
+            file.path, file.path, '3F Akshaya', 'application/octet-stream');
 
         // String filePath = downloadsDirectory.path;
 
@@ -1043,17 +1125,112 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
             // Add your download functionality here
           },
           backgroundColor: buttonColor,
-          mini: true, // Make the button mini
-          child: const Icon(Icons.download),
-          shape: BeveledRectangleBorder(), // Beveled rectangle shape
+          mini: true,
+          shape: const BeveledRectangleBorder(), // Make the button mini
+          child: const Icon(Icons.download), // Beveled rectangle shape
         ),
       ),
     );
   }
+
+  Widget downloadedBtn(List<StateListResult> stateResult) {
+    Color buttonColor = const Color(0xFFe78337); // Set your desired color here
+
+    return ClipRRect(
+      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+      child: SizedBox(
+        width: 40, // Adjust width as needed
+        height: 40, // Adjust height as needed
+        child: FloatingActionButton(
+          onPressed: () {
+            // Call the exportStateGroupSummaryReport function when button is clicked
+            exportStateGroupSummaryReport(stateResult);
+          },
+          backgroundColor: buttonColor,
+          mini: true,
+          shape: const BeveledRectangleBorder(), // Make the button mini
+          child: const Icon(Icons.download), // Beveled rectangle shape
+        ),
+      ),
+    );
+  }
+
+  Future<void> exportStateGroupSummaryReport(
+      List<StateListResult> stateResult) async {
+    try {
+      // Request storage permission
+
+      // Create the request body directly from stateResult
+      final requestBody = stateResult
+          .map((state) => {
+        'State': state.state,
+        'OB': state.ob,
+        'Sales': state.sales,
+        'Returns': state.returns,
+        'Receipts': state.receipts,
+        'Others': state.others,
+        'Closing': state.closing,
+      })
+          .toList();
+
+      // API endpoint for exporting state group summary report
+      const apiUrl =
+          'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/ExportStateGroupSummaryReport';
+
+      // Send HTTP POST request
+      final jsonResponse = await http.post(
+        Uri.parse(apiUrl),
+        body: jsonEncode(requestBody),
+        headers: {
+          'Content-Type': 'application/json',
+        },
+      );
+
+      // Check response status code
+      if (jsonResponse.statusCode == 200) {
+        final jsonData = json.decode(jsonResponse.body);
+
+        Directory downloadsDirectory =
+        Directory('/storage/emulated/0/Download/Srikar_Groups/GroupSummaryReports');
+        if (!downloadsDirectory.existsSync()) {
+          downloadsDirectory.createSync(recursive: true);
+        }
+        String filePath = downloadsDirectory.path;
+
+        List<int> pdfBytes = base64.decode(jsonData['response']);
+        DateTime now = DateTime.now();
+        String timestamp = DateFormat('yyyyMMdd_HHmmss').format(now);
+        String filename = 'GroupSummary_$timestamp.xlsx';
+        final File file = File('$filePath/$filename');
+        //  final File file = File('$filePath/GroupSummary_${DateTime.now().toString()}.xls');
+        await file.create(recursive: true);
+        await file.writeAsBytes(pdfBytes);
+
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(content: Text('File downloaded successfully')),
+        );
+      } else {
+        throw Exception(
+            'Export failed with status code: ${jsonResponse.statusCode}');
+      }
+    } catch (e) {
+      // Handle exceptions
+      print('Error exporting state group summary report: $e');
+      ScaffoldMessenger.of(context).showSnackBar(
+        SnackBar(
+            content: Text('Error exporting state group summary report: $e')),
+      );
+    }
+  }
+  String formatNumber(double? number) {
+    NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+    return formatter.format(number);
+  }
 }
 
 class DownloadManager {
-  static void addCompletedDownload(String filePath, String fileName, String title, String mimeType) {
+  static void addCompletedDownload(
+      String filePath, String fileName, String title, String mimeType) {
     // Implement your method to add completed download here
   }
 }
