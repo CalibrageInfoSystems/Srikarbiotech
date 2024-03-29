@@ -10,6 +10,9 @@ class LocationUpdatesService {
   static const String LOG_TAG = "MyService";
   late Location location;
   LocationData? currentLocation;
+   double MINIMUM_MOVEMENT_SPEED = 0.2; // in meters/second
+   double MAX_ACCURACY_THRESHOLD = 10; // in meters
+
   late StreamSubscription<LocationData> _locationSubscription;
 
   LocationUpdatesService() {
@@ -53,12 +56,16 @@ class LocationUpdatesService {
   void onLocationChanged(LocationData locationData) {
     if (currentLocation != null) {
       double distance = calculateDistance(
-          currentLocation!.latitude!,
-          currentLocation!.longitude!,
-          locationData.latitude!,
-          locationData.longitude!);
+        currentLocation!.latitude!,
+        currentLocation!.longitude!,
+        locationData.latitude!,
+        locationData.longitude!,
+      );
 
-      if (distance >= 200) {
+      if (locationData.speed != null &&
+          locationData.speed! >= MINIMUM_MOVEMENT_SPEED &&
+          locationData.accuracy! <= MAX_ACCURACY_THRESHOLD &&
+          distance >= 50) {
         currentLocation = locationData;
         double latitude = currentLocation!.latitude!;
         double longitude = currentLocation!.longitude!;
@@ -70,7 +77,7 @@ class LocationUpdatesService {
       currentLocation = locationData;
       double latitude = currentLocation!.latitude!;
       double longitude = currentLocation!.longitude!;
-      print("latitude: $latitude, longitude: $longitude");
+      print("Latitude: $latitude, Longitude: $longitude");
       appendLog("Latitude: $latitude, Longitude: $longitude");
     }
   }
