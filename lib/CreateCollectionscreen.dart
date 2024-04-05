@@ -1360,13 +1360,15 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
     print('Formatted Date: $checkdate');
 
     if (isValid && DateController.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong('Please Select Date', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong(
+          'Please Select Date', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
 
     if (isValid && Amounttext.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong('Please Enter Amount', context, 1, 6);
+      CommonUtils.showCustomToastMessageLong(
+          'Please Enter Amount', context, 1, 6);
 
       isValid = false;
       hasValidationFailed = true;
@@ -1384,38 +1386,44 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
       //   hasValidationFailed = true;
       // }
       if (isValid && (virtualcodeValue == null || virtualcodeValue!.isEmpty)) {
-        CommonUtils.showCustomToastMessageLong('Please Select Virtual Bank Code', context, 1, 6);
+        CommonUtils.showCustomToastMessageLong(
+            'Please Select Virtual Bank Code', context, 1, 6);
 
         isValid = false;
         hasValidationFailed = true;
       } else if (virtualcodeValue == 'Other') {
         if (accountValue == null || accountValue!.isEmpty) {
-          CommonUtils.showCustomToastMessageLong('Please Select Account Number', context, 1, 6);
+          CommonUtils.showCustomToastMessageLong(
+              'Please Select Account Number', context, 1, 6);
 
           isValid = false;
           hasValidationFailed = true;
         }
       }
       if (isValid && utrcontroller.text.isEmpty) {
-        CommonUtils.showCustomToastMessageLong('Please Enter UTR Number ', context, 1, 6);
+        CommonUtils.showCustomToastMessageLong(
+            'Please Enter UTR Number ', context, 1, 6);
 
         isValid = false;
         hasValidationFailed = true;
       }
     } else if (Selected_PaymentMode == 'Cheque') {
       if (isValid && checknumbercontroller.text.isEmpty) {
-        CommonUtils.showCustomToastMessageLong('Please Enter Check Number', context, 1, 6);
+        CommonUtils.showCustomToastMessageLong(
+            'Please Enter Check Number', context, 1, 6);
 
         isValid = false;
         hasValidationFailed = true;
       }
       if (isValid && checkDateController.text.isEmpty) {
-        CommonUtils.showCustomToastMessageLong('Please Select Check Date', context, 1, 4);
+        CommonUtils.showCustomToastMessageLong(
+            'Please Select Check Date', context, 1, 4);
         isValid = false;
         hasValidationFailed = true;
       }
       if (isValid && checkissuedbankcontroller.text.isEmpty) {
-        CommonUtils.showCustomToastMessageLong('Please Enter Check Issued Bank', context, 1, 6);
+        CommonUtils.showCustomToastMessageLong(
+            'Please Enter Check Issued Bank', context, 1, 6);
 
         isValid = false;
         hasValidationFailed = true;
@@ -1425,7 +1433,8 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
     if (isValid && (selectedPurpose == null || selectedPurpose!.isEmpty)) {
       // Show an error message or perform any action for invalid purpose
 
-      CommonUtils.showCustomToastMessageLong('Please Select Purpose', context, 1, 6);
+      CommonUtils.showCustomToastMessageLong(
+          'Please Select Purpose', context, 1, 6);
 
       isValid = false;
       hasValidationFailed = true;
@@ -1434,13 +1443,15 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
     if (isValid && (categroyname == null || categroyname!.isEmpty)) {
       // Show an error message or perform any action for invalid category
 
-      CommonUtils.showCustomToastMessageLong('Please Select Category', context, 1, 6);
+      CommonUtils.showCustomToastMessageLong(
+          'Please Select Category', context, 1, 6);
 
       isValid = false;
       hasValidationFailed = true;
     }
     if (isValid && _imageFile == null) {
-      CommonUtils.showCustomToastMessageLong('Please Upload Attachment', context, 1, 6);
+      CommonUtils.showCustomToastMessageLong(
+          'Please Upload Attachment', context, 1, 6);
 
       isValid = false;
       hasValidationFailed = true;
@@ -1509,13 +1520,11 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
         "FileString": base64Image
       };
 
-      print(requestData);
-      print(jsonEncode(requestData));
       // URL for the API endpoint
       String apiUrl = baseUrl + addCollections;
-      print('SubmitCreateCollectionApi:$apiUrl');
       // Encode the JSON data
       String requestBody = jsonEncode(requestData);
+      debugPrint('state section: $requestBody');
 
       // Set up the headers
       Map<String, String> headers = {
@@ -1529,23 +1538,24 @@ class Createcollection_screen extends State<CreateCollectionscreen> {
           headers: headers,
           body: requestBody,
         );
+        debugPrint('state section: $requestBody');
 
         // Check if the request was successful (status code 200)
         if (response.statusCode == 200) {
           // Handle the response here (e.g., print or process the data)
           Map<String, dynamic> responseData = json.decode(response.body);
 
-          print("Response: ${response.body}");
           setState(() {
             isLoading = false;
           });
           bool isSuccessFromApi = responseData['isSuccess'];
 
           if (isSuccessFromApi) {
-            // Navigate to the next screen
             Navigator.push(
               context,
-              MaterialPageRoute(builder: (context) => StatusScreen(Compneyname!, responseData['response']['collectionNumber'])),
+              MaterialPageRoute(
+                  builder: (context) => StatusScreen(Compneyname!,
+                      responseData['response'])), // ['collectionNumber']
             );
           } else {
             CommonUtils.showCustomToastMessageLong('Error', context, 1, 6);

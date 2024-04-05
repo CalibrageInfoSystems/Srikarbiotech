@@ -3,16 +3,20 @@
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:flutter/material.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:intl/intl.dart';
+import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
-import 'package:srikarbiotech/Common/SharedPrefsData.dart';
+import 'package:srikarbiotech/Common/styles.dart';
 import 'package:srikarbiotech/HomeScreen.dart';
 import 'package:http/http.dart' as http;
 import 'package:srikarbiotech/Model/state_selection_model.dart';
+
 import 'package:srikarbiotech/slp_selection_screen.dart';
+
+import 'notification_controller.dart';
 
 class StateSelectionScreen extends StatefulWidget {
   const StateSelectionScreen({super.key});
@@ -36,8 +40,9 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   bool isLoading = false;
   late Future<List<StateListResult>> apiData;
   DateTime selectedDate = DateTime.now();
-  final FlutterLocalNotificationsPlugin flutterLocalNotificationsPlugin =
-  FlutterLocalNotificationsPlugin();
+
+  String? downloadedFilePath;
+  int notificationId = 1;
   @override
   void initState() {
     super.initState();
@@ -51,30 +56,19 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
 
     fromDateText = pickedfromdate = fromDate;
     toDateText = pickedtodate = toDate;
-    print('====.54 $fromDateText  =========== $toDateText');
     apiData = getStateData(fromDate, toDate, 1);
+    setListenersForUserActionsOnNotifications();
   }
 
-  Future<void> showDownloadNotification() async {
-    const AndroidNotificationDetails androidPlatformChannelSpecifics =
-    AndroidNotificationDetails(
-      'download_channel_id',
-      'Download Notifications',
-      importance: Importance.max,
-      priority: Priority.high,
-      playSound: true,
-      sound: RawResourceAndroidNotificationSound('notification_sound'),
-    );
-
-    const NotificationDetails platformChannelSpecifics =
-    NotificationDetails(android: androidPlatformChannelSpecifics);
-
-    await flutterLocalNotificationsPlugin.show(
-      0,
-      'Download in progress',
-      'Downloading file...',
-      platformChannelSpecifics,
-      payload: 'download',
+  void setListenersForUserActionsOnNotifications() async {
+    AwesomeNotifications().setListeners(
+      onActionReceivedMethod: onActionReceivedMethod,
+      onNotificationCreatedMethod:
+      NotificationController.onNotificationCreatedMethod,
+      onNotificationDisplayedMethod:
+      NotificationController.onNotificationDisplayedMethod,
+      onDismissActionReceivedMethod:
+      NotificationController.onDismissActionReceivedMethod,
     );
   }
 
@@ -88,7 +82,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
       String formattedDate = DateFormat('yyyy-MM-dd').format(parsedDate);
       DateTime parsedDate2 = DateFormat('dd-MM-yyyy').parse(todate);
       String formattedtoDate = DateFormat('yyyy-MM-dd').format(parsedDate2);
-    print('pickedDate F: $formattedDate');
+      print('pickedDate F: $formattedDate');
       print('pickedDate F: $formattedtoDate');
 
       String apiUrl =
@@ -133,21 +127,16 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: SingleChildScrollView(
-        child: SizedBox(
-          width: MediaQuery.of(context).size.width,
-          child: Column(
-            children: [
-              Container(
-                padding: const EdgeInsets.only(
-                  left: 15,
-                  right: 15,
-                  top: 20,
-                ),
-                width: MediaQuery.of(context).size.width,
-                child: _dateSection(),
-              ),
-              FutureBuilder(
+      body: Container(
+        color: CommonStyles.greyShade,
+        child: Column(
+          children: [
+            Padding(
+              padding: const EdgeInsets.all(10.0),
+              child: _dateSection(),
+            ),
+            Expanded(
+              child: FutureBuilder(
                 future: apiData,
                 builder: (context, snapshot) {
                   if (snapshot.connectionState == ConnectionState.waiting) {
@@ -155,12 +144,15 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                       width: MediaQuery.of(context).size.width,
                       height: MediaQuery.of(context).size.height,
                       child: const Center(
-                        child: CircularProgressIndicator.adaptive(),
+                        child: CommonStyles.progressIndicator,
                       ),
                     );
                   } else if (snapshot.hasError) {
-                    return const Center(
-                      child: Text('Error occurred.'),
+                    return Center(
+                      child: Text(
+                        'Error occurred.: ${snapshot.error}',
+                        style: CommonStyles.txSty_12b_fb,
+                      ),
                     );
                   } else {
                     if (snapshot.hasData) {
@@ -172,34 +164,32 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                           child: CircularProgressIndicator.adaptive(),
                         )
                             : Padding(
-                          padding: const EdgeInsets.all(10),
-                          child: Column(
-                            children: [
-                              // const SizedBox(
-                              //   height: 10,
-                              // ),
-                              _stateSection(data),
-                            ],
-                          ),
+                          padding: const EdgeInsets.all(5),
+                          child: _stateSection(data),
                         );
                       } else {
                         return const Center(
-                          child: Text(' No data available.'),
+                          child: Text(
+                            ' No data available.',
+                            style: CommonStyles.txSty_12b_fb,
+                          ),
                         );
                       }
                     } else {
                       return const Center(
-                        child: Text('No data available'),
+                        child: Text(
+                          'No data available',
+                          style: CommonStyles.txSty_12b_fb,
+                        ),
                       );
                     }
                   }
                 },
               ),
-            ],
-          ),
+            ),
+          ],
         ),
       ),
-
       floatingActionButton: FutureBuilder(
         future: apiData,
         builder: (context, snapshot) {
@@ -223,14 +213,12 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         },
       ),
       floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
-      // floatingActionButton: _downloadedBtn(),
-      // floatingActionButtonLocation: FloatingActionButtonLocation.endFloat,
     );
   }
 
   AppBar _appBar() {
     return AppBar(
-      backgroundColor: const Color(0xFFe78337),
+      backgroundColor: CommonStyles.orangeColor,
       automaticallyImplyLeading: false,
       elevation: 5,
       title: Row(
@@ -254,10 +242,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
               const SizedBox(width: 8.0),
               const Text(
                 'State Selection',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
+                style: CommonStyles.txSty_18b_fb,
               ),
             ],
           ),
@@ -280,9 +265,10 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
 
   Widget _dateSection() {
     return Container(
-      padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 15),
+      padding: const EdgeInsets.all(10),
       // padding: const EdgeInsets.only(left: 0, right: 0),
       decoration: BoxDecoration(
+        color: Colors.white,
         borderRadius: BorderRadius.circular(5),
         border: Border.all(color: Colors.grey, width: 1),
       ),
@@ -294,14 +280,6 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
             fromDateController,
                 () => _selectfromDate(context, fromDateController),
           ),
-
-          // Expanded(
-          //   child: dateField(
-          //     context,
-          //     fromDateText,
-          //     () => _selectfromDate(context, fromDateController),
-          //   ),
-          // ),
           const SizedBox(width: 15),
           buildDateInput(
             context,
@@ -309,13 +287,6 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
             toDateController,
                 () => _selectDate(context, toDateController),
           ),
-          // Expanded(
-          //   child: dateField(
-          //     context,
-          //     toDateText,
-          //     () => _selectDate(context),
-          //   ),
-          // ),
           const SizedBox(
             width: 15,
           ),
@@ -410,345 +381,80 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   Widget _stateSection(List<StateListResult> data) {
-    return SizedBox(
-      width: MediaQuery.of(context).size.width,
-      height: MediaQuery.of(context).size.height,
+    return Expanded(
       child: ListView.builder(
         itemCount: data.length,
         itemBuilder: (context, index) {
-          // setState(() {
-          //   state = data[index].state!;
-          // });
           state = data[index].state!;
-          return SizedBox(
-            // margin: const EdgeInsets.symmetric(
-            //     horizontal: 16.0, vertical: 4.0),
-            child: GestureDetector(
-              onTap: () {
-                setState(() {
-                  selectedCardIndex = index;
-                });
+          return GestureDetector(
+            onTap: () {
+              setState(() {
+                selectedCardIndex = index;
+              });
 
-                // navigate to slp selection screen
-                Navigator.of(context).push(
-                  MaterialPageRoute(
-                    builder: (context) => SlpSelection(
-                      fromDateText: fromDateText,
-                      toDateText: toDateText,
-                      state: data[index].state!,
-                    ),
-                  ),
-                );
-              },
-              child: Card(
-                elevation: 0,
-                color:
-                selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
-                shape: RoundedRectangleBorder(
-                  borderRadius: BorderRadius.circular(5.0),
-                  side: BorderSide(
-                    color: selectedCardIndex == index
-                        ? const Color(0xFFe98d47)
-                        : Colors.grey,
-                    width: 1,
+              // navigate to slp selection screen
+              Navigator.of(context).push(
+                MaterialPageRoute(
+                  builder: (context) => SlpSelection(
+                    fromDateText: fromDateText,
+                    toDateText: toDateText,
+                    state: data[index].state!,
                   ),
                 ),
-                child: Container(
-                  padding: const EdgeInsets.all(10.0),
-                  child: Row(
-                    mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                    children: [
-                      Flexible(
-                        child: Padding(
-                          padding: const EdgeInsets.only(right: 10),
-                          child: Column(
-                            crossAxisAlignment: CrossAxisAlignment.start,
-                            children: [
-                              // row1
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                    child: Row(
-                                      // mainAxisAlignment:
-                                      //     MainAxisAlignment.spaceBetween,
-                                      children: [
-                                        const Text(
-                                          'State: ',
-                                          style: CommonUtils.Mediumtext_12,
-                                          overflow: TextOverflow.ellipsis,
-                                        ),
-                                        Text(
-                                          data[index].state!,
-                                          style: CommonUtils.Mediumtext_12_0,
-                                        ),
-                                      ],
-                                    ),
+              );
+            },
+            child: Card(
+              elevation: 0,
+              color:
+              selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
+              shape: RoundedRectangleBorder(
+                borderRadius: BorderRadius.circular(5.0),
+                side: BorderSide(
+                  color: selectedCardIndex == index
+                      ? CommonStyles.orangeColor
+                      : Colors.grey,
+                  width: 1,
+                ),
+              ),
+              child: Padding(
+                padding: const EdgeInsets.all(10.0),
+                child: Row(
+                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                  children: [
+                    Flexible(
+                      child: Padding(
+                        padding: const EdgeInsets.only(right: 10),
+                        child: Column(
+                          crossAxisAlignment: CrossAxisAlignment.start,
+                          children: [
+                            // row1
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      const Text(
+                                        'State: ',
+                                        style: CommonStyles.txSty_12b_fb,
+                                        overflow: TextOverflow.ellipsis,
+                                      ),
+                                      Text(
+                                        data[index].state!,
+                                        style: CommonStyles.txSty_12o_f7,
+                                      ),
+                                    ],
                                   ),
-                                  // const SizedBox(
-                                  //   width: 10,
-                                  // ),
-                                  // Expanded(
-                                  //   child: Row(
-                                  //     // mainAxisAlignment:
-                                  //     //     MainAxisAlignment.spaceBetween,
-                                  //     children: [
-                                  //       const Text(
-                                  //         'OB: ',
-                                  //         style: CommonUtils.Mediumtext_12,
-                                  //         overflow: TextOverflow.ellipsis,
-                                  //       ),
-                                  //       Text(
-                                  //         data[index].ob.toString(),
-                                  //         style: CommonUtils.Mediumtext_12_0,
-                                  //       ),
-                                  //     ],
-                                  //   ),
-                                  // ),
-                                ],
-                              ),
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Expanded(
-                                            flex: 3,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 0, 0, 0),
-                                                  child: Text(
-                                                    'OB',
-                                                    style:
-                                                    CommonUtils.Mediumtext_12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 4,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 0, 5, 0),
-                                                  child: Text(
-                                                    '₹${formatNumber(data[index].ob)}',
-
-                                                    style:
-                                                    CommonUtils.Mediumtext_12_0,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      )),
-                                  Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Expanded(
-                                            flex: 3,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 0, 0, 0),
-                                                  child: Text(
-                                                    'Sales',
-                                                    style:
-                                                    CommonUtils.Mediumtext_12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 4,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 0, 0, 0),
-                                                  child: Text(
-                                                    '₹${formatNumber(data[index].sales)}',
-                                                    style:
-                                                    CommonUtils.Mediumtext_12_0,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      )),
-                                ],
-                              ),
-
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              // row4
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Expanded(
-                                            flex: 3,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 0, 0, 0),
-                                                  child: Text(
-                                                    'Returns',
-                                                    style:
-                                                    CommonUtils.Mediumtext_12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 4,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 0, 0, 0),
-                                                  child: Text(
-                                                    '₹${formatNumber(data[index].returns)}',
-                                                    style:
-                                                    CommonUtils.Mediumtext_12_0,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      )),
-                                  Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Expanded(
-                                            flex: 3,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 0, 0, 0),
-                                                  child: Text(
-                                                    'Receipts',
-                                                    style:
-                                                    CommonUtils.Mediumtext_12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 4,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 0, 0, 0),
-                                                  child: Text(
-                                                    '₹${formatNumber(data[index].receipts)}',
-                                                    style:
-                                                    CommonUtils.Mediumtext_12_0,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      )),
-                                ],
-                              ),
-
-                              const SizedBox(
-                                height: 8,
-                              ),
-                              // row5
-                              Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
-                                children: [
-                                  Expanded(
-                                      child: Row(
-                                        children: [
-                                          const Expanded(
-                                            flex: 3,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding: EdgeInsets.fromLTRB(
-                                                      0, 0, 0, 0),
-                                                  child: Text(
-                                                    'Others',
-                                                    style:
-                                                    CommonUtils.Mediumtext_12,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          ),
-                                          Expanded(
-                                            flex: 4,
-                                            child: Column(
-                                              crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                              children: [
-                                                Padding(
-                                                  padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 0, 0, 0),
-                                                  child: Text(
-                                                    '₹${formatNumber(data[index].others)}',
-                                                    style:
-                                                    CommonUtils.Mediumtext_12_0,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
-                                          )
-                                        ],
-                                      )),
-                                  Expanded(
+                                ),
+                              ],
+                            ),
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
                                     child: Row(
                                       children: [
                                         const Expanded(
@@ -758,12 +464,11 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                             CrossAxisAlignment.start,
                                             children: [
                                               Padding(
-                                                padding: EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
+                                                padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
                                                 child: Text(
-                                                  'Closing',
-                                                  style:
-                                                  CommonUtils.Mediumtext_12,
+                                                  'OB',
+                                                  style: CommonStyles.txSty_12b_fb,
                                                 ),
                                               ),
                                             ],
@@ -776,33 +481,248 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                             CrossAxisAlignment.start,
                                             children: [
                                               Padding(
-                                                padding:
-                                                const EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
+                                                padding: const EdgeInsets.fromLTRB(
+                                                    0, 0, 5, 0),
                                                 child: Text(
-                                                  '₹${formatNumber(data[index].closing)}',
-                                                  style: CommonUtils
-                                                      .Mediumtext_12_0,
+                                                  '₹${formatNumber(data[index].ob)}',
+                                                  style: CommonStyles.txSty_12o_f7,
                                                 ),
                                               ),
                                             ],
                                           ),
                                         )
                                       ],
-                                    ),
+                                    )),
+                                Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Expanded(
+                                          flex: 3,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                child: Text(
+                                                  'Sales',
+                                                  style: CommonStyles.txSty_12b_fb,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  '₹${formatNumber(data[index].sales)}',
+                                                  style: CommonStyles.txSty_12o_f7,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                              ],
+                            ),
+
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            // row4
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Expanded(
+                                          flex: 3,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                child: Text(
+                                                  'Returns',
+                                                  style: CommonStyles.txSty_12b_fb,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  '₹${formatNumber(data[index].returns)}',
+                                                  style: CommonStyles.txSty_12o_f7,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                                Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Expanded(
+                                          flex: 3,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                child: Text(
+                                                  'Receipts',
+                                                  style: CommonStyles.txSty_12b_fb,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  '₹${formatNumber(data[index].receipts)}',
+                                                  style: CommonStyles.txSty_12o_f7,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                              ],
+                            ),
+
+                            const SizedBox(
+                              height: 8,
+                            ),
+                            // row5
+                            Row(
+                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                              children: [
+                                Expanded(
+                                    child: Row(
+                                      children: [
+                                        const Expanded(
+                                          flex: 3,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                                child: Text(
+                                                  'Others',
+                                                  style: CommonStyles.txSty_12b_fb,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                            CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: const EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  '₹${formatNumber(data[index].others)}',
+                                                  style: CommonStyles.txSty_12o_f7,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                                Expanded(
+                                  child: Row(
+                                    children: [
+                                      const Expanded(
+                                        flex: 3,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 0, 0, 0),
+                                              child: Text(
+                                                'Closing',
+                                                style:
+                                                CommonStyles.txSty_12b_fb,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      ),
+                                      Expanded(
+                                        flex: 4,
+                                        child: Column(
+                                          crossAxisAlignment:
+                                          CrossAxisAlignment.start,
+                                          children: [
+                                            Padding(
+                                              padding:
+                                              const EdgeInsets.fromLTRB(
+                                                  0, 0, 0, 0),
+                                              child: Text(
+                                                '₹${formatNumber(data[index].closing)}',
+                                                style:
+                                                CommonStyles.txSty_12o_f7,
+                                              ),
+                                            ),
+                                          ],
+                                        ),
+                                      )
+                                    ],
                                   ),
-                                ],
-                              ),
-                            ],
-                          ),
+                                ),
+                              ],
+                            ),
+                          ],
                         ),
                       ),
-                      const Icon(
-                        Icons.chevron_right,
-                        color: Colors.orange,
-                      ),
-                    ],
-                  ),
+                    ),
+                    const Icon(
+                      Icons.chevron_right,
+                      color: CommonStyles.orangeColor,
+                    ),
+                  ],
                 ),
               ),
             ),
@@ -823,13 +743,13 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         padding: const EdgeInsets.all(10),
         decoration: BoxDecoration(
           border: Border.all(
-            color: CommonUtils.orangeColor,
+            color: CommonStyles.orangeColor,
           ),
           borderRadius: BorderRadius.circular(5),
         ),
         child: Text(
           labelText,
-          style: CommonUtils.Mediumtext_12_0,
+          style: CommonStyles.txSty_12b_fb,
         ),
       ),
     );
@@ -849,11 +769,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
             padding: const EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
             child: Text(
               labelText,
-              style: const TextStyle(
-                fontSize: 12.0,
-                color: Color(0xFF5f5f5f),
-                fontWeight: FontWeight.bold,
-              ),
+              style: CommonStyles.txSty_12b_fb,
               textAlign: TextAlign.start,
             ),
           ),
@@ -865,7 +781,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
               decoration: BoxDecoration(
                 borderRadius: BorderRadius.circular(5.0),
                 border: Border.all(
-                  color: const Color(0xFFe78337),
+                  color: CommonStyles.orangeColor,
                   width: 1,
                 ),
               ),
@@ -877,36 +793,16 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                       child: IgnorePointer(
                         child: TextFormField(
                           controller: controller,
-                          style: const TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w700,
-                            color: Color(0xFFe78337),
-                          ),
+                          style: CommonStyles.txSty_14o_f7,
                           decoration: InputDecoration(
                             hintText: labelText,
-                            hintStyle: const TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xa0e78337),
-                            ),
+                            hintStyle: CommonStyles.txSty_14o_f7,
                             border: InputBorder.none,
                           ),
                         ),
                       ),
                     ),
                   ),
-                  // InkWell(
-                  //   onTap: onTap,
-                  //   child: Padding(
-                  //     padding:  EdgeInsets.only(left: 10.0, top: 10.0),
-                  //     child: Icon(
-                  //       Icons.calendar_today,
-                  //       color: Colors.orange,
-                  //     ),
-                  //   ),
-                  // ),
                 ],
               ),
             ),
@@ -928,57 +824,6 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
     controller.text = fromDateText;
   }
 
-  // Future<void> _selectfromDate(
-  //   BuildContext context,
-  //   TextEditingController controller,
-  // ) async {
-  //   DateTime currentDate = DateTime.now();
-  //   DateTime initialDate = selectedFromDate ?? currentDate;
-  //
-  //   // Calculate the date 30 days ago from the current date
-  //   DateTime thirtyDaysAgo = currentDate.subtract(Duration(days: 30));
-  //
-  //   try {
-  //     DateTime? picked = await showDatePicker(
-  //       context: context,
-  //       initialEntryMode: DatePickerEntryMode.calendarOnly,
-  //       initialDate: initialDate,
-  //       firstDate: thirtyDaysAgo, // Set the first selectable date to 30 days ago
-  //       lastDate: currentDate, // Set the last selectable date to the current date
-  //       builder: (BuildContext context, Widget? child) {
-  //         return Theme(
-  //           data: ThemeData.light().copyWith(
-  //             colorScheme: ColorScheme.light(
-  //               primary: Color(0xFFe78337), // Change the primary color here
-  //               onPrimary: Colors.white,
-  //               // onSurface: Colors.blue,// Change the text color here
-  //             ),
-  //             dialogBackgroundColor: Colors.white, // Change the dialog background color here
-  //           ),
-  //           child: child!,
-  //         );
-  //       },
-  //     );
-  //
-  //     if (picked != null) {
-  //       String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
-  //       setState(() {
-  //         fromDateText = formattedDate;
-  //         controller.text = fromDateText;
-  //       });
-  //
-  //       // Save selected dates as DateTime objects
-  //       selectedFromDate = picked;
-  //       print("Selected From Date: $selectedFromDate");
-  //
-  //       // Print formatted date
-  //       print("Selected To Date: ${DateFormat('yyyy-MM-dd').format(picked)}");
-  //     }
-  //   } catch (e) {
-  //     print("Error selecting date: $e");
-  //     // Handle the error, e.g., show a message to the user or log it.
-  //   }
-  // }
   Future<void> _selectfromDate(
       BuildContext context,
       TextEditingController controller,
@@ -1111,56 +956,53 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   Widget _downloadedBtn() {
-    Color buttonColor = const Color(0xFFe78337); // Set your desired color here
+    Color buttonColor = const Color(0xFFe78337);
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+      borderRadius: BorderRadius.circular(10),
       child: SizedBox(
-        width: 40, // Adjust width as needed
-        height: 40, // Adjust height as needed
+        width: 40,
+        height: 40,
         child: FloatingActionButton(
           onPressed: () {
             _downloadFile(context);
-
-            // Add your download functionality here
           },
           backgroundColor: buttonColor,
           mini: true,
-          shape: const BeveledRectangleBorder(), // Make the button mini
-          child: const Icon(Icons.download), // Beveled rectangle shape
+          shape: const BeveledRectangleBorder(),
+          child: const Icon(Icons.download),
         ),
       ),
     );
   }
 
   Widget downloadedBtn(List<StateListResult> stateResult) {
-    Color buttonColor = const Color(0xFFe78337); // Set your desired color here
+    Color buttonColor = const Color(0xFFe78337);
 
     return ClipRRect(
-      borderRadius: BorderRadius.circular(10), // Adjust the radius as needed
+      borderRadius: BorderRadius.circular(10),
       child: SizedBox(
         width: 40, // Adjust width as needed
         height: 40, // Adjust height as needed
         child: FloatingActionButton(
           onPressed: () {
-            // Call the exportStateGroupSummaryReport function when button is clicked
             exportStateGroupSummaryReport(stateResult);
           },
           backgroundColor: buttonColor,
           mini: true,
-          shape: const BeveledRectangleBorder(), // Make the button mini
-          child: const Icon(Icons.download), // Beveled rectangle shape
+          shape: const BeveledRectangleBorder(),
+          child: const Icon(Icons.download),
         ),
       ),
     );
   }
 
+  List<int> tempPdfBytes = [];
+  File? xlSheet;
+
   Future<void> exportStateGroupSummaryReport(
       List<StateListResult> stateResult) async {
     try {
-      // Request storage permission
-
-      // Create the request body directly from stateResult
       final requestBody = stateResult
           .map((state) => {
         'State': state.state,
@@ -1190,8 +1032,8 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
       if (jsonResponse.statusCode == 200) {
         final jsonData = json.decode(jsonResponse.body);
 
-        Directory downloadsDirectory =
-        Directory('/storage/emulated/0/Download/Srikar_Groups/GroupSummaryReports');
+        Directory downloadsDirectory = Directory(
+            '/storage/emulated/0/Download/Srikar_Groups/GroupSummaryReports/');
         if (!downloadsDirectory.existsSync()) {
           downloadsDirectory.createSync(recursive: true);
         }
@@ -1202,10 +1044,11 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         String timestamp = DateFormat('yyyyMMdd_HHmmss').format(now);
         String filename = 'GroupSummary_$timestamp.xlsx';
         final File file = File('$filePath/$filename');
-        //  final File file = File('$filePath/GroupSummary_${DateTime.now().toString()}.xls');
         await file.create(recursive: true);
         await file.writeAsBytes(pdfBytes);
 
+        downloadedFilePath = file.path;
+        createNotification(downloadedFilePath);
         ScaffoldMessenger.of(context).showSnackBar(
           const SnackBar(content: Text('File downloaded successfully')),
         );
@@ -1222,6 +1065,47 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
       );
     }
   }
+
+  void createNotification(String? filePath) {
+    if (filePath != null && filePath.isNotEmpty) {
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+          id: notificationId++,
+          channelKey: "sb_channel_key",
+          title: "State Summary Report",
+          body: filePath,
+        ),
+      );
+    } else {
+      print('Error: File path is null or empty.');
+    }
+  }
+
+  @pragma("vm:entry-point")
+  Future<void> onActionReceivedMethod(
+      ReceivedAction receivedAction,
+      ) async {
+    if (downloadedFilePath != null) {
+      final file = File(downloadedFilePath!);
+      if (await file.exists()) {
+        try {
+          await OpenFile.open(
+            downloadedFilePath!,
+            type:
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+          );
+        } catch (e) {
+          print('Error opening file: $e');
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Error: Downloaded XLS sheet not found.')),
+        );
+      }
+    }
+  }
+
   String formatNumber(double? number) {
     NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
     return formatter.format(number);

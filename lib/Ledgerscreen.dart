@@ -1,15 +1,17 @@
+// ignore_for_file: use_build_context_synchronously
+
 import 'dart:convert';
 import 'dart:io';
 
+import 'package:awesome_notifications/awesome_notifications.dart';
 import 'package:device_info/device_info.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
+import 'package:open_file/open_file.dart';
 import 'package:permission_handler/permission_handler.dart';
-import 'package:share/share.dart';
+import 'package:share_plus/share_plus.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'package:http/http.dart' as http;
@@ -29,7 +31,17 @@ class Ledgerscreen extends StatefulWidget {
   final double creditLine;
   final double balance;
 
-  Ledgerscreen({required this.cardName, required this.cardCode, required this.address, required this.state, required this.phone, required this.proprietorName, required this.gstRegnNo, required this.creditLine, required this.balance});
+  const Ledgerscreen(
+      {super.key,
+        required this.cardName,
+        required this.cardCode,
+        required this.address,
+        required this.state,
+        required this.phone,
+        required this.proprietorName,
+        required this.gstRegnNo,
+        required this.creditLine,
+        required this.balance});
   @override
   Ledger_screen createState() => Ledger_screen();
 }
@@ -44,6 +56,9 @@ class Ledger_screen extends State<Ledgerscreen> {
   DateTime? selectedToDate;
   int CompneyId = 0;
   String companyCode = "";
+
+  String? downloadedFilePath;
+  int notificationId = 1;
   @override
   initState() {
     super.initState();
@@ -62,7 +77,7 @@ class Ledger_screen extends State<Ledgerscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFe78337),
+        backgroundColor: const Color(0xFFe78337),
         automaticallyImplyLeading: false,
         title: Row(
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -70,21 +85,22 @@ class Ledger_screen extends State<Ledgerscreen> {
             Row(
               children: [
                 Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                  padding:
+                  const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
                   child: GestureDetector(
                     onTap: () {
                       // Handle the click event for the back button
                       Navigator.of(context).pop();
                     },
-                    child: Icon(
+                    child: const Icon(
                       Icons.chevron_left,
                       size: 30.0,
                       color: Colors.white,
                     ),
                   ),
                 ),
-                SizedBox(width: 8.0),
-                Text(
+                const SizedBox(width: 8.0),
+                const Text(
                   'Ledger',
                   style: TextStyle(
                     color: Colors.white,
@@ -104,18 +120,21 @@ class Ledger_screen extends State<Ledgerscreen> {
                       // Handle the click event for the home icon
                       Navigator.pushReplacement(
                         context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
+                        MaterialPageRoute(
+                            builder: (context) => const HomeScreen()),
                       );
                     },
                     child: Image.asset(
-                      CompneyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
+                      CompneyId == 1
+                          ? 'assets/srikar-home-icon.png'
+                          : 'assets/seeds-home-icon.png',
                       width: 30,
                       height: 30,
                     ),
                   );
                 } else {
                   // Return a placeholder or loading indicator
-                  return SizedBox.shrink();
+                  return const SizedBox.shrink();
                 }
               },
             ),
@@ -125,8 +144,9 @@ class Ledger_screen extends State<Ledgerscreen> {
 
       body: Column(children: [
         Padding(
-            padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-            child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+            padding: const EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
+            child:
+            Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
               CommonUtils.buildCard(
                 widget.cardName,
                 widget.cardCode,
@@ -138,7 +158,7 @@ class Ledger_screen extends State<Ledgerscreen> {
               ),
               Container(
                 width: MediaQuery.of(context).size.width,
-                padding: EdgeInsets.only(top: 5.0, left: 0.0, right: 0.0),
+                padding: const EdgeInsets.only(top: 5.0, left: 0.0, right: 0.0),
                 child: IntrinsicHeight(
                   child: Card(
                     shape: RoundedRectangleBorder(
@@ -149,14 +169,14 @@ class Ledger_screen extends State<Ledgerscreen> {
                         borderRadius: BorderRadius.circular(5.0),
                         color: Colors.white,
                       ),
-                      padding: EdgeInsets.all(10.0),
+                      padding: const EdgeInsets.all(10.0),
                       width: MediaQuery.of(context).size.width,
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
                           Row(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 child: Text(
                                   'Credit Limit',
                                   style: TextStyle(
@@ -170,7 +190,7 @@ class Ledger_screen extends State<Ledgerscreen> {
                               Expanded(
                                 child: Text(
                                   '₹${widget.creditLine}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Color(0xFF5f5f5f),
                                     fontFamily: "Roboto",
                                     fontWeight: FontWeight.w700,
@@ -181,11 +201,12 @@ class Ledger_screen extends State<Ledgerscreen> {
                               ),
                             ],
                           ),
-                          SizedBox(height: 5.0), // Add some space between rows
+                          const SizedBox(
+                              height: 5.0), // Add some space between rows
                           // Third Row: Outstanding Amount
                           Row(
                             children: [
-                              Expanded(
+                              const Expanded(
                                 child: Text(
                                   'Outstanding Amount',
                                   style: TextStyle(
@@ -199,7 +220,7 @@ class Ledger_screen extends State<Ledgerscreen> {
                               Expanded(
                                 child: Text(
                                   '₹${widget.balance}',
-                                  style: TextStyle(
+                                  style: const TextStyle(
                                     color: Color(0xFF5f5f5f),
                                     fontFamily: "Roboto",
                                     fontWeight: FontWeight.w700,
@@ -228,7 +249,7 @@ class Ledger_screen extends State<Ledgerscreen> {
                       borderRadius: BorderRadius.circular(5.0),
                       color: Colors.white,
                     ),
-                    padding: EdgeInsets.all(10.0),
+                    padding: const EdgeInsets.all(10.0),
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
@@ -237,18 +258,18 @@ class Ledger_screen extends State<Ledgerscreen> {
                           context,
                           'From Date',
                           fromDateController,
-                          () => _selectfromDate(context, fromDateController),
+                              () => _selectfromDate(context, fromDateController),
                         ),
-                        SizedBox(height: 16.0),
+                        const SizedBox(height: 16.0),
                         // To Date TextFormField with Calendar Icon
                         buildDateInput(
                           context,
                           'To Date',
                           toDateController,
-                          () => _selectDate(context, toDateController),
+                              () => _selectDate(context, toDateController),
                         ),
 
-                        SizedBox(height: 16.0),
+                        const SizedBox(height: 16.0),
 
                         // Download and Share buttons
                       ],
@@ -265,27 +286,25 @@ class Ledger_screen extends State<Ledgerscreen> {
             Expanded(
               child: InkWell(
                 onTap: () {
-                  // Add logic for the download button
                   CommonUtils.checkInternetConnectivity().then(
                         (isConnected) {
                       if (isConnected) {
                         downloadData();
-                        print('The Internet Is Connected');
                       } else {
                         CommonUtils.showCustomToastMessageLong(
-                            'Please check your internet  connection', context, 1, 4);
-                        print('The Internet Is not  Connected');
+                            'Please check your internet  connection',
+                            context,
+                            1,
+                            4);
                       }
                     },
                   );
-
-                  print('Download button clicked');
                 },
                 child: Container(
                   padding: const EdgeInsets.all(10),
                   decoration: BoxDecoration(
                     borderRadius: BorderRadius.circular(10),
-                    color: Color(0xFFe78337),
+                    color: const Color(0xFFe78337),
                   ),
                   child: const Center(
                     child: Text(
@@ -293,7 +312,8 @@ class Ledger_screen extends State<Ledgerscreen> {
                       style: TextStyle(
                         color: Colors.white,
                         fontSize: 18,
-                        fontWeight: FontWeight.bold, // Set the font weight to bold
+                        fontWeight:
+                        FontWeight.bold, // Set the font weight to bold
                         fontFamily: 'Roboto', // Set the font family to Roboto
                       ),
                     ),
@@ -305,41 +325,44 @@ class Ledger_screen extends State<Ledgerscreen> {
             if (downloading)
               LinearProgressIndicator(
                 backgroundColor: Colors.grey[200],
-                valueColor: AlwaysStoppedAnimation<Color>(Colors.blue),
+                valueColor: const AlwaysStoppedAnimation<Color>(Colors.blue),
               ),
 
             const SizedBox(
               width: 15,
             ),
-            InkWell(
+            GestureDetector(
               onTap: () {
                 print('Share button clicked');
                 CommonUtils.checkInternetConnectivity().then(
                       (isConnected) {
                     if (isConnected) {
-                      shareData();
-                      print('The Internet Is Connected');
+                      // shareData();
+                      downloadPdf();
                     } else {
                       CommonUtils.showCustomToastMessageLong(
-                          'Please check your internet  connection', context, 1, 4);
+                          'Please check your internet  connection',
+                          context,
+                          1,
+                          4);
                       print('The Internet Is not  Connected');
                     }
                   },
                 );
-
               },
               child: Container(
                 padding: const EdgeInsets.all(10),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
                   border: Border.all(
-                    color: Color(0xFFe78337),
+                    color: const Color(0xFFe78337),
                   ),
-                  color: Color(0xFFF8dac2), // Replace with the desired background color
+                  color: const Color(
+                      0xFFF8dac2), // Replace with the desired background color
                 ),
                 child: SvgPicture.asset(
                   'assets/share.svg', // Replace with your SVG file path
-                  color: Color(0xFFe78337),
+                  color: const Color(0xFFe78337),
                   width: 25,
                   height: 25,
                 ),
@@ -353,20 +376,143 @@ class Ledger_screen extends State<Ledgerscreen> {
     );
   }
 
+  Future<void> downloadPdf() async {
+    bool isValid = true;
+    bool hasValidationFailed = false;
+
+    if (isValid && fromDateController.text.isEmpty) {
+      CommonUtils.showCustomToastMessageLong(
+          'Please Select From Date', context, 1, 4);
+      isValid = false;
+      hasValidationFailed = true;
+    }
+    if (isValid && toDateController.text.isEmpty) {
+      CommonUtils.showCustomToastMessageLong(
+          'Please Select To Date', context, 1, 4);
+      isValid = false;
+      hasValidationFailed = true;
+    }
+    String fromdate = DateFormat('yyyy-MM-dd').format(selectedFromDate!);
+    String todate = DateFormat('yyyy-MM-dd').format(selectedToDate!);
+    String pdffromdate = DateFormat('ddMMyyyy').format(selectedFromDate!);
+    String pdftodate = DateFormat('ddMMyyyy').format(selectedToDate!);
+    print('pdffromdate: $pdffromdate');
+    print('pdftodate: $pdftodate');
+    if (isValid && todate.compareTo(fromdate) < 0) {
+      CommonUtils.showCustomToastMessageLong(
+          "To Date is less than From Date", context, 1, 5);
+      isValid = false;
+      hasValidationFailed = true;
+    }
+
+    if (isValid) {
+      final apiUrl = baseUrl + GetLedgerReport;
+      print('GetLedgerReportApi:$apiUrl');
+      final requestHeaders = {'Content-Type': 'application/json'};
+
+      final requestBody = {
+        "CompanyId": '$CompneyId',
+        "PartyCode": widget.cardCode,
+        "FromDate": fromdate,
+        "ToDate": todate
+      };
+      try {
+        String fromdate = DateFormat('yyyy-MM-dd').format(selectedFromDate!);
+        String todate = DateFormat('yyyy-MM-dd').format(selectedToDate!);
+        String pdffromdate = DateFormat('ddMMyyyy').format(selectedFromDate!);
+        String pdftodate = DateFormat('ddMMyyyy').format(selectedToDate!);
+        print('pdffromdate: $pdffromdate');
+        print('pdftodate: $pdftodate');
+
+        final apiUrl = baseUrl + GetLedgerReport;
+        final requestHeaders = {"Content-Type": "application/json"};
+
+        final requestBody = {
+          "CompanyId": '$CompneyId',
+          "PartyCode": widget.cardCode,
+          "FromDate": fromdate,
+          "ToDate": todate
+        };
+
+        final response = await http.post(
+          Uri.parse(apiUrl),
+          headers: requestHeaders,
+          body: jsonEncode(requestBody),
+        );
+
+        if (response.statusCode == 200) {
+          final jsonResponse = json.decode(response.body);
+
+          setState(() {
+            downloading = false;
+          });
+          if (jsonResponse['result']['isSuccess']) {
+            if (jsonResponse['result']['response'] == null) {
+              CommonUtils.showCustomToastMessageLong(
+                  'PDF is not available.', context, 1, 4);
+              return;
+            } else {
+              print('jsonResponse: $jsonResponse');
+            }
+            List<int> pdfBytes =
+            base64.decode(jsonResponse['result']['response']);
+            // create a directory for storing the report
+            Directory directoryPath =
+            Directory('/storage/emulated/0/Download/Srikar_Groups/ledger');
+            if (!directoryPath.existsSync()) {
+              directoryPath.createSync(recursive: true);
+            }
+            String filePath = directoryPath.path;
+            String fileName =
+                "${companyCode}_${widget.cardCode}_${pdffromdate}_$pdftodate.pdf";
+
+            final File file = File('$filePath/$fileName');
+
+            await file.create(recursive: true);
+            await file.writeAsBytes(pdfBytes);
+
+            sharePDF(file.path);
+            CommonUtils.showCustomToastMessageLong(
+                'Ledger Report Downloaded Successfully', context, 0, 4);
+          } else {
+            CommonUtils.showCustomToastMessageLong(
+                '${jsonResponse['result']['endUserMessage']}', context, 1, 4);
+          }
+        } else {
+          print('else Error: ${response.reasonPhrase}');
+        }
+      } catch (error) {
+        print('catchError: $error');
+      }
+    }
+  }
+
+  void sharePDF(String? filePath) async {
+    try {
+      if (filePath != null) {
+        await Share.shareFiles([filePath], text: 'Sharing pdf');
+      } else {
+        CommonUtils.showCustomToastMessageLong('No path found!', context, 0, 4);
+      }
+    } catch (e) {
+      print('Error sharing pdf: $e');
+    }
+  }
+
   static Widget buildDateInput(
-    BuildContext context,
-    String labelText,
-    TextEditingController controller,
-    VoidCallback onTap,
-  ) {
+      BuildContext context,
+      String labelText,
+      TextEditingController controller,
+      VoidCallback onTap,
+      ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
+          padding: const EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
           child: Text(
             labelText,
-            style: TextStyle(
+            style: const TextStyle(
               fontSize: 12.0,
               color: Color(0xFF5f5f5f),
               fontWeight: FontWeight.bold,
@@ -374,7 +520,7 @@ class Ledger_screen extends State<Ledgerscreen> {
             textAlign: TextAlign.start,
           ),
         ),
-        SizedBox(height: 8.0),
+        const SizedBox(height: 8.0),
         GestureDetector(
           onTap: () async {
             // Call the onTap callback to open the date picker
@@ -386,7 +532,7 @@ class Ledger_screen extends State<Ledgerscreen> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
               border: Border.all(
-                color: Color(0xFFe78337),
+                color: const Color(0xFFe78337),
                 width: 1,
               ),
             ),
@@ -396,11 +542,11 @@ class Ledger_screen extends State<Ledgerscreen> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
-                      padding: EdgeInsets.only(left: 10.0, top: 0.0),
+                      padding: const EdgeInsets.only(left: 10.0, top: 0.0),
                       child: IgnorePointer(
                         child: TextFormField(
                           controller: controller,
-                          style: TextStyle(
+                          style: const TextStyle(
                             fontSize: 14,
                             fontFamily: 'Roboto',
                             fontWeight: FontWeight.w700,
@@ -408,7 +554,7 @@ class Ledger_screen extends State<Ledgerscreen> {
                           ),
                           decoration: InputDecoration(
                             hintText: labelText,
-                            hintStyle: TextStyle(
+                            hintStyle: const TextStyle(
                               fontSize: 14,
                               fontFamily: 'Roboto',
                               fontWeight: FontWeight.w700,
@@ -426,7 +572,7 @@ class Ledger_screen extends State<Ledgerscreen> {
                     // Call the onTap callback to open the date picker
                     onTap();
                   },
-                  child: Padding(
+                  child: const Padding(
                     padding: EdgeInsets.all(10.0),
                     child: Icon(
                       Icons.calendar_today,
@@ -443,9 +589,9 @@ class Ledger_screen extends State<Ledgerscreen> {
   }
 
   Future<void> _selectfromDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
     DateTime currentDate = DateTime.now();
     // DateTime initialDate;
     DateTime initialDate = selectedFromDate ?? currentDate;
@@ -471,18 +617,18 @@ class Ledger_screen extends State<Ledgerscreen> {
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.light().copyWith(
-              colorScheme: ColorScheme.light(
+              colorScheme: const ColorScheme.light(
                 primary: Color(0xFFe78337), // Change the primary color here
                 onPrimary: Colors.white,
                 // onSurface: Colors.blue,// Change the text color here
               ),
-              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+              dialogBackgroundColor:
+              Colors.white, // Change the dialog background color here
             ),
             child: child!,
           );
         },
       );
-
       if (picked != null) {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         controller.text = formattedDate;
@@ -501,9 +647,9 @@ class Ledger_screen extends State<Ledgerscreen> {
   }
 
   Future<void> _selectDate(
-    BuildContext context,
-    TextEditingController controller,
-  ) async {
+      BuildContext context,
+      TextEditingController controller,
+      ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate = selectedToDate ?? currentDate;
     // if (controller.text.isNotEmpty) {
@@ -529,12 +675,13 @@ class Ledger_screen extends State<Ledgerscreen> {
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.light().copyWith(
-              colorScheme: ColorScheme.light(
+              colorScheme: const ColorScheme.light(
                 primary: Color(0xFFe78337), // Change the primary color here
                 onPrimary: Colors.white,
                 // onSurface: Colors.blue,// Change the text color here
               ),
-              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+              dialogBackgroundColor:
+              Colors.white, // Change the dialog background color here
             ),
             child: child!,
           );
@@ -563,12 +710,14 @@ class Ledger_screen extends State<Ledgerscreen> {
     bool hasValidationFailed = false;
 
     if (isValid && fromDateController.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong('Please Select From Date', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong(
+          'Please Select From Date', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
     if (isValid && toDateController.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong('Please Select To Date', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong(
+          'Please Select To Date', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
@@ -579,26 +728,23 @@ class Ledger_screen extends State<Ledgerscreen> {
     print('pdffromdate: $pdffromdate');
     print('pdftodate: $pdftodate');
     if (isValid && todate.compareTo(fromdate) < 0) {
-      CommonUtils.showCustomToastMessageLong("To Date is less than From Date", context, 1, 5);
+      CommonUtils.showCustomToastMessageLong(
+          "To Date is less than From Date", context, 1, 5);
       isValid = false;
       hasValidationFailed = true;
     }
 
     if (isValid) {
-      // final apiUrl =
-      //     'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Party/GetCustomerLedgerReport';
       final apiUrl = baseUrl + GetLedgerReport;
       print('GetLedgerReportApi:$apiUrl');
       final requestHeaders = {'Content-Type': 'application/json'};
-      // final requestBody = {
-      //   "PartyCode": "SRIKARTS00139",
-      //   "FromDate": "2023-05-24",
-      //   "ToDate": "2023-06-05"
-      // };
 
-      final requestBody = {"CompanyId": '$CompneyId', "PartyCode": '${widget.cardCode}', "FromDate": fromdate, "ToDate": todate};
-      print(requestBody);
-      print(jsonEncode(requestBody));
+      final requestBody = {
+        "CompanyId": '$CompneyId',
+        "PartyCode": widget.cardCode,
+        "FromDate": fromdate,
+        "ToDate": todate
+      };
       try {
         final response = await http.post(
           Uri.parse(apiUrl),
@@ -615,78 +761,193 @@ class Ledger_screen extends State<Ledgerscreen> {
           if (jsonResponse['result']['isSuccess']) {
             // Convert base64 string to bytes
             if (jsonResponse['result']['response'] == null) {
-              // Handle null response
-              CommonUtils.showCustomToastMessageLong('PDF is not available.', context, 1, 4);
-              print('Response is null.');
+              CommonUtils.showCustomToastMessageLong(
+                  'PDF is not available.', context, 1, 4);
+              return;
             } else {
-              // Handle non-null response
-              print(jsonResponse);
-              // Your further processing logic here
+              print('jsonResponse: $jsonResponse');
             }
-            List<int> pdfBytes = base64.decode(jsonResponse['result']['response']);
-            var status = await Permission.storage.request();
-            var manageExternalStorage = await Permission.manageExternalStorage.request();
-            if (status!.isGranted || manageExternalStorage!.isGranted) {
-              Directory downloadsDirectory = Directory('/storage/emulated/0/Download/Srikar_Groups');
-
-              String fileName = "${companyCode}_${widget.cardCode}_${pdffromdate}_${pdftodate}.pdf";
-              //    String fileName = "'$companyCode'_'${widget.cardCode}'_${fromDateController.text}_${toDateController.text}.pdf";
-
-              if (!downloadsDirectory.existsSync()) {
-                downloadsDirectory.createSync(recursive: true);
-              }
-              String filePath = '${downloadsDirectory.path}/$fileName';
-
-              // Write the bytes to a file
-              await File(filePath).writeAsBytes(pdfBytes);
-              // Permission granted, proceed with file operations
-              // ... (your existing code)
-              print('PDF saved to: $filePath');
-
-              CommonUtils.showCustomToastMessageLong('Ledger Report Downloaded Successfully', context, 0, 4);
-            } else {
-              print('Permission denied');
-
-              CommonUtils.showCustomToastMessageLong('Permission denied', context, 0, 4);
+            List<int> pdfBytes =
+            base64.decode(jsonResponse['result']['response']);
+            // create a directory for storing the report
+            Directory downloadsDirectory =
+            Directory('/storage/emulated/0/Download/Srikar_Groups/');
+            if (!downloadsDirectory.existsSync()) {
+              downloadsDirectory.createSync(recursive: true);
             }
+            String filePath = downloadsDirectory.path;
+            String fileName =
+                "${companyCode}_${widget.cardCode}_${pdffromdate}_$pdftodate.pdf";
 
-            // Get the directory for saving files
+            final File file = File('$filePath/$fileName');
+
+            await file.create(recursive: true);
+            await file.writeAsBytes(pdfBytes);
+
+            downloadedFilePath = file.path;
+            createNotification(downloadedFilePath);
+            CommonUtils.showCustomToastMessageLong(
+                'Ledger Report Downloaded Successfully', context, 0, 4);
           } else {
-            print('API Error: ${jsonResponse['result']['endUserMessage']}');
-            CommonUtils.showCustomToastMessageLong('${jsonResponse['result']['endUserMessage']}', context, 1, 4);
+            CommonUtils.showCustomToastMessageLong(
+                '${jsonResponse['result']['endUserMessage']}', context, 1, 4);
           }
         } else {
-          print('Error: ${response.reasonPhrase}');
+          print('else Error: ${response.reasonPhrase}');
         }
       } catch (error) {
-        print('Error: $error');
+        print('catchError: $error');
       }
     }
   }
 
+//   Future<void> downloadData() async {
+//     print('ledger: downloadData');
+
+//     bool isValid = true;
+//     bool hasValidationFailed = false;
+
+//     if (isValid && fromDateController.text.isEmpty) {
+//       CommonUtils.showCustomToastMessageLong(
+//           'Please Select From Date', context, 1, 4);
+//       isValid = false;
+//       hasValidationFailed = true;
+//     }
+//     if (isValid && toDateController.text.isEmpty) {
+//       CommonUtils.showCustomToastMessageLong(
+//           'Please Select To Date', context, 1, 4);
+//       isValid = false;
+//       hasValidationFailed = true;
+//     }
+//     String fromdate = DateFormat('yyyy-MM-dd').format(selectedFromDate!);
+//     String todate = DateFormat('yyyy-MM-dd').format(selectedToDate!);
+//     String pdffromdate = DateFormat('ddMMyyyy').format(selectedFromDate!);
+//     String pdftodate = DateFormat('ddMMyyyy').format(selectedToDate!);
+//     print('pdffromdate: $pdffromdate');
+//     print('pdftodate: $pdftodate');
+//     if (isValid && todate.compareTo(fromdate) < 0) {
+//       CommonUtils.showCustomToastMessageLong(
+//           "To Date is less than From Date", context, 1, 5);
+//       isValid = false;
+//       hasValidationFailed = true;
+//     }
+
+//     if (isValid) {
+//       // final apiUrl =
+//       //     'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Party/GetCustomerLedgerReport';
+//       final apiUrl = baseUrl + GetLedgerReport;
+//       print('GetLedgerReportApi:$apiUrl');
+//       final requestHeaders = {'Content-Type': 'application/json'};
+//       // final requestBody = {
+//       //   "PartyCode": "SRIKARTS00139",
+//       //   "FromDate": "2023-05-24",
+//       //   "ToDate": "2023-06-05"
+//       // };
+
+//       final requestBody = {
+//         "CompanyId": '$CompneyId',
+//         "PartyCode": widget.cardCode,
+//         "FromDate": fromdate,
+//         "ToDate": todate
+//       };
+//       try {
+//         final response = await http.post(
+//           Uri.parse(apiUrl),
+//           headers: requestHeaders,
+//           body: jsonEncode(requestBody),
+//         );
+
+//         if (response.statusCode == 200) {
+//           final jsonResponse = json.decode(response.body);
+
+//           setState(() {
+//             downloading = false;
+//           });
+//           if (jsonResponse['result']['isSuccess']) {
+//             // Convert base64 string to bytes
+//             if (jsonResponse['result']['response'] == null) {
+//               // Handle null response
+//               CommonUtils.showCustomToastMessageLong(
+//                   'PDF is not available.', context, 1, 4);
+//               print('Response is null.');
+//             } else {
+//               // Handle non-null response
+//               print(jsonResponse);
+//               // Your further processing logic here
+//             }
+//             List<int> pdfBytes =
+//                 base64.decode(jsonResponse['result']['response']);
+//             var status = await Permission.storage.request();
+//             var manageExternalStorage =
+//                 await Permission.manageExternalStorage.request();
+//             if (status.isGranted || manageExternalStorage.isGranted) {
+//               // create a directory for storing the report
+//               Directory downloadsDirectory =
+//                   Directory('/storage/emulated/0/Download/Srikar_Groups/');
+//               if (!downloadsDirectory.existsSync()) {
+//                 downloadsDirectory.createSync(recursive: true);
+//               }
+//               String filePath = downloadsDirectory.path;
+//               String fileName =
+//                   "${companyCode}_${widget.cardCode}_${pdffromdate}_$pdftodate.pdf";
+
+//               final File file = File('$filePath/$fileName');
+//               if (!downloadsDirectory.existsSync()) {
+//                 downloadsDirectory.createSync(recursive: true);
+//               }
+//               await file.create(recursive: true);
+//               await file.writeAsBytes(pdfBytes);
+
+//               downloadedFilePath = file.path;
+//               createNotification(downloadedFilePath);
+//               CommonUtils.showCustomToastMessageLong(
+//                   'Ledger Report Downloaded Successfully', context, 0, 4);
+//             } else {
+//               print('Permission denied');
+
+//               CommonUtils.showCustomToastMessageLong(
+//                   'Permission denied', context, 0, 4);
+//             }
+
+//             // Get the directory for saving files
+//           } else {
+//             CommonUtils.showCustomToastMessageLong(
+//                 '${jsonResponse['result']['endUserMessage']}', context, 1, 4);
+//           }
+//         } else {
+//           print('else Error: ${response.reasonPhrase}');
+//         }
+//       } catch (error) {
+//         print('catchError: $error');
+//       }
+//     }
+//   }
+
   Future<void> shareData() async {
+    print('ledger: shareData');
     bool isValid = true;
     bool hasValidationFailed = false;
     String fromdate = DateFormat('yyyy-MM-dd').format(selectedFromDate!);
     String todate = DateFormat('yyyy-MM-dd').format(selectedToDate!);
     String pdffromdate = DateFormat('ddMMyyyy').format(selectedFromDate!);
     String pdftodate = DateFormat('ddMMyyyy').format(selectedToDate!);
-    print('pdffromdate: $pdffromdate');
-    print('pdftodate: $pdftodate');
 
     if (isValid && fromDateController.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong('Please Select From Date', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong(
+          'Please Select From Date', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
     if (isValid && toDateController.text.isEmpty) {
-      CommonUtils.showCustomToastMessageLong('Please Select To Date', context, 1, 4);
+      CommonUtils.showCustomToastMessageLong(
+          'Please Select To Date', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
 
     if (isValid && todate.compareTo(fromdate) < 0) {
-      CommonUtils.showCustomToastMessageLong("To Date is less than From Date", context, 1, 5);
+      CommonUtils.showCustomToastMessageLong(
+          "To Date is less than From Date", context, 1, 5);
       isValid = false;
       hasValidationFailed = true;
     }
@@ -697,15 +958,12 @@ class Ledger_screen extends State<Ledgerscreen> {
       final apiUrl = baseUrl + GetCustomerLedgerReport;
       print('GetCustomerLedgerReportApi:$apiUrl');
       final requestHeaders = {'Content-Type': 'application/json'};
-
-      // final requestBody = {
-      //   "PartyCode": "SRIKARTS00139",
-      //   "FromDate": "2023-05-24",
-      //   "ToDate": "2023-06-05"
-      // };
-      final requestBody = {"CompanyId": '$CompneyId', "PartyCode": '${widget.cardCode}', "FromDate": fromdate, "ToDate": todate};
-      print(requestBody);
-      print(jsonEncode(requestBody));
+      final requestBody = {
+        "CompanyId": '$CompneyId',
+        "PartyCode": widget.cardCode,
+        "FromDate": fromdate,
+        "ToDate": todate
+      };
       try {
         final response = await http.post(
           Uri.parse(apiUrl),
@@ -717,27 +975,29 @@ class Ledger_screen extends State<Ledgerscreen> {
           final jsonResponse = json.decode(response.body);
 
           if (jsonResponse['result']['isSuccess']) {
-            // Convert base64 string to bytes
-            List<int> pdfBytes = base64.decode(jsonResponse['result']['response']);
-            //   var status = await Permission.storage.request();
+            List<int> pdfBytes =
+            base64.decode(jsonResponse['result']['response']);
             final status = await Permission.storage.request();
-            // if (status.isDenied ||
-            //     status.isPermanentlyDenied ||
-            //     status.isRestricted) {
-            var manageExternalStorage = await Permission.manageExternalStorage.request();
-            if (status!.isGranted || manageExternalStorage!.isGranted) {
-              Directory downloadsDirectory = Directory('/storage/emulated/0/Download');
-              // String fileName = "srikar_${DateFormat('yyyyMMdd_HHmmss').format(DateTime.now())}.pdf";
-              String fileName = "${companyCode}_${widget.cardCode}_${pdffromdate}_${pdftodate}.pdf";
+            var manageExternalStorage =
+            await Permission.manageExternalStorage.request();
+            if (status.isGranted || manageExternalStorage.isGranted) {
+              Directory downloadsDirectory = Directory(
+                  '/storage/emulated/0/Download/Srikar_Groups/ledgerSummaryReports');
+              if (!downloadsDirectory.existsSync()) {
+                downloadsDirectory.createSync(recursive: true);
+              }
+              String fileName =
+                  "${companyCode}_${widget.cardCode}_${pdffromdate}_$pdftodate.pdf";
 
               String filePath = '${downloadsDirectory.path}/$fileName';
 
-              // Write the bytes to a file
-              await File(filePath).writeAsBytes(pdfBytes);
-              // Permission granted, proceed with file operations
-              // ... (your existing code)
-              print('PDF saved to: $filePath');
-              await _sharePdf(filePath);
+              final File file = File(filePath);
+
+              await file.create(recursive: true);
+              await file.writeAsBytes(pdfBytes);
+              downloadedFilePath = file.path;
+              sharePDF(downloadedFilePath);
+              // await _sharePdf(filePath);
             } else {
               //  requestPermission();
               print('Permission denied');
@@ -745,34 +1005,54 @@ class Ledger_screen extends State<Ledgerscreen> {
 
             // Get the directory for saving files
           } else {
-            print('API Error: ${jsonResponse['result']['endUserMessage']}');
-            CommonUtils.showCustomToastMessageLong('${jsonResponse['result']['endUserMessage']}', context, 1, 4);
+            CommonUtils.showCustomToastMessageLong(
+                '${jsonResponse['result']['endUserMessage']}', context, 1, 4);
           }
         } else {
-          print('Error: ${response.reasonPhrase}');
+          print('elseError: ${response.reasonPhrase}');
         }
       } catch (error) {
-        print('Error: $error');
+        print('catch Error: $error');
       }
     }
   }
 
-  Future<void> _sharePdf(String filePath) async {
-    try {
-      // Check if the file exists
-      File file = File(filePath);
-      if (await file.exists()) {
-        // Share the file
-        await Share.shareFiles([filePath], text: 'Check out this PDF file');
-      } else {
-        print('File not found: $filePath');
-      }
-    } catch (error) {
-      print('Error sharing PDF: $error');
-    }
-  }
+  // void sharePDF(String? filePath) async {
+  //   if (downloadedFilePath != null) {
+  //     final file = File(downloadedFilePath!);
+  //     if (await file.exists()) {
+  //       try {
+  //         if (filePath != null) {
+  //           await Share.shareFiles([filePath], text: 'Check out this PDF file');
+  //         } else {
+  //           print('sharePDF: filePath has null');
+  //         }
+  //       } catch (e) {
+  //         print('catch sharePDF: $e');
+  //       }
+  //     } else {
+  //       print('Error: File path is null or empty.');
+  //     }
+  //   }
+  // }
+
+  // Future<void> _sharePdf(String filePath) async {
+  //   try {
+  //     // Check if the file exists
+  //     File file = File(filePath);
+  //     if (await file.exists()) {
+  //       // Share the file
+  //       await Share.shareFiles([filePath], text: 'Check out this PDF file');
+  //     } else {
+  //       print('File not found: $filePath');
+  //     }
+  //   } catch (error) {
+  //     print('Error sharing PDF: $error');
+  //   }
+  // }
 
   Future<void> checkStoragePermission() async {
+    print('ledger: checkStoragePermission');
     bool permissionStatus;
     final deviceInfo = await DeviceInfoPlugin().androidInfo;
 
@@ -805,11 +1085,48 @@ class Ledger_screen extends State<Ledgerscreen> {
   Future<void> getshareddata() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
 
-// Retrieve userId and slpCode
-
     CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
     companyCode = await SharedPrefsData.getStringFromSharedPrefs("companyCode");
     print('companyCode: $companyCode');
     print('Company ID: $CompneyId');
+  }
+
+  void createNotification(String? filePath) async {
+    if (filePath != null && filePath.isNotEmpty) {
+      AwesomeNotifications().createNotification(
+        content: NotificationContent(
+            id: notificationId++,
+            channelKey: 'sb_channel_key',
+            title: 'Ledger Summary Report',
+            body: filePath,
+            backgroundColor: Colors.green),
+      );
+    } else {
+      print('Error: File path is null or empty.');
+    }
+  }
+
+  @pragma("vm:entry-point")
+  Future<void> onActionReceivedMethod(
+      ReceivedAction receivedAction,
+      ) async {
+    if (downloadedFilePath != null) {
+      final file = File(downloadedFilePath!);
+      if (await file.exists()) {
+        try {
+          await OpenFile.open(
+            downloadedFilePath!,
+            type: 'application/pdf',
+          );
+        } catch (e) {
+          print('Error opening file: $e');
+        }
+      } else {
+        ScaffoldMessenger.of(context).showSnackBar(
+          const SnackBar(
+              content: Text('Error: Downloaded XLS sheet not found.')),
+        );
+      }
+    }
   }
 }

@@ -1,17 +1,19 @@
 import 'dart:async';
 import 'dart:io';
 import 'dart:math';
+import 'package:flutter/services.dart';
 import 'package:location/location.dart';
 
 typedef OnComplete = void Function(bool success, dynamic result, String? msg);
 
-
 class LocationUpdatesService {
+  static const MethodChannel _channel = MethodChannel('your_channel_id');
+
   static const String LOG_TAG = "MyService";
   late Location location;
   LocationData? currentLocation;
-   double MINIMUM_MOVEMENT_SPEED = 0.2; // in meters/second
-   double MAX_ACCURACY_THRESHOLD = 10; // in meters
+  double MINIMUM_MOVEMENT_SPEED = 0.2; // in meters/second
+  double MAX_ACCURACY_THRESHOLD = 10; // in meters
 
   late StreamSubscription<LocationData> _locationSubscription;
 
@@ -50,6 +52,14 @@ class LocationUpdatesService {
       if (onComplete != null) {
         onComplete(false, null, "Error starting location service: $e");
       }
+    }
+  }
+
+  void startForegroundService() async {
+    try {
+      await _channel.invokeMethod('startForegroundService');
+    } on PlatformException catch (e) {
+      print("Failed to start foreground service: '${e.message}'.");
     }
   }
 
@@ -129,6 +139,3 @@ class LocationUpdatesService {
     _locationSubscription.cancel();
   }
 }
-
-
-

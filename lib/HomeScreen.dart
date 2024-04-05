@@ -4,8 +4,11 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_expanded_tile/flutter_expanded_tile.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/ViewOrders.dart';
 
@@ -20,10 +23,12 @@ import 'Companiesselection.dart';
 import 'LoginScreen.dart';
 import 'Selectpartyscreen.dart';
 import 'Services/api_config.dart';
+import 'Services/background_service.dart';
 import 'StateSelectionScreen.dart';
 import 'ViewGroupreportsStatewise.dart';
 import 'ViewReturnorder.dart';
 import 'Viewpendingorder.dart';
+import 'location_service/logic/location_controller/location_controller_cubit.dart';
 
 class HomeScreen extends StatefulWidget {
   const HomeScreen({super.key});
@@ -49,22 +54,92 @@ class _home_Screen extends State<HomeScreen> {
 
   late ExpandedTileController _expandedTileController;
 
+  double MIN_DISTANCE_THRESHOLD = 50.0; // Define your minimum distance threshold here
+   double MAX_ACCURACY_THRESHOLD = 20.0; // meters
+   double MAX_SPEED_ACCURACY_THRESHOLD = 5.0; // meters/second
+   double MIN_SPEED_THRESHOLD = 0.5; // meters/second
+
+  late BackgroundService backgroundService;
+  late double lastLatitude;
+  late double lastLongitude;
+  bool isLocationEnabled = false;
+
   @override
   void initState() {
     super.initState();
-
+    backgroundService = BackgroundService();
     _expandedTileController = ExpandedTileController(isExpanded: false);
     // getshareddata();
     SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
+    checkLocationEnabled();
+  }
+  @pragma('vm:entry-point')
+  @override
+  Future<void> didChangeDependencies() async {
+    // await context.read<NotificationService>().initialize(context);
+
+    // Start the service automatically if it was activated before closing the application
+    if (await backgroundService.instance.isRunning()) {
+      await backgroundService.initializeService();
+    }
+
+    backgroundService.instance.on('on_location_changed').listen((event) async {
+      if (event != null) {
+        final position = Position(
+          longitude: double.tryParse(event['longitude'].toString()) ?? 0.0,
+          latitude: double.tryParse(event['latitude'].toString()) ?? 0.0,
+          timestamp: DateTime.fromMillisecondsSinceEpoch(
+            event['timestamp'].toInt(),
+            isUtc: true,
+          ),
+          accuracy: double.tryParse(event['accuracy'].toString()) ?? 0.0,
+          altitude: double.tryParse(event['altitude'].toString()) ?? 0.0,
+          heading: double.tryParse(event['heading'].toString()) ?? 0.0,
+          speed: double.tryParse(event['speed'].toString()) ?? 0.0,
+          speedAccuracy: double.tryParse(event['speed_accuracy'].toString()) ?? 0.0,
+          altitudeAccuracy: 0.0, // Default value for altitudeAccuracy
+          headingAccuracy: 0.0, // Default value for headingAccuracy
+        );
+
+
+
+        // Check if accuracy, speed, and speedAccuracy are acceptable for your application
+        if (position.accuracy <= MAX_ACCURACY_THRESHOLD &&
+            position.speedAccuracy <= MAX_SPEED_ACCURACY_THRESHOLD &&
+            position.speed >= MIN_SPEED_THRESHOLD) {
+          // Your code here
+
+          appendLog('accuracy: ${position.accuracy}, speedAccuracy: ${position.speedAccuracy}.speed: ${position.speed}');
+          // Calculate the distance between the current and last location
+
+        double distance = Geolocator.distanceBetween(
+              lastLatitude, lastLongitude, position.latitude, position.longitude);
+          print('Latitude: ${position.latitude}, Longitude: ${position.longitude},distance: $distance');
+          // If the distance exceeds 50 meters, print latitude and longitude
+          if (distance >= 50) {
+            print('Latitude H : ${position.latitude}, Longitude: ${position.longitude}');
+            appendLog('Latitude: ${position.latitude}, Longitude: ${position.longitude}.distance $distance');
+            lastLatitude = position.latitude;
+            lastLongitude = position.longitude;
+          }
+
+          await context.read<LocationControllerCubit>().onLocationChanged(
+            location: position,
+          );
+   }
+      }
+    });
+
+    super.didChangeDependencies();
   }
 
   @override
   Widget build(BuildContext context) {
     double height = MediaQuery.of(context).size.height / 3;
-
+    startService();
     getshareddata();
     return WillPopScope(
       onWillPop: () async {
@@ -504,6 +579,37 @@ class _home_Screen extends State<HomeScreen> {
       (route) => false,
     );
   }
+
+  Future<void> startService() async {
+    // await Fluttertoast.showToast(
+    //   msg: "Wait for a while, Initializing the service...",
+    // );
+
+    final permission =
+    await context.read<LocationControllerCubit>().enableGPSWithPermission();
+
+    if (permission) {
+      Position currentPosition = await Geolocator.getCurrentPosition();
+      // Initialize lastLatitude and lastLongitude with current values
+      lastLatitude = currentPosition.latitude;
+      lastLongitude = currentPosition.longitude;
+      await context
+          .read<LocationControllerCubit>()
+          .locationFetchByDeviceGPS();
+      // Configure the service notification channel and start the service
+      await backgroundService.initializeService();
+      // Set service as foreground.(Notification will available till the service end)
+      backgroundService.setServiceAsForeGround();
+    }
+  }
+
+  Future<void> checkLocationEnabled() async {
+    bool serviceEnabled = await Geolocator.isLocationServiceEnabled();
+    setState(() {
+      isLocationEnabled = serviceEnabled;
+    });
+  }
+
 }
 
 class BannerImages {

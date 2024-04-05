@@ -11,6 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:loading_animation_widget/loading_animation_widget.dart';
 import 'package:provider/provider.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
+import 'package:srikarbiotech/Common/styles.dart';
 
 import 'package:srikarbiotech/view_collection_checkout.dart';
 
@@ -33,10 +34,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   // String url = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollections/null';
 
   final _orangeColor = HexColor('#e58338');
-  final _hintTextStyle = const TextStyle(
-      fontSize: 14, color: Colors.black38, fontWeight: FontWeight.bold);
-  final _customTextStyle = const TextStyle(
-      fontSize: 14, color: Colors.black, fontWeight: FontWeight.bold);
+
   final _searchBarOutPutInlineBorder = OutlineInputBorder(
     borderRadius: BorderRadius.circular(10),
     borderSide: const BorderSide(color: Colors.black38),
@@ -56,11 +54,8 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   @override
   void initState() {
     super.initState();
-
     getshareddata();
     initializeData();
-
-
   }
 
   @override
@@ -83,12 +78,6 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
   Future<List<ListResult>> getCollection() async {
     userId = await SharedPrefsData.getStringFromSharedPrefs("userId");
     companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
-    DateTime currentDate = DateTime.now();
-    DateTime oneWeekBackDate = currentDate.subtract(const Duration(days: 7));
-    String formattedCurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
-    String formattedOneWeekBackDate =
-    DateFormat('yyyy-MM-dd').format(oneWeekBackDate);
-
     try {
       // final url = Uri.parse(
       //     'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollectionsbyMobileSearch');
@@ -123,8 +112,6 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
               .toList();
           return result;
         } else {
-          // Handle the case where "listResult" is null.
-          // You can return an empty list or handle it based on your application's requirements.
           return [];
         }
       } else {
@@ -142,85 +129,92 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
           viewProvider.clearFilter();
           Navigator.pushReplacement(
             context,
-            MaterialPageRoute(
-                builder: (context) => const HomeScreen()),
+            MaterialPageRoute(builder: (context) => const HomeScreen()),
           );
 
-      return true; // Allow the back navigation
-    },
-    child: Consumer<ViewCollectionProvider>(
-      builder: (context, viewCollectionProvider, _) => Scaffold(
-        appBar: _viewCollectionAppBar(),
-        body: FutureBuilder(
-          future: apiData,
-          builder: (context, snapshot) {
-            if (snapshot.connectionState == ConnectionState.waiting) {
-              return const Center(child: CircularProgressIndicator.adaptive());
-            } else if (snapshot.hasError) {
-              return const Center(
-                child: Text('Collection is empty'),
-              );
-            } else {
-              if (snapshot.hasData) {
-                // List<ListResult> data = snapshot.data!;
-                List<ListResult> data = viewCollectionProvider.providerData;
-                return Padding(
-                  padding: const EdgeInsets.all(12),
-                  child: Column(
-                    crossAxisAlignment: CrossAxisAlignment.start,
-                    children: [
-                      // search bar
-                      _searchBarAndFilter(),
+          return true;
+        },
+        child: Consumer<ViewCollectionProvider>(
+          builder: (context, viewCollectionProvider, _) => Scaffold(
+            appBar: _viewCollectionAppBar(),
+            body: FutureBuilder(
+              future: apiData,
+              builder: (context, snapshot) {
+                if (snapshot.connectionState == ConnectionState.waiting) {
+                  return const Center(
+                    child: CommonStyles.progressIndicator,
+                  );
+                } else if (snapshot.hasError) {
+                  return const Center(
+                    child: Text(
+                      'Collection is empty',
+                      style: CommonStyles.txSty_12b_fb,
+                    ),
+                  );
+                } else {
+                  if (snapshot.hasData) {
+                    // List<ListResult> data = snapshot.data!;
+                    List<ListResult> data = viewCollectionProvider.providerData;
+                    return Padding(
+                      padding: const EdgeInsets.all(12),
+                      child: Column(
+                        crossAxisAlignment: CrossAxisAlignment.start,
+                        children: [
+                          // search bar
+                          _searchBarAndFilter(),
 
-                      // list of cards
-                      if (viewCollectionProvider.providerData.isNotEmpty)
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: data.length,
-                            itemBuilder: ((context, index) {
-                              return MyCard(
-                                  listResult: data[index], index: index);
-                            }),
-                          ),
-                        )
-                      // no results
-                      else
-                        Expanded(
-                          child: SizedBox(
-                            width: double.infinity,
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              crossAxisAlignment: CrossAxisAlignment.center,
-                              children: [
-                                Padding(
-                                  padding: const EdgeInsets.all(5.0),
-                                  child: Text(
-                                    'No collection found!',
-                                    style: _customTextStyle,
-                                  ),
+                          // list of cards
+                          if (viewCollectionProvider.providerData.isNotEmpty)
+                            Expanded(
+                              child: ListView.builder(
+                                itemCount: data.length,
+                                itemBuilder: ((context, index) {
+                                  return MyCard(
+                                      listResult: data[index], index: index);
+                                }),
+                              ),
+                            )
+                          // no results
+                          else
+                            const Expanded(
+                              child: SizedBox(
+                                width: double.infinity,
+                                child: Column(
+                                  mainAxisAlignment: MainAxisAlignment.center,
+                                  crossAxisAlignment: CrossAxisAlignment.center,
+                                  children: [
+                                    Padding(
+                                      padding: EdgeInsets.all(5.0),
+                                      child: Text(
+                                        'No collection found!',
+                                        style: CommonStyles.txSty_12b_fb,
+                                      ),
+                                    ),
+                                  ],
                                 ),
-                              ],
+                              ),
                             ),
-                          ),
-                        ),
-                    ],
-                  ),
-                );
-              } else {
-                return const Center(
-                  child: Text('No data available'),
-                );
-              }
-            }
-          },
-        ),
-      ),
-    ));
+                        ],
+                      ),
+                    );
+                  } else {
+                    return const Center(
+                      child: Text(
+                        'No data available',
+                        style: CommonStyles.txSty_12b_fb,
+                      ),
+                    );
+                  }
+                }
+              },
+            ),
+          ),
+        ));
   }
 
   AppBar _viewCollectionAppBar() {
     return AppBar(
-      backgroundColor: const Color(0xFFe78337),
+      backgroundColor: CommonStyles.orangeColor,
       automaticallyImplyLeading: false,
       title: Row(
         mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -249,10 +243,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
               const SizedBox(width: 8.0),
               const Text(
                 'View Collection',
-                style: TextStyle(
-                  color: Colors.white,
-                  fontSize: 18,
-                ),
+                style: CommonStyles.txSty_18b_fb,
               ),
             ],
           ),
@@ -260,11 +251,8 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
             future: getshareddata(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                // Access the companyId after shared data is retrieved
-
                 return GestureDetector(
                   onTap: () {
-                    // Handle the click event for the home icon
                     Navigator.pushReplacement(
                       context,
                       MaterialPageRoute(
@@ -280,7 +268,6 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                   ),
                 );
               } else {
-                // Return a placeholder or loading indicator
                 return const SizedBox.shrink();
               }
             },
@@ -304,7 +291,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
                 onChanged: (input) => filterRecordsBasedOnPartyName(input),
                 decoration: InputDecoration(
                   hintText: 'Collection Search',
-                  hintStyle: _hintTextStyle,
+                  hintStyle: CommonStyles.txSty_14bs_fb,
                   suffixIcon: const Icon(Icons.search),
                   border: _searchBarOutPutInlineBorder,
                   focusedBorder: _searchBarEnabledNdFocuedOutPutInlineBorder,
@@ -317,7 +304,6 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
           ),
           GestureDetector(
             onTap: () {
-              // Handle the click action here
               showModalBottomSheet(
                 isScrollControlled: true,
                 context: context,
@@ -381,15 +367,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   final TextEditingController _typeAheadPurposeController =
   TextEditingController();
 
-  final _titleTextStyle = const TextStyle(
-      color: Colors.black, fontSize: 16, fontWeight: FontWeight.bold);
-
-  final _clearTextStyle = const TextStyle(
-      color: Color(0xFFe58338),
-      fontSize: 16,
-      decoration: TextDecoration.underline,
-      decorationColor: Color(0xFFe58338));
-
   DateTime toDate = DateTime.now();
   DateTime fromDate = DateTime.now();
   String? selectedValue;
@@ -411,7 +388,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   int? savedCompanyId = 0;
   String? slpCode = "";
   bool dateSelected = false;
-  DateTime selectedfromdateDate = DateTime.now().subtract(Duration(days: 7));
+  DateTime selectedfromdateDate =
+  DateTime.now().subtract(const Duration(days: 7));
   @override
   void initState() {
     // todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
@@ -449,7 +427,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     // final apiUrl =
     //     'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetPurposes/'
     //     '$savedCompanyId';
-    final apiUrl = baseUrl + GetPurpose + '$savedCompanyId';
+    final apiUrl = '$baseUrl$GetPurpose$savedCompanyId';
 
     try {
       final response = await http.get(Uri.parse(apiUrl));
@@ -510,12 +488,14 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.light().copyWith(
-              colorScheme: ColorScheme.light(
-                primary: Color(0xFFe78337), // Change the primary color here
+              colorScheme: const ColorScheme.light(
+                primary:
+                CommonStyles.orangeColor, // Change the primary color here
                 onPrimary: Colors.white,
                 // onSurface: Colors.blue,// Change the text color here
               ),
-              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+              dialogBackgroundColor:
+              Colors.white, // Change the dialog background color here
             ),
             child: child!,
           );
@@ -532,7 +512,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         //
         selectformattedtodate = DateFormat('yyyy-MM-dd').format(picked);
       }
-    } catch (e) {}
+    } catch (e) {
+      print('catch: $e');
+    }
   }
 
   Widget buildDateToInput(
@@ -548,12 +530,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           padding: const EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
           child: Text(
             labelText,
-            style: CommonUtils.txSty_13O_F6,
+            style: CommonStyles.txSty_12b_fb,
             textAlign: TextAlign.start,
           ),
         ),
-        const SizedBox(
-            height: 4.0), // Add space between labelText and TextFormField
+        const SizedBox(height: 4.0),
         GestureDetector(
           onTap: onTap,
           child: Container(
@@ -562,7 +543,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(12.0),
               border: Border.all(
-                color: const Color(0xFFe78337),
+                color: CommonStyles.orangeColor,
                 width: 1.0,
               ),
             ),
@@ -576,10 +557,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       child: TextFormField(
                         controller: controller,
                         enabled: false,
-                        style: CommonUtils.txSty_13O_F6,
+                        style: CommonStyles.txSty_12o_f7,
                         decoration: InputDecoration(
                           hintText: labelText,
-                          hintStyle: CommonUtils.txSty_13O_F6,
+                          hintStyle: CommonStyles.txSty_12o_f7,
                           border: InputBorder.none,
                         ),
                       ),
@@ -592,7 +573,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     padding: EdgeInsets.all(10.0),
                     child: Icon(
                       Icons.calendar_today,
-                      color: Color(0xFFe78337),
+                      color: CommonStyles.orangeColor,
                     ),
                   ),
                 ),
@@ -610,11 +591,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       ) async {
     DateTime initialDate;
     DateTime currentDate = DateTime.now();
-    print('===>current date,${DateTime.now()}');
 
     if (controller.text.isNotEmpty) {
       try {
-        print('===> date,${DateFormat('dd-MM-yyyy').parse(controller.text)}');
         initialDate = DateFormat('dd-MM-yyyy').parse(controller.text);
       } catch (e) {
         // If parsing fails, default to current date
@@ -635,12 +614,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.light().copyWith(
-              colorScheme: ColorScheme.light(
-                primary: Color(0xFFe78337), // Change the primary color here
+              colorScheme: const ColorScheme.light(
+                primary: CommonStyles.orangeColor,
                 onPrimary: Colors.white,
                 // onSurface: Colors.blue,// Change the text color here
               ),
-              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+              dialogBackgroundColor:
+              Colors.white, // Change the dialog background color here
             ),
             child: child!,
           );
@@ -654,14 +634,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         controller.text = formattedDate;
         viewProvider.setFromDate = formattedDate;
-        // Save selected dates as DateTime objects
-       // selectedfromdateDate = picked;
-
-        //
-        //
         selectformattedfromdate = DateFormat('yyyy-MM-dd').format(picked);
       }
-    } catch (e) {}
+    } catch (e) {
+      print('catch: $e');
+    }
   }
 
   Widget buildDateInputfromdate(
@@ -677,7 +654,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           padding: const EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
           child: Text(
             labelText,
-            style: CommonUtils.txSty_13O_F6,
+            style: CommonStyles.txSty_12o_f7,
             textAlign: TextAlign.start,
           ),
         ),
@@ -691,7 +668,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(10.0),
               border: Border.all(
-                color: const Color(0xFFe78337),
+                color: CommonStyles.orangeColor,
                 width: 1.0,
               ),
             ),
@@ -704,12 +681,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       padding: const EdgeInsets.only(left: 15, right: 5),
                       child: TextFormField(
                         controller: controller,
-                        // initialValue: viewProvider.fromDateValue,
                         enabled: false,
-                        style: CommonUtils.txSty_13O_F6,
+                        style: CommonStyles.txSty_12o_f7,
                         decoration: InputDecoration(
                           hintText: labelText,
-                          hintStyle: CommonUtils.txSty_13O_F6,
+                          hintStyle: CommonStyles.txSty_12o_f7,
                           border: InputBorder.none,
                         ),
                       ),
@@ -722,7 +698,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     padding: EdgeInsets.all(10.0),
                     child: Icon(
                       Icons.calendar_today,
-                      color: Color(0xFFe78337),
+                      color: CommonStyles.orangeColor,
                     ),
                   ),
                 ),
@@ -773,17 +749,17 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 Row(
                   mainAxisAlignment: MainAxisAlignment.spaceBetween,
                   children: <Widget>[
-                    Text(
+                    const Text(
                       'Filter By',
-                      style: _titleTextStyle,
+                      style: CommonStyles.txSty_14b_fb,
                     ),
                     GestureDetector(
                       onTap: () {
                         provider.clearFilter();
                       },
-                      child: Text(
+                      child: const Text(
                         'Clear all filters',
-                        style: _clearTextStyle,
+                        style: CommonStyles.txSty_12o_f7,
                       ),
                     ),
                   ],
@@ -797,11 +773,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 Column(
                   crossAxisAlignment: CrossAxisAlignment.start,
                   children: [
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5.0),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 5.0),
                       child: Text(
                         'Party',
-                        style: CommonUtils.txSty_13O_F6,
+                        style: CommonStyles.txSty_12o_f7,
                       ),
                     ),
                     const SizedBox(
@@ -820,20 +796,20 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           controller: controller,
                           focusNode: focusNode,
                           autofocus: false,
-                          style: CommonUtils.Mediumtext_12_0,
+                          style: CommonStyles.txSty_12o_f7,
                           decoration: const InputDecoration(
                               border: OutlineInputBorder(
                                 borderSide: BorderSide.none,
                               ),
                               hintText: 'Select Party',
-                              hintStyle: CommonUtils.Mediumtext_12_0),
+                              hintStyle: CommonStyles.txSty_12o_f7),
                         ),
                         itemBuilder: (context, value) {
                           return ListTile(
                             dense: true,
                             title: Text(
                               '${isPartyCodeIsEmpty ? value : value['cardName']}',
-                              style: CommonUtils.Mediumtext_12_0,
+                              style: CommonStyles.txSty_12o_f7,
                             ),
                           );
                         },
@@ -861,108 +837,15 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           provider.getPartyCode = selectedValue['cardCode'];
                         },
                       ),
-
-                      // TypeAheadField(
-                      //   controller: provider.getPartyController,
-                      //   builder: (context, controller, focusNode) => TextField(
-                      //     controller: controller,
-                      //     focusNode: focusNode,
-                      //     autofocus: false,
-                      //     style: CommonUtils.hintstyle_13,
-                      //     decoration: const InputDecoration(
-                      //         border: OutlineInputBorder(
-                      //           borderSide: BorderSide.none,
-                      //         ),
-                      //         hintText: 'Select Party',
-                      //         hintStyle: CommonUtils.hintstyle_13),
-                      //   ),
-                      //   itemBuilder: (context, value) {
-                      //     return ListTile(
-                      //       dense: true,
-                      //       title: Text(
-                      //         value,
-                      //         style: CommonUtils.hintstyle_12,
-                      //       ),
-                      //     );
-                      //   },
-                      //   onSelected: (selectedValue) {
-                      //     provider.getPartyController.text = selectedValue;
-                      //   },
-                      //   suggestionsCallback: (search) {
-                      //     if (search == '') {
-                      //       return null;
-                      //     }
-                      //     final filteredSuggestions = dropdownItems
-                      //         .where((party) => party['cardName']
-                      //             .toLowerCase()
-                      //             .startsWith(search.toLowerCase()))
-                      //         .map((party) => party['cardName'])
-                      //         .toList();
-                      //     if (filteredSuggestions.isEmpty) {
-                      //       return ['No party found'];
-                      //     }
-
-                      //     return filteredSuggestions;
-                      //   },
-                      // ),
-                      // DropdownButtonHideUnderline(
-                      //   child: ButtonTheme(
-                      //     alignedDropdown: true,
-                      //     child:
-                      //     DropdownButton<int>(
-                      //       hint: Text(
-                      //         'Select Party',
-                      //         style: CommonUtils.txSty_13O_F6,
-                      //       ),
-                      //       value: provider.dropDownParty,
-                      //       onChanged: (int? value) {
-                      //         setState(() {
-                      //           selectedCardCode = value!;
-                      //           provider.dropDownParty = value;
-                      //           if (selectedCardCode != -1) {
-                      //             selectedValue =
-                      //                 dropdownItems[selectedCardCode]['cardCode'];
-                      //             selectedName =
-                      //                 dropdownItems[selectedCardCode]['cardName'];
-                      //             provider.getApiPartyCode =
-                      //                 dropdownItems[selectedCardCode]['cardCode'];
-                      //
-                      //
-                      //           } else {
-                      //
-                      //
-                      //
-                      //           }
-                      //           // isDropdownValid = selectedTypeCdId != -1;
-                      //         });
-                      //       },
-                      //       items: dropdownItems.asMap().entries.map((entry) {
-                      //         final index = entry.key;
-                      //         final item = entry.value;
-                      //         return DropdownMenuItem<int>(
-                      //             value: index,
-                      //             child: Text(
-                      //               item['cardName'],
-                      //               overflow: TextOverflow.visible,
-                      //             ));
-                      //       }).toList(),
-                      //       style: CommonUtils.txSty_13O_F6,
-                      //       iconSize: 20,
-                      //       icon: null,
-                      //       isExpanded: true,
-                      //       underline: const SizedBox(),
-                      //     ),
-                      //   ),
-                      // ),
                     ),
                     const SizedBox(
                       height: 10.0,
                     ),
-                    Padding(
-                      padding: const EdgeInsets.only(left: 5.0),
+                    const Padding(
+                      padding: EdgeInsets.only(left: 5.0),
                       child: Text(
                         'Purpose',
-                        style: CommonUtils.txSty_13O_F6,
+                        style: CommonStyles.txSty_12o_f7,
                       ),
                     ),
                     const SizedBox(
@@ -974,13 +857,14 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       decoration: CommonUtils.decorationO_R10W1,
                       child: purposeList.isEmpty
                           ? LoadingAnimationWidget.newtonCradle(
-                        color: Colors.blue,
+                        color: CommonStyles.orangeColor,
                         size: 40.0,
                       )
                           : DropdownButton<String>(
-                        hint: Text(
+                        focusColor: Colors.transparent,
+                        hint: const Text(
                           'Select Purpose',
-                          style: CommonUtils.txSty_13O_F6,
+                          style: CommonStyles.txSty_12o_f7,
                         ),
                         value: provider.dropDownPurpose,
                         onChanged: (String? newValue) {
@@ -1001,7 +885,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                             value: purpose.fldValue,
                             child: Text(
                               purpose.purposeName,
-                              style: CommonUtils.txSty_13O_F6,
+                              style: CommonStyles.txSty_12o_f7,
                             ),
                           );
                         }).toList(),
@@ -1011,58 +895,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         underline: const SizedBox(),
                       ),
                     ),
-                    // Container(
-                    //   height: 40.0,
-                    //   padding: const EdgeInsets.only(
-                    //     right: 5,
-                    //     top: 18,
-                    //   ),
-                    //   decoration: CommonUtils.decorationO_R10W1,
-                    //   child: TypeAheadField(
-                    //     controller: _typeAheadPurposeController,
-                    //     builder: (context, controller, focusNode) => TextField(
-                    //       controller: controller,
-                    //       focusNode: focusNode,
-                    //       autofocus: false,
-                    //       style: CommonUtils.hintstyle_13,
-                    //       decoration: const InputDecoration(
-                    //           border: OutlineInputBorder(
-                    //             borderSide: BorderSide.none,
-                    //           ),
-                    //           hintText: 'Select Purpose',
-                    //           hintStyle: CommonUtils.hintstyle_13),
-                    //     ),
-                    //     itemBuilder: (context, value) {
-                    //       return ListTile(
-                    //         dense: true,
-                    //         title: Text(
-                    //           value,
-                    //           style: CommonUtils.hintstyle_12,
-                    //         ),
-                    //       );
-                    //     },
-                    //     onSelected: (selectedValue) {
-                    //       _typeAheadPurposeController.text = selectedValue;
-                    //     },
-                    //     suggestionsCallback: (search) {
-                    //       if (search == '') {
-                    //         return null;
-                    //       }
-                    //       final filteredSuggestions = purposeList
-                    //           .where((purpose) => purpose.fldValue
-                    //               .toLowerCase()
-                    //               .startsWith(search.toLowerCase()))
-                    //           .map((purpose) => purpose.fldValue)
-                    //           .toList();
-
-                    //       if (filteredSuggestions.isEmpty) {
-                    //         return ['No purpose found'];
-                    //       }
-
-                    //       return filteredSuggestions;
-                    //     },
-                    //   ),
-                    // ),
                   ],
                 ),
 
@@ -1072,7 +904,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 SizedBox(
                   height: 40,
                   child: apiResponse == null
-                      ? const Center(child: CircularProgressIndicator.adaptive())
+                      ? const Center(
+                    child: CommonStyles.progressIndicator,
+                  )
                       : ListView.builder(
                     scrollDirection: Axis.horizontal,
                     shrinkWrap: true,
@@ -1110,12 +944,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           margin: const EdgeInsets.symmetric(horizontal: 4.0),
                           decoration: BoxDecoration(
                             color: isSelected
-                                ? const Color(0xFFe78337)
-                                : const Color(0xFFe78337).withOpacity(0.1),
+                                ? CommonStyles.orangeColor
+                                : CommonStyles.orangeColor.withOpacity(0.1),
                             border: Border.all(
                               color: isSelected
-                                  ? const Color(0xFFe78337)
-                                  : const Color(0xFFe78337),
+                                  ? CommonStyles.orangeColor
+                                  : CommonStyles.orangeColor,
                               width: 1.0,
                             ),
                             borderRadius: BorderRadius.circular(8.0),
@@ -1132,6 +966,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                                       Text(
                                         currentPaymode.desc.toString(),
                                         style: TextStyle(
+                                          fontSize: 12.0,
+                                          fontWeight: FontWeight.bold,
+                                          fontFamily: "Roboto",
                                           color: isSelected
                                               ? Colors.white
                                               : Colors.black,
@@ -1208,9 +1045,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         ),
                         child: const Text(
                           'Cancel',
-                          style: TextStyle(
-                            color: Colors.red,
-                          ),
+                          style: CommonStyles.txSty_14r_fb,
                         ),
                       ),
                     ),
@@ -1220,14 +1055,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                     Expanded(
                       child: ElevatedButton(
                         onPressed: () {
-                          //apply
                           getAppliedFilterData(context);
                         },
                         style: ElevatedButton.styleFrom(
                           textStyle: const TextStyle(
                             color: Colors.white,
                           ),
-                          backgroundColor: _primaryOrange,
+                          backgroundColor: CommonStyles.orangeColor,
                           shape: const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
@@ -1236,9 +1070,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                         ),
                         child: const Text(
                           'Apply',
-                          style: TextStyle(
-                            color: Colors.white,
-                          ),
+                          style: CommonStyles.txSty_14w_fb,
                         ),
                       ),
                     ),
@@ -1349,12 +1181,6 @@ class _MyCardState extends State<MyCard> {
     color: Colors.white,
   );
 
-  final _textStyle = const TextStyle(
-      fontFamily: 'Roboto',
-      fontSize: 13,
-      color: Colors.black,
-      fontWeight: FontWeight.bold);
-
   late ViewCollectionProvider viewProvider;
   @override
   void didChangeDependencies() {
@@ -1396,9 +1222,7 @@ class _MyCardState extends State<MyCard> {
             elevation: 5,
             child: Container(
               padding:
-            const EdgeInsets.only(left: 5, right: 5, top: 12, bottom: 12),
-           //   const EdgeInsets.all(12),
-              //   width: double.infinity,
+              const EdgeInsets.only(left: 5, right: 5, top: 12, bottom: 12),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -1408,9 +1232,6 @@ class _MyCardState extends State<MyCard> {
                 crossAxisAlignment: CrossAxisAlignment.start,
                 children: [
                   Container(
-                    // height: 70,
-                    // width: double.infinity,
-                    // margin: const EdgeInsets.only(bottom: 12),
                     width: MediaQuery.of(context).size.width,
                     decoration: _boxBorder,
                     child: Row(
@@ -1437,8 +1258,6 @@ class _MyCardState extends State<MyCard> {
 
                         // beside info
                         SizedBox(
-                          //height: 90,
-                          // width: ,
                           width: MediaQuery.of(context).size.width / 1.6,
                           child: Padding(
                             padding: const EdgeInsets.only(
@@ -1447,10 +1266,9 @@ class _MyCardState extends State<MyCard> {
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
                               children: [
-                                // here
                                 Text(
                                   widget.listResult.partyName,
-                                  style: CommonUtils.Mediumtext_14_cb,
+                                  style: CommonStyles.txSty_14b_fb,
                                   softWrap: true,
                                   maxLines: 2,
                                   overflow: TextOverflow.ellipsis,
@@ -1464,44 +1282,30 @@ class _MyCardState extends State<MyCard> {
                                   children: [
                                     Row(
                                       children: [
-                                        Text(
-                                          'Collection Id:',
-                                          style: _textStyle,
+                                        const Text(
+                                          'Collection Id: ',
+                                          style: CommonStyles.txSty_12b_fb,
                                         ),
                                         Text(
                                           widget.listResult.collectionNumber,
-                                          style: CommonUtils.txSty_13O_F6,
+                                          style: CommonStyles.txSty_12o_f7,
                                         ),
                                       ],
                                     ),
                                   ],
                                 ),
-                                // ListTile(
-                                //   title: Text(
-                                //     widget.listResult.collectionNumber,
-                                //     style: CommonUtils.txSty_13O_F6,
-                                //   ),
-                                //   subtitle: const Text(
-                                //     'Collection Id:',
-                                //     style: TextStyle(
-                                //       fontSize: 10,
-                                //       fontWeight: FontWeight.bold,
-                                //       color: Colors.grey,
-                                //     ),
-                                //   ),
-                                // ),
                                 const SizedBox(
                                   height: 5.0,
                                 ),
                                 Row(
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Payment Mode: ',
-                                      style: _textStyle,
+                                      style: CommonStyles.txSty_12b_fb,
                                     ),
                                     Text(
                                       widget.listResult.paymentTypeName,
-                                      style: CommonUtils.txSty_13O_F6,
+                                      style: CommonStyles.txSty_12o_f7,
                                     ),
                                   ],
                                 )
@@ -1532,8 +1336,9 @@ class _MyCardState extends State<MyCard> {
                               widget.listResult.statusName,
                               style: TextStyle(
                                 fontSize: 11,
+                                fontFamily: 'Roboto',
+                                fontWeight: FontWeight.w700,
                                 color: statusColor,
-                                // Add other text styles as needed
                               ),
                             ),
                           ],
@@ -1548,27 +1353,17 @@ class _MyCardState extends State<MyCard> {
                           children: [
                             Row(
                               children: [
-                                // Text(
-                                //   'Date: ',
-                                //   style: _textStyle,
-                                // ),
                                 Text(
                                   formattedDate,
-                                  style: CommonUtils.txSty_13O_F6,
+                                  style: CommonStyles.txSty_12o_f7,
                                 ),
                               ],
                             ),
-                            // const SizedBox(
-                            //   width: 10.0,
-                            // ),
-                            //Spacer(),
                             Row(
                               children: [
-
                                 Text(
                                   '₹${formatNumber(widget.listResult.amount)}',
-
-                                  style: CommonUtils.txSty_13O_F6,
+                                  style: CommonStyles.txSty_12o_f7,
                                 ),
                               ],
                             )
@@ -1595,9 +1390,9 @@ class _MyCardState extends State<MyCard> {
     switch (statusTypeId) {
       case 7: // pending
         assetPath = 'assets/hourglass-start.svg';
-        iconColor = const Color(0xFFE58338);
-        statusColor = const Color(0xFFe58338);
-        statusBgColor = const Color(0xFFe58338).withOpacity(0.2);
+        iconColor = CommonStyles.orangeColor;
+        statusColor = CommonStyles.orangeColor;
+        statusBgColor = CommonStyles.orangeColor.withOpacity(0.2);
         break;
       case 8: // Received
         assetPath = 'assets/sb_money-bill-wave.svg';
@@ -1633,8 +1428,8 @@ class _MyCardState extends State<MyCard> {
     switch (statusTypeId) {
       case 7: // pending
         svgIcon = 'assets/hourglass-start.svg';
-        statusColor = const Color(0xFFe58338);
-        svgIconBgColor = const Color(0xFFe58338).withOpacity(0.2);
+        statusColor = CommonStyles.orangeColor;
+        svgIconBgColor = CommonStyles.orangeColor.withOpacity(0.2);
         break;
       case 8: // Received
         svgIcon = 'assets/sb_money-bill-wave.svg';

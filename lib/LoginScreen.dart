@@ -3,7 +3,10 @@ import 'dart:convert';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:fluttertoast/fluttertoast.dart';
+import 'package:geolocator/geolocator.dart';
 import 'package:http/http.dart' as http;
 import 'package:shared_preferences/shared_preferences.dart';
 import 'Common/CommonUtils.dart';
@@ -14,7 +17,9 @@ import 'HomeScreen.dart';
 import 'Model/CompanyModel.dart';
 import 'Services/LocationUpdatesService.dart';
 import 'Services/api_config.dart';
+import 'Services/background_service.dart';
 import 'forgot_password_screen.dart';
+import 'location_service/logic/location_controller/location_controller_cubit.dart';
 
 class LoginScreen extends StatefulWidget {
   // Assuming you have a class named Company
@@ -37,11 +42,13 @@ class _MyHomePageState extends State<LoginScreen> {
   String? slpCode;
   bool isLoading = false;
   bool _obscureText = true;
-  final LocationUpdatesService locationService = LocationUpdatesService();
+
+
+  //final LocationUpdatesService locationService = LocationUpdatesService();
   @override
   initState() {
     super.initState();
-    SystemChrome.setPreferredOrientations([
+   SystemChrome.setPreferredOrientations([
       DeviceOrientation.portraitDown,
       DeviceOrientation.portraitUp,
     ]);
@@ -422,7 +429,8 @@ class _MyHomePageState extends State<LoginScreen> {
         SharedPrefsData.updateStringValue("slpCode", jsonResponse['response']['slpCode'] ?? '');
         SharedPrefsData.updateIntValue("companyId", jsonResponse['response']['companyId']);
         print("===========>companyId ${jsonResponse['response']['companyId']}");
-        startLocationService();
+
+        // startLocationService();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => HomeScreen()),
@@ -450,18 +458,20 @@ class _MyHomePageState extends State<LoginScreen> {
   }
 
   static const platform = MethodChannel('com.calibrage.srikarbiotech.srikarbiotech');
+  //
+  // void startLocationService() {
+  //   locationService.startLocationService((success, result, msg) {
+  //     if (success) {
+  //       // Location service started successfully
+  //       print(msg);
+  //     } else {
+  //       // Failed to start location service
+  //       print(msg);
+  //     }
+  //   });
+  // }
 
-  void startLocationService() {
-    locationService.startLocationService((success, result, msg) {
-      if (success) {
-        // Location service started successfully
-        print(msg);
-      } else {
-        // Failed to start location service
-        print(msg);
-      }
-    });
-  }
+
 
   
 }

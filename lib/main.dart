@@ -4,6 +4,7 @@ import 'package:device_info/device_info.dart';
 import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
+import 'package:flutter_bloc/flutter_bloc.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:permission_handler/permission_handler.dart';
 import 'package:provider/provider.dart';
@@ -20,6 +21,8 @@ import 'LoginScreen.dart';
 
 import 'ViewCollectionProvider.dart';
 import 'ViewPendingOrdersProvider.dart';
+import 'location_service/logic/location_controller/location_controller_cubit.dart';
+import 'location_service/repository/location_service_repository.dart';
 
 void main() {
   runApp(
@@ -31,8 +34,18 @@ void main() {
         ChangeNotifierProvider(create: (context) => ViewReturnOrdersProvider()),
         ChangeNotifierProvider(create: (context) => ViewPendingOrdersProvider()),
       ],
+      child: MultiBlocProvider(
+        providers: [
+          BlocProvider<LocationControllerCubit>(
+            create: (context) => LocationControllerCubit(
+              locationServiceRepository: LocationServiceRepository(),
+            ),
+          ),
+          // Add more bloc providers here if needed
+        ],
       child:  MyApp(),
     ),
+    )
   );
 }
 
