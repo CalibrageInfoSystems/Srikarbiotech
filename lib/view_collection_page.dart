@@ -243,7 +243,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
               const SizedBox(width: 8.0),
               const Text(
                 'View Collection',
-                style: CommonStyles.txSty_18b_fb,
+                style: CommonStyles.txSty_18w_fb,
               ),
             ],
           ),
