@@ -62,29 +62,17 @@ class CommonStyles {
     color: orangeColor,
   );
 
-  static const txSty_18w_fb = TextStyle(
+  static const txSty_18b_fb = TextStyle(
     color: Colors.white,
     fontSize: 18,
     fontFamily: 'Roboto',
     fontWeight: FontWeight.bold,
   );
 
-  static const txSty_11b_fb = TextStyle(
-    fontSize: 11,
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.w700,
-    color: blackColor,
-  );
-  static const txSty_11w_fb = TextStyle(
-    fontSize: 11,
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.w700,
-    color: whiteColor,
-  );
-// style: TextStyle(
-//   fontSize: 11,
-//   fontFamily: 'Roboto',
-//   fontWeight: FontWeight.w700,
-//   color: statusColor,
-// ),
+  // style: TextStyle(
+  //   fontSize: 11,
+  //   fontFamily: 'Roboto',
+  //   fontWeight: FontWeight.w700,
+  //   color: statusColor,
+  // ),
 }

@@ -243,7 +243,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
               const SizedBox(width: 8.0),
               const Text(
                 'View Collection',
-                style: CommonStyles.txSty_18w_fb,
+                style: CommonStyles.txSty_18b_fb,
               ),
             ],
           ),
@@ -530,7 +530,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           padding: const EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
           child: Text(
             labelText,
-            style: CommonStyles.txSty_14b_fb,
+            style: CommonStyles.txSty_12b_fb,
             textAlign: TextAlign.start,
           ),
         ),
@@ -654,7 +654,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           padding: const EdgeInsets.only(top: 0.0, left: 5.0, right: 0.0),
           child: Text(
             labelText,
-            style: CommonStyles.txSty_14b_fb,
+            style: CommonStyles.txSty_12o_f7,
             textAlign: TextAlign.start,
           ),
         ),
@@ -759,7 +759,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       },
                       child: const Text(
                         'Clear all filters',
-                        style: CommonStyles.txSty_14o_f7,
+                        style: CommonStyles.txSty_12o_f7,
                       ),
                     ),
                   ],
@@ -777,7 +777,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       padding: EdgeInsets.only(left: 5.0),
                       child: Text(
                         'Party',
-                        style: CommonStyles.txSty_14b_fb,
+                        style: CommonStyles.txSty_12o_f7,
                       ),
                     ),
                     const SizedBox(
@@ -845,7 +845,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       padding: EdgeInsets.only(left: 5.0),
                       child: Text(
                         'Purpose',
-                        style: CommonStyles.txSty_14b_fb,
+                        style: CommonStyles.txSty_12o_f7,
                       ),
                     ),
                     const SizedBox(
@@ -1221,7 +1221,8 @@ class _MyCardState extends State<MyCard> {
           child: Card(
             elevation: 5,
             child: Container(
-              padding: const EdgeInsets.all(10),
+              padding:
+              const EdgeInsets.only(left: 5, right: 5, top: 12, bottom: 12),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -1260,7 +1261,7 @@ class _MyCardState extends State<MyCard> {
                           width: MediaQuery.of(context).size.width / 1.6,
                           child: Padding(
                             padding: const EdgeInsets.only(
-                                left: 5, top: 0, bottom: 0),
+                                left: 1, top: 0, bottom: 0),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1466,9 +1467,8 @@ class _MyCardState extends State<MyCard> {
           Text(
             statusName,
             style: TextStyle(
-              fontSize: 11,
               fontFamily: 'Roboto',
-              fontWeight: FontWeight.w700,
+              fontSize: 13,
               color: statusColor,
             ),
           ),
