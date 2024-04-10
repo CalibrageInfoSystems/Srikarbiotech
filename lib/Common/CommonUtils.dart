@@ -9,11 +9,11 @@ class CommonUtils {
   static final orangeColor = HexColor('#e58338');
 
   static void showCustomToastMessageLong(
-      String message,
-      BuildContext context,
-      int backgroundColorType,
-      int length,
-      ) {
+    String message,
+    BuildContext context,
+    int backgroundColorType,
+    int length,
+  ) {
     final double screenWidth = MediaQuery.of(context).size.width;
     final double textWidth = screenWidth / 1.5; // Adjust multiplier as needed
 
@@ -39,7 +39,7 @@ class CommonUtils {
             ),
             child: Padding(
               padding:
-              const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
+                  const EdgeInsets.symmetric(horizontal: 16.0, vertical: 10.0),
               child: Center(
                 child: Text(
                   message,
@@ -98,16 +98,16 @@ class CommonUtils {
   }
 
   static Widget buildCard(
-      String title,
-      String subtitle1,
-      String subtitle2,
-      String subtitle3,
-      String subtitle4,
-      Color backgroundColor,
-      BorderRadius borderRadius,
-      ) {
+    String title,
+    String subtitle1,
+    String subtitle2,
+    String subtitle3,
+    String subtitle4,
+    Color backgroundColor,
+    BorderRadius borderRadius,
+  ) {
     return Card(
-      elevation: 7.0,
+      elevation: 5.0,
       shape: RoundedRectangleBorder(
         borderRadius: borderRadius,
       ),
@@ -124,7 +124,7 @@ class CommonUtils {
             Text(
               title,
               style: CommonStyles.txSty_14o_f7,
-              maxLines: 2, // Display in 2 lines
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 8.0),

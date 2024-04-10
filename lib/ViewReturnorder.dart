@@ -106,11 +106,11 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
           List<dynamic>? data = jsonResponse['response']['listResult'];
           if (data != null) {
             List<ReturnOrdersList> result =
-            data.map((item) => ReturnOrdersList.fromJson(item)).toList();
+                data.map((item) => ReturnOrdersList.fromJson(item)).toList();
             returnOrdersProvider.storeIntoReturnOrdersProvider(result);
             return result;
           } else {
-            throw Exception('No collection found');
+            throw Exception('No Return Orders found!');
           }
         } else {
           List<ReturnOrdersList> emptyList = [];
@@ -133,7 +133,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
       setState(() {
         returnOrdersProvider.storeIntoReturnOrdersProvider(data
             .where((item) =>
-            item.partyName.toLowerCase().contains(input.toLowerCase()))
+                item.partyName.toLowerCase().contains(input.toLowerCase()))
             .toList());
       });
     });
@@ -179,26 +179,26 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                         ),
                       )
                     else if (snapshot.hasData)
-                        Expanded(
-                          child: ListView.builder(
-                            itemCount: viewReturnOrdersProvider
-                                .returnOrdersProviderData.length,
-                            itemBuilder: (context, index) {
-                              return ReturnCarditem(
-                                index: index,
-                                data: viewReturnOrdersProvider
-                                    .returnOrdersProviderData[index],
-                              );
-                            },
-                          ),
-                        )
-                      else
-                        const Center(
-                          child: Text(
-                            'No data available',
-                            style: CommonStyles.txSty_12b_fb,
-                          ),
+                      Expanded(
+                        child: ListView.builder(
+                          itemCount: viewReturnOrdersProvider
+                              .returnOrdersProviderData.length,
+                          itemBuilder: (context, index) {
+                            return ReturnCarditem(
+                              index: index,
+                              data: viewReturnOrdersProvider
+                                  .returnOrdersProviderData[index],
+                            );
+                          },
                         ),
+                      )
+                    else
+                      const Center(
+                        child: Text(
+                          'No data available',
+                          style: CommonStyles.txSty_12b_fb,
+                        ),
+                      ),
                   ],
                 ),
               );
@@ -298,7 +298,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                   suffixIcon: const Icon(Icons.search),
                   border: CommonUtils.searchBarOutPutInlineBorder,
                   focusedBorder:
-                  CommonUtils.searchBarEnabledNdFocuedOutPutInlineBorder,
+                      CommonUtils.searchBarEnabledNdFocuedOutPutInlineBorder,
                 ),
               ),
             ),
@@ -461,9 +461,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> _selectDate(
-      BuildContext context,
-      TextEditingController controller,
-      ) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime initialDate;
 
     print('===>current date,${DateTime.now()}');
@@ -492,12 +492,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             data: ThemeData.light().copyWith(
               colorScheme: const ColorScheme.light(
                 primary:
-                CommonStyles.orangeColor, // Change the primary color here
+                    CommonStyles.orangeColor, // Change the primary color here
                 onPrimary: Colors.white,
                 // onSurface: Colors.blue,// Change the text color here
               ),
               dialogBackgroundColor:
-              Colors.white, // Change the dialog background color here
+                  Colors.white, // Change the dialog background color here
             ),
             child: child!,
           );
@@ -522,11 +522,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Widget buildDateToInput(
-      BuildContext context,
-      String labelText,
-      TextEditingController controller,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String labelText,
+    TextEditingController controller,
+    VoidCallback onTap,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -591,9 +591,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> _selectfromDate(
-      BuildContext context,
-      TextEditingController controller,
-      ) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime currentDate = DateTime.now();
     DateTime initialDate;
 
@@ -642,11 +642,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Widget buildDateInputfromdate(
-      BuildContext context,
-      String labelText,
-      TextEditingController controller,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String labelText,
+    TextEditingController controller,
+    VoidCallback onTap,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -740,106 +740,42 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     return Consumer<ViewReturnOrdersProvider>(
       builder: (context, provider, _) => SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    const Text(
-                      'Filter By',
-                      style: CommonStyles.txSty_14b_fb,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        provider.clearFilter();
-                      },
-                      child: const Text(
-                        'Clear all filters',
-                        style: CommonStyles.txSty_14o_f7,
-                      ),
-                    ),
-                  ],
+                const Text(
+                  'Filter By',
+                  style: CommonStyles.txSty_14b_fb,
                 ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5, bottom: 12),
-                  child: const Divider(
-                    height: 5,
+                GestureDetector(
+                  onTap: () {
+                    provider.clearFilter();
+                  },
+                  child: const Text(
+                    'Clear all filters',
+                    style: CommonStyles.txSty_14o_f7,
                   ),
                 ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 5.0),
-                      child: Text(
-                        'Party',
-                        style: CommonStyles.txSty_14b_fb,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 4.0,
-                    ),
-                    Container(
-                      height: 40.0,
-                      padding: const EdgeInsets.only(top: 18),
-                      decoration: CommonUtils.decorationO_R10W1,
-                      child: TypeAheadField(
-                        controller: provider.getPartyController,
-                        builder: (context, controller, focusNode) => TextField(
-                          controller: controller,
-                          focusNode: focusNode,
-                          autofocus: false,
-                          style: CommonStyles.txSty_14b_fb,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
-                              hintText: 'Select Party',
-                              hintStyle: CommonStyles.txSty_12o_f7),
-                        ),
-                        itemBuilder: (context, value) {
-                          return ListTile(
-                            dense: true,
-                            title: Text(
-                              '${isPartyCodeIsEmpty ? value : value['cardName']}',
-                              style: CommonStyles.txSty_12o_f7,
-                            ),
-                          );
-                        },
-                        suggestionsCallback: (search) {
-                          if (search == '') {
-                            return null;
-                          }
-                          final filteredSuggestions = dropdownItems
-                              .where((party) => party['cardName']
-                              .toLowerCase()
-                              .startsWith(search.toLowerCase()))
-                              .toList();
-
-                          isPartyCodeIsEmpty = false;
-                          if (filteredSuggestions.isEmpty) {
-                            isPartyCodeIsEmpty = true;
-                            return ['No party found'];
-                          }
-
-                          return filteredSuggestions;
-                        },
-                        onSelected: (selectedValue) {
-                          provider.getPartyController.text =
-                          selectedValue['cardName'];
-                          provider.getPartyCode = selectedValue['cardCode'];
-                        },
-                      ),
-                    ),
-                  ],
-                ),
+              ],
+            ),
+            Container(
+              margin: const EdgeInsets.only(top: 5, bottom: 12),
+              child: const Divider(
+                height: 5,
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
                 const Padding(
-                  padding: EdgeInsets.only(left: 5.0, top: 5.0),
+                  padding: EdgeInsets.only(left: 5.0),
                   child: Text(
-                    'Warehouse',
+                    'Party',
                     style: CommonStyles.txSty_14b_fb,
                   ),
                 ),
@@ -847,225 +783,289 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   height: 4.0,
                 ),
                 Container(
-                  width: double.infinity,
                   height: 40.0,
-                  padding: const EdgeInsets.only(left: 15, right: 20),
+                  padding: const EdgeInsets.only(top: 18),
                   decoration: CommonUtils.decorationO_R10W1,
-                  child: wareHousesData.isEmpty
-                      ? LoadingAnimationWidget.newtonCradle(
-                    color: CommonStyles.orangeColor,
-                    size: 40.0,
-                  )
-                      : DropdownButton<String>(
-                    focusColor: Colors.transparent,
-                    hint: const Text(
-                      'Select Warehouse',
-                      style: CommonStyles.txSty_12o_f7,
+                  child: TypeAheadField(
+                    controller: provider.getPartyController,
+                    builder: (context, controller, focusNode) => TextField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      autofocus: false,
+                      style: CommonStyles.txSty_14b_fb,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          hintText: 'Select Party',
+                          hintStyle: CommonStyles.txSty_12o_f7),
                     ),
-                    value: provider.dropDownWareHouse,
-                    onChanged: (String? newValue) {
-                      setState(() {
-                        provider.dropDownWareHouse = newValue;
-                        WareHouseList house = wareHousesData
-                            .firstWhere((item) => item.whsName == newValue);
-                        provider.apiWareHouse = house.whsCode;
-                      });
-                    },
-                    items: wareHousesData.map((WareHouseList warehouse) {
-                      return DropdownMenuItem<String>(
-                        value: warehouse.whsName,
-                        child: Text(
-                          warehouse.whsName,
+                    itemBuilder: (context, value) {
+                      return ListTile(
+                        dense: true,
+                        title: Text(
+                          '${isPartyCodeIsEmpty ? value : value['cardName']}',
                           style: CommonStyles.txSty_12o_f7,
                         ),
                       );
-                    }).toList(),
-                    icon: const Icon(Icons.arrow_drop_down),
-                    iconSize: 20,
-                    isExpanded: true,
-                    underline: const SizedBox(),
-                  ),
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                SizedBox(
-                  height: 40,
-                  child: apiResponse == null
-                      ? const Center(child: CommonStyles.progressIndicator)
-                      : ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: apiResponse!.listResult.length +
-                        1, // Add 1 for the "All" option
-                    itemBuilder: (BuildContext context, int index) {
-                      bool isSelected = index == provider.dropDownStatus;
-                      PaymentMode currentPaymode;
-
-                      // Handle the "All" option
-                      if (index == 0) {
-                        currentPaymode = PaymentMode(
-                          typeCdId: null,
-                          classTypeId: 3,
-                          name: 'All',
-                          desc: 'All',
-                          tableName: 'all',
-                          columnName: 'all',
-                          sortOrder: 0,
-                          isActive: true,
-                        );
-                      } else {
-                        currentPaymode = apiResponse!.listResult[index - 1];
+                    },
+                    suggestionsCallback: (search) {
+                      if (search == '') {
+                        return null;
                       }
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            provider.dropDownStatus = index;
-                            selectedPaymode = currentPaymode;
-                          });
-                          payid = currentPaymode.typeCdId;
-                          provider.getApiStatusId = currentPaymode.typeCdId;
-                          selectedPaymentMode = currentPaymode.desc;
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? CommonStyles.orangeColor
-                                : CommonStyles.orangeColor.withOpacity(0.1),
-                            border: Border.all(
-                              color: isSelected
-                                  ? CommonStyles.orangeColor
-                                  : CommonStyles.orangeColor,
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: IntrinsicWidth(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        currentPaymode.desc.toString(),
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Roboto",
-                                          color: isSelected
-                                              ? CommonStyles.whiteColor
-                                              : CommonStyles.blackColor,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
+                      final filteredSuggestions = dropdownItems
+                          .where((party) => party['cardName']
+                              .toLowerCase()
+                              .startsWith(search.toLowerCase()))
+                          .toList();
+
+                      isPartyCodeIsEmpty = false;
+                      if (filteredSuggestions.isEmpty) {
+                        isPartyCodeIsEmpty = true;
+                        return ['No party found'];
+                      }
+
+                      return filteredSuggestions;
+                    },
+                    onSelected: (selectedValue) {
+                      provider.getPartyController.text =
+                          selectedValue['cardName'];
+                      provider.getPartyCode = selectedValue['cardCode'];
                     },
                   ),
                 ),
-
-                const SizedBox(
-                  height: 10.0,
-                ),
-
-                // From date
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildDateInputfromdate(
-                      context,
-                      'From Date',
-                      fromdateController,
-                          () => _selectfromDate(context, fromdateController),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-
-                // To Date
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //333
-                    buildDateToInput(
-                      context,
-                      'To Date',
-                      todateController,
-                          () => _selectDate(context, todateController),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          textStyle: const TextStyle(
-                            color: Colors.red,
+              ],
+            ),
+            const Padding(
+              padding: EdgeInsets.only(left: 5.0, top: 5.0),
+              child: Text(
+                'Warehouse',
+                style: CommonStyles.txSty_14b_fb,
+              ),
+            ),
+            const SizedBox(
+              height: 4.0,
+            ),
+            Container(
+              width: double.infinity,
+              height: 40.0,
+              padding: const EdgeInsets.only(left: 15, right: 20),
+              decoration: CommonUtils.decorationO_R10W1,
+              child: wareHousesData.isEmpty
+                  ? LoadingAnimationWidget.newtonCradle(
+                      color: CommonStyles.orangeColor,
+                      size: 40.0,
+                    )
+                  : DropdownButton<String>(
+                      focusColor: Colors.transparent,
+                      hint: const Text(
+                        'Select Warehouse',
+                        style: CommonStyles.txSty_12o_f7,
+                      ),
+                      value: provider.dropDownWareHouse,
+                      onChanged: (String? newValue) {
+                        setState(() {
+                          provider.dropDownWareHouse = newValue;
+                          WareHouseList house = wareHousesData
+                              .firstWhere((item) => item.whsName == newValue);
+                          provider.apiWareHouse = house.whsCode;
+                        });
+                      },
+                      items: wareHousesData.map((WareHouseList warehouse) {
+                        return DropdownMenuItem<String>(
+                          value: warehouse.whsName,
+                          child: Text(
+                            warehouse.whsName,
+                            style: CommonStyles.txSty_12o_f7,
                           ),
-                          side: const BorderSide(
-                            color: Colors.red,
-                          ),
-                          backgroundColor: Colors.white,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
+                        );
+                      }).toList(),
+                      icon: const Icon(Icons.arrow_drop_down),
+                      iconSize: 20,
+                      isExpanded: true,
+                      underline: const SizedBox(),
+                    ),
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            SizedBox(
+              height: 40,
+              child: apiResponse == null
+                  ? const Center(child: CommonStyles.progressIndicator)
+                  : ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: apiResponse!.listResult.length +
+                          1, // Add 1 for the "All" option
+                      itemBuilder: (BuildContext context, int index) {
+                        bool isSelected = index == provider.dropDownStatus;
+                        PaymentMode currentPaymode;
+
+                        // Handle the "All" option
+                        if (index == 0) {
+                          currentPaymode = PaymentMode(
+                            typeCdId: null,
+                            classTypeId: 3,
+                            name: 'All',
+                            desc: 'All',
+                            tableName: 'all',
+                            columnName: 'all',
+                            sortOrder: 0,
+                            isActive: true,
+                          );
+                        } else {
+                          currentPaymode = apiResponse!.listResult[index - 1];
+                        }
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              provider.dropDownStatus = index;
+                              selectedPaymode = currentPaymode;
+                            });
+                            payid = currentPaymode.typeCdId;
+                            provider.getApiStatusId = currentPaymode.typeCdId;
+                            selectedPaymentMode = currentPaymode.desc;
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? CommonStyles.orangeColor
+                                  : CommonStyles.orangeColor.withOpacity(0.1),
+                              border: Border.all(
+                                color: isSelected
+                                    ? CommonStyles.orangeColor
+                                    : CommonStyles.orangeColor,
+                                width: 1.0,
+                              ),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: IntrinsicWidth(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          currentPaymode.desc.toString(),
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: "Roboto",
+                                            color: isSelected
+                                                ? CommonStyles.whiteColor
+                                                : CommonStyles.blackColor,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
                             ),
                           ),
-                        ),
-                        child: const Text(
-                          'Cancel',
-                          style: CommonStyles.txSty_14r_fb,
-                        ),
-                      ),
+                        );
+                      },
                     ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          getappliedfilterData(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          textStyle: const TextStyle(
-                            color: Colors.white,
-                          ),
-                          backgroundColor: _primaryOrange,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                        ),
-                        child: const Text(
-                          'Apply',
-                          style: CommonStyles.txSty_14w_fb,
-                        ),
-                      ),
-                    ),
-                  ],
+            ),
+
+            const SizedBox(
+              height: 10.0,
+            ),
+
+            // From date
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildDateInputfromdate(
+                  context,
+                  'From Date',
+                  fromdateController,
+                  () => _selectfromDate(context, fromdateController),
                 ),
               ],
             ),
-          )),
+            const SizedBox(
+              height: 10.0,
+            ),
+
+            // To Date
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //333
+                buildDateToInput(
+                  context,
+                  'To Date',
+                  todateController,
+                  () => _selectDate(context, todateController),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      textStyle: const TextStyle(
+                        color: Colors.red,
+                      ),
+                      side: const BorderSide(
+                        color: Colors.red,
+                      ),
+                      backgroundColor: Colors.white,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                    ),
+                    child: const Text(
+                      'Cancel',
+                      style: CommonStyles.txSty_14r_fb,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      getappliedfilterData(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      textStyle: const TextStyle(
+                        color: Colors.white,
+                      ),
+                      backgroundColor: _primaryOrange,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                    ),
+                    child: const Text(
+                      'Apply',
+                      style: CommonStyles.txSty_14w_fb,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      )),
     );
   }
 
@@ -1101,7 +1101,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           if (jsonResponse['response']['listResult'] != null) {
             List<dynamic> data = jsonResponse['response']['listResult'];
             List<ReturnOrdersList> result =
-            data.map((item) => ReturnOrdersList.fromJson(item)).toList();
+                data.map((item) => ReturnOrdersList.fromJson(item)).toList();
             viewReturnOrdersProvider.storeIntoReturnOrdersProvider(result);
           } else {
             List<ReturnOrdersList> emptyList = [];
@@ -1230,12 +1230,12 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
         statusColor = Colors.red;
         statusBgColor = Colors.red.shade100;
         break;
-    // case 'Received':
-    //   assetPath = 'assets/srikar_biotech_logo.svg';
-    //   iconColor = Colors.grey;
-    //   statusColor = Colors.grey;
-    //   statusBgColor = Colors.grey.withOpacity(0.2);
-    //   break;
+      // case 'Received':
+      //   assetPath = 'assets/srikar_biotech_logo.svg';
+      //   iconColor = Colors.grey;
+      //   statusColor = Colors.grey;
+      //   statusBgColor = Colors.grey.withOpacity(0.2);
+      //   break;
       default:
         assetPath = 'assets/sb_home.svg';
         iconColor = Colors.black26;
@@ -1281,11 +1281,11 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
         statusColor = Colors.red;
         svgIconBgColor = Colors.red.shade100;
         break;
-    // case 'Received':
-    //   svgIcon = 'assets/srikar_biotech_logo.svg';
-    //   statusColor = Colors.grey;
-    //   svgIconBgColor = Colors.grey.withOpacity(0.2);
-    //   break;
+      // case 'Received':
+      //   svgIcon = 'assets/srikar_biotech_logo.svg';
+      //   statusColor = Colors.grey;
+      //   svgIconBgColor = Colors.grey.withOpacity(0.2);
+      //   break;
       default:
         svgIcon = 'assets/sb_home.svg';
         statusColor = Colors.black26;
@@ -1384,7 +1384,7 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                       Expanded(
                         child: Padding(
                           padding:
-                          const EdgeInsets.only(left: 5, top: 0, bottom: 0),
+                              const EdgeInsets.only(left: 5, top: 0, bottom: 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1416,13 +1416,13 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                               ),
                               Row(
                                 mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
+                                    MainAxisAlignment.spaceBetween,
                                 children: [
                                   widget.data.whsName != null
                                       ? Text(
-                                    '${widget.data.whsName}',
-                                    style: CommonStyles.txSty_12o_f7,
-                                  )
+                                          '${widget.data.whsName}',
+                                          style: CommonStyles.txSty_12o_f7,
+                                        )
                                       : const SizedBox(),
                                   // Text(
                                   //   '${widget.orderResult.whsName}',
