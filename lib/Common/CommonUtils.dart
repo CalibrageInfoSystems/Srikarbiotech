@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:srikarbiotech/Common/styles.dart';
 
 class CommonUtils {
   static final orangeColor = HexColor('#e58338');
@@ -61,6 +62,10 @@ class CommonUtils {
     });
   }
 
+  static String extractExceptionMessage(String errorMsg) {
+    return errorMsg.replaceAll('Exception: ', '');
+  }
+
   static Future<bool> checkInternetConnectivity() async {
     var connectivityResult = await (Connectivity().checkConnectivity());
     if (connectivityResult == ConnectivityResult.mobile ||
@@ -70,11 +75,18 @@ class CommonUtils {
       return false; // Not connected to the internet
     }
   }
+
   static final dividerForHorizontal = Container(
     width: double.infinity,
     height: 0.2,
     color: Colors.grey,
   );
+  static final dividerForVertical = Container(
+    width: 0.2,
+    height: 60,
+    color: Colors.grey,
+  );
+
   static final decorationO_R10W1 = BoxDecoration(
       borderRadius: BorderRadius.circular(10),
       border: Border.all(
@@ -100,7 +112,7 @@ class CommonUtils {
         borderRadius: borderRadius,
       ),
       child: Container(
-        width: double.infinity, // Make the width match the parent
+        width: double.infinity,
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(5.0),
           color: backgroundColor,
@@ -111,21 +123,21 @@ class CommonUtils {
           children: [
             Text(
               title,
-              style: CommonUtils.header_Styles16,
+              style: CommonStyles.txSty_14o_f7,
               maxLines: 2, // Display in 2 lines
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 8.0),
             Text(
               subtitle1,
-              style: CommonUtils.Mediumtext_14,
+              style: CommonStyles.txSty_14b_fb,
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 8.0),
             Text(
               subtitle2,
-              style: CommonUtils.Mediumtext_o_14,
-              maxLines: 2, // Display in 2 lines
+              style: CommonStyles.txSty_14o_f7,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 8.0),
@@ -133,8 +145,8 @@ class CommonUtils {
               text: TextSpan(
                 children: <TextSpan>[
                   const TextSpan(
-                      text: 'GST No. ', style: CommonUtils.Mediumtext_12),
-                  TextSpan(text: subtitle3, style: CommonUtils.Mediumtext_12_0),
+                      text: 'GST No. ', style: CommonStyles.txSty_12b_fb),
+                  TextSpan(text: subtitle3, style: CommonStyles.txSty_12o_f7),
                 ],
               ),
               overflow: TextOverflow.ellipsis,
@@ -142,14 +154,14 @@ class CommonUtils {
             const SizedBox(height: 8.0),
             const Text(
               'Address',
-              style: CommonUtils.Mediumtext_12,
+              style: CommonStyles.txSty_12b_fb,
               overflow: TextOverflow.ellipsis,
             ),
             const SizedBox(height: 2.0),
             Text(
               subtitle4,
-              style: CommonUtils.Mediumtext_12_0,
-              maxLines: 2, // Display in 2 lines
+              style: CommonStyles.txSty_12o_f7,
+              maxLines: 2,
               overflow: TextOverflow.ellipsis,
             ),
           ],
@@ -210,7 +222,7 @@ class CommonUtils {
     fontSize: 20,
     fontFamily: "Roboto",
     fontWeight: FontWeight.w700,
-    color:Colors.black,
+    color: Colors.black,
   );
   static const TextStyle header_Styles16 = TextStyle(
     fontSize: 16,
@@ -284,7 +296,6 @@ class CommonUtils {
       fontFamily: 'Roboto',
       fontSize: 14,
       color: orangeColor,
-
       fontWeight: FontWeight.w600);
 
   static Widget showProgressIndicator() {

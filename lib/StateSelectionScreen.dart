@@ -242,7 +242,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
               const SizedBox(width: 8.0),
               const Text(
                 'State Selection',
-                style: CommonStyles.txSty_18b_fb,
+                style: CommonStyles.txSty_18w_fb,
               ),
             ],
           ),

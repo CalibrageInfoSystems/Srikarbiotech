@@ -2,6 +2,7 @@
 
 import 'dart:convert';
 
+import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:flutter_svg/svg.dart';
@@ -97,15 +98,20 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
           'Content-Type': 'application/json',
         },
       );
+      debugPrint('_______Return Orders____1___${response.body}');
 
       if (response.statusCode == 200) {
         Map<String, dynamic> jsonResponse = jsonDecode(response.body);
         if (jsonResponse['isSuccess']) {
-          List<dynamic> data = jsonResponse['response']['listResult'];
-          List<ReturnOrdersList> result =
-          data.map((item) => ReturnOrdersList.fromJson(item)).toList();
-          returnOrdersProvider.storeIntoReturnOrdersProvider(result);
-          return result;
+          List<dynamic>? data = jsonResponse['response']['listResult'];
+          if (data != null) {
+            List<ReturnOrdersList> result =
+            data.map((item) => ReturnOrdersList.fromJson(item)).toList();
+            returnOrdersProvider.storeIntoReturnOrdersProvider(result);
+            return result;
+          } else {
+            throw Exception('No collection found');
+          }
         } else {
           List<ReturnOrdersList> emptyList = [];
           returnOrdersProvider.storeIntoReturnOrdersProvider(emptyList);
@@ -118,8 +124,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
             'Failed to send the request. Status code: ${response.statusCode}');
       }
     } catch (e) {
-      debugPrint('catch: ${e.toString()}');
-      throw Exception('catch: $e');
+      throw Exception('$e');
     }
   }
 
@@ -164,10 +169,13 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
                         child: Center(child: CommonStyles.progressIndicator),
                       )
                     else if (snapshot.hasError)
-                      Center(
-                        child: Text(
-                          '${snapshot.error}', //'No return orders found',
-                          style: CommonStyles.txSty_12b_fb,
+                      Expanded(
+                        child: Center(
+                          child: Text(
+                            CommonUtils.extractExceptionMessage(
+                                snapshot.error.toString()),
+                            style: CommonStyles.txSty_12b_fb,
+                          ),
                         ),
                       )
                     else if (snapshot.hasData)
@@ -232,7 +240,7 @@ class _MyReturnOrdersPageState extends State<ViewReturnorder> {
               const SizedBox(width: 8.0),
               const Text(
                 'My Return Orders',
-                style: CommonStyles.txSty_18b_fb,
+                style: CommonStyles.txSty_18w_fb,
               ),
             ],
           ),
@@ -784,7 +792,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           controller: controller,
                           focusNode: focusNode,
                           autofocus: false,
-                          style: CommonStyles.txSty_12o_f7,
+                          style: CommonStyles.txSty_14b_fb,
                           decoration: const InputDecoration(
                               border: OutlineInputBorder(
                                 borderSide: BorderSide.none,
@@ -949,8 +957,8 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                                           fontWeight: FontWeight.bold,
                                           fontFamily: "Roboto",
                                           color: isSelected
-                                              ? Colors.white
-                                              : Colors.black,
+                                              ? CommonStyles.whiteColor
+                                              : CommonStyles.blackColor,
                                         ),
                                       ),
                                     ],
@@ -1340,8 +1348,7 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
         child: Card(
           elevation: 5,
           child: Container(
-            padding:
-            const EdgeInsets.only(left: 5, right: 5, top: 12, bottom: 12),
+            padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 12),
             width: MediaQuery.of(context).size.width,
             decoration: BoxDecoration(
               color: Colors.white,
@@ -1374,11 +1381,10 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                       ),
 
                       // beside info
-                      SizedBox(
-                        width: MediaQuery.of(context).size.width / 1.6,
+                      Expanded(
                         child: Padding(
                           padding:
-                          const EdgeInsets.only(left: 2, top: 0, bottom: 0),
+                          const EdgeInsets.only(left: 5, top: 0, bottom: 0),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1394,20 +1400,14 @@ class _ReturnCarditemState extends State<ReturnCarditem> {
                                 height: 5.0,
                               ),
                               Row(
-                                mainAxisAlignment:
-                                MainAxisAlignment.spaceBetween,
                                 children: [
-                                  Row(
-                                    children: [
-                                      const Text(
-                                        'Order ID : ',
-                                        style: CommonStyles.txSty_12b_fb,
-                                      ),
-                                      Text(
-                                        widget.data.returnOrderNumber,
-                                        style: CommonStyles.txSty_12o_f7,
-                                      ),
-                                    ],
+                                  const Text(
+                                    'Order ID : ',
+                                    style: CommonStyles.txSty_12b_fb,
+                                  ),
+                                  Text(
+                                    widget.data.returnOrderNumber,
+                                    style: CommonStyles.txSty_12o_f7,
                                   ),
                                 ],
                               ),
