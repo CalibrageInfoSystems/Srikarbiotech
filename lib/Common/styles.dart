@@ -1,7 +1,7 @@
 // ignore_for_file: constant_identifier_names
 
 import 'package:flutter/material.dart';
-
+// test comment
 class CommonStyles {
   static const blackColor = Colors.black;
   static const blackColorShade = Color(0xFF5f5f5f);
@@ -62,13 +62,25 @@ class CommonStyles {
     color: orangeColor,
   );
 
-  static const txSty_18b_fb = TextStyle(
+  static const txSty_18w_fb = TextStyle(
     color: Colors.white,
     fontSize: 18,
     fontFamily: 'Roboto',
     fontWeight: FontWeight.bold,
   );
 
+  static const txSty_11b_fb = TextStyle(
+    fontSize: 11,
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.w700,
+    color: blackColor,
+  );
+  static const txSty_11w_fb = TextStyle(
+    fontSize: 11,
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.w700,
+    color: whiteColor,
+  );
   // style: TextStyle(
   //   fontSize: 11,
   //   fontFamily: 'Roboto',
