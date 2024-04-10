@@ -115,7 +115,7 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
             return const Center(
               child: Text(
                 'No warehouses present',
-                style: CommonStyles.txSty_12b_fb,
+                style: CommonStyles.txSty_12b_fb, // added styles
               ),
             );
           } else {
