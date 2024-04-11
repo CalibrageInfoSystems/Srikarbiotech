@@ -112,7 +112,6 @@ class _ProductListState extends State<Createorderscreen> {
       print('product group response: ${response.body}');
 
       if (response.statusCode == 200) {
-
         if (response.statusCode == 200) {
           return ApiResponse.fromJson(json.decode(response.body));
         } else {
@@ -298,7 +297,7 @@ class _ProductListState extends State<Createorderscreen> {
                     height: 40.0,
                     child: apiResponse == null
                         ? const Center(
-                            child: CircularProgressIndicator.adaptive(),
+                            child: CommonStyles.progressIndicator,
                           )
                         : ListView.builder(
                             shrinkWrap: false,
@@ -378,7 +377,7 @@ class _ProductListState extends State<Createorderscreen> {
                       child: Consumer<CartProvider>(
                           builder: (context, cartProvider, _) {
                         if (isLoading) {
-                          return buildShimmerEffect();
+                          return CommonUtils.shimmerEffect(context);
                         } else if (filteredproducts.isEmpty) {
                           return const Center(
                             child: Text('No products available',

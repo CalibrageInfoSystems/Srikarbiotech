@@ -33,17 +33,6 @@ class ViewCollectionPage extends StatefulWidget {
 class _ViewCollectionPageState extends State<ViewCollectionPage> {
   // String url = 'http://182.18.157.215/Srikar_Biotech_Dev/API/api/Collections/GetCollections/null';
 
-  final _orangeColor = HexColor('#e58338');
-
-  final _searchBarOutPutInlineBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(10),
-    borderSide: const BorderSide(color: Colors.black38),
-  );
-  final _searchBarEnabledNdFocuedOutPutInlineBorder = OutlineInputBorder(
-    borderRadius: BorderRadius.circular(10),
-    borderSide: const BorderSide(color: Colors.black),
-  );
-
   late Future<List<ListResult>> apiData;
   List<ListResult> filteredData = [];
   late ViewCollectionProvider viewProvider;
@@ -69,7 +58,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
       setState(() {
         viewProvider.storeIntoProvider(data
             .where((item) =>
-            item.partyName.toLowerCase().contains(input.toLowerCase()))
+                item.partyName.toLowerCase().contains(input.toLowerCase()))
             .toList());
       });
     });
@@ -290,11 +279,12 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
               child: TextField(
                 onChanged: (input) => filterRecordsBasedOnPartyName(input),
                 decoration: InputDecoration(
+                  contentPadding: const EdgeInsets.only(top: 5, left: 12),
                   hintText: 'Collection Search',
                   hintStyle: CommonStyles.txSty_14bs_fb,
                   suffixIcon: const Icon(Icons.search),
-                  border: _searchBarOutPutInlineBorder,
-                  focusedBorder: _searchBarEnabledNdFocuedOutPutInlineBorder,
+                  border: CommonUtils.borderForSearch,
+                  focusedBorder: CommonUtils.focusedBorder,
                 ),
               ),
             ),
@@ -324,7 +314,7 @@ class _ViewCollectionPageState extends State<ViewCollectionPage> {
               child: Center(
                 child: SvgPicture.asset(
                   'assets/apps-sort.svg',
-                  color: _orangeColor,
+                  color: CommonStyles.orangeColor,
                 ),
               ),
             ),
@@ -363,9 +353,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   int selectedChipIndex = 1;
 
   final TextEditingController _typeAheadPartyController =
-  TextEditingController();
+      TextEditingController();
   final TextEditingController _typeAheadPurposeController =
-  TextEditingController();
+      TextEditingController();
 
   DateTime toDate = DateTime.now();
   DateTime fromDate = DateTime.now();
@@ -389,7 +379,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   String? slpCode = "";
   bool dateSelected = false;
   DateTime selectedfromdateDate =
-  DateTime.now().subtract(const Duration(days: 7));
+      DateTime.now().subtract(const Duration(days: 7));
   @override
   void initState() {
     // todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
@@ -459,9 +449,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> _selectDate(
-      BuildContext context,
-      TextEditingController controller,
-      ) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime initialDate;
 
     print('===>current date,${DateTime.now()}');
@@ -490,12 +480,12 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             data: ThemeData.light().copyWith(
               colorScheme: const ColorScheme.light(
                 primary:
-                CommonStyles.orangeColor, // Change the primary color here
+                    CommonStyles.orangeColor, // Change the primary color here
                 onPrimary: Colors.white,
                 // onSurface: Colors.blue,// Change the text color here
               ),
               dialogBackgroundColor:
-              Colors.white, // Change the dialog background color here
+                  Colors.white, // Change the dialog background color here
             ),
             child: child!,
           );
@@ -518,11 +508,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Widget buildDateToInput(
-      BuildContext context,
-      String labelText,
-      TextEditingController controller,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String labelText,
+    TextEditingController controller,
+    VoidCallback onTap,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -586,9 +576,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Future<void> _selectfromDate(
-      BuildContext context,
-      TextEditingController controller,
-      ) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime initialDate;
     DateTime currentDate = DateTime.now();
 
@@ -620,7 +610,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                 // onSurface: Colors.blue,// Change the text color here
               ),
               dialogBackgroundColor:
-              Colors.white, // Change the dialog background color here
+                  Colors.white, // Change the dialog background color here
             ),
             child: child!,
           );
@@ -642,11 +632,11 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   }
 
   Widget buildDateInputfromdate(
-      BuildContext context,
-      String labelText,
-      TextEditingController controller,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String labelText,
+    TextEditingController controller,
+    VoidCallback onTap,
+  ) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -741,344 +731,344 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     return Consumer<ViewCollectionProvider>(
       builder: (context, provider, _) => SingleChildScrollView(
           child: Padding(
-            padding: const EdgeInsets.all(20),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisSize: MainAxisSize.min,
+        padding: const EdgeInsets.all(20),
+        child: Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          mainAxisSize: MainAxisSize.min,
+          children: <Widget>[
+            Row(
+              mainAxisAlignment: MainAxisAlignment.spaceBetween,
               children: <Widget>[
-                Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: <Widget>[
-                    const Text(
-                      'Filter By',
-                      style: CommonStyles.txSty_14b_fb,
-                    ),
-                    GestureDetector(
-                      onTap: () {
-                        provider.clearFilter();
-                      },
-                      child: const Text(
-                        'Clear all filters',
-                        style: CommonStyles.txSty_12o_f7,
-                      ),
-                    ),
-                  ],
+                const Text(
+                  'Filter By',
+                  style: CommonStyles.txSty_14b_fb,
                 ),
-                Container(
-                  margin: const EdgeInsets.only(top: 5, bottom: 12),
-                  child: const Divider(
-                    height: 5,
+                GestureDetector(
+                  onTap: () {
+                    provider.clearFilter();
+                  },
+                  child: const Text(
+                    'Clear all filters',
+                    style: CommonStyles.txSty_12o_f7,
                   ),
-                ),
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    const Padding(
-                      padding: EdgeInsets.only(left: 5.0),
-                      child: Text(
-                        'Party',
-                        style: CommonStyles.txSty_12o_f7,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 4.0,
-                    ),
-                    Container(
-                      height: 40.0,
-                      padding: const EdgeInsets.only(
-                        right: 5,
-                        top: 18,
-                      ),
-                      decoration: CommonUtils.decorationO_R10W1,
-                      child: TypeAheadField(
-                        controller: provider.getPartyController,
-                        builder: (context, controller, focusNode) => TextField(
-                          controller: controller,
-                          focusNode: focusNode,
-                          autofocus: false,
-                          style: CommonStyles.txSty_12o_f7,
-                          decoration: const InputDecoration(
-                              border: OutlineInputBorder(
-                                borderSide: BorderSide.none,
-                              ),
-                              hintText: 'Select Party',
-                              hintStyle: CommonStyles.txSty_12o_f7),
-                        ),
-                        itemBuilder: (context, value) {
-                          return ListTile(
-                            dense: true,
-                            title: Text(
-                              '${isPartyCodeIsEmpty ? value : value['cardName']}',
-                              style: CommonStyles.txSty_12o_f7,
-                            ),
-                          );
-                        },
-                        suggestionsCallback: (search) {
-                          if (search == '') {
-                            return null;
-                          }
-                          final filteredSuggestions = dropdownItems
-                              .where((party) => party['cardName']
-                              .toLowerCase()
-                              .startsWith(search.toLowerCase()))
-                              .toList();
-
-                          isPartyCodeIsEmpty = false;
-                          if (filteredSuggestions.isEmpty) {
-                            isPartyCodeIsEmpty = true;
-                            return ['No party found'];
-                          }
-
-                          return filteredSuggestions;
-                        },
-                        onSelected: (selectedValue) {
-                          provider.getPartyController.text =
-                          selectedValue['cardName'];
-                          provider.getPartyCode = selectedValue['cardCode'];
-                        },
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 10.0,
-                    ),
-                    const Padding(
-                      padding: EdgeInsets.only(left: 5.0),
-                      child: Text(
-                        'Purpose',
-                        style: CommonStyles.txSty_12o_f7,
-                      ),
-                    ),
-                    const SizedBox(
-                      height: 4.0,
-                    ),
-                    Container(
-                      height: 40.0,
-                      padding: const EdgeInsets.only(left: 15, right: 5),
-                      decoration: CommonUtils.decorationO_R10W1,
-                      child: purposeList.isEmpty
-                          ? LoadingAnimationWidget.newtonCradle(
-                        color: CommonStyles.orangeColor,
-                        size: 40.0,
-                      )
-                          : DropdownButton<String>(
-                        focusColor: Colors.transparent,
-                        hint: const Text(
-                          'Select Purpose',
-                          style: CommonStyles.txSty_12o_f7,
-                        ),
-                        value: provider.dropDownPurpose,
-                        onChanged: (String? newValue) {
-                          setState(() {
-                            selectedPurpose = newValue;
-                            provider.dropDownPurpose = newValue;
-                            selectedPurposeObj = purposeList.firstWhere(
-                                  (purpose) => purpose.fldValue == newValue,
-                              orElse: () => Purpose(
-                                  fldValue: '', descr: '', purposeName: ''),
-                            );
-                            purposename = selectedPurposeObj!.fldValue;
-                            provider.getApiPurpose = newValue;
-                          });
-                        },
-                        items: purposeList.map((Purpose purpose) {
-                          return DropdownMenuItem<String>(
-                            value: purpose.fldValue,
-                            child: Text(
-                              purpose.purposeName,
-                              style: CommonStyles.txSty_12o_f7,
-                            ),
-                          );
-                        }).toList(),
-                        icon: const Icon(Icons.arrow_drop_down),
-                        iconSize: 20,
-                        isExpanded: true,
-                        underline: const SizedBox(),
-                      ),
-                    ),
-                  ],
-                ),
-
-                const SizedBox(
-                  height: 10.0,
-                ),
-                SizedBox(
-                  height: 40,
-                  child: apiResponse == null
-                      ? const Center(
-                    child: CommonStyles.progressIndicator,
-                  )
-                      : ListView.builder(
-                    scrollDirection: Axis.horizontal,
-                    shrinkWrap: true,
-                    itemCount: apiResponse!.listResult.length + 1,
-                    itemBuilder: (BuildContext context, int index) {
-                      bool isSelected = index == provider.dropDownStatus;
-                      PaymentMode currentPaymode;
-
-                      // Handle the "All" option
-                      if (index == 0) {
-                        currentPaymode = PaymentMode(
-                          typeCdId: null,
-                          classTypeId: 3,
-                          name: 'All',
-                          desc: 'All',
-                          tableName: 'all',
-                          columnName: 'all',
-                          sortOrder: 0,
-                          isActive: true,
-                        );
-                      } else {
-                        currentPaymode = apiResponse!.listResult[index - 1];
-                      }
-                      return GestureDetector(
-                        onTap: () {
-                          setState(() {
-                            provider.dropDownStatus = index;
-                            selectedPaymode = currentPaymode;
-                          });
-                          payid = currentPaymode.typeCdId;
-                          provider.getApiStatusId = currentPaymode.typeCdId;
-                          Selected_PaymentMode = currentPaymode.desc;
-                        },
-                        child: Container(
-                          margin: const EdgeInsets.symmetric(horizontal: 4.0),
-                          decoration: BoxDecoration(
-                            color: isSelected
-                                ? CommonStyles.orangeColor
-                                : CommonStyles.orangeColor.withOpacity(0.1),
-                            border: Border.all(
-                              color: isSelected
-                                  ? CommonStyles.orangeColor
-                                  : CommonStyles.orangeColor,
-                              width: 1.0,
-                            ),
-                            borderRadius: BorderRadius.circular(8.0),
-                          ),
-                          child: IntrinsicWidth(
-                            child: Column(
-                              mainAxisAlignment: MainAxisAlignment.center,
-                              children: [
-                                Container(
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 10.0),
-                                  child: Row(
-                                    children: [
-                                      Text(
-                                        currentPaymode.desc.toString(),
-                                        style: TextStyle(
-                                          fontSize: 12.0,
-                                          fontWeight: FontWeight.bold,
-                                          fontFamily: "Roboto",
-                                          color: isSelected
-                                              ? Colors.white
-                                              : Colors.black,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ),
-                        ),
-                      );
-                    },
-                  ),
-                ),
-
-                const SizedBox(
-                  height: 10.0,
-                ),
-
-                // From date
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    buildDateInputfromdate(
-                      context,
-                      'From Date',
-                      fromdateController,
-                          () => _selectfromDate(context, fromdateController),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-
-                // To Date
-                Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    //333
-                    buildDateToInput(
-                      context,
-                      'To Date',
-                      todateController,
-                          () => _selectDate(context, todateController),
-                    ),
-                  ],
-                ),
-                const SizedBox(
-                  height: 10.0,
-                ),
-                Row(
-                  children: [
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          Navigator.of(context).pop();
-                        },
-                        style: ElevatedButton.styleFrom(
-                          textStyle: const TextStyle(
-                            color: Colors.red,
-                          ),
-                          side: const BorderSide(
-                            color: Colors.red,
-                          ),
-                          backgroundColor: Colors.white,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                        ),
-                        child: const Text(
-                          'Cancel',
-                          style: CommonStyles.txSty_14r_fb,
-                        ),
-                      ),
-                    ),
-                    const SizedBox(
-                      width: 20,
-                    ),
-                    Expanded(
-                      child: ElevatedButton(
-                        onPressed: () {
-                          getAppliedFilterData(context);
-                        },
-                        style: ElevatedButton.styleFrom(
-                          textStyle: const TextStyle(
-                            color: Colors.white,
-                          ),
-                          backgroundColor: CommonStyles.orangeColor,
-                          shape: const RoundedRectangleBorder(
-                            borderRadius: BorderRadius.all(
-                              Radius.circular(10),
-                            ),
-                          ),
-                        ),
-                        child: const Text(
-                          'Apply',
-                          style: CommonStyles.txSty_14w_fb,
-                        ),
-                      ),
-                    ),
-                  ],
                 ),
               ],
             ),
-          )),
+            Container(
+              margin: const EdgeInsets.only(top: 5, bottom: 12),
+              child: const Divider(
+                height: 5,
+              ),
+            ),
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                const Padding(
+                  padding: EdgeInsets.only(left: 5.0),
+                  child: Text(
+                    'Party',
+                    style: CommonStyles.txSty_12o_f7,
+                  ),
+                ),
+                const SizedBox(
+                  height: 4.0,
+                ),
+                Container(
+                  height: 40.0,
+                  padding: const EdgeInsets.only(
+                    right: 5,
+                    top: 18,
+                  ),
+                  decoration: CommonUtils.decorationO_R10W1,
+                  child: TypeAheadField(
+                    controller: provider.getPartyController,
+                    builder: (context, controller, focusNode) => TextField(
+                      controller: controller,
+                      focusNode: focusNode,
+                      autofocus: false,
+                      style: CommonStyles.txSty_12o_f7,
+                      decoration: const InputDecoration(
+                          border: OutlineInputBorder(
+                            borderSide: BorderSide.none,
+                          ),
+                          hintText: 'Select Party',
+                          hintStyle: CommonStyles.txSty_12o_f7),
+                    ),
+                    itemBuilder: (context, value) {
+                      return ListTile(
+                        dense: true,
+                        title: Text(
+                          '${isPartyCodeIsEmpty ? value : value['cardName']}',
+                          style: CommonStyles.txSty_12o_f7,
+                        ),
+                      );
+                    },
+                    suggestionsCallback: (search) {
+                      if (search == '') {
+                        return null;
+                      }
+                      final filteredSuggestions = dropdownItems
+                          .where((party) => party['cardName']
+                              .toLowerCase()
+                              .startsWith(search.toLowerCase()))
+                          .toList();
+
+                      isPartyCodeIsEmpty = false;
+                      if (filteredSuggestions.isEmpty) {
+                        isPartyCodeIsEmpty = true;
+                        return ['No party found'];
+                      }
+
+                      return filteredSuggestions;
+                    },
+                    onSelected: (selectedValue) {
+                      provider.getPartyController.text =
+                          selectedValue['cardName'];
+                      provider.getPartyCode = selectedValue['cardCode'];
+                    },
+                  ),
+                ),
+                const SizedBox(
+                  height: 10.0,
+                ),
+                const Padding(
+                  padding: EdgeInsets.only(left: 5.0),
+                  child: Text(
+                    'Purpose',
+                    style: CommonStyles.txSty_12o_f7,
+                  ),
+                ),
+                const SizedBox(
+                  height: 4.0,
+                ),
+                Container(
+                  height: 40.0,
+                  padding: const EdgeInsets.only(left: 15, right: 5),
+                  decoration: CommonUtils.decorationO_R10W1,
+                  child: purposeList.isEmpty
+                      ? LoadingAnimationWidget.newtonCradle(
+                          color: CommonStyles.orangeColor,
+                          size: 40.0,
+                        )
+                      : DropdownButton<String>(
+                          focusColor: Colors.transparent,
+                          hint: const Text(
+                            'Select Purpose',
+                            style: CommonStyles.txSty_12o_f7,
+                          ),
+                          value: provider.dropDownPurpose,
+                          onChanged: (String? newValue) {
+                            setState(() {
+                              selectedPurpose = newValue;
+                              provider.dropDownPurpose = newValue;
+                              selectedPurposeObj = purposeList.firstWhere(
+                                (purpose) => purpose.fldValue == newValue,
+                                orElse: () => Purpose(
+                                    fldValue: '', descr: '', purposeName: ''),
+                              );
+                              purposename = selectedPurposeObj!.fldValue;
+                              provider.getApiPurpose = newValue;
+                            });
+                          },
+                          items: purposeList.map((Purpose purpose) {
+                            return DropdownMenuItem<String>(
+                              value: purpose.fldValue,
+                              child: Text(
+                                purpose.purposeName,
+                                style: CommonStyles.txSty_12o_f7,
+                              ),
+                            );
+                          }).toList(),
+                          icon: const Icon(Icons.arrow_drop_down),
+                          iconSize: 20,
+                          isExpanded: true,
+                          underline: const SizedBox(),
+                        ),
+                ),
+              ],
+            ),
+
+            const SizedBox(
+              height: 10.0,
+            ),
+            SizedBox(
+              height: 40,
+              child: apiResponse == null
+                  ? const Center(
+                      child: CommonStyles.progressIndicator,
+                    )
+                  : ListView.builder(
+                      scrollDirection: Axis.horizontal,
+                      shrinkWrap: true,
+                      itemCount: apiResponse!.listResult.length + 1,
+                      itemBuilder: (BuildContext context, int index) {
+                        bool isSelected = index == provider.dropDownStatus;
+                        PaymentMode currentPaymode;
+
+                        // Handle the "All" option
+                        if (index == 0) {
+                          currentPaymode = PaymentMode(
+                            typeCdId: null,
+                            classTypeId: 3,
+                            name: 'All',
+                            desc: 'All',
+                            tableName: 'all',
+                            columnName: 'all',
+                            sortOrder: 0,
+                            isActive: true,
+                          );
+                        } else {
+                          currentPaymode = apiResponse!.listResult[index - 1];
+                        }
+                        return GestureDetector(
+                          onTap: () {
+                            setState(() {
+                              provider.dropDownStatus = index;
+                              selectedPaymode = currentPaymode;
+                            });
+                            payid = currentPaymode.typeCdId;
+                            provider.getApiStatusId = currentPaymode.typeCdId;
+                            Selected_PaymentMode = currentPaymode.desc;
+                          },
+                          child: Container(
+                            margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                            decoration: BoxDecoration(
+                              color: isSelected
+                                  ? CommonStyles.orangeColor
+                                  : CommonStyles.orangeColor.withOpacity(0.1),
+                              border: Border.all(
+                                color: isSelected
+                                    ? CommonStyles.orangeColor
+                                    : CommonStyles.orangeColor,
+                                width: 1.0,
+                              ),
+                              borderRadius: BorderRadius.circular(8.0),
+                            ),
+                            child: IntrinsicWidth(
+                              child: Column(
+                                mainAxisAlignment: MainAxisAlignment.center,
+                                children: [
+                                  Container(
+                                    padding: const EdgeInsets.symmetric(
+                                        horizontal: 10.0),
+                                    child: Row(
+                                      children: [
+                                        Text(
+                                          currentPaymode.desc.toString(),
+                                          style: TextStyle(
+                                            fontSize: 12.0,
+                                            fontWeight: FontWeight.bold,
+                                            fontFamily: "Roboto",
+                                            color: isSelected
+                                                ? Colors.white
+                                                : Colors.black,
+                                          ),
+                                        ),
+                                      ],
+                                    ),
+                                  ),
+                                ],
+                              ),
+                            ),
+                          ),
+                        );
+                      },
+                    ),
+            ),
+
+            const SizedBox(
+              height: 10.0,
+            ),
+
+            // From date
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                buildDateInputfromdate(
+                  context,
+                  'From Date',
+                  fromdateController,
+                  () => _selectfromDate(context, fromdateController),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+
+            // To Date
+            Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                //333
+                buildDateToInput(
+                  context,
+                  'To Date',
+                  todateController,
+                  () => _selectDate(context, todateController),
+                ),
+              ],
+            ),
+            const SizedBox(
+              height: 10.0,
+            ),
+            Row(
+              children: [
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      Navigator.of(context).pop();
+                    },
+                    style: ElevatedButton.styleFrom(
+                      textStyle: const TextStyle(
+                        color: Colors.red,
+                      ),
+                      side: const BorderSide(
+                        color: Colors.red,
+                      ),
+                      backgroundColor: Colors.white,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                    ),
+                    child: const Text(
+                      'Cancel',
+                      style: CommonStyles.txSty_14r_fb,
+                    ),
+                  ),
+                ),
+                const SizedBox(
+                  width: 20,
+                ),
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      getAppliedFilterData(context);
+                    },
+                    style: ElevatedButton.styleFrom(
+                      textStyle: const TextStyle(
+                        color: Colors.white,
+                      ),
+                      backgroundColor: CommonStyles.orangeColor,
+                      shape: const RoundedRectangleBorder(
+                        borderRadius: BorderRadius.all(
+                          Radius.circular(10),
+                        ),
+                      ),
+                    ),
+                    child: const Text(
+                      'Apply',
+                      style: CommonStyles.txSty_14w_fb,
+                    ),
+                  ),
+                ),
+              ],
+            ),
+          ],
+        ),
+      )),
     );
   }
 
@@ -1092,7 +1082,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
 // Convert the fromdateController text to 'yyyy-MM-dd'
     DateTime pickedFromDate =
-    DateFormat('dd-MM-yyyy').parse(fromdateController.text);
+        DateFormat('dd-MM-yyyy').parse(fromdateController.text);
     selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
 
     try {
@@ -1127,7 +1117,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
 
           if (data != null) {
             List<ListResult> result =
-            data.map((item) => ListResult.fromJson(item)).toList();
+                data.map((item) => ListResult.fromJson(item)).toList();
             viewProvider.storeIntoProvider(result);
           } else {
             List<ListResult> emptyList = [];
@@ -1222,7 +1212,7 @@ class _MyCardState extends State<MyCard> {
             elevation: 5,
             child: Container(
               padding:
-              const EdgeInsets.only(left: 5, right: 5, top: 12, bottom: 12),
+                  const EdgeInsets.only(left: 5, right: 5, top: 12, bottom: 12),
               width: MediaQuery.of(context).size.width,
               decoration: BoxDecoration(
                 color: Colors.white,
@@ -1278,7 +1268,7 @@ class _MyCardState extends State<MyCard> {
                                 ),
                                 Row(
                                   mainAxisAlignment:
-                                  MainAxisAlignment.spaceBetween,
+                                      MainAxisAlignment.spaceBetween,
                                   children: [
                                     Row(
                                       children: [

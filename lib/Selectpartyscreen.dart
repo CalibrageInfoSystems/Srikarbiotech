@@ -111,131 +111,77 @@ class Selectparty_screen extends State<Selectpartyscreen> {
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: _appBar(),
-      body: Column(
-        children: [
-          Padding(
-            padding: const EdgeInsets.only(top: 10.0, left: 20.0, right: 20.0),
-            child: Column(
+      body: Padding(
+        padding: const EdgeInsets.all(10.0),
+        child: Column(
+          children: [
+            Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                const SizedBox(height: 8.0),
                 GestureDetector(
                   onTap: () {
                     print('first textview clicked');
                   },
-                  child: Container(
-                    width: MediaQuery.of(context).size.width,
-                    decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(5.0),
-                      border: Border.all(
-                        color: Colors.black26,
-                        width: 2,
+                  child: Expanded(
+                    child: TextFormField(
+                      controller: searchController,
+                      onChanged: (value) {
+                        filterDealers();
+                      },
+                      keyboardType: TextInputType.name,
+                      style: CommonStyles.txSty_12b_fb,
+                      decoration: InputDecoration(
+                        hintText: 'Search for Party Name or Code or City',
+                        hintStyle: CommonStyles.txSty_14bs_fb,
+                        suffixIcon: const Icon(Icons.search),
+                        border: CommonUtils.borderForSearch,
+                        focusedBorder: CommonUtils.focusedBorder,
                       ),
-                    ),
-                    child: Row(
-                      mainAxisAlignment: MainAxisAlignment.center,
-                      children: [
-                        Expanded(
-                          child: Padding(
-                            padding: const EdgeInsets.only(left: 10.0),
-                            child: TextFormField(
-                              controller: searchController,
-                              onChanged: (value) {
-                                filterDealers();
-                              },
-                              keyboardType: TextInputType.name,
-                              style: CommonStyles.txSty_12b_fb,
-                              decoration: const InputDecoration(
-                                hintText:
-                                    'Search for Party Name or Code or City ',
-                                hintStyle: CommonStyles.txSty_14bs_fb,
-                                border: InputBorder.none,
-                              ),
-                            ),
-                          ),
-                        ),
-                        const Padding(
-                          padding: EdgeInsets.symmetric(horizontal: 10.0),
-                          child: Icon(
-                            Icons.search,
-                            color: Colors.black54,
-                          ),
-                        ),
-                      ],
                     ),
                   ),
                 ),
                 const SizedBox(height: 10.0),
               ],
             ),
-          ),
-          // Add Expanded around the ListView.builder
-          Expanded(
-            child: _isLoading
-                ? const Center(
-                    child: CommonStyles.progressIndicator,
-                  )
-                : filteredDealers.isEmpty // Check if filteredDealers is empty
-                    ? const Center(
-                        child: Text(
-                          'No Data Found',
-                          style: CommonStyles.txSty_12b_fb,
-                        ), // Display this text when filteredDealers is empty
-                      )
-                    : ListView.builder(
-                        itemCount: filteredDealers.length,
-                        itemBuilder: (context, index) {
-                          return GestureDetector(
-                            onTap: () {
-                              setState(() {
-                                selectedCardIndex =
-                                    index; // Update selected index
-                              });
-                              // onTap: () {
-                              //   if (!FocusScope.of(context).hasPrimaryFocus) {
-                              //     return;
-                              //   }
-                              print(
-                                  "Tapped on dealer with cardName: ${filteredDealers[index].cardName}");
-                              print("screenFrom: $screenFrom");
-
-                              if (screenFrom == "CreateOrder") {
+            // Add Expanded around the ListView.builder
+            Expanded(
+              child: _isLoading
+                  ? const Center(
+                      child: CommonStyles.progressIndicator,
+                    )
+                  : filteredDealers.isEmpty // Check if filteredDealers is empty
+                      ? const Center(
+                          child: Text(
+                            'No Data Found',
+                            style: CommonStyles.txSty_12b_fb,
+                          ), // Display this text when filteredDealers is empty
+                        )
+                      : ListView.builder(
+                          itemCount: filteredDealers.length,
+                          itemBuilder: (context, index) {
+                            return GestureDetector(
+                              onTap: () {
+                                setState(() {
+                                  selectedCardIndex =
+                                      index; // Update selected index
+                                });
+                                // onTap: () {
+                                //   if (!FocusScope.of(context).hasPrimaryFocus) {
+                                //     return;
+                                //   }
                                 print(
-                                    "Tapped on dealer with cardName:2 ${filteredDealers[index].cardName}");
-                                try {
-                                  Navigator.push(
-                                    context,
-                                    MaterialPageRoute(
-                                      builder: (context) => WareHouseScreen(
-                                          from: 'CreateOrder',
-                                          cardName:
-                                              filteredDealers[index].cardName,
-                                          cardCode:
-                                              filteredDealers[index].cardCode,
-                                          address: filteredDealers[index]
-                                              .fullAddress,
-                                          state: filteredDealers[index].state,
-                                          phone: filteredDealers[index]
-                                              .phoneNumber,
-                                          proprietorName: filteredDealers[index]
-                                              .proprietorName,
-                                          gstRegnNo:
-                                              filteredDealers[index].gstRegnNo,
-                                          creditLine:
-                                              filteredDealers[index].creditLine,
-                                          balance:
-                                              filteredDealers[index].balance),
-                                    ),
-                                  );
-                                } catch (e) {
-                                  print("Error navigating: $e");
-                                }
-                              } else if (screenFrom == "CreateCollections") {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) =>
-                                        CreateCollectionscreen(
+                                    "Tapped on dealer with cardName: ${filteredDealers[index].cardName}");
+                                print("screenFrom: $screenFrom");
+
+                                if (screenFrom == "CreateOrder") {
+                                  print(
+                                      "Tapped on dealer with cardName:2 ${filteredDealers[index].cardName}");
+                                  try {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => WareHouseScreen(
+                                            from: 'CreateOrder',
                                             cardName:
                                                 filteredDealers[index].cardName,
                                             cardCode:
@@ -248,45 +194,47 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                                             proprietorName:
                                                 filteredDealers[index]
                                                     .proprietorName,
-                                            code:
-                                                filteredDealers[index].cardCode,
                                             gstRegnNo: filteredDealers[index]
-                                                .gstRegnNo),
-                                  ),
-                                );
-                              } else if (screenFrom == "Ledger") {
-                                Navigator.push(
-                                  context,
-                                  MaterialPageRoute(
-                                    builder: (context) => Ledgerscreen(
-                                        cardName:
-                                            filteredDealers[index].cardName,
-                                        cardCode:
-                                            filteredDealers[index].cardCode,
-                                        address:
-                                            filteredDealers[index].fullAddress,
-                                        state: filteredDealers[index].state,
-                                        phone:
-                                            filteredDealers[index].phoneNumber,
-                                        proprietorName: filteredDealers[index]
-                                            .proprietorName,
-                                        gstRegnNo:
-                                            filteredDealers[index].gstRegnNo,
-                                        creditLine:
-                                            filteredDealers[index].creditLine,
-                                        balance:
-                                            filteredDealers[index].balance),
-                                  ),
-                                );
-                              } else if (screenFrom == "CreatereturnOrder") {
-                                print(
-                                    "Tapped on dealer with cardName:2 ${filteredDealers[index].cardName}");
-                                try {
+                                                .gstRegnNo,
+                                            creditLine: filteredDealers[index]
+                                                .creditLine,
+                                            balance:
+                                                filteredDealers[index].balance),
+                                      ),
+                                    );
+                                  } catch (e) {
+                                    print("Error navigating: $e");
+                                  }
+                                } else if (screenFrom == "CreateCollections") {
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                      builder: (context) => WareHouseScreen(
-                                          from: 'CreatereturnOrder',
+                                      builder: (context) =>
+                                          CreateCollectionscreen(
+                                              cardName: filteredDealers[index]
+                                                  .cardName,
+                                              cardCode: filteredDealers[index]
+                                                  .cardCode,
+                                              address: filteredDealers[index]
+                                                  .fullAddress,
+                                              state:
+                                                  filteredDealers[index].state,
+                                              phone: filteredDealers[index]
+                                                  .phoneNumber,
+                                              proprietorName:
+                                                  filteredDealers[index]
+                                                      .proprietorName,
+                                              code: filteredDealers[index]
+                                                  .cardCode,
+                                              gstRegnNo: filteredDealers[index]
+                                                  .gstRegnNo),
+                                    ),
+                                  );
+                                } else if (screenFrom == "Ledger") {
+                                  Navigator.push(
+                                    context,
+                                    MaterialPageRoute(
+                                      builder: (context) => Ledgerscreen(
                                           cardName:
                                               filteredDealers[index].cardName,
                                           cardCode:
@@ -306,14 +254,40 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                                               filteredDealers[index].balance),
                                     ),
                                   );
-                                } catch (e) {
-                                  print("Error navigating: $e");
+                                } else if (screenFrom == "CreatereturnOrder") {
+                                  print(
+                                      "Tapped on dealer with cardName:2 ${filteredDealers[index].cardName}");
+                                  try {
+                                    Navigator.push(
+                                      context,
+                                      MaterialPageRoute(
+                                        builder: (context) => WareHouseScreen(
+                                            from: 'CreatereturnOrder',
+                                            cardName:
+                                                filteredDealers[index].cardName,
+                                            cardCode:
+                                                filteredDealers[index].cardCode,
+                                            address: filteredDealers[index]
+                                                .fullAddress,
+                                            state: filteredDealers[index].state,
+                                            phone: filteredDealers[index]
+                                                .phoneNumber,
+                                            proprietorName:
+                                                filteredDealers[index]
+                                                    .proprietorName,
+                                            gstRegnNo: filteredDealers[index]
+                                                .gstRegnNo,
+                                            creditLine: filteredDealers[index]
+                                                .creditLine,
+                                            balance:
+                                                filteredDealers[index].balance),
+                                      ),
+                                    );
+                                  } catch (e) {
+                                    print("Error navigating: $e");
+                                  }
                                 }
-                              }
-                            },
-                            child: Container(
-                              margin: const EdgeInsets.symmetric(
-                                  horizontal: 16.0, vertical: 4.0),
+                              },
                               child: Card(
                                 elevation: 0,
                                 color: selectedCardIndex == index
@@ -406,12 +380,12 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                                   ),
                                 ),
                               ),
-                            ),
-                          );
-                        },
-                      ),
-          ),
-        ],
+                            );
+                          },
+                        ),
+            ),
+          ],
+        ),
       ),
     );
   }

@@ -3,6 +3,7 @@ import 'package:flutter/material.dart';
 import 'package:connectivity/connectivity.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:shared_preferences/shared_preferences.dart';
+import 'package:shimmer/shimmer.dart';
 import 'package:srikarbiotech/Common/styles.dart';
 
 class CommonUtils {
@@ -170,6 +171,16 @@ class CommonUtils {
     );
   }
 
+  static final borderForSearch = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide: const BorderSide(color: Color.fromARGB(96, 141, 140, 140)),
+  );
+
+  static final focusedBorder = OutlineInputBorder(
+    borderRadius: BorderRadius.circular(10),
+    borderSide: const BorderSide(color: Colors.black),
+  );
+
   static final boxBorder = BoxDecoration(
     borderRadius: BorderRadius.circular(5.0),
     color: Colors.white,
@@ -301,6 +312,93 @@ class CommonUtils {
   static Widget showProgressIndicator() {
     return const CircularProgressIndicator.adaptive(
       valueColor: AlwaysStoppedAnimation<Color>(Colors.orange),
+    );
+  }
+
+//MARK: Point: Shimmer
+  static Widget shimmerEffect(BuildContext context) {
+    return SingleChildScrollView(
+      child: Container(
+        width: MediaQuery.of(context).size.width,
+        height: MediaQuery.of(context).size.height,
+        padding: const EdgeInsets.all(12),
+        child: Shimmer.fromColors(
+          baseColor: Colors.grey.withOpacity(0.5),
+          highlightColor: Colors.grey.withOpacity(0.2),
+          child: Column(
+            children: [
+              Expanded(
+                flex: 1,
+                child: ListView.separated(
+                  itemCount: 22,
+                  itemBuilder: (context, index) {
+                    return Row(
+                      children: [
+                        Expanded(
+                          child: Column(
+                            crossAxisAlignment: CrossAxisAlignment.start,
+                            children: [
+                              Container(
+                                color: Colors.grey,
+                                // width:
+                                //     MediaQuery.of(context).size.width / 1.2,
+                                height: 20,
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Container(
+                                color: Colors.grey,
+                                width: MediaQuery.of(context).size.width / 2,
+                                height: 20,
+                              ),
+                              const SizedBox(
+                                height: 5,
+                              ),
+                              Row(
+                                children: [
+                                  Container(
+                                    color: Colors.grey,
+                                    width:
+                                        MediaQuery.of(context).size.width / 2.6,
+                                    height: 20,
+                                  ),
+                                  const SizedBox(
+                                    width: 20,
+                                  ),
+                                  Container(
+                                    color: Colors.grey,
+                                    width:
+                                        MediaQuery.of(context).size.width / 4,
+                                    height: 20,
+                                  ),
+                                ],
+                              ),
+                            ],
+                          ),
+                        ),
+                        const SizedBox(
+                          width: 10,
+                        ),
+                        Container(
+                          color: Colors.grey,
+                          width: 70,
+                          height: 70,
+                        ),
+                      ],
+                    );
+                  },
+                  separatorBuilder: (context, index) {
+                    return const SizedBox(
+                      height: 33,
+                    );
+                  },
+                ),
+              ),
+            ],
+          ),
+        ),
+      ),
     );
   }
 }

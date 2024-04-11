@@ -110,7 +110,7 @@ class _WareHouseScreenState extends State<WareHouseScreen> {
         future: wareHousesData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return const Center(child: CircularProgressIndicator.adaptive());
+            return const Center(child: CommonStyles.progressIndicator);
           } else if (snapshot.hasError) {
             return const Center(
               child: Text(
