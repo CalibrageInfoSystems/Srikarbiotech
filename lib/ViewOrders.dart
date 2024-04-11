@@ -102,14 +102,10 @@ class _VieworderPageState extends State<ViewOrders> {
           filterorderesponselist = List.from(orderesponselist);
         });
 
-        if (filterorderesponselist.isEmpty) {
-          // Display a message or set a variable to show a message in your UI.
-        }
+        if (filterorderesponselist.isEmpty) {}
 
         return filterorderesponselist;
       } else {
-        // Handle the case where "listResult" is null.
-        // You can return an empty list or handle it based on your application's requirements.
         return [];
       }
     } else {
@@ -142,7 +138,6 @@ class _VieworderPageState extends State<ViewOrders> {
   Widget build(BuildContext context) {
     return WillPopScope(
       onWillPop: () async {
-        // Disable the back button functionality
         viewOrdersProvider.clearFilter();
         Navigator.pushReplacement(
           context,
@@ -157,8 +152,7 @@ class _VieworderPageState extends State<ViewOrders> {
             future: apiData,
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.waiting) {
-                return const Center(
-                    child: CircularProgressIndicator.adaptive());
+                return const Center(child: CommonStyles.progressIndicator);
               } else if (snapshot.hasError) {
                 return Center(
                   child: Text(
@@ -188,7 +182,6 @@ class _VieworderPageState extends State<ViewOrders> {
                             child: ListView.builder(
                               shrinkWrap: true,
                               itemCount: data.length,
-                              // Change this to the number of static items you want
                               itemBuilder: (context, index) {
                                 String dateString = data[index].orderDate;
                                 DateTime date = DateTime.parse(dateString);
@@ -271,8 +264,6 @@ class _VieworderPageState extends State<ViewOrders> {
             future: getshareddata(),
             builder: (context, snapshot) {
               if (snapshot.connectionState == ConnectionState.done) {
-                // Access the companyId after shared data is retrieved
-
                 return GestureDetector(
                   onTap: () {
                     viewOrdersProvider.clearFilter();
@@ -291,7 +282,6 @@ class _VieworderPageState extends State<ViewOrders> {
                   ),
                 );
               } else {
-                // Return a placeholder or loading indicator
                 return const SizedBox.shrink();
               }
             },
@@ -391,7 +381,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   String? selectedValue;
 
   List<dynamic> dropdownItems = [];
-  // List<dynamic> partyInfo = [];
+
   late final partyInfo;
   PaymentMode? selectedPaymode;
   int? payid;
@@ -407,7 +397,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
       DateTime.now().subtract(const Duration(days: 7));
   List<Purpose> purposeList = [];
   String? selectedPurpose, selectformattedfromdate, selectformattedtodate;
-  Purpose? selectedPurposeObj; // Declare it globally
+  Purpose? selectedPurposeObj;
   String purposename = '';
   int? savedCompanyId = 0;
   String? slpCode = "";
@@ -419,9 +409,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
   @override
   void initState() {
     super.initState();
-    // todateController.text = DateFormat('dd-MM-yyyy').format(DateTime.now());
-    // DateTime oneWeekAgo = DateTime.now().subtract(const Duration(days: 7));
-    // fromdateController.text = DateFormat('dd-MM-yyyy').format(oneWeekAgo);
+
     fetchData();
     getpaymentmethods();
     getWareHouses();
@@ -434,8 +422,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     try {
       String apiUrl = "$baseUrl$GetWarehouse$userId/$companyId";
       debugPrint('apiUrl: $apiUrl');
-      //  String apiUrl = "http://182.18.157.215/Srikar_Biotech_Dev/API/api/Account/GetWarehousesByUserandCompany/$userId/$companyId";
-      // String apiUrl = '$baseUrl$GetWarehousesByUserandCompany$userId 1';
+
       final jsonResponse = await http.get(Uri.parse(apiUrl));
       if (jsonResponse.statusCode == 200) {
         Map<String, dynamic> response = jsonDecode(jsonResponse.body);
@@ -501,13 +488,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           return Theme(
             data: ThemeData.light().copyWith(
               colorScheme: const ColorScheme.light(
-                primary:
-                    CommonStyles.orangeColor, // Change the primary color here
+                primary: CommonStyles.orangeColor,
                 onPrimary: CommonStyles.whiteColor,
-                // onSurface: Colors.blue,// Change the text color here
               ),
-              dialogBackgroundColor: CommonStyles
-                  .whiteColor, // Change the dialog background color here
+              dialogBackgroundColor: CommonStyles.whiteColor,
             ),
             child: child!,
           );
@@ -518,10 +502,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         controller.text = formattedDate;
         viewOrdersProvider.setToDate = formattedDate;
-        // Save selected dates as DateTime objects
+
         selectedDate = picked;
 
-        //
         selectformattedtodate = DateFormat('yyyy-MM-dd').format(picked);
       }
     } catch (e) {
@@ -609,11 +592,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         print('===> date,${DateFormat('dd-MM-yyyy').parse(controller.text)}');
         initialDate = DateFormat('dd-MM-yyyy').parse(controller.text);
       } catch (e) {
-        // If parsing fails, default to current date
         initialDate = DateTime.now();
       }
     } else {
-      // If controller.text is empty, default to current date
       initialDate = DateTime.now();
     }
 
@@ -628,13 +609,10 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
           return Theme(
             data: ThemeData.light().copyWith(
               colorScheme: const ColorScheme.light(
-                primary:
-                    CommonStyles.orangeColor, // Change the primary color here
+                primary: CommonStyles.orangeColor,
                 onPrimary: CommonStyles.whiteColor,
-                // onSurface: Colors.blue,// Change the text color here
               ),
-              dialogBackgroundColor: CommonStyles
-                  .whiteColor, // Change the dialog background color here
+              dialogBackgroundColor: CommonStyles.whiteColor,
             ),
             child: child!,
           );
@@ -668,8 +646,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             textAlign: TextAlign.start,
           ),
         ),
-        const SizedBox(
-            height: 4.0), // Add space between labelText and TextFormField
+        const SizedBox(height: 4.0),
         GestureDetector(
           onTap: onTap,
           child: Container(
@@ -691,7 +668,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       padding: const EdgeInsets.only(left: 15, right: 5),
                       child: TextFormField(
                         controller: controller,
-                        // initialValue: viewProvider.fromDateValue,
                         enabled: false,
                         style: CommonStyles.txSty_12o_f7,
                         decoration: InputDecoration(
@@ -735,7 +711,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
         "/" +
         '$slpCode'));
 
-    //
     if (response.statusCode == 200) {
       Map<String, dynamic> data = json.decode(response.body);
 
@@ -813,7 +788,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           contentPadding: EdgeInsets.only(top: 18, left: 15),
                           border: OutlineInputBorder(
                             borderSide: BorderSide.none,
-                            // borderSide: BorderSide(color: Colors.grey),
                           ),
                           hintText: 'Select Party',
                           hintStyle: CommonStyles.txSty_12o_f7),
@@ -838,10 +812,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           .toList();
 
                       isPartyCodeIsEmpty = false;
-                      // partyInfo = dropdownItems.where((party) =>
-                      //     party['cardName']
-                      //         .toLowerCase()
-                      //         .startsWith(search.toLowerCase()));
+
                       if (filteredSuggestions.isEmpty) {
                         isPartyCodeIsEmpty = true;
                         return ['No party found'];
@@ -892,12 +863,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                           provider.dropDownWareHouse = newValue;
                           WareHouseList house = wareHousesData
                               .firstWhere((item) => item.whsName == newValue);
-                          // for (WareHouseList house in wareHousesData) {
-                          //   if (house.whsName == newValue) {
-                          //     provider.apiWareHouse = house.whsCode;
-                          //     break;
-                          //   }
-                          // }
+
                           provider.apiWareHouse = house.whsCode;
                         });
                       },
@@ -926,16 +892,13 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                   : ListView.builder(
                       scrollDirection: Axis.horizontal,
                       shrinkWrap: true,
-                      itemCount: apiResponse!.listResult.length +
-                          1, // Add 1 for the "All" option
+                      itemCount: apiResponse!.listResult.length + 1,
                       itemBuilder: (BuildContext context, int index) {
                         bool isSelected = index == provider.dropDownStatus;
                         PaymentMode currentPaymode;
 
-                        // Handle the "All" option
                         if (index == 0) {
                           currentPaymode = PaymentMode(
-                            // Provide default values or handle the null case as needed
                             typeCdId: null,
                             classTypeId: 3,
                             name: 'All',
@@ -946,8 +909,7 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                             isActive: true,
                           );
                         } else {
-                          currentPaymode = apiResponse!.listResult[
-                              index - 1]; // Adjust index for actual data
+                          currentPaymode = apiResponse!.listResult[index - 1];
                         }
                         return GestureDetector(
                           onTap: () {
@@ -1004,12 +966,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
                       },
                     ),
             ),
-
             const SizedBox(
               height: 10.0,
             ),
-
-            // From date
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
@@ -1024,12 +983,9 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
             const SizedBox(
               height: 10.0,
             ),
-
-            // To Date
             Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: [
-                //333
                 buildDateToInput(
                   context,
                   'To Date',
@@ -1108,7 +1064,6 @@ class _FilterBottomSheetState extends State<FilterBottomSheet> {
     DateTime todate = DateFormat('dd-MM-yyyy').parse(todateController.text);
     selectformattedtodate = DateFormat('yyyy-MM-dd').format(todate);
 
-// Convert the fromdateController text to 'yyyy-MM-dd'
     DateTime pickedFromDate =
         DateFormat('dd-MM-yyyy').parse(fromdateController.text);
     selectformattedfromdate = DateFormat('yyyy-MM-dd').format(pickedFromDate);
@@ -1208,13 +1163,8 @@ class _OrderCardState extends State<OrderCard> {
     viewOrdersProvider = Provider.of<ViewOrdersProvider>(context);
   }
 
-// start
-
   @override
   Widget build(BuildContext context) {
-    // String dateString = widget.listResult.date;
-    // DateTime date = DateTime.parse(dateString);
-    // String formattedDate = DateFormat('dd MMM, yyyy').format(date);
     return GestureDetector(
       onTap: () {
         viewOrdersProvider.clearFilter();
@@ -1251,7 +1201,6 @@ class _OrderCardState extends State<OrderCard> {
         child: Card(
           elevation: 5,
           child: Container(
-            // const EdgeInsets.only(left: 5, right: 5, top: 12, bottom: 12),
             padding:
                 const EdgeInsets.only(left: 5, right: 5, top: 12, bottom: 12),
             width: MediaQuery.of(context).size.width,
@@ -1267,7 +1216,6 @@ class _OrderCardState extends State<OrderCard> {
                   decoration: CommonUtils.boxBorder,
                   child: Row(
                     children: [
-                      // starting icon of card
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         children: [
@@ -1316,12 +1264,9 @@ class _OrderCardState extends State<OrderCard> {
                           ),
                         ],
                       ),
-
-                      // beside info
                       Expanded(
                         child: Padding(
-                          padding:
-                              const EdgeInsets.only(left: 2, top: 0, bottom: 0),
+                          padding: const EdgeInsets.symmetric(horizontal: 5),
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1344,7 +1289,7 @@ class _OrderCardState extends State<OrderCard> {
                                     children: [
                                       const Text(
                                         'Order ID : ',
-                                        style: CommonUtils.txSty_13B_Fb,
+                                        style: CommonStyles.txSty_12b_fb,
                                       ),
                                       Text(
                                         widget.orderResult.orderNumber
@@ -1368,15 +1313,11 @@ class _OrderCardState extends State<OrderCard> {
                                           style: CommonStyles.txSty_12o_f7,
                                         )
                                       : const SizedBox(),
-                                  // Text(
-                                  //   '${widget.orderResult.whsName}',
-                                  //   style: CommonStyles.txSty_12o_f7,
-                                  // ),
                                   Row(
                                     children: [
                                       const Text(
                                         'No.of Items: ',
-                                        style: CommonUtils.txSty_13B_Fb,
+                                        style: CommonStyles.txSty_12b_fb,
                                       ),
                                       Text(
                                         '${widget.orderResult.noOfItems}',
@@ -1393,10 +1334,6 @@ class _OrderCardState extends State<OrderCard> {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // Text(
-                                  //   'whsCode', // '${widget.orderResult.noOfItems}', //
-                                  //   style: CommonStyles.txSty_12o_f7,
-                                  // ),
                                   Text(
                                     widget.formattedDate,
                                     style: CommonStyles.txSty_12o_f7,
@@ -1414,62 +1351,6 @@ class _OrderCardState extends State<OrderCard> {
                     ],
                   ),
                 ),
-                // const SizedBox(
-                //   height: 5.0,
-                // ),
-                // Row(
-                //   children: [
-                //     Container(
-                //       margin: const EdgeInsets.only(left: 5.0),
-                //       padding: const EdgeInsets.symmetric(
-                //           vertical: 3, horizontal: 7),
-                //       decoration: BoxDecoration(
-                //         borderRadius: BorderRadius.circular(10),
-                //         color: statusBgColor,
-                //       ),
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.center,
-                //         children: [
-                //           Text(
-                //             widget.orderResult.statusName,
-                //             style: TextStyle(
-                //               fontSize: 11,
-                //               color: statusColor,
-                //               // Add other text styles as needed
-                //             ),
-                //           ),
-                //         ],
-                //       ),
-                //     ),
-                //     const SizedBox(
-                //       width: 10.0,
-                //     ),
-                //     const Expanded(
-                //       child: Row(
-                //         mainAxisAlignment: MainAxisAlignment.end,
-                //         children: [
-                //           Expanded(child: SizedBox()),
-                //           // Row(
-                //           //   children: [
-                //           //     const Text(
-                //           //       'No.of Items: ',
-                //           //       style: CommonUtils.txSty_13B_Fb,
-                //           //     ),
-                //           //     Text(
-                //           //       '${widget.orderResult.noOfItems}',
-                //           //       style: CommonStyles.txSty_12o_f7,
-                //           //     ),
-                //           //   ],
-                //           // )
-                //           // Text(
-                //           //   '₹${formatNumber(widget.orderResult.totalCostWithGST)}',
-                //           //   style: CommonStyles.txSty_12o_f7,
-                //           // ),
-                //         ],
-                //       ),
-                //     ),
-                //   ],
-                // )
               ],
             ),
           ),
@@ -1484,55 +1365,55 @@ class _OrderCardState extends State<OrderCard> {
     String assetPath;
     late Color iconColor;
     switch (statusTypeCode) {
-      case 1: // 'Pending'
+      case 1:
         assetPath = 'assets/shipping-timed.svg';
         iconColor = const Color(0xFFE58338);
         statusColor = const Color(0xFFe58338);
         statusBgColor = const Color(0xFFe58338).withOpacity(0.2);
         break;
-      case 2: // 'Shipped'
+      case 2:
         assetPath = 'assets/shipping-fast.svg';
         iconColor = const Color(0xFF0d6efd);
         statusColor = const Color(0xFF0d6efd);
         statusBgColor = const Color(0xFF0d6efd).withOpacity(0.2);
         break;
-      case 3: // 'Delivered'
+      case 3:
         assetPath = 'assets/box-circle-check.svg';
         iconColor = Colors.green;
         statusColor = Colors.green;
         statusBgColor = Colors.green.withOpacity(0.2);
         break;
-      case 10: // 'Partially Shipped'
+      case 10:
         assetPath = 'assets/boxes.svg';
         iconColor = const Color(0xFF0dcaf0);
         statusColor = const Color(0xFF0dcaf0);
         statusBgColor = const Color(0xFF0dcaf0).withOpacity(0.2);
         break;
-      case 11: // 'Accepted'
+      case 11:
         assetPath = 'assets/shipping-timed.svg';
         iconColor = Colors.green;
         statusColor = Colors.green;
         statusBgColor = Colors.green.withOpacity(0.2);
         break;
-      case 12: // 'Rejected'
+      case 12:
         assetPath = 'assets/reject.svg';
         iconColor = HexColor('#C42121');
         statusColor = HexColor('#C42121');
         statusBgColor = HexColor('#C42121').withOpacity(0.2);
         break;
-      case 14: // Received
+      case 14:
         assetPath = 'assets/srikar_biotech_logo.svg';
         iconColor = Colors.grey;
         statusColor = Colors.grey;
         statusBgColor = Colors.grey.withOpacity(0.2);
         break;
-      case 16: // 'Cancelled'
+      case 16:
         assetPath = 'assets/order-cancel.svg';
         iconColor = HexColor('#dc3545');
         statusColor = HexColor('#dc3545');
         statusBgColor = HexColor('#dc3545').withOpacity(0.2);
         break;
-      case 17: // 'SH Approval'
+      case 17:
         assetPath = 'assets/memo-circle-check.svg';
         iconColor = HexColor('#039487');
         statusColor = HexColor('#039487');
@@ -1559,42 +1440,42 @@ class _OrderCardState extends State<OrderCard> {
     Color svgIconBgColor;
 
     switch (statusTypeId) {
-      case 1: // 'Pending'
+      case 1:
         svgIcon = 'assets/shipping-timed.svg';
         statusColor = const Color(0xFFe58338);
         svgIconBgColor = const Color(0xFFe58338).withOpacity(0.2);
         break;
-      case 2: // 'Shipped'
+      case 2:
         svgIcon = 'assets/shipping-fast.svg';
         statusColor = const Color(0xFF0d6efd);
         svgIconBgColor = const Color(0xFF0d6efd).withOpacity(0.2);
         break;
-      case 3: // 'Delivered'
+      case 3:
         svgIcon = 'assets/box-circle-check.svg';
         statusColor = Colors.green;
         svgIconBgColor = Colors.green.withOpacity(0.2);
         break;
-      case 10: // 'Partially Shipped'
+      case 10:
         svgIcon = 'assets/boxes.svg';
         statusColor = const Color(0xFF0dcaf0);
         svgIconBgColor = const Color(0xFF0dcaf0).withOpacity(0.2);
         break;
-      case 11: // 'Accepted'
+      case 11:
         svgIcon = 'assets/shipping-timed.svg';
         statusColor = Colors.green;
         svgIconBgColor = Colors.green.withOpacity(0.2);
         break;
-      case 12: // 'Rejected'
+      case 12:
         svgIcon = 'assets/reject.svg';
         statusColor = HexColor('#C42121');
         svgIconBgColor = HexColor('#C42121').withOpacity(0.2);
         break;
-      case 16: // 'Cancelled'
+      case 16:
         svgIcon = 'assets/order-cancel.svg';
         statusColor = HexColor('#dc3545');
         svgIconBgColor = HexColor('#dc3545').withOpacity(0.2);
         break;
-      case 17: // 'SH Approval'
+      case 17:
         svgIcon = 'assets/memo-circle-check.svg';
         statusColor = HexColor('#039487');
         svgIconBgColor = HexColor('#039487').withOpacity(0.2);

@@ -400,8 +400,7 @@ class _ProductListState extends State<Createorderscreen> {
                                 itemBuilder: (context, index) {
                                   if (index < 0 ||
                                       index >= filteredproducts.length) {
-                                    return const Text(
-                                        'Error: Index out of bounds',
+                                    return const Text('Index out of bounds',
                                         style: CommonStyles.txSty_12b_fb);
                                   }
                                   final productresp = filteredproducts[index];
@@ -422,7 +421,7 @@ class _ProductListState extends State<Createorderscreen> {
                                         }
                                         print(
                                             'previousscreen:${textEditingControllers[index].text}');
-                                        break; // Exit the loop once the item is found in the cart
+                                        break;
                                       }
                                     }
                                   }

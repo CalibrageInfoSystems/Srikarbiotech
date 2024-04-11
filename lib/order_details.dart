@@ -589,17 +589,27 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                             context: context,
                                             builder: (BuildContext context) {
                                               return AlertDialog(
-                                                title:
-                                                    const Text("Confirmation"),
+                                                title: const Text(
+                                                  "Confirmation",
+                                                  style:
+                                                      CommonStyles.txSty_12b_fb,
+                                                ),
                                                 content: const Text(
-                                                    "Are you sure you want to cancel this order?"),
+                                                  "Are you sure you want to cancel this order?",
+                                                  style: CommonStyles
+                                                      .txSty_12bs_fb,
+                                                ),
                                                 actions: [
                                                   TextButton(
                                                     onPressed: () {
                                                       Navigator.of(context)
                                                           .pop();
                                                     },
-                                                    child: const Text("Cancel"),
+                                                    child: const Text(
+                                                      "Cancel",
+                                                      style: CommonStyles
+                                                          .txSty_12b_fb,
+                                                    ),
                                                   ),
                                                   TextButton(
                                                     onPressed: () {
@@ -611,7 +621,7 @@ class _OrderdetailsPageState extends State<Orderdetails> {
                                                     child: const Text(
                                                       "OK",
                                                       style: CommonStyles
-                                                          .txSty_12b_fb,
+                                                          .txSty_12o_f7,
                                                     ),
                                                   ),
                                                 ],
