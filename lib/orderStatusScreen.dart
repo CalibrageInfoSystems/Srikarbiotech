@@ -8,6 +8,7 @@ import 'package:intl/intl.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
 import 'package:share_extend/share_extend.dart';
+import 'package:srikarbiotech/Common/styles.dart';
 import 'package:srikarbiotech/ViewOrders.dart';
 import 'HomeScreen.dart';
 
@@ -77,7 +78,7 @@ class _orderStatusScreenState extends State<orderStatusScreen>
                       Center(
                         child: RotationTransition(
                           turns:
-                          Tween(begin: 0.0, end: 1.0).animate(_controller),
+                              Tween(begin: 0.0, end: 1.0).animate(_controller),
                           child: DottedBorder(
                             borderType: BorderType.Circle,
                             strokeWidth: 3,
@@ -96,7 +97,7 @@ class _orderStatusScreenState extends State<orderStatusScreen>
                       ),
                       RotationTransition(
                         turns:
-                        Tween(begin: 0.0, end: 1.0).animate(_controller2),
+                            Tween(begin: 0.0, end: 1.0).animate(_controller2),
                         child: SvgPicture.asset(
                           'assets/check.svg',
                           width: 70,
@@ -126,19 +127,16 @@ class _orderStatusScreenState extends State<orderStatusScreen>
               const SizedBox(
                 height: 35,
               ),
-              Text(
+              const Text(
                 'Your Order Placed Successfully',
-                style: TextStyle(
-                  fontSize: 19,
-                  letterSpacing: 0,
-                  fontWeight: FontWeight.bold,
-                  color: primaryGreen,
-                ),
+                style: CommonStyles.txSty_18g_fb,
+              ),
+              const SizedBox(
+                height: 10,
               ),
               Text(
                 'Thank you for shopping with ${widget.Compneyname}',
-                style: const TextStyle(
-                    fontSize: 18, letterSpacing: 0, height: 1.5),
+                style: CommonStyles.txSty_14b_fb,
               ),
               const SizedBox(
                 height: 5,
@@ -150,15 +148,11 @@ class _orderStatusScreenState extends State<orderStatusScreen>
                   // Display the orderId in the UI
                   const Text(
                     'Order ID: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: CommonStyles.txSty_14b_fb,
                   ),
                   Text(
                     orderId,
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: primaryOrange,
-                    ),
+                    style: CommonStyles.txSty_14o_f7,
                   ),
                 ],
               ),
@@ -193,14 +187,7 @@ class _orderStatusScreenState extends State<orderStatusScreen>
                           child: const Center(
                             child: Text(
                               'Go to View Orders',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight
-                                    .bold, // Set the font weight to bold
-                                fontFamily:
-                                'Roboto', // Set the font family to Roboto
-                              ),
+                              style: CommonStyles.txSty_14w_fb,
                             ),
                           ),
                         ),
@@ -211,14 +198,7 @@ class _orderStatusScreenState extends State<orderStatusScreen>
                     ),
                     InkWell(
                       onTap: () async {
-                        print('Share button clicked');
-
-                        // Create a formatted string with remaining data
                         String formattedData = _formatData(widget.responseData);
-                        print('Formatted Data:\n$formattedData');
-
-                        // Save the formatted data to a text document
-                        //await saveDataToTextDocument(formattedData);
                         await _shareorderdetails(widget.responseData);
                       },
                       child: Container(
@@ -248,12 +228,6 @@ class _orderStatusScreenState extends State<orderStatusScreen>
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: GestureDetector(
                   onTap: () {
-                    // Navigate to the "View Collections" screen
-                    // Navigator.push(
-                    //   context,
-                    //   MaterialPageRoute(
-                    //       builder: (context) => const HomeScreen()),
-                    // );
                     Navigator.of(context).pushAndRemoveUntil(
                       MaterialPageRoute(
                           builder: (context) => const HomeScreen()),
@@ -268,13 +242,10 @@ class _orderStatusScreenState extends State<orderStatusScreen>
                         border: Border.all(
                           color: primaryOrange,
                         )),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         'Back to Home',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: primaryOrange,
-                        ),
+                        style: CommonStyles.txSty_14o_f7,
                       ),
                     ),
                   ),
@@ -302,10 +273,9 @@ class _orderStatusScreenState extends State<orderStatusScreen>
 //Future<void> saveDataToTextDocument(String data) async {
   Future<void> _shareorderdetails(Map<String, dynamic> responseData) async {
     try {
-      if (responseData != null && responseData.containsKey('response')) {
+      if (responseData.containsKey('response')) {
         Map<String, dynamic> response = responseData['response'];
         String orderDate = response['orderDate'];
-
 
         DateTime date = DateTime.parse(orderDate);
         String formattedOrderDate = DateFormat('dd MMM, yyyy').format(date);
@@ -320,17 +290,12 @@ class _orderStatusScreenState extends State<orderStatusScreen>
         String transportName = response['transportName'];
 
         NumberFormat amountFormatter =
-        NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
+            NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
         double totalCost = response['totalCostWithGST'];
         String formattedOrderAmount = '₹${amountFormatter.format(totalCost)}';
 
         String orderDetails =
-                "Order ID: *$orderNumber* \n" +
-                "Order Date: *$formattedOrderDate* \n" +
-                "Order Amount: *$formattedOrderAmount* \n" +
-                "Party Name (Code): *$partyName ($partyCode)* \n" +
-                "Booking Place: *$bookingPlace* \n" +
-                "Transport Name: *$transportName* \n";
+            "Order ID: *$orderNumber* \nOrder Date: *$formattedOrderDate* \nOrder Amount: *$formattedOrderAmount* \nParty Name (Code): *$partyName ($partyCode)* \nBooking Place: *$bookingPlace* \nTransport Name: *$transportName* \n";
 
         await Share.share(orderDetails, subject: 'Order Details');
       } else {
@@ -340,8 +305,4 @@ class _orderStatusScreenState extends State<orderStatusScreen>
       print('Error sharing order details: $error');
     }
   }
-
-
-
-
 }

@@ -290,15 +290,17 @@ class _ProductListState extends State<Createorderscreen> {
                     ],
                   ),
                 ),
+                //MARK: Point: 1
                 Padding(
                   padding:
                       const EdgeInsets.only(left: 8.0, right: 8.0, top: 5.0),
                   child: SizedBox(
                     height: 40.0,
                     child: apiResponse == null
-                        ? const Center(
-                            child: CommonStyles.progressIndicator,
-                          )
+                        ? const SizedBox()
+                        // const Center(
+                        //     child: CommonStyles.progressIndicator,
+                        //   )
                         : ListView.builder(
                             shrinkWrap: false,
                             scrollDirection: Axis.horizontal,
@@ -377,7 +379,8 @@ class _ProductListState extends State<Createorderscreen> {
                       child: Consumer<CartProvider>(
                           builder: (context, cartProvider, _) {
                         if (isLoading) {
-                          return CommonUtils.shimmerEffect(context);
+                          return CommonUtils.shimmerEffect(
+                              context); //MARK: Point: 2
                         } else if (filteredproducts.isEmpty) {
                           return const Center(
                             child: Text('No products available',
@@ -1222,200 +1225,200 @@ class _ProductListState extends State<Createorderscreen> {
         ));
   }
 
-  Widget buildShimmerEffect() {
-    return Shimmer.fromColors(
-      baseColor: Colors.grey[300]!,
-      highlightColor: Colors.grey[100]!,
-      child: Column(
-        crossAxisAlignment: CrossAxisAlignment.start,
-        children: [
-          Container(
-            width: double.infinity,
-            height: 20.0,
-            color: Colors.white,
-            margin: const EdgeInsets.only(bottom: 8.0),
-          ),
-          Container(
-            width: 200.0, // Adjust the width as needed
-            height: 16.0,
-            color: Colors.white,
-            margin: const EdgeInsets.only(bottom: 8.0),
-          ),
-          Row(
-            children: [
-              Container(
-                width: 100.0, // Adjust the width as needed
-                height: 16.0,
-                color: Colors.white,
-                margin: const EdgeInsets.only(right: 8.0),
-              ),
-              Container(
-                width: 50.0, // Adjust the width as needed
-                height: 16.0,
-                color: Colors.white,
-              ),
-              const Spacer(),
-              Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[100]!,
-                child: Container(
-                  width: 85,
-                  height: 85,
-                  color: Colors.grey[300], // Placeholder color during shimmer
-                ),
-              )
-            ],
-          ),
-          const SizedBox(
-            height: 5.0,
-          ),
-          Row(
-              crossAxisAlignment: CrossAxisAlignment.start,
-              mainAxisAlignment: MainAxisAlignment.start,
-              children: [
-                Padding(
-                    padding:
-                        const EdgeInsets.only(right: 0, left: 0, bottom: 0),
-                    child: Row(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        mainAxisAlignment: MainAxisAlignment.start,
-                        children: [
-                          Shimmer.fromColors(
-                            baseColor: Colors.grey[300]!,
-                            highlightColor: Colors.grey[100]!,
-                            child: Container(
-                              height: 36,
-                              width: MediaQuery.of(context).size.width / 2.3,
-                              decoration: BoxDecoration(
-                                color: CommonStyles.orangeColor,
-                                borderRadius: BorderRadius.circular(8.0),
-                              ),
-                              child: Row(
-                                children: [
-                                  IconButton(
-                                    icon: const Icon(Icons.minimize,
-                                        color: Colors.white),
-                                    onPressed:
-                                        () {}, // Placeholder onPressed function
-                                    iconSize: 30.0,
-                                  ),
-                                  Expanded(
-                                    child: Align(
-                                      alignment: Alignment.center,
-                                      child: SizedBox(
-                                        height: 35,
-                                        child: Padding(
-                                          padding: const EdgeInsets.all(2.0),
-                                          child: Container(
-                                            alignment: Alignment.center,
-                                            width: MediaQuery.of(context)
-                                                    .size
-                                                    .width /
-                                                5,
-                                            decoration: const BoxDecoration(
-                                              color: Colors.white,
-                                            ),
-                                            child: SizedBox(
-                                              height: 35,
-                                              child: TextField(
-                                                keyboardType:
-                                                    TextInputType.number,
-                                                decoration: InputDecoration(
-                                                  hintText: 'Loading',
-                                                  // Placeholder text during shimmer
-                                                  hintStyle: TextStyle(
-                                                      color: Colors.grey[300]),
-                                                  border: InputBorder.none,
-                                                  focusedBorder:
-                                                      InputBorder.none,
-                                                  enabledBorder:
-                                                      InputBorder.none,
-                                                  contentPadding:
-                                                      const EdgeInsets.only(
-                                                          bottom: 12.0),
-                                                ),
-                                                textAlign: TextAlign.center,
-                                                style: const TextStyle(
-                                                    color: Colors.white),
-                                              ),
-                                            ),
-                                          ),
-                                        ),
-                                      ),
-                                    ),
-                                  ),
-                                  IconButton(
-                                    icon: const Icon(Icons.add,
-                                        color: Colors.white),
-                                    onPressed:
-                                        () {}, // Placeholder onPressed function
-                                    iconSize: 30.0,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          )
-                        ]))
-              ]),
-          const SizedBox(
-            width: 5.0,
-          ),
-          Padding(
-            padding: const EdgeInsets.symmetric(horizontal: 4.0),
-            child: GestureDetector(
-              onTap: () async {},
-              child: Shimmer.fromColors(
-                baseColor: Colors.grey[300]!,
-                highlightColor: Colors.grey[100]!,
-                child: Shimmer.fromColors(
-                  baseColor: Colors.grey[300]!,
-                  highlightColor: Colors.grey[100]!,
-                  child: Container(
-                    height: 36,
-                    decoration: BoxDecoration(
-                      color: const Color(0xFFffefdf),
-                      border: Border.all(
-                        color: CommonStyles.orangeColor,
-                        width: 1.0,
-                      ),
-                      borderRadius: BorderRadius.circular(8.0),
-                    ),
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(horizontal: 6.0),
-                      child: Row(
-                        children: [
-                          Shimmer.fromColors(
-                            baseColor: Colors.grey[300]!,
-                            highlightColor: Colors.grey[100]!,
-                            child: const Icon(
-                              Icons.add_shopping_cart,
-                              size: 18.0,
-                              color: CommonStyles.orangeColor,
-                            ),
-                          ),
-                          const SizedBox(width: 8.0),
-                          // Display "Added" if the item is already added to the cart
-                          Shimmer.fromColors(
-                            baseColor: Colors.grey[300]!,
-                            highlightColor: Colors.grey[100]!,
-                            child: const Text(
-                              'Add',
-                              style: CommonStyles.txSty_14o_f7,
-                            ),
-                          ),
-                          const SizedBox(width: 6.0),
-                        ],
-                      ),
-                    ),
-                  ),
-                ),
-              ),
-            ),
-          ),
-        ],
-      ),
-    );
-  }
+  // Widget buildShimmerEffect() {
+  //   return Shimmer.fromColors(
+  //     baseColor: Colors.grey[300]!,
+  //     highlightColor: Colors.grey[100]!,
+  //     child: Column(
+  //       crossAxisAlignment: CrossAxisAlignment.start,
+  //       children: [
+  //         Container(
+  //           width: double.infinity,
+  //           height: 20.0,
+  //           color: Colors.white,
+  //           margin: const EdgeInsets.only(bottom: 8.0),
+  //         ),
+  //         Container(
+  //           width: 200.0, // Adjust the width as needed
+  //           height: 16.0,
+  //           color: Colors.white,
+  //           margin: const EdgeInsets.only(bottom: 8.0),
+  //         ),
+  //         Row(
+  //           children: [
+  //             Container(
+  //               width: 100.0, // Adjust the width as needed
+  //               height: 16.0,
+  //               color: Colors.white,
+  //               margin: const EdgeInsets.only(right: 8.0),
+  //             ),
+  //             Container(
+  //               width: 50.0, // Adjust the width as needed
+  //               height: 16.0,
+  //               color: Colors.white,
+  //             ),
+  //             const Spacer(),
+  //             Shimmer.fromColors(
+  //               baseColor: Colors.grey[300]!,
+  //               highlightColor: Colors.grey[100]!,
+  //               child: Container(
+  //                 width: 85,
+  //                 height: 85,
+  //                 color: Colors.grey[300], // Placeholder color during shimmer
+  //               ),
+  //             )
+  //           ],
+  //         ),
+  //         const SizedBox(
+  //           height: 5.0,
+  //         ),
+  //         Row(
+  //             crossAxisAlignment: CrossAxisAlignment.start,
+  //             mainAxisAlignment: MainAxisAlignment.start,
+  //             children: [
+  //               Padding(
+  //                   padding:
+  //                       const EdgeInsets.only(right: 0, left: 0, bottom: 0),
+  //                   child: Row(
+  //                       crossAxisAlignment: CrossAxisAlignment.start,
+  //                       mainAxisAlignment: MainAxisAlignment.start,
+  //                       children: [
+  //                         Shimmer.fromColors(
+  //                           baseColor: Colors.grey[300]!,
+  //                           highlightColor: Colors.grey[100]!,
+  //                           child: Container(
+  //                             height: 36,
+  //                             width: MediaQuery.of(context).size.width / 2.3,
+  //                             decoration: BoxDecoration(
+  //                               color: CommonStyles.orangeColor,
+  //                               borderRadius: BorderRadius.circular(8.0),
+  //                             ),
+  //                             child: Row(
+  //                               children: [
+  //                                 IconButton(
+  //                                   icon: const Icon(Icons.minimize,
+  //                                       color: Colors.white),
+  //                                   onPressed:
+  //                                       () {}, // Placeholder onPressed function
+  //                                   iconSize: 30.0,
+  //                                 ),
+  //                                 Expanded(
+  //                                   child: Align(
+  //                                     alignment: Alignment.center,
+  //                                     child: SizedBox(
+  //                                       height: 35,
+  //                                       child: Padding(
+  //                                         padding: const EdgeInsets.all(2.0),
+  //                                         child: Container(
+  //                                           alignment: Alignment.center,
+  //                                           width: MediaQuery.of(context)
+  //                                                   .size
+  //                                                   .width /
+  //                                               5,
+  //                                           decoration: const BoxDecoration(
+  //                                             color: Colors.white,
+  //                                           ),
+  //                                           child: SizedBox(
+  //                                             height: 35,
+  //                                             child: TextField(
+  //                                               keyboardType:
+  //                                                   TextInputType.number,
+  //                                               decoration: InputDecoration(
+  //                                                 hintText: 'Loading',
+  //                                                 // Placeholder text during shimmer
+  //                                                 hintStyle: TextStyle(
+  //                                                     color: Colors.grey[300]),
+  //                                                 border: InputBorder.none,
+  //                                                 focusedBorder:
+  //                                                     InputBorder.none,
+  //                                                 enabledBorder:
+  //                                                     InputBorder.none,
+  //                                                 contentPadding:
+  //                                                     const EdgeInsets.only(
+  //                                                         bottom: 12.0),
+  //                                               ),
+  //                                               textAlign: TextAlign.center,
+  //                                               style: const TextStyle(
+  //                                                   color: Colors.white),
+  //                                             ),
+  //                                           ),
+  //                                         ),
+  //                                       ),
+  //                                     ),
+  //                                   ),
+  //                                 ),
+  //                                 IconButton(
+  //                                   icon: const Icon(Icons.add,
+  //                                       color: Colors.white),
+  //                                   onPressed:
+  //                                       () {}, // Placeholder onPressed function
+  //                                   iconSize: 30.0,
+  //                                 ),
+  //                               ],
+  //                             ),
+  //                           ),
+  //                         )
+  //                       ]))
+  //             ]),
+  //         const SizedBox(
+  //           width: 5.0,
+  //         ),
+  //         Padding(
+  //           padding: const EdgeInsets.symmetric(horizontal: 4.0),
+  //           child: GestureDetector(
+  //             onTap: () async {},
+  //             child: Shimmer.fromColors(
+  //               baseColor: Colors.grey[300]!,
+  //               highlightColor: Colors.grey[100]!,
+  //               child: Shimmer.fromColors(
+  //                 baseColor: Colors.grey[300]!,
+  //                 highlightColor: Colors.grey[100]!,
+  //                 child: Container(
+  //                   height: 36,
+  //                   decoration: BoxDecoration(
+  //                     color: const Color(0xFFffefdf),
+  //                     border: Border.all(
+  //                       color: CommonStyles.orangeColor,
+  //                       width: 1.0,
+  //                     ),
+  //                     borderRadius: BorderRadius.circular(8.0),
+  //                   ),
+  //                   child: Padding(
+  //                     padding: const EdgeInsets.symmetric(horizontal: 6.0),
+  //                     child: Row(
+  //                       children: [
+  //                         Shimmer.fromColors(
+  //                           baseColor: Colors.grey[300]!,
+  //                           highlightColor: Colors.grey[100]!,
+  //                           child: const Icon(
+  //                             Icons.add_shopping_cart,
+  //                             size: 18.0,
+  //                             color: CommonStyles.orangeColor,
+  //                           ),
+  //                         ),
+  //                         const SizedBox(width: 8.0),
+  //                         // Display "Added" if the item is already added to the cart
+  //                         Shimmer.fromColors(
+  //                           baseColor: Colors.grey[300]!,
+  //                           highlightColor: Colors.grey[100]!,
+  //                           child: const Text(
+  //                             'Add',
+  //                             style: CommonStyles.txSty_14o_f7,
+  //                           ),
+  //                         ),
+  //                         const SizedBox(width: 6.0),
+  //                       ],
+  //                     ),
+  //                   ),
+  //                 ),
+  //               ),
+  //             ),
+  //           ),
+  //         ),
+  //       ],
+  //     ),
+  //   );
+  // }
 
   Widget buildweight(int index, String mode, Function onTap,
       {bool isSelected = false}) {

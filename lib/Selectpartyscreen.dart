@@ -99,7 +99,6 @@ class Selectparty_screen extends State<Selectpartyscreen> {
             'Failed to load data. Status Code: ${response.statusCode}');
       }
     } catch (e) {
-      // Handle exceptions here
       print('Error in fetchData: $e');
       setState(() {
         _isLoading = false;
@@ -143,18 +142,17 @@ class Selectparty_screen extends State<Selectpartyscreen> {
                 const SizedBox(height: 10.0),
               ],
             ),
-            // Add Expanded around the ListView.builder
             Expanded(
               child: _isLoading
                   ? const Center(
                       child: CommonStyles.progressIndicator,
                     )
-                  : filteredDealers.isEmpty // Check if filteredDealers is empty
+                  : filteredDealers.isEmpty
                       ? const Center(
                           child: Text(
                             'No Data Found',
                             style: CommonStyles.txSty_12b_fb,
-                          ), // Display this text when filteredDealers is empty
+                          ),
                         )
                       : ListView.builder(
                           itemCount: filteredDealers.length,

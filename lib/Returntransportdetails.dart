@@ -2,7 +2,6 @@ import 'dart:convert';
 import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_image_compress/flutter_image_compress.dart';
 import 'package:flutter_svg/svg.dart';
@@ -12,7 +11,7 @@ import 'package:intl/intl.dart';
 import 'package:path/path.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
-import 'dart:convert';
+import 'package:srikarbiotech/Common/styles.dart';
 import 'dart:io';
 
 import 'Common/SharedPrefsData.dart';
@@ -37,8 +36,9 @@ class Returntransportdetails extends StatefulWidget {
   final String whsName;
   final String whsState;
 
-  Returntransportdetails(
-      {required this.cardName,
+  const Returntransportdetails(
+      {super.key,
+      required this.cardName,
       required this.cardCode,
       required this.address,
       required this.state,
@@ -51,16 +51,15 @@ class Returntransportdetails extends StatefulWidget {
       required this.creditLine,
       required this.balance,
       required this.transportname,
-        required this.whsCode,
-        required this.whsName,
-        required this.whsState});
+      required this.whsCode,
+      required this.whsName,
+      required this.whsState});
 
   @override
-  State<Returntransportdetails> createState() => _createreturnorderPageState();
+  State<Returntransportdetails> createState() => _CreateReturnOrdersPageState();
 }
 
-class _createreturnorderPageState extends State<Returntransportdetails> {
-  //File? _imageFile;
+class _CreateReturnOrdersPageState extends State<Returntransportdetails> {
   String filename = '';
   String fileExtension = '';
   String base64Image = '';
@@ -76,99 +75,35 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
   String base64Imageaddlattchments = '';
   File? _imageFileaddlattchments;
   TextEditingController remarkstext = TextEditingController();
-  TextEditingController DateController = TextEditingController();
+  TextEditingController dateController = TextEditingController();
 
-  TextEditingController LRNumberController = TextEditingController();
-  TextEditingController TransportController = TextEditingController();
+  TextEditingController lRNumberController = TextEditingController();
+  TextEditingController transportController = TextEditingController();
   DateTime selectedDate = DateTime.now();
-  int CompneyId = 0;
+  int companyId = 0;
+
   @override
   void initState() {
-    // TODO: implement initState
-    LRNumberController = TextEditingController(text: widget.lrnumber);
-    DateController = TextEditingController(text: widget.lrdate);
+    super.initState();
+    lRNumberController = TextEditingController(text: widget.lrnumber);
+    dateController = TextEditingController(text: widget.lrdate);
     remarkstext = TextEditingController(text: widget.remarks);
-    TransportController = TextEditingController(text: widget.transportname);
+    transportController = TextEditingController(text: widget.transportname);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFe78337),
-        automaticallyImplyLeading: false,
-        // This line removes the default back arrow
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Padding(
-                  padding:
-                      const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                  child: GestureDetector(
-                    onTap: () {
-                      // Handle the click event for the back button
-                      Navigator.of(context).pop();
-                    },
-                    child: const Icon(
-                      Icons.chevron_left,
-                      size: 30.0,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8.0),
-                const Text(
-                  'Transport Details',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
-                ),
-              ],
-            ),
-            FutureBuilder(
-              future: getshareddata(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  // Access the companyId after shared data is retrieved
-
-                  return GestureDetector(
-                    onTap: () {
-                      // Handle the click event for the home icon
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => HomeScreen()),
-                      );
-                    },
-                    child: Image.asset(
-                      CompneyId == 1
-                          ? 'assets/srikar-home-icon.png'
-                          : 'assets/seeds-home-icon.png',
-                      width: 30,
-                      height: 30,
-                    ),
-                  );
-                } else {
-                  // Return a placeholder or loading indicator
-                  return SizedBox.shrink();
-                }
-              },
-            ),
-          ],
-        ),
-      ),
+      appBar: _appBar(context),
       body: SingleChildScrollView(
         child: Container(
-          //color: Colors.white,
           decoration: BoxDecoration(
             borderRadius: BorderRadius.circular(5.0),
-            color: Colors.white,
+            color: CommonStyles.whiteColor,
           ),
-          padding: EdgeInsets.all(10.0),
+          padding: const EdgeInsets.all(10.0),
           child: Card(
-            color: Colors.white,
+            color: CommonStyles.whiteColor,
             shape: RoundedRectangleBorder(
               borderRadius: BorderRadius.circular(5.0),
             ),
@@ -176,30 +111,28 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
             child: Container(
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(5.0),
-                  color: Colors.white,
+                  color: CommonStyles.whiteColor,
                 ),
                 child: Column(
                   children: [
                     Container(
-                      padding:
-                          EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+                      padding: const EdgeInsets.only(
+                          top: 15.0, left: 15.0, right: 15.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(
                                 top: 0.0, left: 0.0, right: 0.0),
                             child: Text(
                               'LR Number *',
-                              style: CommonUtils.Mediumtext_12,
+                              style: CommonStyles.txSty_12b_fb,
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(height: 2.0),
-                          //  SizedBox(height: 8.0),
+                          const SizedBox(height: 2.0),
                           GestureDetector(
                             onTap: () {
-                              // Handle the click event for the second text view
                               print('first textview clicked');
                             },
                             child: Container(
@@ -208,7 +141,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5.0),
                                 border: Border.all(
-                                  color: Color(0xFFe78337),
+                                  color: CommonStyles.orangeColor,
                                   width: 1,
                                 ),
                               ),
@@ -218,18 +151,18 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                     child: Align(
                                       alignment: Alignment.centerLeft,
                                       child: Padding(
-                                        padding: EdgeInsets.only(
+                                        padding: const EdgeInsets.only(
                                             left: 10.0, top: 0.0),
                                         child: TextFormField(
-                                          controller: LRNumberController,
+                                          controller: lRNumberController,
                                           keyboardType: TextInputType.name,
                                           maxLength: 15,
-                                          style: CommonUtils.Mediumtext_o_14,
-                                          decoration: InputDecoration(
+                                          style: CommonStyles.txSty_12o_f7,
+                                          decoration: const InputDecoration(
                                             counterText: '',
                                             hintText: 'Enter LR Number',
                                             hintStyle:
-                                                CommonUtils.hintstyle_o_14,
+                                                CommonStyles.txSty_12o_f7,
                                             border: InputBorder.none,
                                           ),
                                         ),
@@ -243,36 +176,34 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                         ],
                       ),
                     ),
-
                     Padding(
-                      padding: EdgeInsets.only(left: 15, top: 15.0, right: 15),
+                      padding:
+                          const EdgeInsets.only(left: 15, top: 15.0, right: 15),
                       child: buildDateInput(
                         context,
                         'LR Date *',
-                        DateController,
-                        () => _selectDate(context, DateController),
+                        dateController,
+                        () => _selectDate(context, dateController),
                       ),
                     ),
                     Container(
-                      padding:
-                      EdgeInsets.only(top: 15.0, left: 15.0, right: 15.0),
+                      padding: const EdgeInsets.only(
+                          top: 15.0, left: 15.0, right: 15.0),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
+                          const Padding(
                             padding: EdgeInsets.only(
                                 top: 0.0, left: 0.0, right: 0.0),
                             child: Text(
                               'Transport Name *',
-                              style: CommonUtils.Mediumtext_12,
+                              style: CommonStyles.txSty_12b_fb,
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(height: 2.0),
-                          //  SizedBox(height: 8.0),
+                          const SizedBox(height: 2.0),
                           GestureDetector(
                             onTap: () {
-                              // Handle the click event for the second text view
                               print('first textview clicked');
                             },
                             child: Container(
@@ -281,7 +212,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                               decoration: BoxDecoration(
                                 borderRadius: BorderRadius.circular(5.0),
                                 border: Border.all(
-                                  color: Color(0xFFe78337),
+                                  color: CommonStyles.orangeColor,
                                   width: 1,
                                 ),
                               ),
@@ -291,18 +222,18 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                     child: Align(
                                       alignment: Alignment.centerLeft,
                                       child: Padding(
-                                        padding: EdgeInsets.only(
+                                        padding: const EdgeInsets.only(
                                             left: 10.0, top: 0.0),
                                         child: TextFormField(
-                                          controller: TransportController,
+                                          controller: transportController,
                                           keyboardType: TextInputType.name,
                                           maxLength: 50,
-                                          style: CommonUtils.Mediumtext_o_14,
-                                          decoration: InputDecoration(
+                                          style: CommonStyles.txSty_12o_f7,
+                                          decoration: const InputDecoration(
                                             counterText: '',
                                             hintText: 'Enter Transport Name',
                                             hintStyle:
-                                            CommonUtils.hintstyle_o_14,
+                                                CommonStyles.txSty_12o_f7,
                                             border: InputBorder.none,
                                           ),
                                         ),
@@ -317,40 +248,41 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 15, top: 4.0, right: 15),
+                      padding:
+                          const EdgeInsets.only(left: 15, top: 4.0, right: 15),
                       child: GestureDetector(
                           onTap: () async {},
                           child: Column(
                             crossAxisAlignment: CrossAxisAlignment.start,
                             children: [
-                              Padding(
+                              const Padding(
                                 padding: EdgeInsets.only(
                                     top: 15.0, left: 0.0, right: 0.0),
                                 child: Text(
                                   'Remarks *',
-                                  style: CommonUtils.Mediumtext_12,
+                                  style: CommonStyles.txSty_12b_fb,
                                   textAlign: TextAlign.start,
                                 ),
                               ),
-
                               Container(
                                 width: MediaQuery.of(context).size.width,
                                 decoration: BoxDecoration(
-                                  border: Border.all(color: const Color(0xFFe78337), width: 1),
+                                  border: Border.all(
+                                      color: CommonStyles.orangeColor,
+                                      width: 1),
                                   borderRadius: BorderRadius.circular(5.0),
-                                  color: Colors.white,
+                                  color: CommonStyles.whiteColor,
                                 ),
                                 child: Column(
                                   children: [
                                     TextFormField(
                                       controller: remarkstext,
                                       maxLength: 100,
-                                      style: CommonUtils.Mediumtext_o_14,
+                                      style: CommonStyles.txSty_12o_f7,
                                       maxLines: null,
-                                      // Set maxLines to null for multiline input
-                                      decoration: InputDecoration(
+                                      decoration: const InputDecoration(
                                         hintText: 'Enter Return Order remarks',
-                                        hintStyle: CommonUtils.hintstyle_o_14,
+                                        hintStyle: CommonStyles.txSty_12o_f7,
                                         contentPadding: EdgeInsets.symmetric(
                                           horizontal: 10.0,
                                           vertical: 0.0,
@@ -358,61 +290,31 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                         border: InputBorder.none,
                                       ),
                                     ),
-                                    SizedBox(height: 10), // Add space between TextFormField and counter
-
+                                    const SizedBox(height: 10),
                                   ],
                                 ),
                               ),
-                              // Container(
-                              //
-                              //   width: MediaQuery.of(context).size.width,
-                              //   decoration: BoxDecoration(
-                              //     border: Border.all(
-                              //         color: Color(0xFFe78337), width: 1),
-                              //     borderRadius: BorderRadius.circular(5.0),
-                              //     color: Colors.white,
-                              //   ),
-                              //   child:
-                              //   TextFormField(
-                              //     controller: remarkstext,
-                              //     maxLength: 100,
-                              //     style: CommonUtils.Mediumtext_o_14,
-                              //     maxLines: null, // Set maxLines to null for multiline input
-                              //     decoration: InputDecoration(
-                              //       // counterText: '',
-                              //       hintText: 'Enter Return Order remarks',
-                              //       hintStyle: CommonUtils.hintstyle_o_14,
-                              //       contentPadding: EdgeInsets.symmetric(
-                              //         horizontal: 10.0,
-                              //         vertical: 0.0,
-                              //       ),
-                              //       border: InputBorder.none,
-                              //     ),
-                              //   ),
-                              // ),
                             ],
                           )),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 15, top: 15.0, right: 15),
+                      padding:
+                          const EdgeInsets.only(left: 15, top: 15.0, right: 15),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Padding(
-                            padding: EdgeInsets.only(
-                                left:
-                                    0.0), // Add left padding to move the text 20 pixels left
+                          const Padding(
+                            padding: EdgeInsets.only(left: 0.0),
                             child: Text(
                               'LR Attachment *',
-                              style: CommonUtils.Mediumtext_12,
+                              style: CommonStyles.txSty_12b_fb,
                               textAlign: TextAlign.start,
                             ),
                           ),
-                          SizedBox(height: 2.0),
+                          const SizedBox(height: 2.0),
                           if (_imageFile == null)
                             GestureDetector(
                               onTap: () {
-                                // here
                                 showBottomSheetForImageSelection(context);
                               },
                               child: Container(
@@ -420,60 +322,49 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                 decoration: BoxDecoration(
                                   borderRadius: BorderRadius.circular(12.0),
                                 ),
-                                padding: EdgeInsets.all(0.0),
+                                padding: const EdgeInsets.all(0.0),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Container(
-                                      child: DottedBorder(
-                                        borderType: BorderType.RRect,
-                                        color: Color(0xFFe78337),
-                                        padding: const EdgeInsets.only(
-                                            top: 0, bottom: 0.0),
-                                        strokeWidth: 2,
-                                        child: Container(
-                                          width:
-                                              MediaQuery.of(context).size.width,
-                                          padding: EdgeInsets.all(10.0),
-                                          decoration: BoxDecoration(
-                                            color: Color(0xFFffeee0),
-                                          ),
-                                          child: Column(
-                                            children: [
-                                              Container(
-                                                padding:
-                                                    const EdgeInsets.all(6),
-                                                decoration: BoxDecoration(
-                                                  color: Color(0xFFe78337),
-                                                  borderRadius:
-                                                      BorderRadius.circular(10),
-                                                ),
-                                                child: const Icon(
-                                                  Icons.folder_rounded,
-                                                  color: Colors.black,
-                                                ),
+                                    DottedBorder(
+                                      borderType: BorderType.RRect,
+                                      color: CommonStyles.orangeColor,
+                                      padding: const EdgeInsets.only(
+                                          top: 0, bottom: 0.0),
+                                      strokeWidth: 2,
+                                      child: Container(
+                                        width:
+                                            MediaQuery.of(context).size.width,
+                                        padding: const EdgeInsets.all(10.0),
+                                        decoration: const BoxDecoration(
+                                          color: Color(0xFFffeee0),
+                                        ),
+                                        child: Column(
+                                          children: [
+                                            Container(
+                                              padding: const EdgeInsets.all(6),
+                                              decoration: BoxDecoration(
+                                                color: CommonStyles.orangeColor,
+                                                borderRadius:
+                                                    BorderRadius.circular(10),
                                               ),
-                                              SizedBox(
-                                                height: 4.0,
+                                              child: const Icon(
+                                                Icons.folder_rounded,
+                                                color: Colors.black,
                                               ),
-                                              Text(
-                                                'Choose file to upload',
-                                                style: TextStyle(
-                                                  fontSize: 14,
-                                                  color: Color(0xFFe78337),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                              const Text(
-                                                'Supported formats: jpg, png',
-                                                style: TextStyle(
-                                                  fontSize: 10,
-                                                  color: Color(0xFF414141),
-                                                  fontWeight: FontWeight.bold,
-                                                ),
-                                              ),
-                                            ],
-                                          ),
+                                            ),
+                                            const SizedBox(
+                                              height: 4.0,
+                                            ),
+                                            const Text(
+                                              'Choose file to upload',
+                                              style: CommonStyles.txSty_14o_f7,
+                                            ),
+                                            const Text(
+                                              'Supported formats: jpg, png',
+                                              style: CommonStyles.txSty_10b_fb,
+                                            ),
+                                          ],
                                         ),
                                       ),
                                     ),
@@ -483,7 +374,6 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                             ),
                           GestureDetector(
                             onTap: () {
-                              // Handle tap on uploaded image to show in a popup
                               if (_imageFile != null) {
                                 _showImagePopup(context, _imageFile!);
                               }
@@ -512,25 +402,20 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                   if (_imageFile != null)
                                     GestureDetector(
                                       onTap: () {
-                                        // Handle tap on cross mark icon (optional)
                                         setState(() {
-                                          _imageFile =
-                                              null; // Set _imageFile to null to remove the image
+                                          _imageFile = null;
                                         });
                                       },
                                       child: Container(
-                                        padding: EdgeInsets.all(5.0),
-                                        margin: EdgeInsets.only(
+                                        padding: const EdgeInsets.all(5.0),
+                                        margin: const EdgeInsets.only(
                                             top: 5, right: 10.0),
-                                        color: HexColor(
-                                            '#ffeee0'), // Optional overlay color
+                                        color: HexColor('#ffeee0'),
                                         child: SvgPicture.asset(
                                           'assets/crosscircle.svg',
-                                          color: Color(0xFFe78337),
-                                          width:
-                                              24.0, // Set the width as needed
-                                          height:
-                                              24.0, // Set the height as needed
+                                          color: CommonStyles.orangeColor,
+                                          width: 24.0,
+                                          height: 24.0,
                                         ),
                                       ),
                                     ),
@@ -542,23 +427,22 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 15, top: 15.0, right: 15),
+                      padding:
+                          const EdgeInsets.only(left: 15, top: 15.0, right: 15),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             'Return Order Receipt *',
-                            style: CommonUtils.Mediumtext_12,
+                            style: CommonStyles.txSty_12b_fb,
                             textAlign: TextAlign.start,
                           ),
-                          SizedBox(height: 2.0),
+                          const SizedBox(height: 2.0),
                           if (_imageFileorderreciept == null)
                             Padding(
-                              padding: EdgeInsets.only(
-                                  left: 0.0), // Add left padding
+                              padding: const EdgeInsets.only(left: 0.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  // here
                                   showBottomSheetForImageSelectionordereceipt(
                                       context);
                                 },
@@ -567,63 +451,54 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(5.0),
                                   ),
-                                  padding: EdgeInsets.all(0.0),
+                                  padding: const EdgeInsets.all(0.0),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        child: DottedBorder(
-                                          borderType: BorderType.RRect,
-                                          color: Color(0xFFe78337),
-                                          padding: const EdgeInsets.only(
-                                              top: 0, bottom: 0.0),
-                                          strokeWidth: 2,
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            padding: EdgeInsets.all(10.0),
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFFffeee0),
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.all(6),
-                                                  decoration: BoxDecoration(
-                                                    color: Color(0xFFe78337),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: const Icon(
-                                                    Icons.folder_rounded,
-                                                    color: Colors.black,
-                                                  ),
+                                      DottedBorder(
+                                        borderType: BorderType.RRect,
+                                        color: CommonStyles.orangeColor,
+                                        padding: const EdgeInsets.only(
+                                            top: 0, bottom: 0.0),
+                                        strokeWidth: 2,
+                                        child: Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          padding: const EdgeInsets.all(10.0),
+                                          decoration: const BoxDecoration(
+                                            color: Color(0xFFffeee0),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.all(6),
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      CommonStyles.orangeColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
                                                 ),
-                                                SizedBox(
-                                                  height: 4.0,
+                                                child: const Icon(
+                                                  Icons.folder_rounded,
+                                                  color: Colors.black,
                                                 ),
-                                                Text(
-                                                  'Choose file to upload',
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Color(0xFFe78337),
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                const Text(
-                                                  'Supported formats: jpg,png',
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                    color: Color(0xFF414141),
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                              ),
+                                              const SizedBox(
+                                                height: 4.0,
+                                              ),
+                                              const Text(
+                                                'Choose file to upload',
+                                                style:
+                                                    CommonStyles.txSty_14o_f7,
+                                              ),
+                                              const Text(
+                                                'Supported formats: jpg,png',
+                                                style:
+                                                    CommonStyles.txSty_10b_fb,
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -632,10 +507,8 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                 ),
                               ),
                             ),
-                          // SizedBox(height: 10.0),
                           GestureDetector(
                             onTap: () {
-                              // Handle tap on uploaded image to show in a popup
                               if (_imageFileorderreciept != null) {
                                 _showImagePopup(
                                     context, _imageFileorderreciept!);
@@ -665,25 +538,20 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                   if (_imageFileorderreciept != null)
                                     GestureDetector(
                                       onTap: () {
-                                        // Handle tap on cross mark icon (optional)
                                         setState(() {
-                                          _imageFileorderreciept =
-                                              null; // Set _imageFileOrderReceipt to null to remove the image
+                                          _imageFileorderreciept = null;
                                         });
                                       },
                                       child: Container(
-                                        padding: EdgeInsets.all(5.0),
-                                        margin: EdgeInsets.only(
+                                        padding: const EdgeInsets.all(5.0),
+                                        margin: const EdgeInsets.only(
                                             top: 5, right: 10.0),
-                                        color: HexColor(
-                                            '#ffeee0'), // Optional overlay color
+                                        color: HexColor('#ffeee0'),
                                         child: SvgPicture.asset(
                                           'assets/crosscircle.svg',
-                                          color: Color(0xFFe78337),
-                                          width:
-                                              24.0, // Set the width as needed
-                                          height:
-                                              24.0, // Set the height as needed
+                                          color: CommonStyles.orangeColor,
+                                          width: 24.0,
+                                          height: 24.0,
                                         ),
                                       ),
                                     ),
@@ -695,23 +563,22 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                       ),
                     ),
                     Padding(
-                      padding: EdgeInsets.only(left: 15, top: 15.0, right: 15),
+                      padding:
+                          const EdgeInsets.only(left: 15, top: 15.0, right: 15),
                       child: Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
-                          Text(
+                          const Text(
                             'Addl. Attachments',
-                            style: CommonUtils.Mediumtext_12,
+                            style: CommonStyles.txSty_12b_fb,
                             textAlign: TextAlign.start,
                           ),
-                          SizedBox(height: 2.0),
+                          const SizedBox(height: 2.0),
                           if (_imageFileaddlattchments == null)
                             Padding(
-                              padding: EdgeInsets.only(
-                                  left: 0.0), // Add left padding
+                              padding: const EdgeInsets.only(left: 0.0),
                               child: GestureDetector(
                                 onTap: () {
-                                  // here
                                   showBottomSheetForImageSelectionaddlattachment(
                                       context);
                                 },
@@ -720,63 +587,54 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                   decoration: BoxDecoration(
                                     borderRadius: BorderRadius.circular(12.0),
                                   ),
-                                  padding: EdgeInsets.all(0.0),
+                                  padding: const EdgeInsets.all(0.0),
                                   child: Column(
                                     crossAxisAlignment:
                                         CrossAxisAlignment.start,
                                     children: [
-                                      Container(
-                                        child: DottedBorder(
-                                          borderType: BorderType.RRect,
-                                          color: Color(0xFFe78337),
-                                          padding: const EdgeInsets.only(
-                                              top: 0, bottom: 0.0),
-                                          strokeWidth: 2,
-                                          child: Container(
-                                            width: MediaQuery.of(context)
-                                                .size
-                                                .width,
-                                            padding: EdgeInsets.all(10.0),
-                                            decoration: BoxDecoration(
-                                              color: Color(0xFFffeee0),
-                                            ),
-                                            child: Column(
-                                              children: [
-                                                Container(
-                                                  padding:
-                                                      const EdgeInsets.all(6),
-                                                  decoration: BoxDecoration(
-                                                    color: Color(0xFFe78337),
-                                                    borderRadius:
-                                                        BorderRadius.circular(
-                                                            10),
-                                                  ),
-                                                  child: const Icon(
-                                                    Icons.folder_rounded,
-                                                    color: Colors.black,
-                                                  ),
+                                      DottedBorder(
+                                        borderType: BorderType.RRect,
+                                        color: CommonStyles.orangeColor,
+                                        padding: const EdgeInsets.only(
+                                            top: 0, bottom: 0.0),
+                                        strokeWidth: 2,
+                                        child: Container(
+                                          width:
+                                              MediaQuery.of(context).size.width,
+                                          padding: const EdgeInsets.all(10.0),
+                                          decoration: const BoxDecoration(
+                                            color: Color(0xFFffeee0),
+                                          ),
+                                          child: Column(
+                                            children: [
+                                              Container(
+                                                padding:
+                                                    const EdgeInsets.all(6),
+                                                decoration: BoxDecoration(
+                                                  color:
+                                                      CommonStyles.orangeColor,
+                                                  borderRadius:
+                                                      BorderRadius.circular(10),
                                                 ),
-                                                SizedBox(
-                                                  height: 4.0,
+                                                child: const Icon(
+                                                  Icons.folder_rounded,
+                                                  color: Colors.black,
                                                 ),
-                                                Text(
-                                                  'Choose file to upload',
-                                                  style: TextStyle(
-                                                    fontSize: 14,
-                                                    color: Color(0xFFe78337),
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                                const Text(
-                                                  'Supported formats: jpg, png',
-                                                  style: TextStyle(
-                                                    fontSize: 10,
-                                                    color: Color(0xFF414141),
-                                                    fontWeight: FontWeight.bold,
-                                                  ),
-                                                ),
-                                              ],
-                                            ),
+                                              ),
+                                              const SizedBox(
+                                                height: 4.0,
+                                              ),
+                                              const Text(
+                                                'Choose file to upload',
+                                                style:
+                                                    CommonStyles.txSty_14o_f7,
+                                              ),
+                                              const Text(
+                                                'Supported formats: jpg, png',
+                                                style:
+                                                    CommonStyles.txSty_10b_fb,
+                                              ),
+                                            ],
                                           ),
                                         ),
                                       ),
@@ -787,7 +645,6 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                             ),
                           GestureDetector(
                             onTap: () {
-                              // Handle tap on uploaded image to show in a popup
                               if (_imageFileaddlattchments != null) {
                                 _showImagePopup(
                                     context, _imageFileaddlattchments!);
@@ -818,25 +675,20 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                                   if (_imageFileaddlattchments != null)
                                     GestureDetector(
                                       onTap: () {
-                                        // Handle tap on cross mark icon (optional)
                                         setState(() {
-                                          _imageFileaddlattchments =
-                                              null; // Set _imageFileOrderReceipt to null to remove the image
+                                          _imageFileaddlattchments = null;
                                         });
                                       },
                                       child: Container(
-                                        padding: EdgeInsets.all(5.0),
-                                        margin: EdgeInsets.only(
+                                        padding: const EdgeInsets.all(5.0),
+                                        margin: const EdgeInsets.only(
                                             top: 5, right: 10.0),
-                                        color: HexColor(
-                                            '#ffeee0'), // Optional overlay color
+                                        color: HexColor('#ffeee0'),
                                         child: SvgPicture.asset(
                                           'assets/crosscircle.svg',
-                                          color: Color(0xFFe78337),
-                                          width:
-                                              24.0, // Set the width as needed
-                                          height:
-                                              24.0, // Set the height as needed
+                                          color: CommonStyles.orangeColor,
+                                          width: 24.0,
+                                          height: 24.0,
                                         ),
                                       ),
                                     ),
@@ -847,7 +699,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                         ],
                       ),
                     ),
-                    SizedBox(height: 10.0),
+                    const SizedBox(height: 10.0),
                   ],
                 )),
           ),
@@ -855,17 +707,11 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       ),
       bottomNavigationBar: InkWell(
         onTap: () {
-          // ScaffoldMessenger.of(context).showSnackBar(
-          //   const SnackBar(
-          //     content: Text('Payment Successful'),
-          //     duration: Duration(seconds: 2),
-          //   ),
-          // );
           print('clicked ');
         },
         child: Padding(
-          padding:
-          const EdgeInsets.only(top: 0.0, left: 14.0, right: 14.0, bottom: 10.0),
+          padding: const EdgeInsets.only(
+              top: 0.0, left: 14.0, right: 14.0, bottom: 10.0),
           child: Container(
             alignment: Alignment.bottomCenter,
             width: MediaQuery.of(context).size.width,
@@ -884,12 +730,12 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                       height: 45.0,
                       decoration: BoxDecoration(
                         borderRadius: BorderRadius.circular(6.0),
-                        color: const Color(0xFFe78337),
+                        color: CommonStyles.orangeColor,
                       ),
                       child: const Center(
                         child: Text(
                           'Save & Proceed',
-                          style: CommonUtils.Buttonstyle,
+                          style: CommonStyles.txSty_14w_fb,
                         ),
                       ),
                     ),
@@ -902,7 +748,6 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       ),
     );
   }
-
 
   void showBottomSheetForImageSelection(BuildContext context) {
     showModalBottomSheet(
@@ -931,9 +776,8 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                   child: Center(
                     child: Container(
                       padding: const EdgeInsets.all(10),
-                      // margin: const EdgeInsets.only(bottom: 5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFe78337),
+                        color: CommonStyles.orangeColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
@@ -952,9 +796,8 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                   child: Center(
                     child: Container(
                       padding: const EdgeInsets.all(10),
-                      // margin: const EdgeInsets.only(bottom: 5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFe78337),
+                        color: CommonStyles.orangeColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
@@ -971,7 +814,6 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       },
     );
   }
-
 
   pickImage(ImageSource source, BuildContext context) async {
     try {
@@ -994,42 +836,12 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
         );
 
         base64Image = base64Encode(compressedBytes);
-     //   base64Image = base64Encode(imageBytes);
-
-        print('===> Filename: $filename');
-        print('===> File Extension: $fileExtension');
-        print('===> Base64 Image: $base64Image');
-
-        // Dismiss the bottom sheet after picking an image
         Navigator.pop(context);
       }
     } catch (e) {
       print('Error picking image: $e');
-      // Handle error gracefully, show error message or retry logic.
     }
   }
-
-  // pickImage(ImageSource source, BuildContext context) async {
-  //   final pickedFile = await ImagePicker().pickImage(source: source);
-  //   if (pickedFile != null) {
-  //     setState(() {
-  //       _imageFile = File(pickedFile.path);
-  //       print('===> _imageFile: $_imageFile');
-  //     });
-  //     filename = basename(_imageFile!.path);
-  //     fileExtension = extension(_imageFile!.path);
-  //     List<int> imageBytes = await _imageFile!.readAsBytes();
-  //     base64Image = base64Encode(imageBytes);
-  //
-  //     print('===> Filename: $filename');
-  //     print('===> File Extension: $fileExtension');
-  //     print('===> Base64 Image: $base64Image');
-  //
-  //     // Dismiss the bottom sheet after picking an image
-  //     Navigator.pop(context);
-  //   }
-  // }
-
 
   void showBottomSheetForImageSelectionordereceipt(BuildContext context) {
     showModalBottomSheet(
@@ -1058,9 +870,8 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                   child: Center(
                     child: Container(
                       padding: const EdgeInsets.all(10),
-                      // margin: const EdgeInsets.only(bottom: 5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFe78337),
+                        color: CommonStyles.orangeColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
@@ -1079,9 +890,8 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                   child: Center(
                     child: Container(
                       padding: const EdgeInsets.all(10),
-                      // margin: const EdgeInsets.only(bottom: 5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFe78337),
+                        color: CommonStyles.orangeColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
@@ -1099,13 +909,11 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
     );
   }
 
-
   pickImageordereceipt(ImageSource source, BuildContext context) async {
     final pickedFile1 = await ImagePicker().pickImage(source: source);
     if (pickedFile1 != null) {
       setState(() {
         _imageFileorderreciept = File(pickedFile1.path);
-        print('===> _imageFileorderreciept: $_imageFileorderreciept');
       });
       filenameorderreciept = basename(_imageFileorderreciept!.path);
       fileExtensionorderreciept = extension(_imageFileorderreciept!.path);
@@ -1120,17 +928,9 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       );
 
       base64Imageorderreciept = base64Encode(compressedBytes);
- //     base64Imageorderreciept = base64Encode(imageBytes1);
-
-      print('===> filenameorderreciept: $filenameorderreciept');
-      print('===> File Extension: $fileExtensionorderreciept');
-      print('===> Base64 Image: $base64Imageorderreciept');
-
-      // Dismiss the bottom sheet after picking an image
       Navigator.pop(context);
     }
   }
-
 
   void showBottomSheetForImageSelectionaddlattachment(BuildContext context) {
     showModalBottomSheet(
@@ -1159,9 +959,8 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                   child: Center(
                     child: Container(
                       padding: const EdgeInsets.all(10),
-                      // margin: const EdgeInsets.only(bottom: 5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFe78337),
+                        color: CommonStyles.orangeColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
@@ -1180,9 +979,8 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                   child: Center(
                     child: Container(
                       padding: const EdgeInsets.all(10),
-                      // margin: const EdgeInsets.only(bottom: 5),
                       decoration: BoxDecoration(
-                        color: const Color(0xFFe78337),
+                        color: CommonStyles.orangeColor,
                         borderRadius: BorderRadius.circular(20),
                       ),
                       child: const Icon(
@@ -1205,7 +1003,6 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
     if (pickedFile2 != null) {
       setState(() {
         _imageFileaddlattchments = File(pickedFile2.path);
-        print('===> _imageFileaddlattchments: $_imageFileaddlattchments');
       });
       filenameaddlattchments = basename(_imageFileaddlattchments!.path);
       fileExtensionaddlattchments = extension(_imageFileaddlattchments!.path);
@@ -1220,13 +1017,6 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       );
 
       base64Imageaddlattchments = base64Encode(compressedBytes);
-    //  base64Imageaddlattchments = base64Encode(imageBytes2);
-
-      print('===> filenameaddlattchments: $filenameaddlattchments');
-      print('===> File Extension: $fileExtensionaddlattchments');
-      print('===> Base64 Image: $base64Imageaddlattchments');
-
-      // Dismiss the bottom sheet after picking an image
       Navigator.pop(context);
     }
   }
@@ -1241,17 +1031,16 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
         Padding(
-          padding: EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0),
+          padding: const EdgeInsets.only(top: 0.0, left: 0.0, right: 0.0),
           child: Text(
             labelText,
-            style: CommonUtils.Mediumtext_12,
+            style: CommonStyles.txSty_12b_fb,
             textAlign: TextAlign.start,
           ),
         ),
-        SizedBox(height: 2.0),
+        const SizedBox(height: 2.0),
         GestureDetector(
           onTap: () async {
-            // Call the onTap callback to open the date picker
             onTap();
           },
           child: Container(
@@ -1260,7 +1049,7 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
             decoration: BoxDecoration(
               borderRadius: BorderRadius.circular(5.0),
               border: Border.all(
-                color: Color(0xFFe78337),
+                color: CommonStyles.orangeColor,
                 width: 1,
               ),
             ),
@@ -1270,24 +1059,14 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                   child: Align(
                     alignment: Alignment.centerLeft,
                     child: Padding(
-                      padding: EdgeInsets.only(left: 10.0, top: 0.0),
+                      padding: const EdgeInsets.only(left: 10.0, top: 0.0),
                       child: IgnorePointer(
                         child: TextFormField(
                           controller: controller,
-                          style: TextStyle(
-                            fontSize: 14,
-                            fontFamily: 'Roboto',
-                            fontWeight: FontWeight.w600,
-                            color: Color(0xFFe78337),
-                          ),
-                          decoration: InputDecoration(
-                            hintText: labelText,
-                            hintStyle: TextStyle(
-                              fontSize: 14,
-                              fontFamily: 'Roboto',
-                              fontWeight: FontWeight.w700,
-                              color: Color(0xa0e78337),
-                            ),
+                          style: CommonStyles.txSty_12o_f7,
+                          decoration: const InputDecoration(
+                            hintText: 'Select LR date',
+                            hintStyle: CommonStyles.txSty_12o_f7,
                             border: InputBorder.none,
                           ),
                         ),
@@ -1297,14 +1076,13 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
                 ),
                 InkWell(
                   onTap: () async {
-                    // Call the onTap callback to open the date picker
                     onTap();
                   },
-                  child: Padding(
+                  child: const Padding(
                     padding: EdgeInsets.all(10.0),
                     child: Icon(
                       Icons.calendar_today,
-                      color: Colors.orange,
+                      color: CommonStyles.orangeColor,
                     ),
                   ),
                 ),
@@ -1321,19 +1099,8 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
     TextEditingController controller,
   ) async {
     DateTime currentDate = DateTime.now();
-  //  DateTime initialDate;
+
     DateTime initialDate = selectedDate ?? currentDate;
-    // if (controller.text.isNotEmpty) {
-    //   try {
-    //     initialDate = DateTime.parse(controller.text);
-    //   } catch (e) {
-    //     // Handle the case where the current text is not a valid date format
-    //     print("Invalid date format: $e");
-    //     initialDate = currentDate;
-    //   }
-    // } else {
-    //   initialDate = currentDate;
-    // }
 
     try {
       DateTime? picked = await showDatePicker(
@@ -1345,12 +1112,11 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.light().copyWith(
-              colorScheme: ColorScheme.light(
-                primary: Color(0xFFe78337), // Change the primary color here
-                onPrimary: Colors.white,
-                // onSurface: Colors.blue,// Change the text color here
+              colorScheme: const ColorScheme.light(
+                primary: CommonStyles.orangeColor,
+                onPrimary: CommonStyles.whiteColor,
               ),
-              dialogBackgroundColor: Colors.white, // Change the dialog background color here
+              dialogBackgroundColor: CommonStyles.whiteColor,
             ),
             child: child!,
           );
@@ -1360,17 +1126,12 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
       if (picked != null) {
         String formattedDate = DateFormat('dd-MM-yyyy').format(picked);
         controller.text = formattedDate;
-
-        // Save selected dates as DateTime objects
         selectedDate = picked;
-        print("Selected Date: $selectedDate");
 
-        // Print formatted date
         print("Selected Date: ${DateFormat('yyyy-MM-dd').format(picked)}");
       }
     } catch (e) {
       print("Error selecting date: $e");
-      // Handle the error, e.g., show a message to the user or log it.
     }
   }
 
@@ -1385,45 +1146,43 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
   Widget _buildImagePopup(File imageFile) {
     return Scaffold(
       appBar: AppBar(
-        backgroundColor: Color(0xFFe78337),
+        backgroundColor: CommonStyles.orangeColor,
         automaticallyImplyLeading: false,
-        title: Text("Attached Image"),
+        title: const Text("Attached Image"),
       ),
-      body: Container(
-        child: PhotoView(
-          imageProvider: FileImage(imageFile),
-          minScale: PhotoViewComputedScale.contained,
-          maxScale: PhotoViewComputedScale.covered * 2,
-          enableRotation: true,
-        ),
+      body: PhotoView(
+        imageProvider: FileImage(imageFile),
+        minScale: PhotoViewComputedScale.contained,
+        maxScale: PhotoViewComputedScale.covered * 2,
+        enableRotation: true,
       ),
     );
   }
 
   Future<void> getshareddata() async {
-    CompneyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
+    companyId = await SharedPrefsData.getIntFromSharedPrefs("companyId");
 
-    print('Company ID: $CompneyId');
+    print('Company ID: $companyId');
   }
 
   void validate(BuildContext context) {
     bool isValid = true;
     bool hasValidationFailed = false;
-    if (isValid && LRNumberController.text.trim().isEmpty) {
+    if (isValid && lRNumberController.text.trim().isEmpty) {
       CommonUtils.showCustomToastMessageLong(
           'Please Enter LR Number', context, 1, 4);
       isValid = false;
       hasValidationFailed = true;
     }
 
-    if (isValid && DateController.text.isEmpty) {
+    if (isValid && dateController.text.isEmpty) {
       CommonUtils.showCustomToastMessageLong(
           'Please Select LR Date', context, 1, 4);
 
       isValid = false;
       hasValidationFailed = true;
     }
-    if (isValid && TransportController.text.trim().isEmpty) {
+    if (isValid && transportController.text.trim().isEmpty) {
       CommonUtils.showCustomToastMessageLong(
           'Please Enter Transport Name', context, 1, 4);
       isValid = false;
@@ -1454,41 +1213,86 @@ class _createreturnorderPageState extends State<Returntransportdetails> {
         context,
         MaterialPageRoute(
             builder: (context) => ReturnOrdersubmit_screen(
-                  cardName: '${widget.cardName}',
-                  cardCode: '${widget.cardCode}',
-                  address: '${widget.address}',
-                  state: '${widget.state}',
-                  phone: '${widget.phone}',
-                  proprietorName: '${widget.proprietorName}',
-                  gstRegnNo: '${widget.gstRegnNo}',
-                  LrNumber: LRNumberController.text,
-                  Lrdate: DateController.text,
-                  Remarks: remarkstext.text,
-                  LRAttachment: base64Image,
-                  ReturnOrderReceipt: base64Imageorderreciept,
-                  addlattchments: base64Imageaddlattchments,
-                  creditLine:
-                      double.parse('${widget.creditLine}'), // Convert to double
-                  balance: double.parse('${widget.balance}'),
-                transportname : TransportController.text,
+                cardName: widget.cardName,
+                cardCode: widget.cardCode,
+                address: widget.address,
+                state: widget.state,
+                phone: widget.phone,
+                proprietorName: widget.proprietorName,
+                gstRegnNo: widget.gstRegnNo,
+                LrNumber: lRNumberController.text,
+                Lrdate: dateController.text,
+                Remarks: remarkstext.text,
+                LRAttachment: base64Image,
+                ReturnOrderReceipt: base64Imageorderreciept,
+                addlattchments: base64Imageaddlattchments,
+                creditLine: double.parse('${widget.creditLine}'),
+                balance: double.parse('${widget.balance}'),
+                transportname: transportController.text,
                 whsCode: widget.whsCode,
                 whsName: widget.whsName,
-                whsState: widget.whsState
-
-                )),
+                whsState: widget.whsState)),
       );
     }
   }
 
-
-
-
-
+  AppBar _appBar(BuildContext context) {
+    return AppBar(
+      backgroundColor: CommonStyles.orangeColor,
+      automaticallyImplyLeading: false,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Icon(
+                    Icons.chevron_left,
+                    size: 30.0,
+                    color: CommonStyles.whiteColor,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8.0),
+              const Text(
+                'Transport Details',
+                style: CommonStyles.txSty_18w_fb,
+              ),
+            ],
+          ),
+          FutureBuilder(
+            future: getshareddata(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
+                    );
+                  },
+                  child: Image.asset(
+                    companyId == 1
+                        ? 'assets/srikar-home-icon.png'
+                        : 'assets/seeds-home-icon.png',
+                    width: 30,
+                    height: 30,
+                  ),
+                );
+              } else {
+                print('else got execute');
+                return const SizedBox.shrink();
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }
-
-// enum ImageSource {
-//   camera,
-//
-//   /// Opens the user's photo gallery.
-//   gallery,
-// }

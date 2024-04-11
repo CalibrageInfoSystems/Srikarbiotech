@@ -1250,8 +1250,7 @@ class _MyCardState extends State<MyCard> {
                         SizedBox(
                           width: MediaQuery.of(context).size.width / 1.6,
                           child: Padding(
-                            padding: const EdgeInsets.only(
-                                left: 1, top: 0, bottom: 0),
+                            padding: const EdgeInsets.symmetric(horizontal: 5),
                             child: Column(
                               crossAxisAlignment: CrossAxisAlignment.start,
                               mainAxisAlignment: MainAxisAlignment.spaceBetween,
@@ -1313,7 +1312,7 @@ class _MyCardState extends State<MyCard> {
                     children: [
                       Container(
                         width: 65,
-                        margin: const EdgeInsets.only(left: 5.0),
+                        margin: const EdgeInsets.only(left: 3.0),
                         padding: const EdgeInsets.symmetric(vertical: 3),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
@@ -1349,13 +1348,16 @@ class _MyCardState extends State<MyCard> {
                                 ),
                               ],
                             ),
-                            Row(
-                              children: [
-                                Text(
-                                  '₹${formatNumber(widget.listResult.amount)}',
-                                  style: CommonStyles.txSty_12o_f7,
-                                ),
-                              ],
+                            Padding(
+                              padding: const EdgeInsets.only(right: 5),
+                              child: Row(
+                                children: [
+                                  Text(
+                                    '₹${formatNumber(widget.listResult.amount)}',
+                                    style: CommonStyles.txSty_12o_f7,
+                                  ),
+                                ],
+                              ),
                             )
                           ],
                         ),

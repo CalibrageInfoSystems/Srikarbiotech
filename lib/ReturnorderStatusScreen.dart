@@ -4,33 +4,60 @@ import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
 import 'package:intl/intl.dart';
 import 'package:share/share.dart';
-import 'package:srikarbiotech/ViewOrders.dart';
-import 'package:srikarbiotech/view_collection_page.dart';
+import 'package:srikarbiotech/Common/styles.dart';
 
 import 'HomeScreen.dart';
 import 'ViewReturnorder.dart';
 
-class ReturnorderStatusScreen extends StatelessWidget {
-
+class ReturnorderStatusScreen extends StatefulWidget {
   final Map<String, dynamic> responseData;
+
+  const ReturnorderStatusScreen({super.key, required this.responseData});
+
+  @override
+  State<ReturnorderStatusScreen> createState() =>
+      _ReturnorderStatusScreenState();
+}
+
+class _ReturnorderStatusScreenState extends State<ReturnorderStatusScreen>
+    with TickerProviderStateMixin {
+  late AnimationController _controller;
+  late AnimationController _controller2;
+
   String orderId = "";
 
-  ReturnorderStatusScreen({required this.responseData});
+  @override
+  void initState() {
+    super.initState();
+    _controller = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 20),
+    );
+    _controller2 = AnimationController(
+      vsync: this,
+      duration: const Duration(seconds: 1),
+    );
+    _controller.repeat();
+  }
+
+  @override
+  void dispose() {
+    _controller.dispose();
+    _controller2.dispose();
+    super.dispose();
+  }
+
   @override
   Widget build(BuildContext context) {
     final primaryGreen = HexColor('#11872f');
     final primaryOrange = HexColor('#dc762b');
-    print('Response Data: $responseData');
-    orderId = responseData['response']['returnOrderNumber'] ?? 'xxxxxxxxxx';
+    print('Response Data: ${widget.responseData}');
+    orderId =
+        widget.responseData['response']['returnOrderNumber'] ?? 'xxxxxxxxxx';
     print('orderId: $orderId');
-
-
-    // Assign returnOrderNumber to orderId
-
 
     return WillPopScope(
       onWillPop: () async {
-        // Disable the back button functionality
         return false;
       },
       child: Scaffold(
@@ -38,30 +65,58 @@ class ReturnorderStatusScreen extends StatelessWidget {
           child: Column(
             mainAxisAlignment: MainAxisAlignment.center,
             children: <Widget>[
-              DottedBorder(
-                borderType: BorderType.Circle,
-                strokeWidth: 3,
-                dashPattern: const <double>[9, 5],
-                padding: const EdgeInsets.all(30),
-                color: primaryGreen,
-                child: SvgPicture.asset(
-                  'assets/check.svg',
-                  width: 50,
-                  height: 50,
-                  color: primaryGreen,
-                ),
+              // DottedBorder(
+              //   borderType: BorderType.Circle,
+              //   strokeWidth: 3,
+              //   dashPattern: const <double>[9, 5],
+              //   padding: const EdgeInsets.all(30),
+              //   color: primaryGreen,
+              //   child: SvgPicture.asset(
+              //     'assets/check.svg',
+              //     width: 50,
+              //     height: 50,
+              //     color: primaryGreen,
+              //   ),
+              // ),
+              Stack(
+                alignment: Alignment.center,
+                children: [
+                  Center(
+                    child: RotationTransition(
+                      turns: Tween(begin: 0.0, end: 1.0).animate(_controller),
+                      child: DottedBorder(
+                        borderType: BorderType.Circle,
+                        strokeWidth: 3,
+                        dashPattern: const <double>[9, 5],
+                        padding: const EdgeInsets.all(30),
+                        color: primaryGreen,
+                        child: Container(
+                          width: 100,
+                          height: 100,
+                          decoration: const BoxDecoration(
+                            shape: BoxShape.circle,
+                          ),
+                        ),
+                      ),
+                    ),
+                  ),
+                  RotationTransition(
+                    turns: Tween(begin: 0.0, end: 1.0).animate(_controller2),
+                    child: SvgPicture.asset(
+                      'assets/check.svg',
+                      width: 70,
+                      height: 70,
+                      color: primaryGreen,
+                    ),
+                  )
+                ],
               ),
               const SizedBox(
                 height: 35,
               ),
-              Text(
+              const Text(
                 'Your Return Order Placed Successfully',
-                style: TextStyle(
-                  fontSize: 19,
-                  letterSpacing: 0,
-                  fontWeight: FontWeight.bold,
-                  color: primaryGreen,
-                ),
+                style: CommonStyles.txSty_18g_fb,
               ),
               const SizedBox(
                 height: 20,
@@ -72,22 +127,17 @@ class ReturnorderStatusScreen extends StatelessWidget {
                 children: [
                   const Text(
                     'Order ID: ',
-                    style: TextStyle(fontWeight: FontWeight.bold),
+                    style: CommonStyles.txSty_14b_fb,
                   ),
                   Text(
-                    orderId, // Display the orderId
-                    style: TextStyle(
-                      fontWeight: FontWeight.bold,
-                      fontSize: 20,
-                      color: primaryOrange,
-                    ),
+                    orderId,
+                    style: CommonStyles.txSty_14o_f7,
                   ),
                 ],
               ),
               const SizedBox(
                 height: 20,
               ),
-
               Padding(
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: Row(
@@ -95,32 +145,22 @@ class ReturnorderStatusScreen extends StatelessWidget {
                     Expanded(
                       child: InkWell(
                         onTap: () async {
-                          print('Go to View Orders button clicked');
-
-                          // Add logic for the download button
                           await Navigator.pushReplacement(
                             context,
-                            MaterialPageRoute(builder: (context) => ViewReturnorder()),
+                            MaterialPageRoute(
+                                builder: (context) => const ViewReturnorder()),
                           );
-
-                          // Once the ViewOrders screen is popped, the orderId should be updated
-                          print('orderId: $orderId');
                         },
                         child: Container(
                           padding: const EdgeInsets.all(10),
                           decoration: BoxDecoration(
                             borderRadius: BorderRadius.circular(10),
-                            color: Color(0xFFe78337),
+                            color: CommonStyles.orangeColor,
                           ),
                           child: const Center(
-                            child:  Text(
+                            child: Text(
                               'Go to View  Return Orders',
-                              style: TextStyle(
-                                color: Colors.white,
-                                fontSize: 18,
-                                fontWeight: FontWeight.bold, // Set the font weight to bold
-                                fontFamily: 'Roboto', // Set the font family to Roboto
-                              ),
+                              style: CommonStyles.txSty_14w_fb,
                             ),
                           ),
                         ),
@@ -131,40 +171,28 @@ class ReturnorderStatusScreen extends StatelessWidget {
                     ),
                     InkWell(
                       onTap: () async {
-                        print('Share button clicked');
-
-                        // Create a formatted string with remaining data
-                        // String formattedData = _formatData(responseData);
-                        // print('Formatted Data:\n$formattedData');
-
-                        // Save the formatted data to a text document
-                        //await saveDataToTextDocument(formattedData);
-                        await _shareorderdetails(responseData);
-
+                        await _shareorderdetails(widget.responseData);
                       },
                       child: Container(
                         padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
                           borderRadius: BorderRadius.circular(10),
                           border: Border.all(
-                            color: Color(0xFFe78337),
+                            color: CommonStyles.orangeColor,
                           ),
-                          color: Color(0xFFF8dac2),
+                          color: CommonStyles.whiteColor,
                         ),
                         child: SvgPicture.asset(
                           'assets/share.svg',
-                          color: Color(0xFFe78337),
+                          color: CommonStyles.orangeColor,
                           width: 20,
                           height: 20,
                         ),
                       ),
                     )
-
                   ],
                 ),
-
               ),
-
               const SizedBox(
                 height: 20,
               ),
@@ -172,10 +200,10 @@ class ReturnorderStatusScreen extends StatelessWidget {
                 padding: const EdgeInsets.symmetric(horizontal: 20),
                 child: GestureDetector(
                   onTap: () {
-                    // Navigate to the "View Collections" screen
                     Navigator.push(
                       context,
-                      MaterialPageRoute(builder: (context) => HomeScreen()),
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
                     );
                   },
                   child: Container(
@@ -186,13 +214,10 @@ class ReturnorderStatusScreen extends StatelessWidget {
                         border: Border.all(
                           color: primaryOrange,
                         )),
-                    child: Center(
+                    child: const Center(
                       child: Text(
                         'Back to Home',
-                        style: TextStyle(
-                          fontWeight: FontWeight.bold,
-                          color: primaryOrange,
-                        ),
+                        style: CommonStyles.txSty_14o_f7,
                       ),
                     ),
                   ),
@@ -205,41 +230,9 @@ class ReturnorderStatusScreen extends StatelessWidget {
     );
   }
 
-//   Future<void> _shareorderdetails(Map<String, dynamic> responseData) async {
-//     try {
-//
-// // Retrieve orderDate from responseData
-//       String orderDate = responseData['response']['returnOrderDate'];
-//
-// // Parse the orderDate string into a DateTime object
-//       DateTime dateTime = DateTime.parse(orderDate);
-//
-// // Define the desired date format
-//       DateFormat formatter = DateFormat('dd-MM-yyyy');
-//
-// // Format the DateTime object to the desired format
-//       String formattedOrderDate = formatter.format(dateTime);
-//
-//       // Format the order amount with Rupee symbol
-//       NumberFormat amountFormatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
-//       String formattedOrderAmount = '₹${amountFormatter.format(responseData['response']['totalCostWithGST'])}';
-//
-//       String orderDetails =
-//           "Return Order Number: * " + responseData['response']['returnOrderNumber'] + " * \n";
-//       // +
-//       //         "Return Order Date: *" + formattedOrderDate + " * \n" +
-//       //         "Party Name (Code): *" + responseData['response']['partyName'] + " (" + responseData['response']['partyCode'] + ") * \n" +
-//       //         "Transport Name: * " + responseData['response']['transportName']+ " *\n";
-//
-//
-//       await Share.share(orderDetails, subject: 'Order Details');
-//     } catch (error) {
-//       print('Error sharing order details: $error');
-//     }
-//   }
   Future<void> _shareorderdetails(Map<String, dynamic> responseData) async {
     try {
-      if (responseData != null && responseData.containsKey('response')) {
+      if (responseData.containsKey('response')) {
         Map<String, dynamic> response = responseData['response'];
         String returnOrderNumber = response['returnOrderNumber'] ?? 'N/A';
         String returnOrderDate = response['returnOrderDate'] ?? 'N/A';
@@ -252,13 +245,8 @@ class ReturnorderStatusScreen extends StatelessWidget {
             ? DateFormat('dd MMM, yyyy').format(dateTime)
             : 'Invalid Date';
 
-
-
         String orderDetails =
-            "Return Order Number: *$returnOrderNumber* \n" +
-                "Return Order Date: *$formattedOrderDate* \n" +
-                "Party Name (Code): *$partyName ($partyCode)* \n" +
-                "Transport Name: *$transportName*\n";
+            "Return Order Number: *$returnOrderNumber* \nReturn Order Date: *$formattedOrderDate* \nParty Name (Code): *$partyName ($partyCode)* \nTransport Name: *$transportName*\n";
 
         await Share.share(orderDetails, subject: 'Order Details');
       } else {
@@ -268,6 +256,4 @@ class ReturnorderStatusScreen extends StatelessWidget {
       print('Error sharing order details: $error');
     }
   }
-
 }
-

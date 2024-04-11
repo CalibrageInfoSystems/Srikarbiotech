@@ -1,14 +1,13 @@
 import 'dart:convert';
 import 'dart:io';
-import 'dart:typed_data';
 
 import 'package:dotted_border/dotted_border.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_svg/flutter_svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:image_picker/image_picker.dart';
 import 'package:path_provider/path_provider.dart';
 import 'package:share/share.dart';
+import 'package:srikarbiotech/Common/styles.dart';
 
 import 'package:srikarbiotech/view_collection_page.dart';
 
@@ -57,14 +56,11 @@ class _StatusScreenState extends State<StatusScreen>
 
     return WillPopScope(
         onWillPop: () async {
-          // Disable the back button functionality
-
           return false;
         },
         child: Scaffold(
           body: Center(
             child: Column(
-              // mainAxisSize: MainAxisSize.min,
               mainAxisAlignment: MainAxisAlignment.center,
               children: <Widget>[
                 Stack(
@@ -100,37 +96,19 @@ class _StatusScreenState extends State<StatusScreen>
                     )
                   ],
                 ),
-
-                // DottedBorder(
-                //   borderType: BorderType.Circle,
-                //   strokeWidth: 3,
-                //   dashPattern: const <double>[9, 5], //const <double>[3, 1]
-                //   padding: const EdgeInsets.all(30),
-                //   color: primaryGreen,
-                //   child: SvgPicture.asset(
-                //     'assets/check.svg',
-                //     width: 50,
-                //     height: 50,
-                //     color: primaryGreen,
-                //     // colorFilter: ColorFilter.mode(primaryGreen, BlendMode.srcIn),
-                //   ),
-                // ),
                 const SizedBox(
                   height: 35,
                 ),
-                Text(
+                const Text(
                   'Your Collection Submitted Successfully',
-                  style: TextStyle(
-                    fontSize: 19,
-                    letterSpacing: 0,
-                    fontWeight: FontWeight.bold,
-                    color: primaryGreen,
-                  ),
+                  style: CommonStyles.txSty_18g_fb,
+                ),
+                const SizedBox(
+                  height: 10,
                 ),
                 Text(
                   'Thank you for shopping with ${widget.Compneyname}',
-                  style: const TextStyle(
-                      fontSize: 18, letterSpacing: 0, height: 1.5),
+                  style: CommonStyles.txSty_14b_fb,
                 ),
                 const SizedBox(
                   height: 5,
@@ -139,46 +117,19 @@ class _StatusScreenState extends State<StatusScreen>
                   mainAxisAlignment: MainAxisAlignment.center,
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
-                    // Display the orderId in the UI
                     const Text(
                       'Collection ID: ',
-                      style: TextStyle(fontWeight: FontWeight.bold),
+                      style: CommonStyles.txSty_14b_fb,
                     ),
                     Text(
                       widget.orderData['collectionNumber'].toString(),
-                      style: TextStyle(
-                        fontWeight: FontWeight.bold,
-                        fontSize: 20,
-                        color: primaryOrange,
-                      ),
+                      style: CommonStyles.txSty_14o_f7,
                     ),
                   ],
                 ),
-                // const SizedBox(
-                //   height: 5,
-                // ),
-                // Row(
-                //   mainAxisAlignment: MainAxisAlignment.center,
-                //   crossAxisAlignment: CrossAxisAlignment.center,
-                //   children: [
-                //     const Text(
-                //       'Order ID: ',
-                //       style: TextStyle(fontWeight: FontWeight.bold),
-                //     ),
-                //     Text(
-                //       orderId,
-                //       style: TextStyle(
-                //         fontWeight: FontWeight.bold,
-                //         fontSize: 20,
-                //         color: primaryOrange,
-                //       ),
-                //     ),
-                //   ],
-                // ),
                 const SizedBox(
                   height: 20,
                 ),
-// here
                 Padding(
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: Row(
@@ -186,12 +137,11 @@ class _StatusScreenState extends State<StatusScreen>
                       Expanded(
                         child: InkWell(
                           onTap: () async {
-                            // Add logic for the download button
                             await Navigator.pushReplacement(
                               context,
                               MaterialPageRoute(
                                   builder: (context) =>
-                                  const ViewCollectionPage()),
+                                      const ViewCollectionPage()),
                             );
                           },
                           child: Container(
@@ -203,9 +153,7 @@ class _StatusScreenState extends State<StatusScreen>
                             child: const Center(
                               child: Text(
                                 'Go to View Collections',
-                                style: TextStyle(
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white),
+                                style: CommonStyles.txSty_14w_fb,
                               ),
                             ),
                           ),
@@ -218,8 +166,7 @@ class _StatusScreenState extends State<StatusScreen>
                         onTap: () async {
                           debugPrint('state section: clicked');
 
-                         await _shareorderdetails(widget.orderData);
-                        //  shareImage();
+                          await _shareorderdetails(widget.orderData);
                         },
                         child: Container(
                           padding: const EdgeInsets.all(10),
@@ -241,41 +188,6 @@ class _StatusScreenState extends State<StatusScreen>
                     ],
                   ),
                 ),
-
-                // Padding(
-                //   padding: const EdgeInsets.symmetric(horizontal: 20),
-                //   child: Row(
-                //     children: [
-                //       Expanded(
-                //         child: GestureDetector(
-                //           onTap: () {
-                //             // Navigate to the "View Collections" screen
-                //             Navigator.push(
-                //               context,
-                //               MaterialPageRoute(builder: (context) => const ViewCollectionPage()),
-                //             );
-                //           },
-                //         child:
-                //         Container(
-                //           padding: const EdgeInsets.all(13),
-                //           decoration: BoxDecoration(
-                //             borderRadius: BorderRadius.circular(12),
-                //             color: primaryOrange,
-                //           ),
-                //           child: const Center(
-                //             child: Text(
-                //               'Go to View Collections',
-                //               style: TextStyle(
-                //                   fontWeight: FontWeight.bold, color: Colors.white),
-                //             ),
-                //           ),
-                //         ),
-                //                     ),
-                //       ),
-
-                //     ],
-                //   ),
-                // ),
                 const SizedBox(
                   height: 20,
                 ),
@@ -283,7 +195,6 @@ class _StatusScreenState extends State<StatusScreen>
                   padding: const EdgeInsets.symmetric(horizontal: 20),
                   child: GestureDetector(
                     onTap: () {
-                      // Navigate to the "View Collections" screen
                       Navigator.push(
                         context,
                         MaterialPageRoute(
@@ -298,13 +209,10 @@ class _StatusScreenState extends State<StatusScreen>
                           border: Border.all(
                             color: primaryOrange,
                           )),
-                      child: Center(
+                      child: const Center(
                         child: Text(
                           'Back to Home',
-                          style: TextStyle(
-                            fontWeight: FontWeight.bold,
-                            color: primaryOrange,
-                          ),
+                          style: CommonStyles.txSty_14o_f7,
                         ),
                       ),
                     ),
@@ -316,44 +224,23 @@ class _StatusScreenState extends State<StatusScreen>
         ));
   }
 
-  // Future<void> _shareorderdetails(Map<String, dynamic> responseData) async {
-  //   try {
-
-  //     String partyCode = responseData['partyCode'];
-  //     String partyName = responseData['partyName'];
-  //     String address = responseData['address'];
-
-  //     String orderDetails =
-  //         "partyCode: $partyCode \npartyName: $partyName \naddress: $address \n";
-  //     await Share.share(orderDetails, subject: 'Order Details');
-
-  //   } catch (error) {
-  //     debugPrint('catch: $error');
-
-  //   }
-  // }
   Future<void> _shareorderdetails(Map<String, dynamic> responseData) async {
     try {
       String partyCode = responseData['partyCode'];
       String partyName = responseData['partyName'];
       String address = responseData['address'];
-      String base64Image = responseData['fileString']; // assuming this is the correct key for the base64 image
+      String base64Image = responseData['fileString'];
 
       String orderDetails =
           "Party Code: $partyCode \nParty Name: $partyName \nAddress: $address \n";
 
-      // Create a temporary directory to store the image
       Directory tempDir = await getTemporaryDirectory();
       String imagePath = '${tempDir.path}/order_image.jpg';
 
-
-      // Create a new File object from dart:io
       File imageFile = File(imagePath);
 
-      // Write base64 encoded image data to the file
       await imageFile.writeAsBytes(base64Decode(base64Image));
 
-      // Share both text and image
       await Share.shareFiles(
         [imagePath],
         text: orderDetails,
@@ -363,6 +250,4 @@ class _StatusScreenState extends State<StatusScreen>
       debugPrint('Error sharing order details: $error');
     }
   }
-
-  }
-
+}

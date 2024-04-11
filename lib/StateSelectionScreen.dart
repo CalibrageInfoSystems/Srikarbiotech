@@ -64,11 +64,11 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
     AwesomeNotifications().setListeners(
       onActionReceivedMethod: onActionReceivedMethod,
       onNotificationCreatedMethod:
-      NotificationController.onNotificationCreatedMethod,
+          NotificationController.onNotificationCreatedMethod,
       onNotificationDisplayedMethod:
-      NotificationController.onNotificationDisplayedMethod,
+          NotificationController.onNotificationDisplayedMethod,
       onDismissActionReceivedMethod:
-      NotificationController.onDismissActionReceivedMethod,
+          NotificationController.onDismissActionReceivedMethod,
     );
   }
 
@@ -150,7 +150,8 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                   } else if (snapshot.hasError) {
                     return Center(
                       child: Text(
-                        'Error occurred.: ${snapshot.error}',
+                        CommonUtils.extractExceptionMessage(snapshot.error
+                            .toString()), //'Error occurred.: ${snapshot.error}',
                         style: CommonStyles.txSty_12b_fb,
                       ),
                     );
@@ -161,12 +162,12 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                       if (data.isNotEmpty) {
                         return isLoading
                             ? const Center(
-                          child: CircularProgressIndicator.adaptive(),
-                        )
+                                child: CircularProgressIndicator.adaptive(),
+                              )
                             : Padding(
-                          padding: const EdgeInsets.all(5),
-                          child: _stateSection(data),
-                        );
+                                padding: const EdgeInsets.all(5),
+                                child: _stateSection(data),
+                              );
                       } else {
                         return const Center(
                           child: Text(
@@ -200,7 +201,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
           } else {
             if (snapshot.hasData) {
               List<StateListResult> data =
-              snapshot.data!.cast<StateListResult>();
+                  snapshot.data!.cast<StateListResult>();
               if (data.isNotEmpty) {
                 return downloadedBtn(data); // Pass data to downloadedBtn widget
               } else {
@@ -250,7 +251,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
             onTap: () {
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const HomeScreen()),
-                      (route) => false);
+                  (route) => false);
             },
             child: Image.asset(
               'assets/srikar-home-icon.png',
@@ -278,14 +279,14 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
             context,
             'FromDate *',
             fromDateController,
-                () => _selectfromDate(context, fromDateController),
+            () => _selectfromDate(context, fromDateController),
           ),
           const SizedBox(width: 15),
           buildDateInput(
             context,
             'ToDate *',
             toDateController,
-                () => _selectDate(context, toDateController),
+            () => _selectDate(context, toDateController),
           ),
           const SizedBox(
             width: 15,
@@ -330,9 +331,9 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   Future<void> _selectDate(
-      BuildContext context,
-      TextEditingController controller,
-      ) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime currentDate = DateTime.now();
     DateTime thirtyDaysAgo = currentDate.subtract(const Duration(days: 30));
 
@@ -344,7 +345,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         initialEntryMode: DatePickerEntryMode.calendarOnly,
         initialDate: initialDate,
         firstDate:
-        thirtyDaysAgo, // Set the first selectable date to 30 days ago
+            thirtyDaysAgo, // Set the first selectable date to 30 days ago
         lastDate: currentDate, // Set the last selectable date to current date
         builder: (BuildContext context, Widget? child) {
           return Theme(
@@ -355,7 +356,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                 // onSurface: Colors.blue,// Change the text color here
               ),
               dialogBackgroundColor:
-              Colors.white, // Change the dialog background color here
+                  Colors.white, // Change the dialog background color here
             ),
             child: child!,
           );
@@ -406,7 +407,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
             child: Card(
               elevation: 0,
               color:
-              selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
+                  selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
               shape: RoundedRectangleBorder(
                 borderRadius: BorderRadius.circular(5.0),
                 side: BorderSide(
@@ -456,82 +457,82 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                               children: [
                                 Expanded(
                                     child: Row(
-                                      children: [
-                                        const Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                  children: [
+                                    const Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
+                                        children: [
+                                          Padding(
+                                            padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'OB',
-                                                  style: CommonStyles.txSty_12b_fb,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Text(
+                                              'OB',
+                                              style: CommonStyles.txSty_12b_fb,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    0, 0, 5, 0),
-                                                child: Text(
-                                                  '₹${formatNumber(data[index].ob)}',
-                                                  style: CommonStyles.txSty_12o_f7,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 5, 0),
+                                            child: Text(
+                                              '₹${formatNumber(data[index].ob)}',
+                                              style: CommonStyles.txSty_12o_f7,
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                                 Expanded(
                                     child: Row(
-                                      children: [
-                                        const Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                  children: [
+                                    const Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
+                                        children: [
+                                          Padding(
+                                            padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Sales',
-                                                  style: CommonStyles.txSty_12b_fb,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Text(
+                                              'Sales',
+                                              style: CommonStyles.txSty_12b_fb,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  '₹${formatNumber(data[index].sales)}',
-                                                  style: CommonStyles.txSty_12o_f7,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 0),
+                                            child: Text(
+                                              '₹${formatNumber(data[index].sales)}',
+                                              style: CommonStyles.txSty_12o_f7,
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                               ],
                             ),
 
@@ -544,82 +545,82 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                               children: [
                                 Expanded(
                                     child: Row(
-                                      children: [
-                                        const Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                  children: [
+                                    const Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
+                                        children: [
+                                          Padding(
+                                            padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Returns',
-                                                  style: CommonStyles.txSty_12b_fb,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Text(
+                                              'Returns',
+                                              style: CommonStyles.txSty_12b_fb,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  '₹${formatNumber(data[index].returns)}',
-                                                  style: CommonStyles.txSty_12o_f7,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 0),
+                                            child: Text(
+                                              '₹${formatNumber(data[index].returns)}',
+                                              style: CommonStyles.txSty_12o_f7,
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                                 Expanded(
                                     child: Row(
-                                      children: [
-                                        const Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                  children: [
+                                    const Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
+                                        children: [
+                                          Padding(
+                                            padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Receipts',
-                                                  style: CommonStyles.txSty_12b_fb,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Text(
+                                              'Receipts',
+                                              style: CommonStyles.txSty_12b_fb,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  '₹${formatNumber(data[index].receipts)}',
-                                                  style: CommonStyles.txSty_12o_f7,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 0),
+                                            child: Text(
+                                              '₹${formatNumber(data[index].receipts)}',
+                                              style: CommonStyles.txSty_12o_f7,
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                               ],
                             ),
 
@@ -632,43 +633,43 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                               children: [
                                 Expanded(
                                     child: Row(
-                                      children: [
-                                        const Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                  children: [
+                                    const Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
+                                        children: [
+                                          Padding(
+                                            padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Others',
-                                                  style: CommonStyles.txSty_12b_fb,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Text(
+                                              'Others',
+                                              style: CommonStyles.txSty_12b_fb,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  '₹${formatNumber(data[index].others)}',
-                                                  style: CommonStyles.txSty_12o_f7,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 0),
+                                            child: Text(
+                                              '₹${formatNumber(data[index].others)}',
+                                              style: CommonStyles.txSty_12o_f7,
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                                 Expanded(
                                   child: Row(
                                     children: [
@@ -676,7 +677,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                         flex: 3,
                                         child: Column(
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Padding(
                                               padding: EdgeInsets.fromLTRB(
@@ -684,7 +685,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                               child: Text(
                                                 'Closing',
                                                 style:
-                                                CommonStyles.txSty_12b_fb,
+                                                    CommonStyles.txSty_12b_fb,
                                               ),
                                             ),
                                           ],
@@ -694,16 +695,16 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
                                         flex: 4,
                                         child: Column(
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Padding(
                                               padding:
-                                              const EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 0),
+                                                  const EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 0),
                                               child: Text(
                                                 '₹${formatNumber(data[index].closing)}',
                                                 style:
-                                                CommonStyles.txSty_12o_f7,
+                                                    CommonStyles.txSty_12o_f7,
                                               ),
                                             ),
                                           ],
@@ -733,10 +734,10 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   Widget dateField(
-      BuildContext context,
-      String labelText,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String labelText,
+    VoidCallback onTap,
+  ) {
     return GestureDetector(
       onTap: onTap,
       child: Container(
@@ -756,11 +757,11 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   static Widget buildDateInput(
-      BuildContext context,
-      String labelText,
-      TextEditingController controller,
-      VoidCallback onTap,
-      ) {
+    BuildContext context,
+    String labelText,
+    TextEditingController controller,
+    VoidCallback onTap,
+  ) {
     return Expanded(
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
@@ -825,9 +826,9 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   Future<void> _selectfromDate(
-      BuildContext context,
-      TextEditingController controller,
-      ) async {
+    BuildContext context,
+    TextEditingController controller,
+  ) async {
     DateTime currentDate = DateTime.now();
 
     // Calculate the date 30 days ago from the current date
@@ -844,7 +845,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
         firstDate: DateTime(
             1900), // Set the first selectable date to a past date (e.g., January 1, 1900)
         lastDate:
-        currentDate, // Set the last selectable date to the current date
+            currentDate, // Set the last selectable date to the current date
         builder: (BuildContext context, Widget? child) {
           return Theme(
             data: ThemeData.light().copyWith(
@@ -905,7 +906,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
       final jsonResponse = json.decode(response.body);
       if (response.statusCode == 200) {
         Directory downloadsDirectory =
-        Directory('/storage/emulated/0/Download/Srikar_Groups');
+            Directory('/storage/emulated/0/Download/Srikar_Groups');
         //  final decodedResponse = utf8.decode(base64.decode(response.body['response']));
         //showDownloadNotification();
         if (!downloadsDirectory.existsSync()) {
@@ -1005,14 +1006,14 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
     try {
       final requestBody = stateResult
           .map((state) => {
-        'State': state.state,
-        'OB': state.ob,
-        'Sales': state.sales,
-        'Returns': state.returns,
-        'Receipts': state.receipts,
-        'Others': state.others,
-        'Closing': state.closing,
-      })
+                'State': state.state,
+                'OB': state.ob,
+                'Sales': state.sales,
+                'Returns': state.returns,
+                'Receipts': state.receipts,
+                'Others': state.others,
+                'Closing': state.closing,
+              })
           .toList();
 
       // API endpoint for exporting state group summary report
@@ -1083,8 +1084,8 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
 
   @pragma("vm:entry-point")
   Future<void> onActionReceivedMethod(
-      ReceivedAction receivedAction,
-      ) async {
+    ReceivedAction receivedAction,
+  ) async {
     if (downloadedFilePath != null) {
       final file = File(downloadedFilePath!);
       if (await file.exists()) {
@@ -1092,7 +1093,7 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
           await OpenFile.open(
             downloadedFilePath!,
             type:
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           );
         } catch (e) {
           print('Error opening file: $e');

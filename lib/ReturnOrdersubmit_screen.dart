@@ -1,34 +1,25 @@
 import 'dart:convert';
-import 'dart:io';
 
-import 'package:card_swiper/card_swiper.dart';
-import 'package:carousel_slider/carousel_slider.dart';
-import 'package:flutter/cupertino.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:hexcolor/hexcolor.dart';
-import 'package:path_provider/path_provider.dart';
 import 'package:intl/intl.dart';
-import 'package:permission_handler/permission_handler.dart';
 import 'package:photo_view/photo_view.dart';
 import 'package:photo_view/photo_view_gallery.dart';
 import 'package:provider/provider.dart';
-import 'package:share/share.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'package:http/http.dart' as http;
+import 'package:srikarbiotech/Common/styles.dart';
 import 'package:srikarbiotech/Returntransportdetails.dart';
 import 'package:srikarbiotech/Services/api_config.dart';
-import 'package:srikarbiotech/sb_status.dart';
 
 import 'CartProvider.dart';
 import 'Common/SharedPrefsData.dart';
 import 'HomeScreen.dart';
-import 'Model/OrderItemXrefType.dart';
 import 'Model/ReturnOrderItemXrefType.dart';
 import 'ReturnorderStatusScreen.dart';
-import 'orderStatusScreen.dart';
 
 class ReturnOrdersubmit_screen extends StatefulWidget {
   final String cardName;
@@ -77,22 +68,6 @@ class ReturnOrdersubmit_screen extends StatefulWidget {
 }
 
 class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
-  final _orangeColor = HexColor('#e58338');
-
-  final _titleTextStyle = const TextStyle(
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.w700,
-    color: Colors.black,
-    fontSize: 16,
-  );
-
-  final _dataTextStyle = TextStyle(
-    fontFamily: 'Roboto',
-    fontWeight: FontWeight.bold,
-    color: HexColor('#e58338'),
-    fontSize: 12,
-  );
-
   final dividerForHorizontal = Container(
     width: double.infinity,
     height: 1,
@@ -103,7 +78,6 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     height: 60,
     color: Colors.grey,
   );
-
   List attachments = [];
   List<ReturnOrderItemXrefType> cartItems = [];
   List<String> cartlistItems = [];
@@ -121,7 +95,6 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
   int currentIndex = 0;
   bool _isButtonDisabled = false;
 
-// late String lrattachment, ReturnOrderReceipt, addlattchments;
   @override
   initState() {
     super.initState();
@@ -136,7 +109,6 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       'data:image/png;base64,${widget.addlattchments}',
     ];
 
-    // work
     setAttachments(
       att1: widget.LRAttachment,
       att2: widget.ReturnOrderReceipt,
@@ -166,98 +138,10 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     totalSum = calculateTotalSum(cartItems);
 
     String dateString = widget.Lrdate;
-    print('dateString==>$dateString');
-    // Format: dd MMM, yyyy
     LrDate1 = formatDate(dateString, "dd MMM, yyyy");
-    print("Formatted Date 1: $LrDate1");
-
-    // Format: yyyy-MM-dd
     LrDate2 = formatDate(dateString, "yyyy-MM-dd");
-    print("Formatted Date 2: $LrDate2");
-    // DateTime date = DateTime.parse(dateString);
-    // String formattedDate = DateFormat('dd MMM, yyyy').format(date);
     return Scaffold(
-      appBar: AppBar(
-        backgroundColor: const Color(0xFFe78337),
-        automaticallyImplyLeading: false,
-        title: Row(
-          mainAxisAlignment: MainAxisAlignment.spaceBetween,
-          children: [
-            Row(
-              children: [
-                Padding(
-                  padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
-                  child: GestureDetector(
-                    onTap: () {
-                      // Handle the click event for the back button
-                      Navigator.of(context).pop();
-                    },
-                    child: const Icon(
-                      Icons.chevron_left,
-                      size: 30.0,
-                      color: Colors.white,
-                    ),
-                  ),
-                ),
-                const SizedBox(width: 8.0),
-                const Text(
-                  'Return Order Submission ',
-                  style: TextStyle(
-                    color: Colors.white,
-                    fontSize: 18,
-                  ),
-                ),
-                FutureBuilder(
-                  future: getshareddata(),
-                  builder: (context, snapshot) {
-                    if (snapshot.connectionState == ConnectionState.done) {
-                      // Access the cart data from the provider
-                      cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
-                      // Update the globalCartLength
-                      globalCartLength = cartItems.length;
-                    }
-                    // Always return a widget in the builder
-                    return Text(
-                      '($globalCartLength)',
-                      style: const TextStyle(
-                        color: Colors.white,
-                        fontSize: 18,
-                      ),
-                    );
-                  },
-                ),
-              ],
-            ),
-            FutureBuilder(
-              future: getshareddata(),
-              builder: (context, snapshot) {
-                if (snapshot.connectionState == ConnectionState.done) {
-                  // Access the companyId after shared data is retrieved
-
-                  return GestureDetector(
-                    onTap: () {
-                      // Handle the click event for the home icon
-                      Navigator.pushReplacement(
-                        context,
-                        MaterialPageRoute(builder: (context) => const HomeScreen()),
-                      );
-                    },
-                    child: Image.asset(
-                      CompneyId == 1 ? 'assets/srikar-home-icon.png' : 'assets/seeds-home-icon.png',
-                      width: 30,
-                      height: 30,
-                    ),
-                  );
-                } else {
-                  // Return a placeholder or loading indicator
-                  return const SizedBox.shrink();
-                }
-              },
-            ),
-          ],
-        ),
-      ),
-
+      appBar: _appBar(),
       body: SingleChildScrollView(
         child: Column(
           children: [
@@ -272,10 +156,9 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                     widget.proprietorName,
                     widget.gstRegnNo,
                     widget.address,
-                    Colors.white,
+                    CommonStyles.whiteColor,
                     BorderRadius.circular(5.0),
                   ),
-                  // const SizedBox(height: 5.0),
                 ],
               ),
             ),
@@ -284,13 +167,14 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
               padding: const EdgeInsets.only(top: 5.0, left: 10.0, right: 10.0),
               child: IntrinsicHeight(
                 child: Card(
+                  elevation: 5,
                   shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(5.0),
+                    borderRadius: BorderRadius.circular(5),
                   ),
                   child: Container(
                     decoration: BoxDecoration(
                       borderRadius: BorderRadius.circular(5.0),
-                      color: Colors.white,
+                      color: CommonStyles.whiteColor,
                     ),
                     padding: const EdgeInsets.all(10.0),
                     width: MediaQuery.of(context).size.width,
@@ -302,52 +186,31 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                             const Expanded(
                               child: Text(
                                 'Credit Limit',
-                                style: TextStyle(
-                                  color: Color(0xFF5f5f5f),
-                                  fontFamily: "Roboto",
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14.0,
-                                ),
+                                style: CommonStyles.txSty_12b_fb,
                               ),
                             ),
                             Expanded(
                               child: Text(
                                 '₹${widget.creditLine}',
-                                style: const TextStyle(
-                                  color: Color(0xFF5f5f5f),
-                                  fontFamily: "Roboto",
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14.0,
-                                ),
+                                style: CommonStyles.txSty_12o_f7,
                                 textAlign: TextAlign.right,
                               ),
                             ),
                           ],
                         ),
-                        const SizedBox(height: 5.0), // Add some space between rows
-                        // Third Row: Outstanding Amount
+                        const SizedBox(height: 5.0),
                         Row(
                           children: [
                             const Expanded(
                               child: Text(
                                 'Outstanding Amount',
-                                style: TextStyle(
-                                  color: Color(0xFF5f5f5f),
-                                  fontFamily: "Roboto",
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14.0,
-                                ),
+                                style: CommonStyles.txSty_12b_fb,
                               ),
                             ),
                             Expanded(
                               child: Text(
                                 '₹${widget.balance}',
-                                style: const TextStyle(
-                                  color: Color(0xFF5f5f5f),
-                                  fontFamily: "Roboto",
-                                  fontWeight: FontWeight.w700,
-                                  fontSize: 14.0,
-                                ),
+                                style: CommonStyles.txSty_12o_f7,
                                 textAlign: TextAlign.right,
                               ),
                             ),
@@ -359,124 +222,102 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                 ),
               ),
             ),
-            // const SizedBox(height: 5),
             FutureBuilder(
               future: Future.value(),
               builder: (context, snapshot) {
-                // if (snapshot.connectionState == ConnectionState.waiting) {
-                //   return CircularProgressIndicator();
-                // } else
-                // if (snapshot.connectionState == ConnectionState.done) {
-                cartItems = Provider.of<CartProvider>(context).getReturnCartItems();
-
+                cartItems =
+                    Provider.of<CartProvider>(context).getReturnCartItems();
                 return buildListView(cartItems, ValueKey(cartItems));
-
-                // }
-                // else {
-                //   return Text('Error: Unable to fetch cart data');
-                // }
               },
             ),
-
-            // FutureBuilder(
-            //   future: Future.value(),
-            //   builder: (context, snapshot) {
-            //     if (snapshot.connectionState == ConnectionState.waiting) {
-            //       return CircularProgressIndicator();
-            //     } else if (snapshot.connectionState == ConnectionState.done) {
-            //       // Assuming `buildListView` is defined elsewhere
-            //       cartItems =
-            //           Provider.of<CartProvider>(context).getReturnCartItems();
-            //       return buildListView(); // Assuming this function returns a widget
-            //     } else {
-            //       return Text('Error: Unable to fetch cart data');
-            //     }
-            //   },
-            // ),
-            // const SizedBox(height: 10),
             Container(
               width: MediaQuery.of(context).size.width,
               padding: const EdgeInsets.only(top: 0.0, left: 10.0, right: 10.0),
               child: IntrinsicHeight(
                 child: Card(
                   elevation: 5,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5),
+                  ),
                   child: Container(
                     decoration: BoxDecoration(
-                      color: Colors.white,
+                      color: CommonStyles.whiteColor,
                       borderRadius: BorderRadius.circular(5),
                     ),
-                    width: double.infinity, // remove padding here
+                    width: double.infinity,
                     child: Column(
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: <Widget>[
-                        // row one
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
                           child: Row(
                             mainAxisAlignment: MainAxisAlignment.spaceBetween,
                             children: <Widget>[
-                              Text(
+                              const Text(
                                 'Transport Details',
-                                style: _titleTextStyle,
+                                style: CommonStyles.txSty_14b_fb,
                               ),
                               InkWell(
                                 onTap: () {
-                                  // Your click listener logic here
                                   Navigator.push(
                                     context,
                                     MaterialPageRoute(
-                                        builder: (context) => Returntransportdetails(
-                                            cardName: widget.cardName,
-                                            cardCode: widget.cardCode,
-                                            address: widget.address,
-                                            state: widget.state,
-                                            phone: widget.phone,
-                                            proprietorName: widget.proprietorName,
-                                            gstRegnNo: widget.gstRegnNo,
-                                            lrnumber: widget.LrNumber,
-                                            lrdate: widget.Lrdate,
-                                            remarks: widget.Remarks,
-                                            creditLine: double.parse('${widget.creditLine}'), // Convert to double
-                                            balance: double.parse('${widget.balance}'),
-                                            transportname: widget.transportname,
-                                            whsCode: widget.whsCode,
-                                            whsName: widget.whsName,
-                                            whsState: widget.whsState)),
+                                        builder: (context) =>
+                                            Returntransportdetails(
+                                                cardName: widget.cardName,
+                                                cardCode: widget.cardCode,
+                                                address: widget.address,
+                                                state: widget.state,
+                                                phone: widget.phone,
+                                                proprietorName:
+                                                    widget.proprietorName,
+                                                gstRegnNo: widget.gstRegnNo,
+                                                lrnumber: widget.LrNumber,
+                                                lrdate: widget.Lrdate,
+                                                remarks: widget.Remarks,
+                                                creditLine: double.parse(
+                                                    '${widget.creditLine}'),
+                                                balance: double.parse(
+                                                    '${widget.balance}'),
+                                                transportname:
+                                                    widget.transportname,
+                                                whsCode: widget.whsCode,
+                                                whsName: widget.whsName,
+                                                whsState: widget.whsState)),
                                   );
                                 },
                                 child: Container(
-                                  padding: const EdgeInsets.all(8), // Adjust padding as needed
+                                  padding: const EdgeInsets.all(8),
                                   child: SvgPicture.asset(
-                                    'assets/edit.svg', // Replace 'your_icon.svg' with your SVG asset path
-                                    width: 20, // Adjust width as needed
-                                    height: 22, // Adjust height as needed
+                                    'assets/edit.svg',
+                                    width: 20,
+                                    height: 22,
                                   ),
                                 ),
                               ),
                             ],
                           ),
                         ),
-
                         dividerForHorizontal,
-
-                        // row two
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'LR Number',
-                                      style: _titleTextStyle,
+                                      style: CommonStyles.txSty_12b_fb,
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       widget.LrNumber,
-                                      style: _dataTextStyle,
+                                      style: CommonStyles.txSty_12o_f7,
                                     ),
                                   ],
                                 ),
@@ -485,18 +326,19 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                             dividerForVertical,
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'LR Date',
-                                      style: _titleTextStyle,
+                                      style: CommonStyles.txSty_12b_fb,
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       LrDate1,
-                                      style: _dataTextStyle,
+                                      style: CommonStyles.txSty_12o_f7,
                                     ),
                                   ],
                                 ),
@@ -504,25 +346,25 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                             ),
                           ],
                         ),
-
                         dividerForHorizontal,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Transport Name',
-                                      style: _titleTextStyle,
+                                      style: CommonStyles.txSty_12b_fb,
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       widget.transportname,
-                                      style: _dataTextStyle,
+                                      style: CommonStyles.txSty_12o_f7,
                                     ),
                                   ],
                                 ),
@@ -530,25 +372,25 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                             ),
                           ],
                         ),
-
                         dividerForHorizontal,
                         Row(
                           mainAxisAlignment: MainAxisAlignment.spaceBetween,
                           children: <Widget>[
                             Expanded(
                               child: Padding(
-                                padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                                padding: const EdgeInsets.symmetric(
+                                    horizontal: 12, vertical: 10),
                                 child: Column(
                                   crossAxisAlignment: CrossAxisAlignment.start,
                                   children: [
-                                    Text(
+                                    const Text(
                                       'Remarks',
-                                      style: _titleTextStyle,
+                                      style: CommonStyles.txSty_12b_fb,
                                     ),
                                     const SizedBox(height: 4),
                                     Text(
                                       widget.Remarks,
-                                      style: _dataTextStyle,
+                                      style: CommonStyles.txSty_12o_f7,
                                     ),
                                   ],
                                 ),
@@ -556,62 +398,32 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                             ),
                           ],
                         ),
-
                         dividerForHorizontal,
-
-                        // row four
                         Padding(
-                          padding: const EdgeInsets.symmetric(horizontal: 12, vertical: 10),
+                          padding: const EdgeInsets.symmetric(
+                              horizontal: 12, vertical: 10),
                           child: Container(
-                              padding: const EdgeInsets.symmetric(horizontal: 10, vertical: 4),
+                              padding: const EdgeInsets.symmetric(
+                                  horizontal: 10, vertical: 4),
                               decoration: BoxDecoration(
                                 color: Colors.orange.shade100,
                                 border: Border.all(
-                                  color: _orangeColor,
+                                  color: CommonStyles.orangeColor,
                                 ),
                                 borderRadius: BorderRadius.circular(5),
                               ),
                               child: GestureDetector(
                                 onTap: () {
-                                  // Add your click listener logic here
-                                  // showDialog(
-                                  //   context: context,
-                                  //   builder: (context) => AlertDialog(
-                                  //     content: Image.memory(
-                                  //       base64Decode(
-                                  //           widget.LRAttachment.split(',')
-                                  //               .last),
-                                  //     ),
-                                  //   ),
-                                  // );
-                                  // showDialog(
-                                  //   context: context,
-                                  //   builder: (context) => ImageDialog(
-                                  //     imageString: widget.LRAttachment,
-                                  //     imageList: base64ImageStrings,
-                                  //   ),
-                                  // ); // work
-
                                   showAttachmentsDialog(attachments);
-
-                                  // showDialog(
-                                  //   context: context,
-                                  //   builder: (context) => ImageSliderDialog(
-                                  //     LRAttachment: widget.LRAttachment,
-                                  //     ReturnOrderReceipt:
-                                  //         widget.ReturnOrderReceipt,
-                                  //     addlattchments: widget.addlattchments,
-                                  //   ),
-                                  // );
                                 },
-                                child: Row(
+                                child: const Row(
                                   mainAxisSize: MainAxisSize.min,
                                   children: [
-                                    const Icon(Icons.link),
-                                    const SizedBox(width: 5),
+                                    Icon(Icons.link),
+                                    SizedBox(width: 5),
                                     Text(
                                       'Attachment',
-                                      style: _titleTextStyle,
+                                      style: CommonStyles.txSty_12b_fb,
                                     ),
                                   ],
                                 ),
@@ -623,238 +435,72 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                 ),
               ),
             ),
-            // Container(
-            //     width: MediaQuery.of(context).size.width,
-            //     padding: EdgeInsets.only(top: 10.0, left: 10.0, right: 10.0),
-            //     child: IntrinsicHeight(
-            //         child: Card(
-            //       color: Colors.white,
-            //       shape: RoundedRectangleBorder(
-            //         borderRadius: BorderRadius.circular(5.0),
-            //       ),
-            //       child: Container(
-            //         padding: EdgeInsets.all(10.0),
-            //         decoration: BoxDecoration(
-            //           borderRadius: BorderRadius.circular(5.0),
-            //           color: Colors.white,
-            //         ),
-            //         width: MediaQuery.of(context).size.width,
-            //         child: Column(
-            //           children: [
-            //             Row(
-            //               crossAxisAlignment: CrossAxisAlignment.start,
-            //               mainAxisAlignment: MainAxisAlignment.start,
-            //               children: [
-            //                 Container(
-            //                   padding: EdgeInsets.only(top: 5.0),
-            //                   child: Text(
-            //                     'Total',
-            //                     style: TextStyle(
-            //                       color: Colors.black,
-            //                       fontWeight: FontWeight.bold,
-            //                       fontSize: 14.0,
-            //                     ),
-            //                   ),
-            //                 ),
-            //                 Spacer(),
-            //                 Row(
-            //                   crossAxisAlignment: CrossAxisAlignment.end,
-            //                   mainAxisAlignment: MainAxisAlignment.end,
-            //                   children: [
-            //                     Container(
-            //                       //   width: MediaQuery.of(context).size.width / 1.8,
-            //                       padding: EdgeInsets.only(top: 5.0),
-            //                       child: Row(
-            //                         crossAxisAlignment: CrossAxisAlignment.end,
-            //                         mainAxisAlignment: MainAxisAlignment.end,
-            //                         children: [
-            //                           Text(
-            //                             '₹${totalSum.toStringAsFixed(2)}',
-            //                             style: TextStyle(
-            //                               color: Color(0xFFe78337),
-            //                               fontWeight: FontWeight.bold,
-            //                               fontSize: 16.0,
-            //                             ),
-            //                           ),
-            //                         ],
-            //                       ),
-            //                     )
-            //                   ],
-            //                 ),
-            //               ],
-            //             ),
-            //           ],
-            //         ),
-            //       ),
-            //     )))
           ],
         ),
       ),
-        bottomNavigationBar: Container(
-          height: 60,
-          margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-          padding: const EdgeInsets.all(8.0),
-          child: Row(
-            children: [
-              Expanded(
-                child: SizedBox(
-                  width: MediaQuery.of(context).size.width,
-                  height: 45.0,
-                  child: Center(
-                    child: GestureDetector(
-                      onTap: _isButtonDisabled
-                          ? null // If button is disabled, onTap will be null
-                          : () {
-                        if (globalCartLength > 0) {
-                          CommonUtils.checkInternetConnectivity().then(
+      bottomNavigationBar: Container(
+        height: 60,
+        margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
+        padding: const EdgeInsets.all(8.0),
+        child: Row(
+          children: [
+            Expanded(
+              child: SizedBox(
+                width: MediaQuery.of(context).size.width,
+                height: 45.0,
+                child: Center(
+                  child: GestureDetector(
+                    onTap: _isButtonDisabled
+                        ? null
+                        : () {
+                            if (globalCartLength > 0) {
+                              CommonUtils.checkInternetConnectivity().then(
                                 (isConnected) {
-                              if (isConnected) {
-                                // setState(() {
-                                //   _isButtonDisabled = true; // Disable the button
-                                // });
-                                Addreturnorder();
-                                print('The Internet Is Connected');
-                              } else {
-                                CommonUtils.showCustomToastMessageLong(
-                                    'Please check your internet connection', context, 1, 4);
-                                print('The Internet Is not Connected');
-                              }
-                            },
-                          );
-                        } else {
-                          CommonUtils.showCustomToastMessageLong(
-                              'Please Add Atleast One Product', context, 1, 4);
-                        }
-                      },
-                      child: Container(
-                        width: MediaQuery.of(context).size.width,
-                        height: 45.0,
-                        decoration: BoxDecoration(
-                          borderRadius: BorderRadius.circular(6.0),
-                          color: _isButtonDisabled ? Colors.grey : const Color(0xFFe78337),
-                        ),
-                        child: const Center(
-                          child: Text(
-                            'Place Your Return Order',
-                            style: CommonUtils.Buttonstyle,
-                          ),
+                                  if (isConnected) {
+                                    addReturnOrders();
+                                    print('The Internet Is Connected');
+                                  } else {
+                                    CommonUtils.showCustomToastMessageLong(
+                                        'Please check your internet connection',
+                                        context,
+                                        1,
+                                        4);
+                                    print('The Internet Is not Connected');
+                                  }
+                                },
+                              );
+                            } else {
+                              CommonUtils.showCustomToastMessageLong(
+                                  'Please Add Atleast One Product',
+                                  context,
+                                  1,
+                                  4);
+                            }
+                          },
+                    child: Container(
+                      width: MediaQuery.of(context).size.width,
+                      height: 45.0,
+                      decoration: BoxDecoration(
+                        borderRadius: BorderRadius.circular(6.0),
+                        color: _isButtonDisabled
+                            ? Colors.grey
+                            : CommonStyles.orangeColor,
+                      ),
+                      child: const Center(
+                        child: Text(
+                          'Place Your Return Order',
+                          style: CommonStyles.txSty_14w_fb,
                         ),
                       ),
                     ),
                   ),
                 ),
               ),
-            ],
-          ),
-        ));
-      // bottomNavigationBar: Container(
-      //   height: 60,
-      //   margin: const EdgeInsets.symmetric(vertical: 15, horizontal: 10),
-      //   padding: const EdgeInsets.all(8.0),
-      //   child: Row(
-      //     children: [
-      //       Expanded(
-      //         child: SizedBox(
-      //           width: MediaQuery.of(context).size.width,
-      //           height: 45.0,
-      //           child: Center(
-      //             child: GestureDetector(
-      //               onTap: () {
-      //
-      //
-      //                 if (globalCartLength > 0) {
-      //                   CommonUtils.checkInternetConnectivity().then(
-      //                         (isConnected) {
-      //                       if (isConnected) {
-      //                         Addreturnorder();
-      //                         print('The Internet Is Connected');
-      //                       } else {
-      //                         CommonUtils.showCustomToastMessageLong(
-      //                             'Please check your internet  connection', context, 1, 4);
-      //                         print('The Internet Is not  Connected');
-      //                       }
-      //                     },
-      //                   );
-      //
-      //                   // Add logic for the download button
-      //                 } else {
-      //                   CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
-      //                 }
-      //               },
-      //               child: Container(
-      //                 width: MediaQuery.of(context).size.width,
-      //                 height: 45.0,
-      //                 decoration: BoxDecoration(
-      //                   borderRadius: BorderRadius.circular(6.0),
-      //                   color: const Color(0xFFe78337),
-      //                 ),
-      //                 child: const Center(
-      //                   child: Text(
-      //                     'Place Your Return Order',
-      //                     style: CommonUtils.Buttonstyle,
-      //                   ),
-      //                 ),
-      //               ),
-      //             ),
-      //           ),
-      //         ),
-      //       ),
-      //     ],
-      //   ),
-      // ),
-      // bottomNavigationBar: InkWell(
-      //   onTap: () {
-      //     // ScaffoldMessenger.of(context).showSnackBar(
-      //     //   const SnackBar(
-      //     //     content: Text('Payment Successful'),
-      //     //     duration: Duration(seconds: 2),
-      //     //   ),
-      //     // );
-      //     print('clicked ');
-      //   },
-      //   child: Padding(
-      //     padding: const EdgeInsets.only(top: 0.0, left: 14.0, right: 14.0, bottom: 10.0),
-      //     child: Container(
-      //       alignment: Alignment.bottomCenter,
-      //       width: MediaQuery.of(context).size.width,
-      //       height: 55.0,
-      //       child: Center(
-      //         child: GestureDetector(
-      //           onTap: () {
-      //             if (globalCartLength > 0) {
-      //               Addreturnorder();
-      //               // Add logic for the download button
-      //             } else {
-      //               CommonUtils.showCustomToastMessageLong('Please Add Atleast One Product', context, 1, 4);
-      //             }
-      //           },
-      //           child: Container(
-      //             // width: desiredWidth * 0.9,
-      //             width: MediaQuery.of(context).size.width,
-      //             height: 55.0,
-      //             decoration: BoxDecoration(
-      //               borderRadius: BorderRadius.circular(6.0),
-      //               color: const Color(0xFFe78337),
-      //             ),
-      //             child: const Row(crossAxisAlignment: CrossAxisAlignment.center, mainAxisAlignment: MainAxisAlignment.center, children: [
-      //               Text(
-      //                 'Place Your Return Order',
-      //                 style: TextStyle(
-      //                   fontFamily: 'Roboto',
-      //                   fontWeight: FontWeight.w700,
-      //                   fontSize: 14,
-      //                   color: Colors.white,
-      //                 ),
-      //               ),
-      //             ]),
-      //           ),
-      //         ),
-      //       ),
-      //     ),
-      //   ),
-      // ),
-      //    ),
-
+            ),
+          ],
+        ),
+      ),
+    );
   }
 
   Future<void> getshareddata() async {
@@ -867,10 +513,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
   }
 
   Widget buildListView(List<ReturnOrderItemXrefType> cartItems, Key key) {
-    // updateTotalSum(cartItems);
-
     return ListView.builder(
-      // key: UniqueKey(),
       key: key,
       shrinkWrap: true,
       physics: const PageScrollPhysics(),
@@ -879,17 +522,13 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       itemBuilder: (context, index) {
         ReturnOrderItemXrefType cartItem = cartItems[index];
         if (cartItems.length != textEditingControllers.length) {
-          textEditingControllers = List.generate(cartItems.length, (index) => TextEditingController());
+          textEditingControllers = List.generate(
+              cartItems.length, (index) => TextEditingController());
         }
         double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
         double price = cartItem.price ?? 0.0;
-        // double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
-        //  double totalPrice = orderQty * price * numInSale;
-
-        // Update totalSumNotifier with the correct value
-
         return CartItemWidget(
-          key: ValueKey(cartItem), // Generate a unique key based on the cartItem
+          key: ValueKey(cartItem),
           cartItem: cartItem,
           onDelete: () {
             setState(() {
@@ -899,9 +538,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
             });
           },
           cartItems: cartItems,
-          onQuantityChanged: () {
-            // updateTotalSumIncludingGst(); // Update totalSumIncludingGst when quantity changes
-          },
+          onQuantityChanged: () {},
         );
       },
     );
@@ -912,7 +549,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     for (ReturnOrderItemXrefType cartItem in cartItems) {
       double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
       double price = cartItem.price ?? 0.0;
-      //  double numInSale = cartItem.numInSale?.toDouble() ?? 0.0;
+
       sum += orderQty * price;
     }
     return sum;
@@ -922,19 +559,18 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     cartProvider.clearreturnCart();
   }
 
-  void Addreturnorder() async {
+  void addReturnOrders() async {
     DateTime currentDate = DateTime.now();
     String formattedcurrentDate = DateFormat('yyyy-MM-dd').format(currentDate);
-    print('Formatted Date: $formattedcurrentDate');
     String apiUrl = baseUrl + AddReturnorder;
-    print('AddReturnorderApi: $apiUrl');
     bool isValid = true;
     bool hasValidationFailed = false;
     List<Map<String, dynamic>> returnorderItemList = cartItems.map((cartItem) {
       double orderQty = cartItem.orderQty?.toDouble() ?? 0.0;
       double price = cartItem.price ?? 0.0;
       if (isValid && orderQty == 0.0) {
-        CommonUtils.showCustomToastMessageLong('Please add quantity to selected product(s)', context, 1, 4);
+        CommonUtils.showCustomToastMessageLong(
+            'Please add quantity to selected product(s)', context, 1, 4);
         isValid = false;
         hasValidationFailed = true;
       }
@@ -954,16 +590,12 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     }).toList();
 
     if (hasValidationFailed) {
-
-      // If any validation failed, do not proceed with submission
       return;
-    }
-    else{
+    } else {
       setState(() {
-        _isButtonDisabled = true; // Disable the button
+        _isButtonDisabled = true;
       });
     }
-
     Map<String, dynamic> orderData = {
       "ReturnOrderItemXrefList": returnorderItemList,
       "Id": 1,
@@ -1006,8 +638,6 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       "WhsName": widget.whsName,
       "WhsState": widget.whsState
     };
-    print(jsonEncode(orderData));
-
     try {
       final response = await http.post(
         Uri.parse(apiUrl),
@@ -1016,34 +646,28 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
         },
         body: jsonEncode(orderData),
       );
-
       if (response.statusCode == 200) {
-        // Successful request
         final responseData = jsonDecode(response.body);
         print(responseData);
-        String returnOrderNumber = responseData['response']['returnOrderNumber'];
-
+        String returnOrderNumber =
+            responseData['response']['returnOrderNumber'];
         final cartProvider = context.read<CartProvider>();
-
         clearCartData(cartProvider);
-
         Navigator.push(
           context,
           MaterialPageRoute(
-            builder: (context) => ReturnorderStatusScreen(responseData: responseData),
+            builder: (context) =>
+                ReturnorderStatusScreen(responseData: responseData),
           ),
         );
       } else {
-
-        // Handle errors
         print('Error: ${response.reasonPhrase}');
         setState(() {
-          _isButtonDisabled = false; // Disable the button
+          _isButtonDisabled = false;
         });
       }
     } catch (e) {
-      // Handle exceptions
-      print('Exception: $e');
+      print('catch: $e');
     }
   }
 
@@ -1051,26 +675,20 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     SharedPreferences prefs = await SharedPreferences.getInstance();
     List<String>? cartItems = prefs.getStringList('cartItems');
     int remainingCartItems = cartItems?.length ?? 0;
-    print('RemainingCartItems: $remainingCartItems');
   }
 
   void clearCartItems() async {
     SharedPreferences prefs = await SharedPreferences.getInstance();
-    prefs.remove('cartItems');
   }
 
   String formatDate(String inputDate, String outputFormat) {
-    // Parse the input date
     DateTime parsedDate = DateFormat("dd-MM-yyyy").parse(inputDate);
-
-    // Format the date based on the output format
     String formattedDate = DateFormat(outputFormat).format(parsedDate);
-
     return formattedDate;
   }
-  void showAttachmentsDialog(List data) {
-    int? currentPage = 0; // Initialize to the first page index
 
+  void showAttachmentsDialog(List data) {
+    int? currentPage = 0;
     showDialog(
       context: context,
       builder: (BuildContext context) {
@@ -1081,7 +699,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                 padding: const EdgeInsets.all(5),
                 decoration: BoxDecoration(
                   borderRadius: BorderRadius.circular(10),
-                  color: Colors.white,
+                  color: CommonStyles.whiteColor,
                 ),
                 width: double.infinity,
                 height: 500,
@@ -1101,7 +719,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                       scrollPhysics: const PageScrollPhysics(),
                       allowImplicitScrolling: true,
                       backgroundDecoration: const BoxDecoration(
-                        color: Colors.white,
+                        color: CommonStyles.whiteColor,
                       ),
                       onPageChanged: (index) {
                         setState(() {
@@ -1119,10 +737,13 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                             return Container(
                               width: 8.0,
                               height: 8.0,
-                              margin: const EdgeInsets.symmetric(horizontal: 4.0),
+                              margin:
+                                  const EdgeInsets.symmetric(horizontal: 4.0),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
-                                color: currentPage == index ? Colors.orange : Colors.grey,
+                                color: currentPage == index
+                                    ? CommonStyles.orangeColor
+                                    : CommonStyles.whiteColor,
                               ),
                             );
                           }),
@@ -1135,7 +756,7 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
                       child: GestureDetector(
                         onTap: () {
                           Navigator.of(context).pop();
-                          currentPage = 0; // Reset currentPage to 0 when dialog is closed
+                          currentPage = 0;
                         },
                         child: Container(
                           padding: const EdgeInsets.all(3.0),
@@ -1161,169 +782,6 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
     );
   }
 
-  // void showAttachmentsDialog(List data) {
-  //   int? currentPage = 0; // Initialize to the first page index
-  //
-  //   showDialog(
-  //     context: context,
-  //     builder: (BuildContext context) {
-  //
-  //
-  //       return Dialog(
-  //         child: Container(
-  //           padding: const EdgeInsets.all(5),
-  //           decoration: BoxDecoration(
-  //             borderRadius: BorderRadius.circular(10),
-  //             color: Colors.white,
-  //           ),
-  //           width: double.infinity,
-  //           height: 500,
-  //           child: Stack(
-  //             children: [
-  //               PhotoViewGallery.builder(
-  //                 itemCount: data.length,
-  //                 builder: (context, index) {
-  //                   Uint8List imgBytes = base64Decode(data[index]);
-  //                   return PhotoViewGalleryPageOptions(
-  //                     imageProvider: MemoryImage(imgBytes),
-  //                     minScale: PhotoViewComputedScale.contained,
-  //                     maxScale: PhotoViewComputedScale.covered,
-  //                   );
-  //                 },
-  //                 scrollDirection: Axis.horizontal,
-  //                 scrollPhysics: const PageScrollPhysics(),
-  //                 allowImplicitScrolling: true,
-  //                 backgroundDecoration: const BoxDecoration(
-  //                   color: Colors.white,
-  //                 ),
-  //                 onPageChanged: (index) {
-  //                   setState(() {
-  //                     currentPage = index;
-  //                   });
-  //                 },
-  //               ),
-  //               Align(
-  //                 alignment: Alignment.bottomCenter,
-  //                 child: Container(
-  //                   padding: const EdgeInsets.symmetric(vertical: 10),
-  //                   child: Row(
-  //                     mainAxisAlignment: MainAxisAlignment.center,
-  //                     children: List.generate(data.length, (index) {
-  //                       return Container(
-  //                         width: 8.0,
-  //                         height: 8.0,
-  //                         margin: const EdgeInsets.symmetric(horizontal: 4.0),
-  //                         decoration: BoxDecoration(
-  //                           shape: BoxShape.circle,
-  //                           color: currentPage == index ? Colors.orange : Colors.grey,
-  //                         ),
-  //                       );
-  //                     }),
-  //                   ),
-  //                 ),
-  //               ),
-  //               Positioned(
-  //                 top: 0,
-  //                 right: 0,
-  //                 child: GestureDetector(
-  //                   onTap: () => Navigator.of(context).pop(),
-  //                   child: Container(
-  //                     padding: const EdgeInsets.all(3.0),
-  //                     decoration: BoxDecoration(
-  //                       borderRadius: BorderRadius.circular(20),
-  //                     ),
-  //                     child: const Icon(
-  //                       Icons.close,
-  //                       color: Colors.red,
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //       );
-  //     },
-  //   );
-  // }
-  // void showAttachmentsDialog(List data) {
-  //   showDialog(
-  //     context: context,
-  //     builder: (context) {
-  //       return AlertDialog(
-  //         title: const Text('Attachments'),
-  //         elevation: 5.0,
-  //         contentPadding: const EdgeInsets.all(5.0),
-  //         content: SizedBox(
-  //           height: 120,
-  //           width: 300,
-  //           child: Stack(
-  //             children: [
-  //               CarouselSlider(
-  //                 items: data.map((base64String) {
-  //                   Uint8List imgBytes = base64Decode(base64String);
-  //                   return GestureDetector(
-  //                     onTap: () {
-  //                       _showZoomedAttachments(imgBytes);
-  //                     },
-  //                     child: Image.memory(
-  //                       imgBytes,
-  //                       fit: BoxFit.cover,
-  //                     ),
-  //                   );
-  //                 }).toList(),
-  //                 options: CarouselOptions(
-  //                   scrollPhysics: const BouncingScrollPhysics(),
-  //                   autoPlay: true,
-  //                   enableInfiniteScroll: false,
-  //                   height: MediaQuery.of(context).size.height,
-  //                   aspectRatio: 23 / 9,
-  //                   viewportFraction: 1,
-  //                   onPageChanged: (index, reason) {
-  //                     // Handle page change if needed
-  //                     setState(() {
-  //                       currentIndex = index;
-  //                     });
-  //                   },
-  //                 ),
-  //               ),
-  //               SizedBox(
-  //                 width: MediaQuery.of(context).size.width,
-  //                 height: MediaQuery.of(context).size.height,
-  //                 child: Align(
-  //                   alignment: Alignment.bottomCenter,
-  //                   child: Padding(
-  //                     padding: const EdgeInsets.only(bottom: 25.0),
-  //                     child: Row(
-  //                       mainAxisAlignment: MainAxisAlignment.center,
-  //                       children: List.generate(
-  //                         data.length,
-  //                             (index) {
-  //                           return buildIndicator(index);
-  //                         },
-  //                       ),
-  //                     ),
-  //                   ),
-  //                 ),
-  //               ),
-  //             ],
-  //           ),
-  //         ),
-  //         actions: [
-  //           TextButton(
-  //             onPressed: () {
-  //               Navigator.pop(context);
-  //             },
-  //             child: const Text('Close'),
-  //           ),
-  //         ],
-  //       );
-  //     },
-  //   );
-  // }
-
-
-
   Widget buildIndicator(int index) {
     return Container(
       width: 8,
@@ -1335,6 +793,84 @@ class returnOrder_submit_screen extends State<ReturnOrdersubmit_screen> {
       ),
     );
   }
+
+  AppBar _appBar() {
+    return AppBar(
+      backgroundColor: CommonStyles.orangeColor,
+      automaticallyImplyLeading: false,
+      title: Row(
+        mainAxisAlignment: MainAxisAlignment.spaceBetween,
+        children: [
+          Row(
+            children: [
+              Padding(
+                padding: const EdgeInsets.symmetric(horizontal: 2, vertical: 2),
+                child: GestureDetector(
+                  onTap: () {
+                    Navigator.of(context).pop();
+                  },
+                  child: const Icon(
+                    Icons.chevron_left,
+                    size: 30.0,
+                    color: CommonStyles.whiteColor,
+                  ),
+                ),
+              ),
+              const SizedBox(width: 8.0),
+              const Text(
+                'Return Order Submission ',
+                style: CommonStyles.txSty_18w_fb,
+              ),
+              FutureBuilder(
+                future: getshareddata(),
+                builder: (context, snapshot) {
+                  if (snapshot.connectionState == ConnectionState.done) {
+                    cartItems =
+                        Provider.of<CartProvider>(context).getReturnCartItems();
+
+                    globalCartLength = cartItems.length;
+                  }
+
+                  return Text(
+                    '($globalCartLength)',
+                    style: const TextStyle(
+                      color: CommonStyles.whiteColor,
+                      fontSize: 18,
+                    ),
+                  );
+                },
+              ),
+            ],
+          ),
+          FutureBuilder(
+            future: getshareddata(),
+            builder: (context, snapshot) {
+              if (snapshot.connectionState == ConnectionState.done) {
+                return GestureDetector(
+                  onTap: () {
+                    Navigator.pushReplacement(
+                      context,
+                      MaterialPageRoute(
+                          builder: (context) => const HomeScreen()),
+                    );
+                  },
+                  child: Image.asset(
+                    CompneyId == 1
+                        ? 'assets/srikar-home-icon.png'
+                        : 'assets/seeds-home-icon.png',
+                    width: 30,
+                    height: 30,
+                  ),
+                );
+              } else {
+                return const SizedBox.shrink();
+              }
+            },
+          ),
+        ],
+      ),
+    );
+  }
 }
 
 class CartItemWidget extends StatefulWidget {
@@ -1343,12 +879,15 @@ class CartItemWidget extends StatefulWidget {
 
   final List<ReturnOrderItemXrefType> cartItems;
 
-  final VoidCallback onQuantityChanged; // Callback function to notify when quantity changes
+  final VoidCallback onQuantityChanged;
 
-  CartItemWidget({
-    Key? key, // Remove the key parameter here
-    required this.cartItem, required this.onDelete, required this.cartItems, required this.onQuantityChanged // Initialize here
-  }) : super(key: key); // Pass key to super constructor
+  const CartItemWidget(
+      {Key? key,
+      required this.cartItem,
+      required this.onDelete,
+      required this.cartItems,
+      required this.onQuantityChanged})
+      : super(key: key);
 
   @override
   _CartItemWidgetState createState() => _CartItemWidgetState();
@@ -1365,62 +904,40 @@ class _CartItemWidgetState extends State<CartItemWidget> {
   @override
   void initState() {
     super.initState();
-    // _orderQty = widget.cartItem.orderQty ?? 0;
+
     _orderQty = widget.cartItem.orderQty ?? 1;
     Quantity = widget.cartItem.orderQty!;
-    print('Quantity==$Quantity');
-
     _textController = TextEditingController(text: _orderQty.toString());
-
-    // Initialize totalSumNotifier in initState
   }
 
   @override
   Widget build(BuildContext context) {
     double totalWidth = MediaQuery.of(context).size.width;
-
-    // Calculate totalSum for all products
-    // Calculate totalSum for all products
-
-    // Calculate totalSumForProduct for the single product
-    // double totalSumForProduct = calculateTotalSumForProduct(widget.cartItem);
-    // gstPrice = calculateGstPrice(totalSumForProduct, widget.cartItem.gst);
-
-    // Calculate total sum including GST
-
     widget.onQuantityChanged();
-
     return Padding(
       padding: const EdgeInsets.only(left: 10.0, right: 10.0, bottom: 10.0),
       child: Card(
-        elevation: 5.0,
-        color: Colors.white,
+        elevation: 5,
         shape: RoundedRectangleBorder(
-          borderRadius: BorderRadius.circular(5.0),
+          borderRadius: BorderRadius.circular(5),
         ),
+        color: CommonStyles.whiteColor,
         child: Container(
-          color: Colors.white,
           padding: const EdgeInsets.all(8.0),
-          child: Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
+          decoration: BoxDecoration(
+            borderRadius: BorderRadius.circular(5),
+            color: CommonStyles.whiteColor,
+          ),
+          child:
+              Column(crossAxisAlignment: CrossAxisAlignment.start, children: [
             Text(
               '${widget.cartItem.itemName}',
-              style: CommonUtils.Mediumtext_14,
+              style: CommonStyles.txSty_14b_fb,
             ),
             const SizedBox(height: 8.0),
             const Row(
               mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                // Expanded(
-                //   child: Text(
-                //     '₹${formatNumber(totalSumForProduct)}',
-                //     style: CommonUtils.Mediumtext_o_14,
-                //   ),
-                // ),
-                // Text(
-                //   '$Quantity ${widget.cartItem.salUnitMsr} = ${Quantity * widget.cartItem.numInSale!}  Nos', // Display totalSumForProduct for the single product
-                //   style: CommonUtils.Mediumtext_o_14,
-                // ),
-              ],
+              children: [],
             ),
             const SizedBox(height: 8.0),
             Row(
@@ -1434,40 +951,29 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                       addQuantity: () {
                         setState(() {
                           Quantity++;
-                          // totalSumForProduct =
-                          //     calculateTotalSumForProduct(widget.cartItem);
-                          // print('totalSumForProductplus==$totalSumForProduct');
                           formatNumber(totalSumForProduct);
                           _orderQty = (_orderQty ?? 0) + 1;
                           _textController.text = _orderQty.toString();
-                          // Call the updateQuantity method in your model class
                           widget.cartItem.updateQuantity(_orderQty);
-
-                          widget.onQuantityChanged(); // Call onQuantityChanged callback
+                          widget.onQuantityChanged();
                         });
                       },
                       deleteQuantity: () {
                         setState(() {
                           if (_orderQty > 1) {
                             Quantity--;
-                            // totalSumForProduct =
-                            //     calculateTotalSumForProduct(widget.cartItem);
                             formatNumber(totalSumForProduct);
-                            print('totalSumForProductminus==$totalSumForProduct');
                             formatNumber(totalSumForProduct);
                             _orderQty = (_orderQty ?? 0) - 1;
                             _textController.text = _orderQty.toString();
                             widget.cartItem.updateQuantity(_orderQty);
-
-                            widget.onQuantityChanged(); // Call onQuantityChanged callback
+                            widget.onQuantityChanged();
                           }
                         });
                       },
                       textController: _textController,
-                      orderQuantity: _orderQty, // Pass _orderQty as orderQuantity
-                      // Pass the onQuantityChanged callback function
+                      orderQuantity: _orderQty,
                       updateTotalPrice: (int value) {
-                        // Your updateTotalPrice logic, if any
                         setState(() {
                           Quantity = value;
                           _orderQty = value;
@@ -1499,7 +1005,7 @@ class _CartItemWidgetState extends State<CartItemWidget> {
                     decoration: BoxDecoration(
                       color: const Color(0xFFF8dac2),
                       border: Border.all(
-                        color: const Color(0xFFe78337),
+                        color: CommonStyles.orangeColor,
                         width: 1.0,
                       ),
                       borderRadius: BorderRadius.circular(8.0),
@@ -1535,30 +1041,17 @@ class _CartItemWidgetState extends State<CartItemWidget> {
     return (totalSum * gst!) / 100.0;
   }
 
-  // double calculateTotalGstAmount(List<OrderItemXrefType> cartItems) {
-  //   double totalGstAmount = 0.0;
-  //   for (OrderItemXrefType item in cartItems) {
-  //     totalGstAmount += calculateGstPrice(
-  //       calculateTotalSumForProduct(item),
-  //       item.gst,
-  //     );
-  //   }
-  //   return totalGstAmount;
-  // }
-
   String formatNumber(double number) {
     NumberFormat formatter = NumberFormat("#,##,##,##,##,##,##0.00", "en_US");
     return formatter.format(number);
   }
 }
 
-// In PlusMinusButtons widget
-
 class PlusMinusButtons extends StatelessWidget {
   final VoidCallback deleteQuantity;
   final VoidCallback addQuantity;
   final TextEditingController textController;
-  final int orderQuantity; // Add orderQuantity parameter
+  final int orderQuantity;
   final ValueChanged<int> onQuantityChanged;
   final ValueChanged<int> updateTotalPrice;
 
@@ -1567,7 +1060,7 @@ class PlusMinusButtons extends StatelessWidget {
     required this.addQuantity,
     required this.deleteQuantity,
     required this.textController,
-    required this.orderQuantity, // Include orderQuantity parameter
+    required this.orderQuantity,
     required this.onQuantityChanged,
     required this.updateTotalPrice,
   }) : super(key: key);
@@ -1578,11 +1071,11 @@ class PlusMinusButtons extends StatelessWidget {
       width: MediaQuery.of(context).size.width / 2.3,
       height: 38,
       decoration: BoxDecoration(
-        color: const Color(0xFFe78337),
+        color: CommonStyles.orangeColor,
         borderRadius: BorderRadius.circular(8.0),
       ),
       child: Card(
-        color: const Color(0xFFe78337),
+        color: CommonStyles.orangeColor,
         margin: const EdgeInsets.symmetric(horizontal: 0.0),
         child: Row(
           children: [
@@ -1592,8 +1085,8 @@ class PlusMinusButtons extends StatelessWidget {
                 _updateTextController();
               },
               icon: SvgPicture.asset(
-                'assets/minus-small.svg', // Replace with the correct path to your SVG icon
-                color: Colors.white,
+                'assets/minus-small.svg',
+                color: CommonStyles.whiteColor,
                 width: 20.0,
                 height: 20.0,
               ),
@@ -1609,7 +1102,7 @@ class PlusMinusButtons extends StatelessWidget {
                       alignment: Alignment.center,
                       width: MediaQuery.of(context).size.width / 5,
                       decoration: const BoxDecoration(
-                        color: Colors.white,
+                        color: CommonStyles.whiteColor,
                       ),
                       child: TextField(
                         controller: textController,
@@ -1630,28 +1123,17 @@ class PlusMinusButtons extends StatelessWidget {
                           int newOrderQuantity;
                           if (newValue.isNotEmpty) {
                             newOrderQuantity = int.tryParse(newValue) ?? 0;
-                            print('textchanged:$newOrderQuantity');
                             onQuantityChanged(newOrderQuantity);
-                          }
-                          else {
-                            // newOrderQuantity = 1;
+                          } else {
                             if (textController.text.isNotEmpty) {
-                              newOrderQuantity = 1; // Set default value to 1 when becoming empty
+                              newOrderQuantity = 1;
                               onQuantityChanged(newOrderQuantity);
                             } else {
-                              newOrderQuantity = 0; // Alternatively, set to 0 or any other default value
+                              newOrderQuantity = 0;
                               onQuantityChanged(newOrderQuantity);
                             }
                           }
                         },
-
-                        // onChanged: (newValue) {
-                        //   if (newValue.isNotEmpty) {
-                        //     int newOrderQuantity = int.tryParse(newValue) ?? 0;
-                        //     print('textchanged:$newOrderQuantity');
-                        //     onQuantityChanged(newOrderQuantity);
-                        //   }
-                        // },
                       ),
                     ),
                   ),
@@ -1664,8 +1146,8 @@ class PlusMinusButtons extends StatelessWidget {
                 _updateTextController();
               },
               icon: SvgPicture.asset(
-                'assets/plus-small.svg', // Replace with the correct path to your SVG icon
-                color: Colors.white,
+                'assets/plus-small.svg',
+                color: CommonStyles.whiteColor,
                 width: 20.0,
                 height: 20.0,
               ),
@@ -1702,7 +1184,8 @@ class _ImageSliderDialogState extends State<ImageSliderDialog> {
 
   @override
   void initState() {
-    setAttachments(widget.LRAttachment, widget.ReturnOrderReceipt, widget.addlattchments);
+    setAttachments(
+        widget.LRAttachment, widget.ReturnOrderReceipt, widget.addlattchments);
     super.initState();
   }
 
@@ -1713,7 +1196,7 @@ class _ImageSliderDialogState extends State<ImageSliderDialog> {
         padding: const EdgeInsets.all(5),
         decoration: BoxDecoration(
           borderRadius: BorderRadius.circular(10),
-          color: Colors.white,
+          color: CommonStyles.whiteColor,
         ),
         width: double.infinity,
         height: 500,
@@ -1737,7 +1220,7 @@ class _ImageSliderDialogState extends State<ImageSliderDialog> {
                   scrollPhysics: const BouncingScrollPhysics(),
                   allowImplicitScrolling: true,
                   backgroundDecoration: const BoxDecoration(
-                    color: Colors.white,
+                    color: CommonStyles.whiteColor,
                   ),
                 ),
               ),
@@ -1763,7 +1246,7 @@ class _ImageSliderDialogState extends State<ImageSliderDialog> {
         ),
       ),
     );
-  } // work
+  }
 
   int get getAttchementsLength => attachments.length;
 

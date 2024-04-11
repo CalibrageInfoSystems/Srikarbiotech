@@ -271,9 +271,10 @@ class _ProductListState extends State<CreateReturnorderscreen> {
                   child: SizedBox(
                     height: 40.0,
                     child: apiResponse == null
-                        ? const Center(
-                            child: CircularProgressIndicator.adaptive(),
-                          )
+                        ? const SizedBox()
+                        // const Center(
+                        //     child: CircularProgressIndicator.adaptive(),
+                        //   )
                         : ListView.builder(
                             shrinkWrap: false,
                             scrollDirection: Axis.horizontal,

@@ -52,7 +52,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
       if (apiData['response'] != null) {
         if (apiData['response']['returnOrderDetailsResult'] != null) {
           List<dynamic> returnOrderDetailsResultListData =
-          apiData['response']['returnOrderDetailsResult'];
+              apiData['response']['returnOrderDetailsResult'];
           returnOrderDetailsResultList = returnOrderDetailsResultListData
               .map((item) => ReturnOrderDetailsResult.fromJson(item))
               .toList();
@@ -60,7 +60,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
 
         if (apiData['response']['returnOrderItemXrefList'] != null) {
           List<dynamic> returnOrderItemXrefListData =
-          apiData['response']['returnOrderItemXrefList'];
+              apiData['response']['returnOrderItemXrefList'];
           returnOrderItemXrefList = returnOrderItemXrefListData
               .map((item) => ReturnOrderItemXrefList.fromJson(item))
               .toList();
@@ -98,7 +98,8 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
         future: apiData,
         builder: (context, snapshot) {
           if (snapshot.connectionState == ConnectionState.waiting) {
-            return Center(child: CommonUtils.showProgressIndicator());
+            return const SizedBox();
+            //return const Center(child: CommonStyles.progressIndicator);
           } else if (snapshot.hasError) {
             return const Center(
               child: Text(
@@ -109,7 +110,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
           } else {
             if (snapshot.hasData) {
               List<ReturnOrderDetailsResult> result =
-              List.from(returnOrderDetailsResultList);
+                  List.from(returnOrderDetailsResultList);
               if (result.isNotEmpty) {
                 ReturnOrderDetailsResult data = result[0];
                 return SingleChildScrollView(
@@ -145,7 +146,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                               shrinkWrap: true,
                               children: List.generate(
                                 returnOrderDetailsResultList.length,
-                                    (index) => ShipmentDetailsCard(
+                                (index) => ShipmentDetailsCard(
                                   orderId: widget.orderId,
                                   data: returnOrderDetailsResultList[index],
                                 ),
@@ -170,11 +171,11 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                     ),
                                     child: ListView(
                                       physics:
-                                      const NeverScrollableScrollPhysics(),
+                                          const NeverScrollableScrollPhysics(),
                                       shrinkWrap: true,
                                       children: List.generate(
                                         returnOrderItemXrefList.length,
-                                            (index) => ItemCard(
+                                        (index) => ItemCard(
                                           data: returnOrderItemXrefList[index],
                                           statusBar: widget.statusBar,
                                         ),
@@ -216,18 +217,18 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                         itemCount: returnOrderCredits.length,
                                         itemBuilder: (context, index) {
                                           ReturnOrderCredit credit =
-                                          returnOrderCredits[index];
+                                              returnOrderCredits[index];
                                           String creditedDateStr = credit
                                               .creditedDate; // Assuming `creditedDate` is a String representing the date.
 
 // Parse the creditedDate string into a DateTime object.
                                           DateTime creditedDate =
-                                          DateTime.parse(creditedDateStr);
+                                              DateTime.parse(creditedDateStr);
 
 // Format the DateTime object into the desired format 'dd MMM, yyyy'.
                                           String formattedDate =
-                                          DateFormat('dd MMM, yyyy')
-                                              .format(creditedDate);
+                                              DateFormat('dd MMM, yyyy')
+                                                  .format(creditedDate);
 
                                           return Container(
                                             width: screenWidth,
@@ -237,23 +238,23 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                               elevation: 7,
                                               shape: RoundedRectangleBorder(
                                                 borderRadius:
-                                                BorderRadius.circular(10.0),
+                                                    BorderRadius.circular(10.0),
                                               ),
                                               child: Container(
                                                 width: double.infinity,
                                                 decoration: BoxDecoration(
                                                   borderRadius:
-                                                  BorderRadius.circular(10),
+                                                      BorderRadius.circular(10),
                                                   color: Colors.white,
                                                 ),
                                                 child: Column(
                                                   crossAxisAlignment:
-                                                  CrossAxisAlignment.start,
+                                                      CrossAxisAlignment.start,
                                                   children: [
                                                     Row(
                                                       mainAxisAlignment:
-                                                      MainAxisAlignment
-                                                          .spaceBetween,
+                                                          MainAxisAlignment
+                                                              .spaceBetween,
                                                       children: <Widget>[
                                                         // Expanded(
                                                         //   child: Padding(
@@ -301,16 +302,16 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                                         Expanded(
                                                           child: Padding(
                                                             padding:
-                                                            const EdgeInsets
-                                                                .symmetric(
-                                                                horizontal:
-                                                                12,
-                                                                vertical:
-                                                                10),
+                                                                const EdgeInsets
+                                                                    .symmetric(
+                                                                    horizontal:
+                                                                        12,
+                                                                    vertical:
+                                                                        10),
                                                             child: Column(
                                                               crossAxisAlignment:
-                                                              CrossAxisAlignment
-                                                                  .start,
+                                                                  CrossAxisAlignment
+                                                                      .start,
                                                               children: [
                                                                 const Text(
                                                                   'Credited Date',
@@ -320,16 +321,16 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                                                 Text(
                                                                   formattedDate,
                                                                   style:
-                                                                  TextStyle(
+                                                                      TextStyle(
                                                                     fontFamily:
-                                                                    'Roboto',
+                                                                        'Roboto',
                                                                     fontWeight:
-                                                                    FontWeight
-                                                                        .bold,
+                                                                        FontWeight
+                                                                            .bold,
                                                                     color: HexColor(
                                                                         '#e58338'),
                                                                     fontSize:
-                                                                    13,
+                                                                        13,
                                                                   ),
                                                                 ),
                                                               ],
@@ -340,32 +341,32 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                                     ),
                                                     Visibility(
                                                       visible:
-                                                      true, // Set to false if you want to hide the section when remarks are null
+                                                          true, // Set to false if you want to hide the section when remarks are null
                                                       child: Column(
                                                         children: [
                                                           Container(
                                                             width:
-                                                            double.infinity,
+                                                                double.infinity,
                                                             height: 0.2,
                                                             color: Colors.grey,
                                                           ),
                                                           Row(
                                                             mainAxisAlignment:
-                                                            MainAxisAlignment
-                                                                .spaceBetween,
+                                                                MainAxisAlignment
+                                                                    .spaceBetween,
                                                             children: <Widget>[
                                                               Expanded(
                                                                 child: Padding(
                                                                   padding: const EdgeInsets
                                                                       .symmetric(
                                                                       horizontal:
-                                                                      12,
+                                                                          12,
                                                                       vertical:
-                                                                      10),
+                                                                          10),
                                                                   child: Column(
                                                                     crossAxisAlignment:
-                                                                    CrossAxisAlignment
-                                                                        .start,
+                                                                        CrossAxisAlignment
+                                                                            .start,
                                                                     children: [
                                                                       const Text(
                                                                         'Remarks',
@@ -376,15 +377,15 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                                                         credit
                                                                             .remarks,
                                                                         style:
-                                                                        TextStyle(
+                                                                            TextStyle(
                                                                           fontFamily:
-                                                                          'Roboto',
+                                                                              'Roboto',
                                                                           fontWeight:
-                                                                          FontWeight.bold,
+                                                                              FontWeight.bold,
                                                                           color:
-                                                                          HexColor('#e58338'),
+                                                                              HexColor('#e58338'),
                                                                           fontSize:
-                                                                          13,
+                                                                              13,
                                                                         ),
                                                                       ),
                                                                     ],
@@ -406,17 +407,17 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                                         const Spacer(), // This will push the container to the right corner
                                                         Container(
                                                           padding:
-                                                          const EdgeInsets
-                                                              .all(8.0),
+                                                              const EdgeInsets
+                                                                  .all(8.0),
                                                           child:
-                                                          GestureDetector(
+                                                              GestureDetector(
                                                             onTap: () async {
                                                               String? pdfUrl =
                                                                   credit
                                                                       .fileUrl;
 
                                                               String?
-                                                              invoiceNo =
+                                                                  invoiceNo =
                                                                   "ReturnOrderCreditNoteFile_";
                                                               downloadFile(
                                                                   pdfUrl,
@@ -426,58 +427,58 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
                                                             child: Container(
                                                               height: 35,
                                                               margin:
-                                                              const EdgeInsets
-                                                                  .symmetric(
-                                                                  horizontal:
-                                                                  4.0),
+                                                                  const EdgeInsets
+                                                                      .symmetric(
+                                                                      horizontal:
+                                                                          4.0),
                                                               decoration:
-                                                              BoxDecoration(
+                                                                  BoxDecoration(
                                                                 color: const Color(
                                                                     0xFFF8dac2),
                                                                 border:
-                                                                Border.all(
+                                                                    Border.all(
                                                                   color: const Color(
                                                                       0xFFe78337),
                                                                   width: 1,
                                                                 ),
                                                                 borderRadius:
-                                                                BorderRadius
-                                                                    .circular(
-                                                                    8.0),
+                                                                    BorderRadius
+                                                                        .circular(
+                                                                            8.0),
                                                               ),
                                                               child:
-                                                              IntrinsicWidth(
+                                                                  IntrinsicWidth(
                                                                 child: Column(
                                                                   mainAxisAlignment:
-                                                                  MainAxisAlignment
-                                                                      .center,
+                                                                      MainAxisAlignment
+                                                                          .center,
                                                                   children: [
                                                                     Container(
                                                                       padding: const EdgeInsets
                                                                           .symmetric(
                                                                           horizontal:
-                                                                          5.0),
+                                                                              5.0),
                                                                       child:
-                                                                      Row(
+                                                                          Row(
                                                                         children: [
                                                                           SvgPicture
                                                                               .asset(
                                                                             'assets/file-download.svg',
                                                                             height:
-                                                                            18,
+                                                                                18,
                                                                             width:
-                                                                            18,
+                                                                                18,
                                                                             fit:
-                                                                            BoxFit.fitWidth,
+                                                                                BoxFit.fitWidth,
                                                                             color:
-                                                                            Colors.black,
+                                                                                Colors.black,
                                                                           ),
                                                                           const SizedBox(
                                                                               width: 8.0),
                                                                           const Text(
                                                                             'Download Credit Note',
                                                                             style:
-                                                                            CommonUtils.Mediumtext_12,
+                                                                                CommonUtils.Mediumtext_12,
                                                                           ),
                                                                         ],
                                                                       ),
@@ -557,7 +558,7 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
               ),
               const SizedBox(width: 8.0),
               const Text(
-                'Return Order Detailsxxx',
+                'Return Order Details',
                 style: CommonStyles.txSty_18w_fb,
               ),
             ],
@@ -638,9 +639,9 @@ class _OrderDetailsPageState extends State<ReturnOrderDetailsPage> {
       if (response.statusCode == 200) {
         // Get the application documents directory
         String formattedDateTime =
-        DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
+            DateFormat('yyyyMMdd_HHmmss').format(DateTime.now());
         Directory appDocDir =
-        Directory('/storage/emulated/0/Download/Srikar_Groups');
+            Directory('/storage/emulated/0/Download/Srikar_Groups');
         String fileName = "srikar_Credit_$invoiceNo$formattedDateTime.pdf";
 
         String filePath = '${appDocDir.path}/$fileName';
@@ -798,7 +799,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
       future: imageApiData,
       builder: (context, snapshot) {
         if (snapshot.connectionState == ConnectionState.waiting) {
-          return CommonUtils.showProgressIndicator();
+          return const Center(child: CommonStyles.progressIndicator);
         } else if (snapshot.hasError) {
           return const Center(child: Text('No data present'));
         } else {
@@ -1032,39 +1033,39 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                           receivedAttachs == null
                               ? const SizedBox()
                               : Container(
-                            padding: const EdgeInsets.symmetric(
-                                horizontal: 6, vertical: 2),
-                            decoration: BoxDecoration(
-                              color: const Color.fromARGB(
-                                  255, 247, 232, 211),
-                              border: Border.all(
-                                color: CommonStyles.orangeColor,
-                              ),
-                              borderRadius: BorderRadius.circular(5),
-                            ),
-                            child: GestureDetector(
-                              onTap: () {
-                                showAttachmentsDialog(receivedAttachs!);
-                                //  showReceivedAttach(receivedAttachs);
-                              },
-                              child: const Row(
-                                mainAxisSize: MainAxisSize.min,
-                                children: [
-                                  Icon(
-                                    Icons.link,
-                                    size: 18,
+                                  padding: const EdgeInsets.symmetric(
+                                      horizontal: 6, vertical: 2),
+                                  decoration: BoxDecoration(
+                                    color: const Color.fromARGB(
+                                        255, 247, 232, 211),
+                                    border: Border.all(
+                                      color: CommonStyles.orangeColor,
+                                    ),
+                                    borderRadius: BorderRadius.circular(5),
                                   ),
-                                  SizedBox(
-                                    width: 5,
+                                  child: GestureDetector(
+                                    onTap: () {
+                                      showAttachmentsDialog(receivedAttachs!);
+                                      //  showReceivedAttach(receivedAttachs);
+                                    },
+                                    child: const Row(
+                                      mainAxisSize: MainAxisSize.min,
+                                      children: [
+                                        Icon(
+                                          Icons.link,
+                                          size: 18,
+                                        ),
+                                        SizedBox(
+                                          width: 5,
+                                        ),
+                                        Text(
+                                          'Received Attch',
+                                          style: CommonUtils.txSty_13B_Fb,
+                                        ),
+                                      ],
+                                    ),
                                   ),
-                                  Text(
-                                    'Received Attch',
-                                    style: CommonUtils.txSty_13B_Fb,
-                                  ),
-                                ],
-                              ),
-                            ),
-                          ),
+                                ),
                         ],
                       ),
                     )
@@ -1104,9 +1105,9 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
 
         // Check if listResult is not null
         List<ReturnOrdersImageList> returnOrdersReceivedAttachImageList =
-        resultList
-            .map((item) => ReturnOrdersImageList.fromJson(item))
-            .toList();
+            resultList
+                .map((item) => ReturnOrdersImageList.fromJson(item))
+                .toList();
         receivedAttachs = returnOrdersReceivedAttachImageList;
       } else {
         throw Exception('Failed api call: ${response.statusCode}');
@@ -1141,7 +1142,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                         builder: (context, index) {
                           return PhotoViewGalleryPageOptions(
                             imageProvider:
-                            NetworkImage(data[index].imageString),
+                                NetworkImage(data[index].imageString),
                             minScale: PhotoViewComputedScale.contained,
                             maxScale: PhotoViewComputedScale.covered,
                           );
@@ -1171,7 +1172,7 @@ class _ShipmentDetailsCardState extends State<ShipmentDetailsCard> {
                               width: 8.0,
                               height: 8.0,
                               margin:
-                              const EdgeInsets.symmetric(horizontal: 4.0),
+                                  const EdgeInsets.symmetric(horizontal: 4.0),
                               decoration: BoxDecoration(
                                 shape: BoxShape.circle,
                                 color: currentPage == index
@@ -1389,37 +1390,37 @@ class _ItemCardState extends State<ItemCard> {
                 widget.data.fileUrl == null
                     ? const SizedBox()
                     : Container(
-                  padding: const EdgeInsets.symmetric(
-                      horizontal: 6, vertical: 2),
-                  decoration: BoxDecoration(
-                    color: const Color.fromARGB(255, 247, 232, 211),
-                    border: Border.all(
-                      color: CommonUtils.orangeColor,
-                    ),
-                    borderRadius: BorderRadius.circular(5),
-                  ),
-                  child: GestureDetector(
-                    onTap: () {
-                      showItemDetailsAttachments(widget.data.fileUrl!);
-                    },
-                    child: const Row(
-                      mainAxisSize: MainAxisSize.min,
-                      children: [
-                        Icon(
-                          Icons.link,
-                          size: 18,
+                        padding: const EdgeInsets.symmetric(
+                            horizontal: 6, vertical: 2),
+                        decoration: BoxDecoration(
+                          color: const Color.fromARGB(255, 247, 232, 211),
+                          border: Border.all(
+                            color: CommonUtils.orangeColor,
+                          ),
+                          borderRadius: BorderRadius.circular(5),
                         ),
-                        SizedBox(
-                          width: 5,
+                        child: GestureDetector(
+                          onTap: () {
+                            showItemDetailsAttachments(widget.data.fileUrl!);
+                          },
+                          child: const Row(
+                            mainAxisSize: MainAxisSize.min,
+                            children: [
+                              Icon(
+                                Icons.link,
+                                size: 18,
+                              ),
+                              SizedBox(
+                                width: 5,
+                              ),
+                              Text(
+                                'Item Attch',
+                                style: CommonStyles.txSty_12b_fb,
+                              ),
+                            ],
+                          ),
                         ),
-                        Text(
-                          'Item Attch',
-                          style: CommonStyles.txSty_12b_fb,
-                        ),
-                      ],
-                    ),
-                  ),
-                ),
+                      ),
                 ItemCard.getSvgImagesAndColors(
                     widget.data.statusTypeId, widget.data.statusName),
               ],

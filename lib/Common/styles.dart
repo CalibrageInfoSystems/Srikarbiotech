@@ -12,11 +12,39 @@ class CommonStyles {
     valueColor: AlwaysStoppedAnimation<Color>(orangeColor),
   );
   static const orangeColor = Color(0xFFe78337);
+  static const greenColor = Color(0xFF11872f);
   static final greyShade = Colors.grey.shade100;
+
+  static const txSty_10b_fb = TextStyle(
+    fontSize: 10.0,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Roboto",
+    color: blackColor,
+  );
+
+  static const txSty_11b_fb = TextStyle(
+    fontSize: 11,
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.w700,
+    color: blackColor,
+  );
+  static const txSty_11w_fb = TextStyle(
+    fontSize: 11,
+    fontFamily: 'Roboto',
+    fontWeight: FontWeight.w700,
+    color: whiteColor,
+  );
 
   static const txSty_12b_fb = TextStyle(
     fontSize: 12.0,
     color: blackColor,
+    fontWeight: FontWeight.bold,
+    fontFamily: "Roboto",
+  );
+
+  static const txSty_12bs_fb = TextStyle(
+    fontSize: 12.0,
+    color: blackColorShade,
     fontWeight: FontWeight.bold,
     fontFamily: "Roboto",
   );
@@ -63,23 +91,24 @@ class CommonStyles {
   );
 
   static const txSty_18w_fb = TextStyle(
-    color: Colors.white,
     fontSize: 18,
     fontFamily: 'Roboto',
     fontWeight: FontWeight.bold,
+    color: whiteColor,
   );
 
-  static const txSty_11b_fb = TextStyle(
-    fontSize: 11,
+  static const txSty_18g_fb = TextStyle(
+    fontSize: 18,
     fontFamily: 'Roboto',
-    fontWeight: FontWeight.w700,
-    color: blackColor,
+    fontWeight: FontWeight.bold,
+    color: greenColor,
   );
-  static const txSty_11w_fb = TextStyle(
-    fontSize: 11,
+
+  static const txSty_18o_f7 = TextStyle(
+    fontSize: 18,
     fontFamily: 'Roboto',
-    fontWeight: FontWeight.w700,
-    color: whiteColor,
+    fontWeight: FontWeight.bold,
+    color: orangeColor,
   );
 // style: TextStyle(
 //   fontSize: 11,
