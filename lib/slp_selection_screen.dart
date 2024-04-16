@@ -13,7 +13,6 @@ import 'package:srikarbiotech/HomeScreen.dart';
 import 'package:srikarbiotech/Model/slp_selection_model.dart';
 import 'package:http/http.dart' as http;
 
-
 import 'DealerSummaryScreen.dart';
 import 'notification_controller.dart';
 
@@ -23,9 +22,9 @@ class SlpSelection extends StatefulWidget {
   final String state;
   const SlpSelection(
       {super.key,
-        required this.fromDateText,
-        required this.toDateText,
-        required this.state});
+      required this.fromDateText,
+      required this.toDateText,
+      required this.state});
 
   @override
   State<SlpSelection> createState() => _SlpSelectionState();
@@ -47,11 +46,11 @@ class _SlpSelectionState extends State<SlpSelection> {
     AwesomeNotifications().setListeners(
       onActionReceivedMethod: onActionReceivedMethod,
       onNotificationCreatedMethod:
-      NotificationController.onNotificationCreatedMethod,
+          NotificationController.onNotificationCreatedMethod,
       onNotificationDisplayedMethod:
-      NotificationController.onNotificationDisplayedMethod,
+          NotificationController.onNotificationDisplayedMethod,
       onDismissActionReceivedMethod:
-      NotificationController.onDismissActionReceivedMethod,
+          NotificationController.onDismissActionReceivedMethod,
     );
   }
 
@@ -88,7 +87,7 @@ class _SlpSelectionState extends State<SlpSelection> {
         if (data['response']['listResult'] != null) {
           final List<dynamic> listResult = data['response']['listResult'];
           List<SlpListResult> slpResult =
-          listResult.map((house) => SlpListResult.fromJson(house)).toList();
+              listResult.map((house) => SlpListResult.fromJson(house)).toList();
           return slpResult;
         } else {
           throw Exception('SLP list is null');
@@ -219,7 +218,7 @@ class _SlpSelectionState extends State<SlpSelection> {
             onTap: () {
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const HomeScreen()),
-                      (route) => false);
+                  (route) => false);
             },
             child: Image.asset(
               'assets/srikar-home-icon.png',
@@ -319,8 +318,10 @@ class _SlpSelectionState extends State<SlpSelection> {
   }
 
   Widget _slpSection(List<SlpListResult> data) {
-    return Expanded(
-        child: ListView.builder(
+    return Column(
+      children: [
+        Expanded(
+            child: ListView.builder(
           itemCount: data.length,
           itemBuilder: (context, index) {
             return GestureDetector(
@@ -342,7 +343,8 @@ class _SlpSelectionState extends State<SlpSelection> {
               },
               child: Card(
                 elevation: 0,
-                color: selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
+                color:
+                    selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
                 shape: RoundedRectangleBorder(
                   borderRadius: BorderRadius.circular(5.0),
                   side: BorderSide(
@@ -367,43 +369,44 @@ class _SlpSelectionState extends State<SlpSelection> {
                               children: [
                                 Expanded(
                                     child: Row(
-                                      children: [
-                                        const Expanded(
-                                          flex: 1,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                  children: [
+                                    const Expanded(
+                                      flex: 1,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
+                                        children: [
+                                          Padding(
+                                            padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Slp Name',
-                                                  style: CommonStyles.txSty_12b_fb,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Text(
+                                              'Slp Name',
+                                              style: CommonStyles.txSty_12b_fb,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    3, 0, 0, 0),
-                                                child: Text(
-                                                  data[index].slpName!,
-                                                  style: CommonUtils.Mediumtext_12_0,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                3, 0, 0, 0),
+                                            child: Text(
+                                              data[index].slpName!,
+                                              style:
+                                                  CommonUtils.Mediumtext_12_0,
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                               ],
                             ),
 
@@ -422,14 +425,15 @@ class _SlpSelectionState extends State<SlpSelection> {
                                         flex: 1,
                                         child: Column(
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Padding(
-                                              padding:
-                                              EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                              padding: EdgeInsets.fromLTRB(
+                                                  0, 0, 0, 0),
                                               child: Text(
                                                 'Slp Code',
-                                                style: CommonStyles.txSty_12b_fb,
+                                                style:
+                                                    CommonStyles.txSty_12b_fb,
                                               ),
                                             ),
                                           ],
@@ -439,14 +443,16 @@ class _SlpSelectionState extends State<SlpSelection> {
                                         flex: 4,
                                         child: Column(
                                           crossAxisAlignment:
-                                          CrossAxisAlignment.start,
+                                              CrossAxisAlignment.start,
                                           children: [
                                             Padding(
-                                              padding: const EdgeInsets.fromLTRB(
-                                                  3, 0, 0, 0),
+                                              padding:
+                                                  const EdgeInsets.fromLTRB(
+                                                      3, 0, 0, 0),
                                               child: Text(
                                                 '${data[index].slpCode}',
-                                                style: CommonUtils.Mediumtext_12_0,
+                                                style:
+                                                    CommonUtils.Mediumtext_12_0,
                                               ),
                                             ),
                                           ],
@@ -466,82 +472,84 @@ class _SlpSelectionState extends State<SlpSelection> {
                               children: [
                                 Expanded(
                                     child: Row(
-                                      children: [
-                                        const Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                  children: [
+                                    const Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
+                                        children: [
+                                          Padding(
+                                            padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'OB',
-                                                  style: CommonStyles.txSty_12b_fb,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Text(
+                                              'OB',
+                                              style: CommonStyles.txSty_12b_fb,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    0, 0, 5, 0),
-                                                child: Text(
-                                                  '₹${data[index].ob}',
-                                                  style: CommonUtils.Mediumtext_12_0,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 5, 0),
+                                            child: Text(
+                                              '₹${data[index].ob}',
+                                              style:
+                                                  CommonUtils.Mediumtext_12_0,
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                                 Expanded(
                                     child: Row(
-                                      children: [
-                                        const Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                  children: [
+                                    const Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
+                                        children: [
+                                          Padding(
+                                            padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Sales',
-                                                  style: CommonStyles.txSty_12b_fb,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Text(
+                                              'Sales',
+                                              style: CommonStyles.txSty_12b_fb,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  '₹${data[index].sales}',
-                                                  style: CommonUtils.Mediumtext_12_0,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 0),
+                                            child: Text(
+                                              '₹${data[index].sales}',
+                                              style:
+                                                  CommonUtils.Mediumtext_12_0,
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                               ],
                             ),
 
@@ -554,82 +562,84 @@ class _SlpSelectionState extends State<SlpSelection> {
                               children: [
                                 Expanded(
                                     child: Row(
-                                      children: [
-                                        const Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                  children: [
+                                    const Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
+                                        children: [
+                                          Padding(
+                                            padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Returns',
-                                                  style: CommonStyles.txSty_12b_fb,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Text(
+                                              'Returns',
+                                              style: CommonStyles.txSty_12b_fb,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  '₹${data[index].returns}',
-                                                  style: CommonUtils.Mediumtext_12_0,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 0),
+                                            child: Text(
+                                              '₹${data[index].returns}',
+                                              style:
+                                                  CommonUtils.Mediumtext_12_0,
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                                 Expanded(
                                     child: Row(
-                                      children: [
-                                        const Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                  children: [
+                                    const Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
+                                        children: [
+                                          Padding(
+                                            padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Receipts',
-                                                  style: CommonStyles.txSty_12b_fb,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Text(
+                                              'Receipts',
+                                              style: CommonStyles.txSty_12b_fb,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  '₹${data[index].receipts}',
-                                                  style: CommonUtils.Mediumtext_12_0,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 0),
+                                            child: Text(
+                                              '₹${data[index].receipts}',
+                                              style:
+                                                  CommonUtils.Mediumtext_12_0,
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                               ],
                             ),
 
@@ -642,82 +652,84 @@ class _SlpSelectionState extends State<SlpSelection> {
                               children: [
                                 Expanded(
                                     child: Row(
-                                      children: [
-                                        const Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                  children: [
+                                    const Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
+                                        children: [
+                                          Padding(
+                                            padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Others',
-                                                  style: CommonStyles.txSty_12b_fb,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Text(
+                                              'Others',
+                                              style: CommonStyles.txSty_12b_fb,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  '₹${data[index].others}',
-                                                  style: CommonUtils.Mediumtext_12_0,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 0),
+                                            child: Text(
+                                              '₹${data[index].others}',
+                                              style:
+                                                  CommonUtils.Mediumtext_12_0,
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                                 Expanded(
                                     child: Row(
-                                      children: [
-                                        const Expanded(
-                                          flex: 3,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                  children: [
+                                    const Expanded(
+                                      flex: 3,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding:
+                                        children: [
+                                          Padding(
+                                            padding:
                                                 EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                                child: Text(
-                                                  'Closing',
-                                                  style: CommonStyles.txSty_12b_fb,
-                                                ),
-                                              ),
-                                            ],
+                                            child: Text(
+                                              'Closing',
+                                              style: CommonStyles.txSty_12b_fb,
+                                            ),
                                           ),
-                                        ),
-                                        Expanded(
-                                          flex: 4,
-                                          child: Column(
-                                            crossAxisAlignment:
+                                        ],
+                                      ),
+                                    ),
+                                    Expanded(
+                                      flex: 4,
+                                      child: Column(
+                                        crossAxisAlignment:
                                             CrossAxisAlignment.start,
-                                            children: [
-                                              Padding(
-                                                padding: const EdgeInsets.fromLTRB(
-                                                    0, 0, 0, 0),
-                                                child: Text(
-                                                  '₹${data[index].closing}',
-                                                  style: CommonUtils.Mediumtext_12_0,
-                                                ),
-                                              ),
-                                            ],
+                                        children: [
+                                          Padding(
+                                            padding: const EdgeInsets.fromLTRB(
+                                                0, 0, 0, 0),
+                                            child: Text(
+                                              '₹${data[index].closing}',
+                                              style:
+                                                  CommonUtils.Mediumtext_12_0,
+                                            ),
                                           ),
-                                        )
-                                      ],
-                                    )),
+                                        ],
+                                      ),
+                                    )
+                                  ],
+                                )),
                               ],
                             ),
                           ],
@@ -733,7 +745,9 @@ class _SlpSelectionState extends State<SlpSelection> {
               ),
             );
           },
-        ));
+        )),
+      ],
+    );
   }
 
   Widget downloadedBtn(List<SlpListResult> stateResult) {
@@ -762,16 +776,16 @@ class _SlpSelectionState extends State<SlpSelection> {
     try {
       final requestBody = slpresultResult
           .map((slpresult) => {
-        'SlpCode': slpresult.slpCode,
-        'SlpName': slpresult.slpName,
-        'State': slpresult.state,
-        'OB': slpresult.ob,
-        'Sales': slpresult.sales,
-        'Returns': slpresult.returns,
-        'Receipts': slpresult.receipts,
-        'Others': slpresult.others,
-        'Closing': slpresult.closing,
-      })
+                'SlpCode': slpresult.slpCode,
+                'SlpName': slpresult.slpName,
+                'State': slpresult.state,
+                'OB': slpresult.ob,
+                'Sales': slpresult.sales,
+                'Returns': slpresult.returns,
+                'Receipts': slpresult.receipts,
+                'Others': slpresult.others,
+                'Closing': slpresult.closing,
+              })
           .toList();
       const apiUrl =
           'http://182.18.157.215/Srikar_Biotech_Dev/API/api/SAP/ExportSlpGroupSummaryReport';
@@ -789,7 +803,7 @@ class _SlpSelectionState extends State<SlpSelection> {
         final jsonData = json.decode(jsonResponse.body);
 
         Directory downloadsDirectory = Directory(
-            '/storage/emulated/0/Download/Srikar_Groups/GroupSummaryReports/');
+            '/storage/emulated/0/Download/Srikar_Groups/GroupSummaryReports');
         if (!downloadsDirectory.existsSync()) {
           downloadsDirectory.createSync(recursive: true);
         }
@@ -840,17 +854,33 @@ class _SlpSelectionState extends State<SlpSelection> {
 
   @pragma("vm:entry-point")
   Future<void> onActionReceivedMethod(
-      ReceivedAction receivedAction,
-      ) async {
+    ReceivedAction receivedAction,
+  ) async {
     if (downloadedFilePath != null) {
       final file = File(downloadedFilePath!);
       if (await file.exists()) {
         try {
-          await OpenFile.open(
+          OpenResult result = await OpenFile.open(
             downloadedFilePath!,
             type:
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           );
+          if (result.type == ResultType.noAppToOpen) {
+            print('No suitable app found to open the file.');
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('No suitable app found to open the file.')),
+            );
+          }
+          if (result.type == ResultType.permissionDenied) {
+            print('permission required to view the file.');
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('permission required to view the file.')),
+            );
+          } else {
+            print('${result.type}');
+          }
         } catch (e) {
           print('Error opening file: $e');
         }

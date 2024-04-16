@@ -8,6 +8,7 @@ import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
 import 'package:open_file/open_file.dart';
 import 'package:path_provider/path_provider.dart';
+import 'package:permission_handler/permission_handler.dart';
 import 'package:srikarbiotech/Common/CommonUtils.dart';
 import 'package:srikarbiotech/Common/styles.dart';
 import 'package:srikarbiotech/HomeScreen.dart';
@@ -382,354 +383,378 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
   }
 
   Widget _stateSection(List<StateListResult> data) {
-    return Expanded(
-      child: ListView.builder(
-        itemCount: data.length,
-        itemBuilder: (context, index) {
-          state = data[index].state!;
-          return GestureDetector(
-            onTap: () {
-              setState(() {
-                selectedCardIndex = index;
-              });
+    return Column(
+      children: [
+        Expanded(
+          child: ListView.builder(
+            itemCount: data.length,
+            itemBuilder: (context, index) {
+              state = data[index].state!;
+              return GestureDetector(
+                onTap: () {
+                  setState(() {
+                    selectedCardIndex = index;
+                  });
 
-              // navigate to slp selection screen
-              Navigator.of(context).push(
-                MaterialPageRoute(
-                  builder: (context) => SlpSelection(
-                    fromDateText: fromDateText,
-                    toDateText: toDateText,
-                    state: data[index].state!,
+                  // navigate to slp selection screen
+                  Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => SlpSelection(
+                        fromDateText: fromDateText,
+                        toDateText: toDateText,
+                        state: data[index].state!,
+                      ),
+                    ),
+                  );
+                },
+                child: Card(
+                  elevation: 0,
+                  color: selectedCardIndex == index
+                      ? const Color(0xFFfff5ec)
+                      : null,
+                  shape: RoundedRectangleBorder(
+                    borderRadius: BorderRadius.circular(5.0),
+                    side: BorderSide(
+                      color: selectedCardIndex == index
+                          ? CommonStyles.orangeColor
+                          : Colors.grey,
+                      width: 1,
+                    ),
+                  ),
+                  child: Padding(
+                    padding: const EdgeInsets.all(10.0),
+                    child: Row(
+                      mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      children: [
+                        Flexible(
+                          child: Padding(
+                            padding: const EdgeInsets.only(right: 10),
+                            child: Column(
+                              crossAxisAlignment: CrossAxisAlignment.start,
+                              children: [
+                                // row1
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          const Text(
+                                            'State: ',
+                                            style: CommonStyles.txSty_12b_fb,
+                                            overflow: TextOverflow.ellipsis,
+                                          ),
+                                          Text(
+                                            data[index].state!,
+                                            style: CommonStyles.txSty_12o_f7,
+                                          ),
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                        child: Row(
+                                      children: [
+                                        const Expanded(
+                                          flex: 3,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  'OB',
+                                                  style:
+                                                      CommonStyles.txSty_12b_fb,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 0, 5, 0),
+                                                child: Text(
+                                                  '₹${formatNumber(data[index].ob)}',
+                                                  style:
+                                                      CommonStyles.txSty_12o_f7,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                                    Expanded(
+                                        child: Row(
+                                      children: [
+                                        const Expanded(
+                                          flex: 3,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  'Sales',
+                                                  style:
+                                                      CommonStyles.txSty_12b_fb,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 0, 0, 0),
+                                                child: Text(
+                                                  '₹${formatNumber(data[index].sales)}',
+                                                  style:
+                                                      CommonStyles.txSty_12o_f7,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                                  ],
+                                ),
+
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                // row4
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                        child: Row(
+                                      children: [
+                                        const Expanded(
+                                          flex: 3,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  'Returns',
+                                                  style:
+                                                      CommonStyles.txSty_12b_fb,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 0, 0, 0),
+                                                child: Text(
+                                                  '₹${formatNumber(data[index].returns)}',
+                                                  style:
+                                                      CommonStyles.txSty_12o_f7,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                                    Expanded(
+                                        child: Row(
+                                      children: [
+                                        const Expanded(
+                                          flex: 3,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  'Receipts',
+                                                  style:
+                                                      CommonStyles.txSty_12b_fb,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 0, 0, 0),
+                                                child: Text(
+                                                  '₹${formatNumber(data[index].receipts)}',
+                                                  style:
+                                                      CommonStyles.txSty_12o_f7,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                                  ],
+                                ),
+
+                                const SizedBox(
+                                  height: 8,
+                                ),
+                                // row5
+                                Row(
+                                  mainAxisAlignment:
+                                      MainAxisAlignment.spaceBetween,
+                                  children: [
+                                    Expanded(
+                                        child: Row(
+                                      children: [
+                                        const Expanded(
+                                          flex: 3,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding: EdgeInsets.fromLTRB(
+                                                    0, 0, 0, 0),
+                                                child: Text(
+                                                  'Others',
+                                                  style:
+                                                      CommonStyles.txSty_12b_fb,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        ),
+                                        Expanded(
+                                          flex: 4,
+                                          child: Column(
+                                            crossAxisAlignment:
+                                                CrossAxisAlignment.start,
+                                            children: [
+                                              Padding(
+                                                padding:
+                                                    const EdgeInsets.fromLTRB(
+                                                        0, 0, 0, 0),
+                                                child: Text(
+                                                  '₹${formatNumber(data[index].others)}',
+                                                  style:
+                                                      CommonStyles.txSty_12o_f7,
+                                                ),
+                                              ),
+                                            ],
+                                          ),
+                                        )
+                                      ],
+                                    )),
+                                    Expanded(
+                                      child: Row(
+                                        children: [
+                                          const Expanded(
+                                            flex: 3,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding: EdgeInsets.fromLTRB(
+                                                      0, 0, 0, 0),
+                                                  child: Text(
+                                                    'Closing',
+                                                    style: CommonStyles
+                                                        .txSty_12b_fb,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          ),
+                                          Expanded(
+                                            flex: 4,
+                                            child: Column(
+                                              crossAxisAlignment:
+                                                  CrossAxisAlignment.start,
+                                              children: [
+                                                Padding(
+                                                  padding:
+                                                      const EdgeInsets.fromLTRB(
+                                                          0, 0, 0, 0),
+                                                  child: Text(
+                                                    '₹${formatNumber(data[index].closing)}',
+                                                    style: CommonStyles
+                                                        .txSty_12o_f7,
+                                                  ),
+                                                ),
+                                              ],
+                                            ),
+                                          )
+                                        ],
+                                      ),
+                                    ),
+                                  ],
+                                ),
+                              ],
+                            ),
+                          ),
+                        ),
+                        const Icon(
+                          Icons.chevron_right,
+                          color: CommonStyles.orangeColor,
+                        ),
+                      ],
+                    ),
                   ),
                 ),
               );
             },
-            child: Card(
-              elevation: 0,
-              color:
-                  selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
-              shape: RoundedRectangleBorder(
-                borderRadius: BorderRadius.circular(5.0),
-                side: BorderSide(
-                  color: selectedCardIndex == index
-                      ? CommonStyles.orangeColor
-                      : Colors.grey,
-                  width: 1,
-                ),
-              ),
-              child: Padding(
-                padding: const EdgeInsets.all(10.0),
-                child: Row(
-                  mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                  children: [
-                    Flexible(
-                      child: Padding(
-                        padding: const EdgeInsets.only(right: 10),
-                        child: Column(
-                          crossAxisAlignment: CrossAxisAlignment.start,
-                          children: [
-                            // row1
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      const Text(
-                                        'State: ',
-                                        style: CommonStyles.txSty_12b_fb,
-                                        overflow: TextOverflow.ellipsis,
-                                      ),
-                                      Text(
-                                        data[index].state!,
-                                        style: CommonStyles.txSty_12o_f7,
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                    child: Row(
-                                  children: [
-                                    const Expanded(
-                                      flex: 3,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              'OB',
-                                              style: CommonStyles.txSty_12b_fb,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 5, 0),
-                                            child: Text(
-                                              '₹${formatNumber(data[index].ob)}',
-                                              style: CommonStyles.txSty_12o_f7,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )),
-                                Expanded(
-                                    child: Row(
-                                  children: [
-                                    const Expanded(
-                                      flex: 3,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              'Sales',
-                                              style: CommonStyles.txSty_12b_fb,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 0, 0),
-                                            child: Text(
-                                              '₹${formatNumber(data[index].sales)}',
-                                              style: CommonStyles.txSty_12o_f7,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )),
-                              ],
-                            ),
-
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            // row4
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                    child: Row(
-                                  children: [
-                                    const Expanded(
-                                      flex: 3,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              'Returns',
-                                              style: CommonStyles.txSty_12b_fb,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 0, 0),
-                                            child: Text(
-                                              '₹${formatNumber(data[index].returns)}',
-                                              style: CommonStyles.txSty_12o_f7,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )),
-                                Expanded(
-                                    child: Row(
-                                  children: [
-                                    const Expanded(
-                                      flex: 3,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              'Receipts',
-                                              style: CommonStyles.txSty_12b_fb,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 0, 0),
-                                            child: Text(
-                                              '₹${formatNumber(data[index].receipts)}',
-                                              style: CommonStyles.txSty_12o_f7,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )),
-                              ],
-                            ),
-
-                            const SizedBox(
-                              height: 8,
-                            ),
-                            // row5
-                            Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                Expanded(
-                                    child: Row(
-                                  children: [
-                                    const Expanded(
-                                      flex: 3,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                                EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              'Others',
-                                              style: CommonStyles.txSty_12b_fb,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment:
-                                            CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: const EdgeInsets.fromLTRB(
-                                                0, 0, 0, 0),
-                                            child: Text(
-                                              '₹${formatNumber(data[index].others)}',
-                                              style: CommonStyles.txSty_12o_f7,
-                                            ),
-                                          ),
-                                        ],
-                                      ),
-                                    )
-                                  ],
-                                )),
-                                Expanded(
-                                  child: Row(
-                                    children: [
-                                      const Expanded(
-                                        flex: 3,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding: EdgeInsets.fromLTRB(
-                                                  0, 0, 0, 0),
-                                              child: Text(
-                                                'Closing',
-                                                style:
-                                                    CommonStyles.txSty_12b_fb,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      ),
-                                      Expanded(
-                                        flex: 4,
-                                        child: Column(
-                                          crossAxisAlignment:
-                                              CrossAxisAlignment.start,
-                                          children: [
-                                            Padding(
-                                              padding:
-                                                  const EdgeInsets.fromLTRB(
-                                                      0, 0, 0, 0),
-                                              child: Text(
-                                                '₹${formatNumber(data[index].closing)}',
-                                                style:
-                                                    CommonStyles.txSty_12o_f7,
-                                              ),
-                                            ),
-                                          ],
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                ),
-                              ],
-                            ),
-                          ],
-                        ),
-                      ),
-                    ),
-                    const Icon(
-                      Icons.chevron_right,
-                      color: CommonStyles.orangeColor,
-                    ),
-                  ],
-                ),
-              ),
-            ),
-          );
-        },
-      ),
+          ),
+        ),
+      ],
     );
   }
 
@@ -956,27 +981,6 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
     }
   }
 
-  Widget _downloadedBtn() {
-    Color buttonColor = const Color(0xFFe78337);
-
-    return ClipRRect(
-      borderRadius: BorderRadius.circular(10),
-      child: SizedBox(
-        width: 40,
-        height: 40,
-        child: FloatingActionButton(
-          onPressed: () {
-            _downloadFile(context);
-          },
-          backgroundColor: buttonColor,
-          mini: true,
-          shape: const BeveledRectangleBorder(),
-          child: const Icon(Icons.download),
-        ),
-      ),
-    );
-  }
-
   Widget downloadedBtn(List<StateListResult> stateResult) {
     Color buttonColor = const Color(0xFFe78337);
 
@@ -1090,11 +1094,37 @@ class _StateSelectionScreenState extends State<StateSelectionScreen> {
       final file = File(downloadedFilePath!);
       if (await file.exists()) {
         try {
-          await OpenFile.open(
+          // Request permissions
+          var status = await Permission.storage.status;
+          if (!status.isGranted) {
+            status = await Permission.storage.request();
+            if (!status.isGranted) {
+              print('Storage permission not granted');
+              return;
+            }
+          }
+
+          OpenResult result = await OpenFile.open(
             downloadedFilePath!,
             type:
                 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           );
+          if (result.type == ResultType.noAppToOpen) {
+            print('No suitable app found to open the file.');
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('No suitable app found to open the file.')),
+            );
+          }
+          if (result.type == ResultType.permissionDenied) {
+            print('permission required to view the file.');
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('permission required to view the file.')),
+            );
+          } else {
+            print('${result.type}');
+          }
         } catch (e) {
           print('Error opening file: $e');
         }
