@@ -315,7 +315,61 @@ class CommonUtils {
     );
   }
 
-//MARK: Point: Shimmer
+  static Widget shimmerEffectForCatogaries() {
+    return Shimmer.fromColors(
+        baseColor: Colors.grey.withOpacity(0.5),
+        highlightColor: Colors.grey.withOpacity(0.2),
+        child: Row(
+          children: [
+            _buildShimmerBox(50, 30, radius: 5),
+            const SizedBox(
+              width: 7,
+            ),
+            _buildShimmerBox(50, 30, radius: 5),
+            const SizedBox(
+              width: 7,
+            ),
+            _buildShimmerBox(50, 30, radius: 5),
+            const SizedBox(
+              width: 7,
+            ),
+            _buildShimmerBox(50, 30, radius: 5),
+            const SizedBox(
+              width: 7,
+            ),
+            _buildShimmerBox(50, 30, radius: 5),
+            const SizedBox(
+              width: 7,
+            ),
+            _buildShimmerBox(50, 30, radius: 5),
+            const SizedBox(
+              width: 7,
+            ),
+            _buildShimmerBox(50, 30, radius: 5),
+            const SizedBox(
+              width: 7,
+            ),
+            _buildShimmerBox(50, 30, radius: 5),
+            const SizedBox(
+              width: 7,
+            ),
+            _buildShimmerBox(50, 30, radius: 5),
+          ],
+        ));
+  }
+
+  static Widget _buildShimmerBox(double width, double height,
+      {double? radius}) {
+    return Container(
+      decoration: BoxDecoration(
+        borderRadius: BorderRadius.circular(radius ?? 0),
+        color: Colors.grey,
+      ),
+      width: width,
+      height: height,
+    );
+  }
+
   static Widget shimmerEffect(BuildContext context) {
     return SingleChildScrollView(
       child: Container(

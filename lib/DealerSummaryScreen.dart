@@ -14,7 +14,6 @@ import 'package:http/http.dart' as http;
 
 import 'notification_controller.dart';
 
-
 class DealerSummaryScreen extends StatefulWidget {
   final String fromDateText;
   final String toDateText;
@@ -23,11 +22,11 @@ class DealerSummaryScreen extends StatefulWidget {
   final String slpName;
   const DealerSummaryScreen(
       {super.key,
-        required this.fromDateText,
-        required this.toDateText,
-        required this.stateName,
-        required this.slpName,
-        required this.soname});
+      required this.fromDateText,
+      required this.toDateText,
+      required this.stateName,
+      required this.slpName,
+      required this.soname});
 
   @override
   State<DealerSummaryScreen> createState() => _DealerSummaryScreenState();
@@ -49,11 +48,11 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
     AwesomeNotifications().setListeners(
       onActionReceivedMethod: onActionReceivedMethod,
       onNotificationCreatedMethod:
-      NotificationController.onNotificationCreatedMethod,
+          NotificationController.onNotificationCreatedMethod,
       onNotificationDisplayedMethod:
-      NotificationController.onNotificationDisplayedMethod,
+          NotificationController.onNotificationDisplayedMethod,
       onDismissActionReceivedMethod:
-      NotificationController.onDismissActionReceivedMethod,
+          NotificationController.onDismissActionReceivedMethod,
     );
   }
 
@@ -174,7 +173,7 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
             } else {
               if (snapshot.hasData) {
                 List<DealerSummarylist> data =
-                snapshot.data!.cast<DealerSummarylist>();
+                    snapshot.data!.cast<DealerSummarylist>();
                 if (data.isNotEmpty) {
                   return downloadedBtn(
                       data); // Pass data to downloadedBtn widget
@@ -224,7 +223,7 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
             onTap: () {
               Navigator.of(context).pushAndRemoveUntil(
                   MaterialPageRoute(builder: (context) => const HomeScreen()),
-                      (route) => false);
+                  (route) => false);
             },
             child: Image.asset(
               'assets/srikar-home-icon.png',
@@ -341,30 +340,24 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
   }
 
   Widget _dealerSummarySection(List<DealerSummarylist> data) {
-    return Expanded(
-        child: ListView.builder(
+    return Column(
+      children: [
+        Expanded(
+            child: ListView.builder(
           itemCount: data.length,
           itemBuilder: (context, index) {
             return SizedBox(
-              // margin: const EdgeInsets.symmetric(
-              //     horizontal: 16.0, vertical: 4.0),
               child: GestureDetector(
                 onTap: () {
                   setState(() {
                     selectedCardIndex = index;
                   });
-
-                  // navigate to slp selection screen
-                  // Navigator.of(context).push(
-                  //   MaterialPageRoute(
-                  //     builder: (context) => const SlpSelection(),
-                  //   ),
-                  // );
                 },
                 child: Card(
                   elevation: 0,
-                  color:
-                  selectedCardIndex == index ? const Color(0xFFfff5ec) : null,
+                  color: selectedCardIndex == index
+                      ? const Color(0xFFfff5ec)
+                      : null,
                   shape: RoundedRectangleBorder(
                     borderRadius: BorderRadius.circular(5.0),
                     side: BorderSide(
@@ -386,7 +379,8 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(0, 5, 0, 0),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(0, 5, 0, 0),
                                     child: Text(
                                       data[index].cardName!,
                                       style: CommonStyles.txSty_12o_f7,
@@ -423,7 +417,8 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(5, 0, 0, 0),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(5, 0, 0, 0),
                                     child: Text(
                                       data[index].cardCode!,
                                       style: CommonStyles.txSty_12o_f7,
@@ -461,7 +456,8 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
                                 crossAxisAlignment: CrossAxisAlignment.start,
                                 children: [
                                   Padding(
-                                    padding: const EdgeInsets.fromLTRB(3, 0, 0, 0),
+                                    padding:
+                                        const EdgeInsets.fromLTRB(3, 0, 0, 0),
                                     child: Text(
                                       data[index].slpName!,
                                       style: CommonStyles.txSty_12o_f7,
@@ -482,76 +478,82 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
                           children: [
                             Expanded(
                                 child: Row(
-                                  children: [
-                                    const Expanded(
-                                      flex: 3,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              'OB',
-                                              style: CommonStyles.txSty_12b_fb,
-                                            ),
-                                          ),
-                                        ],
+                              children: [
+                                const Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                        child: Text(
+                                          'OB',
+                                          style: CommonStyles.txSty_12b_fb,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              '₹${data[index].ob}',
-                                              style: CommonStyles.txSty_12o_f7,
-                                            ),
-                                          ),
-                                        ],
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 0, 0),
+                                        child: Text(
+                                          '₹${data[index].ob}',
+                                          style: CommonStyles.txSty_12o_f7,
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                )),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )),
                             Expanded(
                                 child: Row(
-                                  children: [
-                                    const Expanded(
-                                      flex: 3,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              'Sales',
-                                              style: CommonStyles.txSty_12b_fb,
-                                            ),
-                                          ),
-                                        ],
+                              children: [
+                                const Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                        child: Text(
+                                          'Sales',
+                                          style: CommonStyles.txSty_12b_fb,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              '₹${data[index].sales}',
-                                              style: CommonStyles.txSty_12o_f7,
-                                            ),
-                                          ),
-                                        ],
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 0, 0),
+                                        child: Text(
+                                          '₹${data[index].sales}',
+                                          style: CommonStyles.txSty_12o_f7,
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                )),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )),
                           ],
                         ),
 
@@ -564,76 +566,82 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
                           children: [
                             Expanded(
                                 child: Row(
-                                  children: [
-                                    const Expanded(
-                                      flex: 3,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              'Returns',
-                                              style: CommonStyles.txSty_12b_fb,
-                                            ),
-                                          ),
-                                        ],
+                              children: [
+                                const Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                        child: Text(
+                                          'Returns',
+                                          style: CommonStyles.txSty_12b_fb,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              '₹${data[index].returns}',
-                                              style: CommonStyles.txSty_12o_f7,
-                                            ),
-                                          ),
-                                        ],
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 0, 0),
+                                        child: Text(
+                                          '₹${data[index].returns}',
+                                          style: CommonStyles.txSty_12o_f7,
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                )),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )),
                             Expanded(
                                 child: Row(
-                                  children: [
-                                    const Expanded(
-                                      flex: 3,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              'Receipts',
-                                              style: CommonStyles.txSty_12b_fb,
-                                            ),
-                                          ),
-                                        ],
+                              children: [
+                                const Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                        child: Text(
+                                          'Receipts',
+                                          style: CommonStyles.txSty_12b_fb,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              '₹${data[index].receipts}',
-                                              style: CommonStyles.txSty_12o_f7,
-                                            ),
-                                          ),
-                                        ],
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 0, 0),
+                                        child: Text(
+                                          '₹${data[index].receipts}',
+                                          style: CommonStyles.txSty_12o_f7,
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                )),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )),
                           ],
                         ),
 
@@ -646,76 +654,82 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
                           children: [
                             Expanded(
                                 child: Row(
-                                  children: [
-                                    const Expanded(
-                                      flex: 3,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              'Others',
-                                              style: CommonStyles.txSty_12b_fb,
-                                            ),
-                                          ),
-                                        ],
+                              children: [
+                                const Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                        child: Text(
+                                          'Others',
+                                          style: CommonStyles.txSty_12b_fb,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              '₹${data[index].others}',
-                                              style: CommonStyles.txSty_12o_f7,
-                                            ),
-                                          ),
-                                        ],
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 0, 0),
+                                        child: Text(
+                                          '₹${data[index].others}',
+                                          style: CommonStyles.txSty_12o_f7,
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                )),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )),
                             Expanded(
                                 child: Row(
-                                  children: [
-                                    const Expanded(
-                                      flex: 3,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding: EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              'Closing',
-                                              style: CommonStyles.txSty_12b_fb,
-                                            ),
-                                          ),
-                                        ],
+                              children: [
+                                const Expanded(
+                                  flex: 3,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding:
+                                            EdgeInsets.fromLTRB(0, 0, 0, 0),
+                                        child: Text(
+                                          'Closing',
+                                          style: CommonStyles.txSty_12b_fb,
+                                        ),
                                       ),
-                                    ),
-                                    Expanded(
-                                      flex: 4,
-                                      child: Column(
-                                        crossAxisAlignment: CrossAxisAlignment.start,
-                                        children: [
-                                          Padding(
-                                            padding:
-                                            const EdgeInsets.fromLTRB(0, 0, 0, 0),
-                                            child: Text(
-                                              '₹${data[index].closing}',
-                                              style: CommonStyles.txSty_12o_f7,
-                                            ),
-                                          ),
-                                        ],
+                                    ],
+                                  ),
+                                ),
+                                Expanded(
+                                  flex: 4,
+                                  child: Column(
+                                    crossAxisAlignment:
+                                        CrossAxisAlignment.start,
+                                    children: [
+                                      Padding(
+                                        padding: const EdgeInsets.fromLTRB(
+                                            0, 0, 0, 0),
+                                        child: Text(
+                                          '₹${data[index].closing}',
+                                          style: CommonStyles.txSty_12o_f7,
+                                        ),
                                       ),
-                                    )
-                                  ],
-                                )),
+                                    ],
+                                  ),
+                                )
+                              ],
+                            )),
                           ],
                         ),
                       ],
@@ -725,7 +739,9 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
               ),
             );
           },
-        ));
+        )),
+      ],
+    );
   }
 
   Widget downloadedBtn(List<DealerSummarylist> partyResult) {
@@ -757,17 +773,17 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
       // Create the request body directly from stateResult
       final requestBody = partyResult
           .map((partyResult) => {
-        "CardCode": partyResult.cardCode,
-        "CardName": partyResult.cardName,
-        'SlpCode': partyResult.slpCode,
-        'SlpName': partyResult.slpName,
-        'OB': partyResult.ob,
-        'Sales': partyResult.sales,
-        'Returns': partyResult.returns,
-        'Receipts': partyResult.receipts,
-        'Others': partyResult.others,
-        'Closing': partyResult.closing,
-      })
+                "CardCode": partyResult.cardCode,
+                "CardName": partyResult.cardName,
+                'SlpCode': partyResult.slpCode,
+                'SlpName': partyResult.slpName,
+                'OB': partyResult.ob,
+                'Sales': partyResult.sales,
+                'Returns': partyResult.returns,
+                'Receipts': partyResult.receipts,
+                'Others': partyResult.others,
+                'Closing': partyResult.closing,
+              })
           .toList();
 
       // API endpoint for exporting state group summary report
@@ -788,7 +804,7 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
         final jsonData = json.decode(jsonResponse.body);
 
         Directory downloadsDirectory = Directory(
-            '/storage/emulated/0/Download/Srikar_Groups/GroupSummaryReports/');
+            '/storage/emulated/0/Download/Srikar_Groups/GroupSummaryReports');
         if (!downloadsDirectory.existsSync()) {
           downloadsDirectory.createSync(recursive: true);
         }
@@ -840,17 +856,34 @@ class _DealerSummaryScreenState extends State<DealerSummaryScreen> {
 
   @pragma("vm:entry-point")
   Future<void> onActionReceivedMethod(
-      ReceivedAction receivedAction,
-      ) async {
+    ReceivedAction receivedAction,
+  ) async {
     if (downloadedFilePath != null) {
       final file = File(downloadedFilePath!);
       if (await file.exists()) {
         try {
-          await OpenFile.open(
+          OpenResult result = await OpenFile.open(
             downloadedFilePath!,
             type:
-            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+                'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
           );
+
+          if (result.type == ResultType.noAppToOpen) {
+            print('No suitable app found to open the file.');
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('No suitable app found to open the file.')),
+            );
+          }
+          if (result.type == ResultType.permissionDenied) {
+            print('permission required to view the file.');
+            ScaffoldMessenger.of(context).showSnackBar(
+              const SnackBar(
+                  content: Text('permission required to view the file.')),
+            );
+          } else {
+            print('${result.type}');
+          }
         } catch (e) {
           print('Error opening file: $e');
         }

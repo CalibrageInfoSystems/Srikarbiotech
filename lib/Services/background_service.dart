@@ -1,12 +1,10 @@
-import 'dart:async';
+// ignore_for_file: non_constant_identifier_names
+
 import 'dart:io';
 import 'dart:ui';
 import 'package:flutter_background_service/flutter_background_service.dart';
 import 'package:flutter_background_service_android/flutter_background_service_android.dart';
-import 'package:flutter_local_notifications/flutter_local_notifications.dart';
 import 'package:geolocator/geolocator.dart';
-
-import 'notification.dart';
 
 const String notificationChannelId = "foreground_service";
 const int foregroundServiceNotificationId = 888;
@@ -42,21 +40,20 @@ void onStart(ServiceInstance service) async {
   Geolocator.getPositionStream().listen((Position position) async {
     final permission = await Geolocator.checkPermission();
     if (permission == LocationPermission.always) {
-      final accuracy = position.accuracy;
-      final speedAccuracy = position.speedAccuracy;
-      final speed = position.speed;
+      // final accuracy = position.accuracy;
+      // final speedAccuracy = position.speedAccuracy;
+      // final speed = position.speed;
       service.invoke('on_location_changed', position.toJson());
       print('Latitude: ${position.latitude}, Longitude: ${position.longitude}');
-      print('accuracy: ${position.accuracy}, speedAccuracy: ${position.speedAccuracy}.speed: ${position.speed}');
+      print(
+          'accuracy: ${position.accuracy}, speedAccuracy: ${position.speedAccuracy}.speed: ${position.speed}');
 
       if (position.accuracy <= MAX_ACCURACY_THRESHOLD &&
           position.speedAccuracy <= MAX_SPEED_ACCURACY_THRESHOLD &&
           position.speed >= MIN_SPEED_THRESHOLD) {
         // Your code here
-        appendLog('accuracy: ${position.accuracy}, speedAccuracy: ${position.speedAccuracy}.speed: ${position.speed}');
-
-
-
+        appendLog(
+            'accuracy: ${position.accuracy}, speedAccuracy: ${position.speedAccuracy}.speed: ${position.speed}');
 
         final distance = Geolocator.distanceBetween(
           lastLatitude,
@@ -65,11 +62,14 @@ void onStart(ServiceInstance service) async {
           position.longitude,
         );
 
-        print('Latitude: ${position.latitude}, Longitude: ${position.longitude}.distance $distance');
+        print(
+            'Latitude: ${position.latitude}, Longitude: ${position.longitude}.distance $distance');
 
         if (distance >= distanceThreshold) {
-          print('Latitude: ${position.latitude}, Longitude: ${position.longitude}');
-          appendLog('Latitude: ${position.latitude}, Longitude: ${position.longitude}.distance $distance');
+          print(
+              'Latitude: ${position.latitude}, Longitude: ${position.longitude}');
+          appendLog(
+              'Latitude: ${position.latitude}, Longitude: ${position.longitude}.distance $distance');
           lastLatitude = position.latitude;
           lastLongitude = position.longitude;
 
@@ -79,30 +79,31 @@ void onStart(ServiceInstance service) async {
 
           // Notification code can be included here if needed
         }
-    }
+      }
     }
   });
 }
 
-        // await NotificationService(FlutterLocalNotificationsPlugin())
-        //     .showNotification(
-        //   showNotificationId: foregroundServiceNotificationId,
-        //   title: "Hii, $userName",
-        //   body:
-        //   'Your Latitude: ${position.latitude}, Longitude: ${position.longitude}',
-        //   payload: "service",
-        //   androidNotificationDetails: const AndroidNotificationDetails(
-        //     notificationChannelId,
-        //     notificationChannelId,
-        //     ongoing: true,
-        //   ),
-        // );
+// await NotificationService(FlutterLocalNotificationsPlugin())
+//     .showNotification(
+//   showNotificationId: foregroundServiceNotificationId,
+//   title: "Hii, $userName",
+//   body:
+//   'Your Latitude: ${position.latitude}, Longitude: ${position.longitude}',
+//   payload: "service",
+//   androidNotificationDetails: const AndroidNotificationDetails(
+//     notificationChannelId,
+//     notificationChannelId,
+//     ongoing: true,
+//   ),
+// );
 
 void appendLog(String text) {
-  final String folderName = 'Srikar_Groups';
-  final String fileName = 'UsertrackinglogTest.file';
+  const String folderName = 'Srikar_Groups';
+  const String fileName = 'UsertrackinglogTest.file';
 
-  Directory appFolderPath = Directory('/storage/emulated/0/Download/$folderName');
+  Directory appFolderPath =
+      Directory('/storage/emulated/0/Download/$folderName');
   if (!appFolderPath.existsSync()) {
     appFolderPath.createSync(recursive: true);
   }
@@ -120,36 +121,37 @@ void appendLog(String text) {
     print("Error appending to log file: $e");
   }
 }
+
 class BackgroundService {
   final FlutterBackgroundService flutterBackgroundService =
-  FlutterBackgroundService();
+      FlutterBackgroundService();
 
   FlutterBackgroundService get instance => flutterBackgroundService;
 
-  Future<void> initializeService() async {
-    await NotificationService(FlutterLocalNotificationsPlugin()).createChannel(
-      const AndroidNotificationChannel(
-        notificationChannelId,
-        notificationChannelId,
-      ),
-    );
-    await flutterBackgroundService.configure(
-      androidConfiguration: AndroidConfiguration(
-        onStart: onStart,
-        autoStart: false,
-        isForegroundMode: true,
-        notificationChannelId: notificationChannelId,
-        foregroundServiceNotificationId: foregroundServiceNotificationId,
-        initialNotificationTitle: initialNotificationTitle,
-        initialNotificationContent: initialNotificationContent,
-      ),
-      iosConfiguration: IosConfiguration(
-        autoStart: true,
-        onForeground: onStart,
-      ),
-    );
-    await flutterBackgroundService.startService();
-  }
+  // Future<void> initializeService() async {
+  //   await NotificationService(FlutterLocalNotificationsPlugin()).createChannel(
+  //     const AndroidNotificationChannel(
+  //       notificationChannelId,
+  //       notificationChannelId,
+  //     ),
+  //   );
+  //   await flutterBackgroundService.configure(
+  //     androidConfiguration: AndroidConfiguration(
+  //       onStart: onStart,
+  //       autoStart: false,
+  //       isForegroundMode: true,
+  //       notificationChannelId: notificationChannelId,
+  //       foregroundServiceNotificationId: foregroundServiceNotificationId,
+  //       initialNotificationTitle: initialNotificationTitle,
+  //       initialNotificationContent: initialNotificationContent,
+  //     ),
+  //     iosConfiguration: IosConfiguration(
+  //       autoStart: true,
+  //       onForeground: onStart,
+  //     ),
+  //   );
+  //   await flutterBackgroundService.startService();
+  // }
 
   void setServiceAsForeGround() async {
     flutterBackgroundService.invoke("setAsForeground");
@@ -158,4 +160,6 @@ class BackgroundService {
   void stopService() {
     flutterBackgroundService.invoke("stop_service");
   }
+
+  initializeService() {}
 }
