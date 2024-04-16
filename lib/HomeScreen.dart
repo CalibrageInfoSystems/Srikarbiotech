@@ -99,7 +99,7 @@ class _home_Screen extends State<HomeScreen> {
           heading: double.tryParse(event['heading'].toString()) ?? 0.0,
           speed: double.tryParse(event['speed'].toString()) ?? 0.0,
           speedAccuracy:
-              double.tryParse(event['speed_accuracy'].toString()) ?? 0.0,
+          double.tryParse(event['speed_accuracy'].toString()) ?? 0.0,
           altitudeAccuracy: 0.0,
           headingAccuracy: 0.0,
         );
@@ -125,8 +125,8 @@ class _home_Screen extends State<HomeScreen> {
           }
 
           await context.read<LocationControllerCubit>().onLocationChanged(
-                location: position,
-              );
+            location: position,
+          );
         }
       }
     });
@@ -183,7 +183,7 @@ class _home_Screen extends State<HomeScreen> {
                 Widget logoWidget = CompneyId == 1
                     ? SvgPicture.asset('assets/srikar_biotech_logo.svg')
                     : Image.asset('assets/srikar-seed.png',
-                        width: 60.0, height: 40.0);
+                    width: 60.0, height: 40.0);
 
                 return Row(
                   mainAxisAlignment: MainAxisAlignment.start,
@@ -270,15 +270,15 @@ class _home_Screen extends State<HomeScreen> {
                                       : EdgeInsets.zero,
                                   width: MediaQuery.of(context).size.height / 5,
                                   height:
-                                      MediaQuery.of(context).size.height / 5,
+                                  MediaQuery.of(context).size.height / 5,
                                   padding: const EdgeInsets.all(20),
                                   child: Center(
                                     child: CompneyId == 1
                                         ? SvgPicture.asset(
-                                            'assets/srikar_biotech_logo.svg')
+                                        'assets/srikar_biotech_logo.svg')
                                         : Image.asset(
-                                            'assets/srikar-seed.png',
-                                          ),
+                                      'assets/srikar-seed.png',
+                                    ),
                                   ),
                                 ),
                               ),
@@ -312,7 +312,7 @@ class _home_Screen extends State<HomeScreen> {
                               ),
                               Container(
                                 padding:
-                                    const EdgeInsets.symmetric(horizontal: 13),
+                                const EdgeInsets.symmetric(horizontal: 13),
                                 margin: const EdgeInsets.symmetric(vertical: 5),
                                 child: ExpandedTile(
                                   controller: _expandedTileController,
@@ -341,9 +341,9 @@ class _home_Screen extends State<HomeScreen> {
                                             padding: const EdgeInsets.all(10),
                                             decoration: BoxDecoration(
                                               color:
-                                                  Colors.blue.withOpacity(0.2),
+                                              Colors.blue.withOpacity(0.2),
                                               borderRadius:
-                                                  BorderRadius.circular(20),
+                                              BorderRadius.circular(20),
                                             ),
                                             child: const Icon(
                                               Icons.code_outlined,
@@ -368,7 +368,7 @@ class _home_Screen extends State<HomeScreen> {
                                               color: CommonStyles.orangeColor
                                                   .withOpacity(0.2),
                                               borderRadius:
-                                                  BorderRadius.circular(20),
+                                              BorderRadius.circular(20),
                                             ),
                                             child: const Icon(
                                               Icons.email_outlined,
@@ -392,9 +392,9 @@ class _home_Screen extends State<HomeScreen> {
                                               padding: const EdgeInsets.all(10),
                                               decoration: BoxDecoration(
                                                 color:
-                                                    Colors.red.withOpacity(0.2),
+                                                Colors.red.withOpacity(0.2),
                                                 borderRadius:
-                                                    BorderRadius.circular(20),
+                                                BorderRadius.circular(20),
                                               ),
                                               child: const Icon(
                                                 Icons.call,
@@ -416,7 +416,7 @@ class _home_Screen extends State<HomeScreen> {
                                                 color: Colors.green
                                                     .withOpacity(0.2),
                                                 borderRadius:
-                                                    BorderRadius.circular(20),
+                                                BorderRadius.circular(20),
                                               ),
                                               child: const Icon(
                                                 Icons.add_business_rounded,
@@ -435,12 +435,12 @@ class _home_Screen extends State<HomeScreen> {
                                             contentPadding: EdgeInsets.zero,
                                             leading: Container(
                                                 padding:
-                                                    const EdgeInsets.all(10),
+                                                const EdgeInsets.all(10),
                                                 decoration: BoxDecoration(
                                                   color: const Color(0xFFe78337)
                                                       .withOpacity(0.2),
                                                   borderRadius:
-                                                      BorderRadius.circular(20),
+                                                  BorderRadius.circular(20),
                                                 ),
                                                 child: const Icon(
                                                   Icons.manage_accounts_rounded,
@@ -449,7 +449,7 @@ class _home_Screen extends State<HomeScreen> {
                                                 )),
                                             title: Text('$reporingManagerName',
                                                 style:
-                                                    CommonUtils.txSty_14B_Fb),
+                                                CommonUtils.txSty_14B_Fb),
                                             subtitle: const Text(
                                               'Reporing Manager Name',
                                               style: CommonStyles.txSty_12bs_fb,
@@ -475,7 +475,7 @@ class _home_Screen extends State<HomeScreen> {
                                   Navigator.of(context).push(
                                     MaterialPageRoute(
                                       builder: (context) =>
-                                          const ChangePassword(),
+                                      const ChangePassword(),
                                     ),
                                   );
                                 },
@@ -588,13 +588,13 @@ class _home_Screen extends State<HomeScreen> {
 
     Navigator.of(context).pushAndRemoveUntil(
       MaterialPageRoute(builder: (context) => const Companiesselection()),
-      (route) => false,
+          (route) => false,
     );
   }
 
   Future<void> startService() async {
     final permission =
-        await context.read<LocationControllerCubit>().enableGPSWithPermission();
+    await context.read<LocationControllerCubit>().enableGPSWithPermission();
 
     if (permission) {
       Position currentPosition = await Geolocator.getCurrentPosition();
@@ -639,7 +639,7 @@ class _imagesliderState extends State<imageslider> {
   final CarouselController carouselController = CarouselController();
 
   late final Future<Map<String, dynamic>?> categoriesFuture =
-      SharedPreferencesHelper.getCategories();
+  SharedPreferencesHelper.getCategories();
 
   @override
   initState() {
@@ -650,7 +650,7 @@ class _imagesliderState extends State<imageslider> {
     ]);
 
     CommonUtils.checkInternetConnectivity().then(
-      (isConnected) {
+          (isConnected) {
         if (isConnected) {
           fetchImages();
           print('The Internet Is Connected');
@@ -706,7 +706,7 @@ class _imagesliderState extends State<imageslider> {
           } else {
             final categoriesData = categories.data!;
             List<dynamic>? activityRights =
-                categoriesData['response']['activityRights'];
+            categoriesData['response']['activityRights'];
             if (activityRights == null) {
               return const Text('Error: No activity rights found');
             }
@@ -743,19 +743,19 @@ class _imagesliderState extends State<imageslider> {
                                           child: CarouselSlider(
                                             items: imageList
                                                 .map((item) => Image.network(
-                                                      item.FilePath,
-                                                      fit: BoxFit.fitWidth,
-                                                      width:
-                                                          MediaQuery.of(context)
-                                                              .size
-                                                              .width,
-                                                    ))
+                                              item.FilePath,
+                                              fit: BoxFit.fitWidth,
+                                              width:
+                                              MediaQuery.of(context)
+                                                  .size
+                                                  .width,
+                                            ))
                                                 .toList(),
                                             carouselController:
-                                                carouselController,
+                                            carouselController,
                                             options: CarouselOptions(
                                               scrollPhysics:
-                                                  const BouncingScrollPhysics(),
+                                              const BouncingScrollPhysics(),
                                               autoPlay: true,
                                               height: MediaQuery.of(context)
                                                   .size
@@ -772,7 +772,7 @@ class _imagesliderState extends State<imageslider> {
                                         ),
                                         SizedBox(
                                           width:
-                                              MediaQuery.of(context).size.width,
+                                          MediaQuery.of(context).size.width,
                                           height: MediaQuery.of(context)
                                               .size
                                               .height,
@@ -783,7 +783,7 @@ class _imagesliderState extends State<imageslider> {
                                                   bottom: 25.0),
                                               child: Row(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment.center,
+                                                MainAxisAlignment.center,
                                                 children: imageList
                                                     .asMap()
                                                     .entries
@@ -813,15 +813,15 @@ class _imagesliderState extends State<imageslider> {
                                         Expanded(
                                           child: SizedBox(
                                             height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
+                                                .size
+                                                .height /
                                                 3,
                                             child: _customheightCard(
                                               imageUrl: "receipt.svg",
                                               item: "Ledger",
                                               color: const Color(0xFFe78337),
                                               item_1:
-                                                  "All Incoming and Outgoing Transactions record",
+                                              "All Incoming and Outgoing Transactions record",
                                               color_1: const Color(0xFFF8dac2),
                                               textcolor: Colors.white,
                                               onTap: () {
@@ -840,22 +840,22 @@ class _imagesliderState extends State<imageslider> {
                                         Expanded(
                                           child: SizedBox(
                                             height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
+                                                .size
+                                                .height /
                                                 3,
                                             child: Column(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              MainAxisAlignment
+                                                  .spaceBetween,
                                               children: [
                                                 Expanded(
                                                   child: Container(
                                                     child: _customcontainerCard(
                                                       imageUrl:
-                                                          "shopping_cart_add.svg",
+                                                      "shopping_cart_add.svg",
                                                       item: "Create Order",
                                                       item1:
-                                                          "Create a New Order",
+                                                      "Create a New Order",
                                                       color: const Color(
                                                           0xFFF8dac2),
                                                       color_1: CommonStyles
@@ -869,7 +869,7 @@ class _imagesliderState extends State<imageslider> {
                                                             builder: (context) =>
                                                                 Selectpartyscreen(
                                                                     from:
-                                                                        'CreateOrder'),
+                                                                    'CreateOrder'),
                                                           ),
                                                         );
                                                       },
@@ -881,7 +881,7 @@ class _imagesliderState extends State<imageslider> {
                                                   child: Container(
                                                     child: _customcontainerCard(
                                                       imageUrl:
-                                                          "bags-orders.svg",
+                                                      "bags-orders.svg",
                                                       item: "View Orders",
                                                       item1: "View All Order",
                                                       color: const Color(
@@ -895,7 +895,7 @@ class _imagesliderState extends State<imageslider> {
                                                           context,
                                                           MaterialPageRoute(
                                                             builder: (context) =>
-                                                                const ViewOrders(),
+                                                            const ViewOrders(),
                                                           ),
                                                         );
                                                       },
@@ -914,23 +914,23 @@ class _imagesliderState extends State<imageslider> {
                                         Expanded(
                                           child: SizedBox(
                                             height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
+                                                .size
+                                                .height /
                                                 3,
                                             child: Column(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              MainAxisAlignment
+                                                  .spaceBetween,
                                               children: [
                                                 Expanded(
                                                   child: Container(
                                                     child: _customcontainerCard(
                                                       imageUrl:
-                                                          "creditcard.svg",
+                                                      "creditcard.svg",
                                                       item:
-                                                          "Create Collections",
+                                                      "Create Collections",
                                                       item1:
-                                                          "Create a New Collection ",
+                                                      "Create a New Collection ",
                                                       color: const Color(
                                                           0xFFb7dbc1),
                                                       color_1: const Color(
@@ -944,7 +944,7 @@ class _imagesliderState extends State<imageslider> {
                                                             builder: (context) =>
                                                                 Selectpartyscreen(
                                                                     from:
-                                                                        'CreateCollections'),
+                                                                    'CreateCollections'),
                                                           ),
                                                         );
                                                       },
@@ -956,9 +956,9 @@ class _imagesliderState extends State<imageslider> {
                                                   child: Container(
                                                     child: _customcontainerCard(
                                                       imageUrl:
-                                                          "arrows_repeat.svg",
+                                                      "arrows_repeat.svg",
                                                       item:
-                                                          "Create Return order",
+                                                      "Create Return order",
                                                       item1: "Create a Reorder",
                                                       color: const Color(
                                                           0xFFF8dac2),
@@ -973,7 +973,7 @@ class _imagesliderState extends State<imageslider> {
                                                             builder: (context) =>
                                                                 Selectpartyscreen(
                                                                     from:
-                                                                        'CreatereturnOrder'),
+                                                                    'CreatereturnOrder'),
                                                           ),
                                                         );
                                                       },
@@ -987,22 +987,22 @@ class _imagesliderState extends State<imageslider> {
                                         Expanded(
                                           child: SizedBox(
                                             height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
+                                                .size
+                                                .height /
                                                 3,
                                             child: Column(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment
-                                                      .spaceBetween,
+                                              MainAxisAlignment
+                                                  .spaceBetween,
                                               children: [
                                                 Expanded(
                                                   child: Container(
                                                     child: _customcontainerCard(
                                                       imageUrl:
-                                                          "album_collection.svg",
+                                                      "album_collection.svg",
                                                       item: "View Collections",
                                                       item1:
-                                                          "View All Collections",
+                                                      "View All Collections",
                                                       color: const Color(
                                                           0xFFF8dac2),
                                                       color_1: const Color(
@@ -1014,7 +1014,7 @@ class _imagesliderState extends State<imageslider> {
                                                           context,
                                                           MaterialPageRoute(
                                                               builder: (context) =>
-                                                                  const ViewCollectionPage()),
+                                                              const ViewCollectionPage()),
                                                         );
                                                       },
                                                     ),
@@ -1025,10 +1025,10 @@ class _imagesliderState extends State<imageslider> {
                                                   child: Container(
                                                     child: _customcontainerCard(
                                                       imageUrl:
-                                                          "bags-orders.svg",
+                                                      "bags-orders.svg",
                                                       item: "View Return order",
                                                       item1:
-                                                          "View All Reorders",
+                                                      "View All Reorders",
                                                       color: const Color(
                                                           0xFFb7dbc1),
                                                       color_1: const Color(
@@ -1040,7 +1040,7 @@ class _imagesliderState extends State<imageslider> {
                                                           context,
                                                           MaterialPageRoute(
                                                               builder: (context) =>
-                                                                  const ViewReturnorder()),
+                                                              const ViewReturnorder()),
                                                         );
                                                       },
                                                     ),
@@ -1056,27 +1056,27 @@ class _imagesliderState extends State<imageslider> {
                                         .contains("CanSHApprovalRejectOrder"))
                                       Row(
                                         crossAxisAlignment:
-                                            CrossAxisAlignment.center,
+                                        CrossAxisAlignment.center,
                                         children: [
                                           Expanded(
                                             child: SizedBox(
                                               height: MediaQuery.of(context)
-                                                      .size
-                                                      .height /
+                                                  .size
+                                                  .height /
                                                   10,
                                               child: Column(
                                                 mainAxisAlignment:
-                                                    MainAxisAlignment
-                                                        .spaceEvenly,
+                                                MainAxisAlignment
+                                                    .spaceEvenly,
                                                 children: [
                                                   Expanded(
                                                     child: Container(
                                                       child:
-                                                          _customcontainernewCard(
+                                                      _customcontainernewCard(
                                                         imageUrl: "Approve.svg",
                                                         item: "Approve Orders",
                                                         item1:
-                                                            "View All Pending Orders ",
+                                                        "View All Pending Orders ",
                                                         color: const Color(
                                                             0xFFb7dbc1),
                                                         color_1: const Color(
@@ -1089,7 +1089,7 @@ class _imagesliderState extends State<imageslider> {
                                                             MaterialPageRoute(
                                                                 builder:
                                                                     (context) =>
-                                                                        const Viewpendingorder()),
+                                                                const Viewpendingorder()),
                                                           );
                                                         },
                                                       ),
@@ -1106,22 +1106,22 @@ class _imagesliderState extends State<imageslider> {
                                         Expanded(
                                           child: SizedBox(
                                             height: MediaQuery.of(context)
-                                                    .size
-                                                    .height /
+                                                .size
+                                                .height /
                                                 10,
                                             child: Column(
                                               mainAxisAlignment:
-                                                  MainAxisAlignment.spaceEvenly,
+                                              MainAxisAlignment.spaceEvenly,
                                               children: [
                                                 Expanded(
                                                   child: Container(
                                                     child:
-                                                        _customcontainernewCard(
+                                                    _customcontainernewCard(
                                                       imageUrl: "report.svg",
                                                       item:
-                                                          "Group Summary Report ",
+                                                      "Group Summary Report ",
                                                       item1:
-                                                          "View Group Summary Report ",
+                                                      "View Group Summary Report ",
                                                       color: const Color(
                                                           0xFFF8dac2),
                                                       color_1: const Color(
@@ -1133,7 +1133,7 @@ class _imagesliderState extends State<imageslider> {
                                                           context,
                                                           MaterialPageRoute(
                                                               builder: (context) =>
-                                                                  const StateSelectionScreen()),
+                                                              const StateSelectionScreen()),
                                                         );
                                                       },
                                                     ),
@@ -1176,11 +1176,11 @@ class _imagesliderState extends State<imageslider> {
         child: Card(
           color: color,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
             padding:
-                const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               children: <Widget>[
@@ -1225,7 +1225,7 @@ class _imagesliderState extends State<imageslider> {
                         children: const [
                           TextSpan(
                               text:
-                                  'All Incoming and Outgoing Transactions record',
+                              'All Incoming and Outgoing Transactions record',
                               style: TextStyle(height: 1.3))
                         ],
                       ),
@@ -1257,11 +1257,11 @@ class _imagesliderState extends State<imageslider> {
         child: Card(
           color: color,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
             padding:
-                const EdgeInsets.only(left: 10, right: 15, top: 7, bottom: 3),
+            const EdgeInsets.only(left: 10, right: 15, top: 7, bottom: 3),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -1329,11 +1329,11 @@ class _imagesliderState extends State<imageslider> {
         child: Card(
           color: color,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
             padding:
-                const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
             child: Column(
               crossAxisAlignment: CrossAxisAlignment.start,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -1409,11 +1409,11 @@ class _imagesliderState extends State<imageslider> {
         child: Card(
           color: color,
           shape:
-              RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
+          RoundedRectangleBorder(borderRadius: BorderRadius.circular(18)),
           elevation: 8,
           child: Padding(
             padding:
-                const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
+            const EdgeInsets.only(left: 10, right: 10, top: 10, bottom: 10),
             child: Row(
               crossAxisAlignment: CrossAxisAlignment.center,
               mainAxisAlignment: MainAxisAlignment.start,
@@ -1442,7 +1442,7 @@ class _imagesliderState extends State<imageslider> {
                         item,
                         maxLines: 1,
                         style: TextStyle(
-                            //MARK: Point: 1
+                          //MARK: Point: 1
                             fontSize: 17,
                             fontFamily: "Roboto",
                             fontWeight: FontWeight.w700,

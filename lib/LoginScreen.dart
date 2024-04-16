@@ -45,8 +45,8 @@ class _MyHomePageState extends State<LoginScreen> {
     ]);
 
     compneyid = widget.companyId;
-    emailController.text = "Superadmin";
-    passwordController.text = "Abcd@123";
+    // emailController.text = "Superadmin";
+    // passwordController.text = "Abcd@123";
   }
 
   @override
@@ -449,13 +449,22 @@ class _MyHomePageState extends State<LoginScreen> {
         await SharedPreferencesHelper.getCategories();
         SharedPreferencesHelper.putBool(Constants.IS_LOGIN, true);
         SharedPreferences prefs = await SharedPreferences.getInstance();
-        SharedPrefsData.updateStringValue(
-            "userId", jsonResponse['response']['userId']);
-        SharedPrefsData.updateStringValue(
-            "slpCode", jsonResponse['response']['slpCode'] ?? '');
-        SharedPrefsData.updateIntValue(
-            "companyId", jsonResponse['response']['companyId']);
+        SharedPrefsData.updateStringValue("userId", jsonResponse['response']['userId']);
+        SharedPrefsData.updateStringValue("slpCode", jsonResponse['response']['slpCode'] ?? '');
+        SharedPrefsData.updateIntValue("companyId", jsonResponse['response']['companyId']);
 
+        prefs.setString("userId", jsonResponse['response']['userId']);
+        prefs.setString("slpCode", jsonResponse['response']['slpCode'] ?? '');
+        prefs.setInt("companyId", jsonResponse['response']['companyId']);
+        prefs.setString("companyName", jsonResponse['response']['companyName']);
+        prefs.setString("companyCode", jsonResponse['response']['companyCode']);
+        prefs.setString("email", jsonResponse['response']['email']);
+        prefs.setString("userName", jsonResponse['response']['userName']);
+        prefs.setString("roleName", jsonResponse['response']['roleName']);
+
+        print("===========>companyId ${jsonResponse['response']['companyId']}");
+
+        // startLocationService();
         Navigator.pushReplacement(
           context,
           MaterialPageRoute(builder: (context) => const HomeScreen()),
